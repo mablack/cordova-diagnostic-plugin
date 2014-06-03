@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova.plugins.diagnostic"
+    version="0.0.1">
+
+    <name>Diagnostic</name>
+    <description>The diagnostic plugin allows you to check different device settings in your PhoneGap application.</description>
+
+    <js-module src="www/diagnostic.js" name="Diagnostic">
+        <clobbers target="cordova.plugins.diagnostic" />
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic">
+                <param name="ios-package" value="Diagnostic" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/Diagnostic.h" />
+        <source-file src="src/ios/Diagnostic.m" />
+
+        <framework src="CoreLocation.framework" />
+    </platform>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic" >
+                <param name="android-package" value="com.collectme.cordova.diagnostic.Diagnostic"/>
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+        </config-file>
+
+        <source-file src="src/android/Diagnostic.java" target-dir="src/com/collectme/cordova/diagnostic" />
+
+    </platform>
+</plugin>
