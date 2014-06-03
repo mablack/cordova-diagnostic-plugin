@@ -73,19 +73,17 @@ public class Diagnostic extends CordovaPlugin {
 
         if (action.equals("switchToLocationSettings")){
             switchToLocationSettings();
-            callbackContext.success();            
-        } else if(action.equals("isLocationEnabled")) {
-            r.put("success", isGpsEnabled() || isNetworkEnabled());
-            callbackContext.success(r);
-        } else if(action.equals("isLocationAuthorized") || action.equals("isLocationEnabledSetting")) {
-            r.put("success", true);
-            callbackContext.success(r);
+            callbackContext.success();
+        } else if(action.equals("isLocationEnabled") || action.equals("isLocationAuthorized") || action.equals("isLocationEnabledSetting")) {
+            // r.put("success", isGpsEnabled());
+            // r.put("success", isGpsEnabled() || isNetworkEnabled());
+            callbackContext.success(isGpsEnabled() ? 1 : 0);
         } else if(action.equals("isWifiEnabled")) {
-            r.put("success", isWifiEnabled());
-            callbackContext.success(r);
+            // r.put("success", isWifiEnabled());
+            callbackContext.success(isWifiEnabled() ? 1 : 0);
         } else if(action.equals("isCameraEnabled")) {
-            r.put("success", isCameraEnabled());
-            callbackContext.success(r);
+            // r.put("success", isCameraEnabled());
+            callbackContext.success(isCameraEnabled() ? 1 : 0);
         }
         else {
             return false;
@@ -95,14 +93,14 @@ public class Diagnostic extends CordovaPlugin {
 
     /**
      * Check device settings for GPS.
-     * 
+     *
      * @returns {boolean} The status of GPS in device settings.
      */
     public boolean isGpsEnabled() {
         boolean result = isLocationProviderEnabled(LocationManager.GPS_PROVIDER);
         Log.d(TAG, "GPS enabled: " + result);
         return result;
-    }    
+    }
 
     public boolean isNetworkEnabled() {
         boolean result = isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -131,7 +129,7 @@ public class Diagnostic extends CordovaPlugin {
         cordova.getActivity().startActivity(settingsIntent);
     }
 
-    private boolean isLocationProviderEnabled(String provider) {     
+    private boolean isLocationProviderEnabled(String provider) {
         LocationManager locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(provider);
     }
