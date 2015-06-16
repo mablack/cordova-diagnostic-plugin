@@ -5,7 +5,7 @@
     version="0.0.1">
 
     <name>Diagnostic</name>
-    <description>The diagnostic plugin allows you to check different device settings in your PhoneGap application.</description>
+    <description>This Cordova/Phonegap plugin is used to check Location/WiFi/Camera device settings.</description>
 
     <js-module src="www/diagnostic.js" name="Diagnostic">
         <clobbers target="cordova.plugins.diagnostic" />
@@ -29,7 +29,7 @@
     <platform name="android">
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic" >
-                <param name="android-package" value="com.collectme.cordova.diagnostic.Diagnostic"/>
+                <param name="android-package" value="cordova.plugins.Diagnostic"/>
             </feature>
         </config-file>
 
@@ -39,7 +39,7 @@
             <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
         </config-file>
 
-        <source-file src="src/android/Diagnostic.java" target-dir="src/com/collectme/cordova/diagnostic" />
+        <source-file src="src/android/Diagnostic.java" target-dir="src/cordova/plugins" />
 
     </platform>
 </plugin>
