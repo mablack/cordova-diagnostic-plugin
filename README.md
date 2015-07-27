@@ -128,7 +128,7 @@ Android only: displays the device location settings to allow user to enable loca
 ### Example usage
 
     cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-        if(!enabled{
+        if(!enabled){
             cordova.plugins.diagnostic.switchToLocationSettings();
         }
     }, function(error){
