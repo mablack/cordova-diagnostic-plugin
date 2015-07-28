@@ -12,8 +12,22 @@
 #import <ifaddrs.h> // For getifaddrs()
 #import <net/if.h> // For IFF_LOOPBACK
 
+
+
 @implementation Diagnostic
 
+- (void)pluginInitialize {
+    
+    NSLog(@"RFduino Cordova Plugin");
+    NSLog(@"(c)2013-2015 Don Coleman");
+    
+    [super pluginInitialize];
+    
+    self.bluetoothManager = [[CBCentralManager alloc]
+                             initWithDelegate:self
+                             queue:dispatch_get_main_queue()
+                             options:@{CBCentralManagerOptionShowPowerAlertKey: @(NO)}];
+}
 
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command
 {
@@ -186,6 +200,37 @@
         return false;
     }
 
+}
+
+- (void) isBluetoothEnabled: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if(self.bluetoothEnabled) {
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        
+    } else {
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
+
+#pragma mark - CBCentralManagerDelegate
+
+- (void) centralManagerDidUpdateState:(CBCentralManager *)central {
+    
+    if ([central state] == CBCentralManagerStatePoweredOn) {
+        NSLog(@"Bluetooth enabled");
+        self.bluetoothEnabled = true;
+    }
+    else {
+        NSLog(@"Bluetooth disabled or unavailable");
+        self.bluetoothEnabled = false;
+    }
 }
 
 

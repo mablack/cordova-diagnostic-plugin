@@ -23,6 +23,7 @@
         <source-file src="src/ios/Diagnostic.m" />
 
         <framework src="CoreLocation.framework" />
+        <framework src="CoreBluetooth.framework" />
     </platform>
 
     <!-- android -->
