@@ -4,6 +4,7 @@ Cordova diagnostic plugin
 * [Overview](#overview)
 * [Installation](#installation)
 * [Usage](#usage)
+* [Example project](#example-project)
 * [Credits](#credits)
 
 # Overview
@@ -48,11 +49,12 @@ The plugin is exposed via the `cordova.plugins.diagnostic` object and provides t
 - [switchToLocationSettings()](#switchtolocationsettings)
 - [isWifiEnabled()](#iswifienabled)
 - [isCameraEnabled()](#iscameraenabled)
+- [isBluetoothEnabled()](#isbluetoothenabled)
 
 ## isLocationEnabled()
 
 Checks if app is able to access location.
-On iOS this returns true if both the device setting for location is on and the application is authorized to use location.
+On iOS this returns true if both the device setting for location is on AND the application is authorized to use location.
 On Android this returns true if location setting is set to High Precision (GPS).
 
     cordova.plugins.diagnostic.isLocationEnabled(successCallback, errorCallback);
@@ -75,7 +77,7 @@ On Android this returns true if location setting is set to High Precision (GPS).
 ## isLocationEnabledSetting()
 
 Checks if location setting is enabled on device.
-On iOS this returns true if both the device setting for location is on.
+On iOS this returns true if the device setting for location is on.
 On Android this returns true if location setting is set to High Precision (GPS).
 
     cordova.plugins.diagnostic.isLocationEnabledSetting(successCallback, errorCallback);
@@ -98,7 +100,7 @@ On Android this returns true if location setting is set to High Precision (GPS).
 ## isLocationAuthorized()
 
 Checks if app is authorised to use location.
-On iOS this returns true if the application is authorized to use location.
+On iOS this returns true if the application is authorized to use location AND the device setting for location is on.
 On Android this returns true if location setting is set to High Precision (GPS).
 
     cordova.plugins.diagnostic.isLocationAuthorized(successCallback, errorCallback);
@@ -128,7 +130,7 @@ Android only: displays the device location settings to allow user to enable loca
 ### Example usage
 
     cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-        if(!enabled){
+        if(!enabled{
             cordova.plugins.diagnostic.switchToLocationSettings();
         }
     }, function(error){
@@ -179,9 +181,33 @@ Checks if the device has a camera (same on Android and iOS)
         console.error("The following error occurred: "+error);
     });
 
+## isBluetoothEnabled()
+
+Checks if the device has Bluetooth capabilities and that it's switched on (same on Android and iOS)
+
+    cordova.plugins.diagnostic.isBluetoothEnabled(successCallback, errorCallback);
+
+### Parameters
+
+- {function} successCallback - The callback which will be called when diagnostic of Bluetooth is successful. This callback function have a boolean param with the diagnostic result.
+- {function} errorCallback - The callback which will be called when diagnostic of Bluetooth encounters an error. This callback function have a string param with the error.
+
+
+### Example usage
+
+    cordova.plugins.diagnostic.isBluetoothEnabled(function(enabled){
+        console.log("Bluetooth is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+# Example project
+
+An example project illustrating use of this plugin can be found here: [https://github.com/dpa99c/cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example)
+
+
 # Credits
 
 Forked from: [https://github.com/mablack/cordova-diagnostic-plugin](https://github.com/mablack/cordova-diagnostic-plugin)
 
 Orignal Cordova 2 implementation by: AVANTIC ESTUDIO DE INGENIEROS ([www.avantic.net](http://www.avantic.net/))
-
