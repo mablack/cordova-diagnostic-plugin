@@ -55,7 +55,7 @@ The plugin is exposed via the `cordova.plugins.diagnostic` object and provides t
 
 Checks if app is able to access location.
 On iOS this returns true if both the device setting for location is on AND the application is authorized to use location.
-On Android this returns true if location setting is set to High Precision (GPS).
+On Android this returns true if Location setting is ON AND Location mode is set to "High Accuracy" (GPS).
 
     cordova.plugins.diagnostic.isLocationEnabled(successCallback, errorCallback);
 
@@ -78,7 +78,7 @@ On Android this returns true if location setting is set to High Precision (GPS).
 
 Checks if location setting is enabled on device.
 On iOS this returns true if the device setting for location is on.
-On Android this returns true if location setting is set to High Precision (GPS).
+On Android this returns the same as isLocationEnabled().
 
     cordova.plugins.diagnostic.isLocationEnabledSetting(successCallback, errorCallback);
 
@@ -101,7 +101,7 @@ On Android this returns true if location setting is set to High Precision (GPS).
 
 Checks if app is authorised to use location.
 On iOS this returns true if the application is authorized to use location AND the device setting for location is on.
-On Android this returns true if location setting is set to High Precision (GPS).
+On Android this returns the same as isLocationEnabled().
 
     cordova.plugins.diagnostic.isLocationAuthorized(successCallback, errorCallback);
 
