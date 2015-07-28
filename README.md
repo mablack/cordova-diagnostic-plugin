@@ -9,11 +9,16 @@ Cordova diagnostic plugin
 
 # Overview
 
-This Cordova/Phonegap plugin is used to check Location/WiFi/Camera device settings.
+This Cordova/Phonegap plugin is used to check the state of the following device settings:
+
+- Location/GPS
+- WiFi
+- Camera
+- Bluetooth
 
 The plugin currently supports the iOS and Android platforms.
 
-The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io)(Cordova 3/4) and [npmjs.com](https://npmjs.com/) (Cordova 5+).
+The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io)(Cordova 3/4) and [npmjs.com](https://npmjs.com/) (Cordova 5+) as `cordova.plugins.diagnostic`
 
 # Installation
 
@@ -122,7 +127,7 @@ On Android this returns the same as isLocationEnabled().
 
 ## switchToLocationSettings()
 
-Android only: displays the device location settings to allow user to enable location services.
+Android only: displays the device location settings to allow user to enable location services/change location mode.
 
     cordova.plugins.diagnostic.switchToLocationSettings();
 
@@ -183,7 +188,7 @@ Checks if the device has a camera (same on Android and iOS)
 
 ## isBluetoothEnabled()
 
-Checks if the device has Bluetooth capabilities and that it's switched on (same on Android and iOS)
+Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on (same on Android and iOS)
 
     cordova.plugins.diagnostic.isBluetoothEnabled(successCallback, errorCallback);
 

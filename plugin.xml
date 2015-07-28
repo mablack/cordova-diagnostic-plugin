@@ -5,7 +5,7 @@
     version="1.0.0">
 
     <name>Diagnostic</name>
-    <description>This Cordova/Phonegap plugin is used to check Location/WiFi/Camera device settings.</description>
+    <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
 
     <js-module src="www/diagnostic.js" name="Diagnostic">
         <clobbers target="cordova.plugins.diagnostic" />
