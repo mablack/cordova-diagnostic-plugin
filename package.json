@@ -1,5 +1,5 @@
 {
-    "version": "0.0.1",
+    "version": "1.0.0",
     "name": "cordova.plugins.diagnostic",
     "cordova_name": "Diagnostic",
     "description": "This Cordova/Phonegap plugin is used to check Location/WiFi/Camera device settings.",

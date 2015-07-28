@@ -43,14 +43,6 @@ Diagnostic.prototype.isLocationEnabledSetting = function(successCallback, errorC
 						[]);
 };
 
-Diagnostic.prototype.switchToLocationSettings = function() {
-	return cordova.exec(null,
-						null,
-						'Diagnostic',
-						'switchToLocationSettings',
-						[]);
-};
-
 
 /**
  * Checks if the application is authorized to use location.
@@ -104,10 +96,32 @@ Diagnostic.prototype.isCameraEnabled = function(successCallback, errorCallback) 
 						[]);
 };
 
+/**
+ * Checks if Bluetooth is enabled
+ *
+ * @param successCallback	The callback which will be called when diagnostic of Bluetooth is successful.
+ * 							This callback function have a boolean param with the diagnostic result.
+ * @param errorCallback		The callback which will be called when diagnostic of Bluetooth encounters an error.
+ * 							This callback function have a string param with the error.
+ */
+
+
+Diagnostic.prototype.isBluetoothEnabled = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'isBluetoothEnabled',
+		[]);
+};
+
+
+Diagnostic.prototype.switchToLocationSettings = function() {
+	return cordova.exec(null,
+		null,
+		'Diagnostic',
+		'switchToLocationSettings',
+		[]);
+};
+
 module.exports = new Diagnostic();
 
-// cordova.addConstructor(function() {
-// 	if(!window.plugins)
-// 		window.plugins = {};
-// 	window.plugins.diagnostic = new Diagnostic();
-// });

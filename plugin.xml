@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova.plugins.diagnostic"
-    version="0.0.1">
+    version="1.0.0">
 
     <name>Diagnostic</name>
     <description>This Cordova/Phonegap plugin is used to check Location/WiFi/Camera device settings.</description>
@@ -37,6 +37,7 @@
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
             <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+            <uses-permission android:name="android.permission.BLUETOOTH" />
         </config-file>
 
         <source-file src="src/android/Diagnostic.java" target-dir="src/cordova/plugins" />

@@ -18,27 +18,29 @@
 */
 package cordova.plugins;
 
-import java.util.TimeZone;
+        import java.util.TimeZone;
 
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.LOG;
-import org.apache.cordova.CordovaInterface;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import android.util.Log;
+        import org.apache.cordova.CordovaWebView;
+        import org.apache.cordova.CallbackContext;
+        import org.apache.cordova.CordovaPlugin;
+        import org.apache.cordova.LOG;
+        import org.apache.cordova.CordovaInterface;
+        import org.json.JSONArray;
+        import org.json.JSONException;
+        import org.json.JSONObject;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.provider.Settings;
-import android.location.LocationManager;
-import android.location.LocationListener;
-import android.net.wifi.WifiManager;
+        import android.bluetooth.BluetoothAdapter;
+        import android.util.Log;
+
+        import android.content.BroadcastReceiver;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.content.IntentFilter;
+        import android.content.pm.PackageManager;
+        import android.provider.Settings;
+        import android.location.LocationManager;
+        import android.location.LocationListener;
+        import android.net.wifi.WifiManager;
 
 public class Diagnostic extends CordovaPlugin {
     public static final String TAG = "Diagnostic";
@@ -75,15 +77,13 @@ public class Diagnostic extends CordovaPlugin {
             switchToLocationSettings();
             callbackContext.success();
         } else if(action.equals("isLocationEnabled") || action.equals("isLocationAuthorized") || action.equals("isLocationEnabledSetting")) {
-            // r.put("success", isGpsEnabled());
-            // r.put("success", isGpsEnabled() || isNetworkEnabled());
             callbackContext.success(isGpsEnabled() ? 1 : 0);
         } else if(action.equals("isWifiEnabled")) {
-            // r.put("success", isWifiEnabled());
             callbackContext.success(isWifiEnabled() ? 1 : 0);
         } else if(action.equals("isCameraEnabled")) {
-            // r.put("success", isCameraEnabled());
             callbackContext.success(isCameraEnabled() ? 1 : 0);
+        } else if(action.equals("isBluetoothEnabled")) {
+            callbackContext.success(isBluetoothEnabled() ? 1 : 0);
         }
         else {
             return false;
@@ -120,6 +120,12 @@ public class Diagnostic extends CordovaPlugin {
         return result;
     }
 
+    public boolean isBluetoothEnabled() {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        boolean result = mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
+        return result;
+    }
+
     /**
      * Requests that the user enable the location in device settings.
      */
@@ -135,3 +141,4 @@ public class Diagnostic extends CordovaPlugin {
     }
 
 }
+
