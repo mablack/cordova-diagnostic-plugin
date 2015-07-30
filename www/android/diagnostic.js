@@ -27,41 +27,6 @@ Diagnostic.prototype.isLocationEnabled = function(successCallback, errorCallback
 };
 
 /**
- * Checks device settings for location.
- *
- * @param successCallback	The callback which will be called when diagnostic of location is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of location encounters an error.
- * 							This callback function have a string param with the error.
- */
-
-Diagnostic.prototype.isLocationEnabledSetting = function(successCallback, errorCallback) {
-	return cordova.exec(successCallback,
-						errorCallback,
-						'Diagnostic',
-						'isLocationEnabledSetting',
-						[]);
-};
-
-
-/**
- * Checks if the application is authorized to use location.
- *
- * @param successCallback	The callback which will be called when diagnostic of location is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of location encounters an error.
- * 							This callback function have a string param with the error.
- */
-
-Diagnostic.prototype.isLocationAuthorized = function(successCallback, errorCallback) {
-	return cordova.exec(successCallback,
-						errorCallback,
-						'Diagnostic',
-						'isLocationAuthorized',
-						[]);
-};
-
-/**
  * Checks if exists Wi-Fi connection.
  *
  * @param successCallback	The callback which will be called when diagnostic of Wi-Fi is successful.
@@ -120,6 +85,30 @@ Diagnostic.prototype.switchToLocationSettings = function() {
 		null,
 		'Diagnostic',
 		'switchToLocationSettings',
+		[]);
+};
+
+Diagnostic.prototype.switchToMobileDataSettings = function() {
+	return cordova.exec(null,
+		null,
+		'Diagnostic',
+		'switchToMobileDataSettings',
+		[]);
+};
+
+Diagnostic.prototype.switchToBluetoothSettings = function() {
+	return cordova.exec(null,
+		null,
+		'Diagnostic',
+		'switchToBluetoothSettings',
+		[]);
+};
+
+Diagnostic.prototype.switchToWifiSettings = function() {
+	return cordova.exec(null,
+		null,
+		'Diagnostic',
+		'switchToWifiSettings',
 		[]);
 };
 

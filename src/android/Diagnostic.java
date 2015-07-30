@@ -76,6 +76,15 @@ public class Diagnostic extends CordovaPlugin {
         if (action.equals("switchToLocationSettings")){
             switchToLocationSettings();
             callbackContext.success();
+        } else if (action.equals("switchToMobileDataSettings")){
+            switchToMobileDataSettings();
+            callbackContext.success();
+        } else if (action.equals("switchToBluetoothSettings")){
+            switchToBluetoothSettings();
+            callbackContext.success();
+        } else if (action.equals("switchToWifiSettings")){
+            switchToWifiSettings();
+            callbackContext.success();
         } else if(action.equals("isLocationEnabled") || action.equals("isLocationAuthorized") || action.equals("isLocationEnabledSetting")) {
             callbackContext.success(isGpsEnabled() ? 1 : 0);
         } else if(action.equals("isWifiEnabled")) {
@@ -126,18 +135,33 @@ public class Diagnostic extends CordovaPlugin {
         return result;
     }
 
-    /**
-     * Requests that the user enable the location in device settings.
-     */
+    private boolean isLocationProviderEnabled(String provider) {
+        LocationManager locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(provider);
+    }
+
     public void switchToLocationSettings() {
         Log.d(TAG, "Switch to Location Settings");
         Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         cordova.getActivity().startActivity(settingsIntent);
     }
 
-    private boolean isLocationProviderEnabled(String provider) {
-        LocationManager locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(provider);
+    public void switchToMobileDataSettings() {
+        Log.d(TAG, "Switch to Mobile Data Settings");
+        Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+        cordova.getActivity().startActivity(settingsIntent);
+    }
+
+    public void switchToBluetoothSettings() {
+        Log.d(TAG, "Switch to Bluetooth Settings");
+        Intent settingsIntent = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
+        cordova.getActivity().startActivity(settingsIntent);
+    }
+
+    public void switchToWifiSettings() {
+        Log.d(TAG, "Switch to Wifi Settings");
+        Intent settingsIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+        cordova.getActivity().startActivity(settingsIntent);
     }
 
 }

@@ -4,19 +4,22 @@ Cordova diagnostic plugin
 * [Overview](#overview)
 * [Installation](#installation)
 * [Usage](#usage)
+    * [Android and iOS](#android-and-ios)
+    * [Android only](#android-only)
+    * [iOS only](#ios-only)
 * [Example project](#example-project)
 * [Credits](#credits)
 
 # Overview
 
-This Cordova/Phonegap plugin is used to check the state of the following device settings:
+This Cordova/Phonegap plugin for iOS and Android is used to check the state of the following device settings:
 
 - Location/GPS
 - WiFi
 - Camera
 - Bluetooth
 
-The plugin currently supports the iOS and Android platforms.
+On Android, the plugin also enables an app to show the relevant settings screen, to allow users to enable the above device settings.
 
 The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io)(Cordova 3/4) and [npmjs.com](https://npmjs.com/) (Cordova 5+) as `cordova.plugins.diagnostic`
 
@@ -48,15 +51,14 @@ or from [npmjs.com](https://npmjs.com/):
 
 The plugin is exposed via the `cordova.plugins.diagnostic` object and provides the following functions:
 
+## Android and iOS
+
 - [isLocationEnabled()](#islocationenabled)
-- [isLocationEnabledSetting()](#isLocationEnabledSetting)
-- [isLocationAuthorized()](#islocationauthorized)
-- [switchToLocationSettings()](#switchtolocationsettings)
 - [isWifiEnabled()](#iswifienabled)
 - [isCameraEnabled()](#iscameraenabled)
 - [isBluetoothEnabled()](#isbluetoothenabled)
 
-## isLocationEnabled()
+### isLocationEnabled()
 
 Checks if app is able to access location.
 On iOS this returns true if both the device setting for location is on AND the application is authorized to use location.
@@ -64,13 +66,13 @@ On Android this returns true if Location setting is ON AND Location mode is set 
 
     cordova.plugins.diagnostic.isLocationEnabled(successCallback, errorCallback);
 
-### Parameters
+#### Parameters
 
 - {function} successCallback - The callback which will be called when diagnostic of location is successful. This callback function have a boolean param with the diagnostic result.
 - {function} errorCallback - The callback which will be called when diagnostic of location encounters an error. This callback function have a string param with the error.
 
 
-### Example usage
+#### Example usage
 
     cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
         console.log("Location is " + (enabled ? "enabled" : "disabled"));
@@ -78,72 +80,7 @@ On Android this returns true if Location setting is ON AND Location mode is set 
         console.error("The following error occurred: "+error);
     });
 
-
-## isLocationEnabledSetting()
-
-Checks if location setting is enabled on device.
-On iOS this returns true if the device setting for location is on.
-On Android this returns the same as isLocationEnabled().
-
-    cordova.plugins.diagnostic.isLocationEnabledSetting(successCallback, errorCallback);
-
-### Parameters
-
-- {function} successCallback - The callback which will be called when diagnostic of location setting is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of location setting encounters an error. This callback function have a string param with the error.
-
-
-### Example usage
-
-    cordova.plugins.diagnostic.isLocationEnabledSetting(function(enabled){
-        console.log("Location setting is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-
-## isLocationAuthorized()
-
-Checks if app is authorised to use location.
-On iOS this returns true if the application is authorized to use location AND the device setting for location is on.
-On Android this returns the same as isLocationEnabled().
-
-    cordova.plugins.diagnostic.isLocationAuthorized(successCallback, errorCallback);
-
-### Parameters
-
-- {function} successCallback - The callback which will be called when diagnostic of location authorization is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of location authorization encounters an error. This callback function have a string param with the error.
-
-
-### Example usage
-
-    cordova.plugins.diagnostic.isLocationAuthorized(function(enabled){
-        console.log("Location authorization is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-
-## switchToLocationSettings()
-
-Android only: displays the device location settings to allow user to enable location services/change location mode.
-
-    cordova.plugins.diagnostic.switchToLocationSettings();
-
-
-### Example usage
-
-    cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-        if(!enabled{
-            cordova.plugins.diagnostic.switchToLocationSettings();
-        }
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-
-## isWifiEnabled()
+### isWifiEnabled()
 
 Checks if Wifi is connected/enabled.
 On iOS this returns true if the device is connected to a network by WiFi.
@@ -151,13 +88,13 @@ On Android this returns true if the WiFi setting is set to enabled.
 
     cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
 
-### Parameters
+#### Parameters
 
 - {function} successCallback - The callback which will be called when diagnostic of Wi-Fi is successful. This callback function have a boolean param with the diagnostic result.
 - {function} errorCallback - The callback which will be called when diagnostic of Wi-Fi encounters an error. This callback function have a string param with the error.
 
 
-### Example usage
+#### Example usage
 
     cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
         console.log("WiFi is " + (enabled ? "enabled" : "disabled"));
@@ -166,19 +103,19 @@ On Android this returns true if the WiFi setting is set to enabled.
     });
 
 
-## isCameraEnabled()
+### isCameraEnabled()
 
 Checks if the device has a camera (same on Android and iOS)
 
     cordova.plugins.diagnostic.isCameraEnabled(successCallback, errorCallback);
 
-### Parameters
+#### Parameters
 
 - {function} successCallback - The callback which will be called when diagnostic of camera is successful. This callback function have a boolean param with the diagnostic result.
 - {function} errorCallback - The callback which will be called when diagnostic of camera encounters an error. This callback function have a string param with the error.
 
 
-### Example usage
+#### Example usage
 
     cordova.plugins.diagnostic.isCameraEnabled(function(exists){
         console.log("Device " + (exists ? "does" : "does not") + " have a camera");
@@ -186,22 +123,101 @@ Checks if the device has a camera (same on Android and iOS)
         console.error("The following error occurred: "+error);
     });
 
-## isBluetoothEnabled()
+### isBluetoothEnabled()
 
 Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on (same on Android and iOS)
 
     cordova.plugins.diagnostic.isBluetoothEnabled(successCallback, errorCallback);
 
-### Parameters
+#### Parameters
 
 - {function} successCallback - The callback which will be called when diagnostic of Bluetooth is successful. This callback function have a boolean param with the diagnostic result.
 - {function} errorCallback - The callback which will be called when diagnostic of Bluetooth encounters an error. This callback function have a string param with the error.
 
 
-### Example usage
+#### Example usage
 
     cordova.plugins.diagnostic.isBluetoothEnabled(function(enabled){
         console.log("Bluetooth is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+## Android only
+
+- [switchToLocationSettings()](#switchtolocationsettings)
+- [switchToMobileDataSettings()](#switchtomobiledatasettings)
+- [switchToBluetoothSettings()](#switchtobluetoothsettings)
+- [switchToWifiSettings()](#switchtowifisettings)
+
+### switchToLocationSettings()
+
+Displays the device location settings to allow user to enable location services/change location mode.
+
+    cordova.plugins.diagnostic.switchToLocationSettings();
+
+### switchToMobileDataSettings()
+
+Displays mobile settings to allow user to enable mobile data.
+
+    cordova.plugins.diagnostic.switchToMobileDataSettings();
+
+### switchToBluetoothSettings()
+
+Displays Bluetooth settings to allow user to enable Bluetooth.
+
+    cordova.plugins.diagnostic.switchToBluetoothSettings();
+
+
+### switchToWifiSettings()
+
+Displays WiFi settings to allow user to enable WiFi.
+
+    cordova.plugins.diagnostic.switchToWifiSettings();
+
+## iOS only
+
+- [isLocationEnabledSetting()](#isLocationEnabledSetting)
+- [isLocationAuthorized()](#islocationauthorized)
+
+
+### isLocationEnabledSetting()
+
+Returns true if the device setting for location is on.
+
+    cordova.plugins.diagnostic.isLocationEnabledSetting(successCallback, errorCallback);
+
+#### Parameters
+
+- {function} successCallback - The callback which will be called when diagnostic of location setting is successful. This callback function have a boolean param with the diagnostic result.
+- {function} errorCallback - The callback which will be called when diagnostic of location setting encounters an error. This callback function have a string param with the error.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isLocationEnabledSetting(function(enabled){
+        console.log("Location setting is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+
+### isLocationAuthorized()
+
+Returns true if the application is authorized to use location AND the device setting for location is on.
+
+    cordova.plugins.diagnostic.isLocationAuthorized(successCallback, errorCallback);
+
+#### Parameters
+
+- {function} successCallback - The callback which will be called when diagnostic of location authorization is successful. This callback function have a boolean param with the diagnostic result.
+- {function} errorCallback - The callback which will be called when diagnostic of location authorization encounters an error. This callback function have a string param with the error.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isLocationAuthorized(function(enabled){
+        console.log("Location authorization is " + (enabled ? "enabled" : "disabled"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
