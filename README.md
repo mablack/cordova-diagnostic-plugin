@@ -39,11 +39,11 @@ For example, to install for the Android platform
     $ plugman install --plugin=cordova.plugins.diagnostic --platform=android --project=platforms/android --plugins_dir=plugins
 
 ## PhoneGap Build
-Add the following xml to your config.xml to use the latest version of this plugin from [the Cordova Registry](http://plugins.cordova.io):
+Add the following xml to your config.xml to use the latest version of this plugin from [the Cordova Registry](http://plugins.cordova.io/#/package/cordova.plugins.diagnostic):
 
     <gap:plugin name="cordova.plugins.diagnostic" source="plugins.cordova.io" />
 
-or from [npmjs.com](https://npmjs.com/):
+or from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
 
     <gap:plugin name="cordova.plugins.diagnostic" source="npm" />
 
