@@ -21,7 +21,7 @@ This Cordova/Phonegap plugin for iOS and Android is used to check the state of t
 
 On Android, the plugin also enables an app to show the relevant settings screen, to allow users to enable the above device settings.
 
-The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io)(Cordova 3/4) and [npmjs.com](https://npmjs.com/) (Cordova 5+) as `cordova.plugins.diagnostic`
+The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io/#/package/cordova.plugins.diagnostic)(Cordova CLI 3/4) and on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) (Cordova CLI 5+) as `cordova.plugins.diagnostic`
 
 # Installation
 
