@@ -222,6 +222,26 @@ Returns true if the application is authorized to use location AND the device set
         console.error("The following error occurred: "+error);
     });
 
+### switchToSettings()
+
+Switch to Settings app. Opens settings page for this app. This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
+
+    cordova.plugins.diagnostic.switchToSettings(successCallback, errorCallback);
+
+#### Parameters
+
+- {function} successCallback - The callback which will be called when switch to settings is successful.
+- {function} errorCallback - The callback which will be called when switch to settings encounters an error. This callback function have a string param with the error.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.switchToSettings(function(){
+        console.log("Successfully switched to Settings app"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
 # Example project
 
 An example project illustrating use of this plugin can be found here: [https://github.com/dpa99c/cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example)

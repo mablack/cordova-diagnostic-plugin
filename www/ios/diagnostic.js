@@ -114,5 +114,21 @@ Diagnostic.prototype.isBluetoothEnabled = function(successCallback, errorCallbac
 		[]);
 };
 
+/**
+ * Switch to settings app. Opens settings page for this app.
+ *
+ * @param successCallback	The callback which will be called when switch to settings is successful.
+ * @param errorCallback		The callback which will be called when switch to settings encounters an error.
+ * 							This callback function have a string param with the error.
+ *	 						This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
+ */
+Diagnostic.prototype.switchToSettings = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'switchToSettings',
+		[]);
+};
+
 module.exports = new Diagnostic();
 

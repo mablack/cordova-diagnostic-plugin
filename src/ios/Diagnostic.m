@@ -62,13 +62,6 @@
     
 }
 
-- (void) switchToLocationSettings: (CDVInvokedUrlCommand*)command
-{
-    NSLog(@"Switch To Location Settings not available...");
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
 
 - (void) isLocationAuthorized: (CDVInvokedUrlCommand*)command
 {
@@ -214,8 +207,7 @@
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
         
     }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];    
 }
 
 
@@ -233,6 +225,16 @@
     }
 }
 
-
+- (void) switchToSettings: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if (UIApplicationOpenSettingsURLString != nil){
+        [[UIApplication sharedApplication] openURL: [NSURL URLWithString: UIApplicationOpenSettingsURLString]];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    }else{
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not supported below iOS 8"];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
 
 @end
