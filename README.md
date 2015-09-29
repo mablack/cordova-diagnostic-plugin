@@ -5,8 +5,21 @@ Cordova diagnostic plugin
 * [Installation](#installation)
 * [Usage](#usage)
     * [Android and iOS](#android-and-ios)
+        - [isLocationEnabled()](#islocationenabled)
+        - [isWifiEnabled()](#iswifienabled)
+        - [isCameraEnabled()](#iscameraenabled)
+        - [isBluetoothEnabled()](#isbluetoothenabled)
     * [Android only](#android-only)
+        - [isGpsLocationEnabled()](#isgpslocationenabled)
+        - [isNetworkLocationEnabled()](#isnetworklocationenabled)
+        - [switchToLocationSettings()](#switchtolocationsettings)
+        - [switchToMobileDataSettings()](#switchtomobiledatasettings)
+        - [switchToBluetoothSettings()](#switchtobluetoothsettings)
+        - [switchToWifiSettings()](#switchtowifisettings)
     * [iOS only](#ios-only)
+        - [isLocationEnabledSetting()](#isLocationEnabledSetting)
+        - [isLocationAuthorized()](#islocationauthorized)
+        - [switchToSettings()](#switchtosettings)
 * [Example project](#example-project)
 * [Credits](#credits)
 
@@ -14,12 +27,12 @@ Cordova diagnostic plugin
 
 This Cordova/Phonegap plugin for iOS and Android is used to check the state of the following device settings:
 
-- Location/GPS
+- Location
 - WiFi
 - Camera
 - Bluetooth
 
-On Android, the plugin also enables an app to show the relevant settings screen, to allow users to enable the above device settings.
+The plugin also enables an app to show the relevant settings screen, to allow users to change the above device settings.
 
 The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io/#/package/cordova.plugins.diagnostic)(Cordova CLI 3/4) and on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) (Cordova CLI 5+) as `cordova.plugins.diagnostic`
 
@@ -53,23 +66,28 @@ The plugin is exposed via the `cordova.plugins.diagnostic` object and provides t
 
 ## Android and iOS
 
-- [isLocationEnabled()](#islocationenabled)
-- [isWifiEnabled()](#iswifienabled)
-- [isCameraEnabled()](#iscameraenabled)
-- [isBluetoothEnabled()](#isbluetoothenabled)
-
 ### isLocationEnabled()
 
-Checks if app is able to access location.
-On iOS this returns true if both the device setting for location is on AND the application is authorized to use location.
-On Android this returns true if Location setting is ON AND Location mode is set to "High Accuracy" (GPS).
+Checks if app is able to access device location.
 
     cordova.plugins.diagnostic.isLocationEnabled(successCallback, errorCallback);
 
+On iOS this returns true if both the device setting for Location Services is ON, AND the application is authorized to use location.
+When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
+
+On Android, this returns true if Location mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
+When location is enabled, the locations returned are dependent on the location mode:
+
+* Battery saving = network triangulation and Wifi network IDs (low accuracy)
+* Device only = GPS hardware only (high accuracy)
+* High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+
 #### Parameters
 
-- {function} successCallback - The callback which will be called when diagnostic of location is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of location encounters an error. This callback function have a string param with the error.
+- {Function} successCallback -  The callback which will be called when diagnostic is successful. 
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
@@ -90,8 +108,10 @@ On Android this returns true if the WiFi setting is set to enabled.
 
 #### Parameters
 
-- {function} successCallback - The callback which will be called when diagnostic of Wi-Fi is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of Wi-Fi encounters an error. This callback function have a string param with the error.
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
@@ -111,8 +131,10 @@ Checks if the device has a camera (same on Android and iOS)
 
 #### Parameters
 
-- {function} successCallback - The callback which will be called when diagnostic of camera is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of camera encounters an error. This callback function have a string param with the error.
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
@@ -131,8 +153,10 @@ Checks if the device has Bluetooth capabilities and if so that Bluetooth is swit
 
 #### Parameters
 
-- {function} successCallback - The callback which will be called when diagnostic of Bluetooth is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of Bluetooth encounters an error. This callback function have a string param with the error.
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
@@ -145,10 +169,59 @@ Checks if the device has Bluetooth capabilities and if so that Bluetooth is swit
 
 ## Android only
 
-- [switchToLocationSettings()](#switchtolocationsettings)
-- [switchToMobileDataSettings()](#switchtomobiledatasettings)
-- [switchToBluetoothSettings()](#switchtobluetoothsettings)
-- [switchToWifiSettings()](#switchtowifisettings)
+### isGpsLocationEnabled()
+
+Checks if location mode is set to return high-accuracy locations from GPS hardware.
+
+    cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
+
+Returns true if Location mode is enabled and is set to either:
+
+* Device only = GPS hardware only (high accuracy)
+* High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
+        console.log("GPS location is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isNetworkLocationEnabled()
+
+Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points.
+
+    cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
+
+Returns true if Location mode is enabled and is set to either:
+
+* Battery saving = network triangulation and Wifi network IDs (low accuracy)
+* High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNetworkLocationEnabled(function(enabled){
+        console.log("Network location is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 ### switchToLocationSettings()
 
@@ -177,10 +250,6 @@ Displays WiFi settings to allow user to enable WiFi.
 
 ## iOS only
 
-- [isLocationEnabledSetting()](#isLocationEnabledSetting)
-- [isLocationAuthorized()](#islocationauthorized)
-
-
 ### isLocationEnabledSetting()
 
 Returns true if the device setting for location is on.
@@ -189,8 +258,10 @@ Returns true if the device setting for location is on.
 
 #### Parameters
 
-- {function} successCallback - The callback which will be called when diagnostic of location setting is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of location setting encounters an error. This callback function have a string param with the error.
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
@@ -210,8 +281,10 @@ Returns true if the application is authorized to use location AND the device set
 
 #### Parameters
 
-- {function} successCallback - The callback which will be called when diagnostic of location authorization is successful. This callback function have a boolean param with the diagnostic result.
-- {function} errorCallback - The callback which will be called when diagnostic of location authorization encounters an error. This callback function have a string param with the error.
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
@@ -230,8 +303,8 @@ Switch to Settings app. Opens settings page for this app. This works only on iOS
 
 #### Parameters
 
-- {function} successCallback - The callback which will be called when switch to settings is successful.
-- {function} errorCallback - The callback which will be called when switch to settings encounters an error. This callback function have a string param with the error.
+- {Function} successCallback - The callback which will be called when switch to settings is successful.
+- {Function} errorCallback - The callback which will be called when switch to settings encounters an error. This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage

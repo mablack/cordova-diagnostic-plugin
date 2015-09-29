@@ -85,8 +85,12 @@ public class Diagnostic extends CordovaPlugin {
         } else if (action.equals("switchToWifiSettings")){
             switchToWifiSettings();
             callbackContext.success();
-        } else if(action.equals("isLocationEnabled") || action.equals("isLocationAuthorized") || action.equals("isLocationEnabledSetting")) {
-            callbackContext.success(isGpsEnabled() ? 1 : 0);
+        } else if(action.equals("isLocationEnabled")) {
+            callbackContext.success(isGpsLocationEnabled() || isNetworkLocationEnabled() ? 1 : 0);
+        } else if(action.equals("isGpsLocationEnabled")) {
+            callbackContext.success(isGpsLocationEnabled() ? 1 : 0);
+        } else if(action.equals("isNetworkLocationEnabled")) {
+            callbackContext.success(isNetworkLocationEnabled() ? 1 : 0);
         } else if(action.equals("isWifiEnabled")) {
             callbackContext.success(isWifiEnabled() ? 1 : 0);
         } else if(action.equals("isCameraEnabled")) {
@@ -100,18 +104,14 @@ public class Diagnostic extends CordovaPlugin {
         return true;
     }
 
-    /**
-     * Check device settings for GPS.
-     *
-     * @returns {boolean} The status of GPS in device settings.
-     */
-    public boolean isGpsEnabled() {
+
+    public boolean isGpsLocationEnabled() {
         boolean result = isLocationProviderEnabled(LocationManager.GPS_PROVIDER);
         Log.d(TAG, "GPS enabled: " + result);
         return result;
     }
 
-    public boolean isNetworkEnabled() {
+    public boolean isNetworkLocationEnabled() {
         boolean result = isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER);
         Log.d(TAG, "Network enabled: " + result);
         return result;

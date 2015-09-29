@@ -1,23 +1,21 @@
 /**
- *  Plugin diagnostic
+ *  Diagnostic plugin for Android
  *
+ *  Copyright (c) 2015 Working Edge Ltd.
  *  Copyright (c) 2012 AVANTIC ESTUDIO DE INGENIEROS
- *  
-**/
-
-
-var Diagnostic = function() {
-};
+ **/
+var Diagnostic = function(){};
 
 /**
- * Checks if location is enabled (Device setting for location and authorization).
+ * Checks if location is enabled.
+ * On iOS this returns true if both the device setting for Location Services is ON, AND the application is authorized to use location.
+ * When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
  *
- * @param successCallback	The callback which will be called when diagnostic of location is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of location encounters an error.
- * 							This callback function have a string param with the error.
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
  */
-
 Diagnostic.prototype.isLocationEnabled = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
 						errorCallback,
@@ -27,14 +25,14 @@ Diagnostic.prototype.isLocationEnabled = function(successCallback, errorCallback
 };
 
 /**
- * Checks device settings for location.
+ * Checks the device setting for Location Services
+ * Returns true if Location Services is enabled.
  *
- * @param successCallback	The callback which will be called when diagnostic of location is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of location encounters an error.
- * 							This callback function have a string param with the error.
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
  */
-
 Diagnostic.prototype.isLocationEnabledSetting = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
 						errorCallback,
@@ -46,13 +44,13 @@ Diagnostic.prototype.isLocationEnabledSetting = function(successCallback, errorC
 
 /**
  * Checks if the application is authorized to use location.
+ * Returns true if application is authorized to use location.
  *
- * @param successCallback	The callback which will be called when diagnostic of location is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of location encounters an error.
- * 							This callback function have a string param with the error.
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
  */
-
 Diagnostic.prototype.isLocationAuthorized = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
 						errorCallback,
@@ -62,14 +60,14 @@ Diagnostic.prototype.isLocationAuthorized = function(successCallback, errorCallb
 };
 
 /**
- * Checks if exists Wi-Fi connection.
+ * Checks if Wi-Fi connection exists.
+ * On iOS this returns true if the device is connected to a network by WiFi.
  *
- * @param successCallback	The callback which will be called when diagnostic of Wi-Fi is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of Wi-Fi encounters an error.
- * 							This callback function have a string param with the error.
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
  */
-
 Diagnostic.prototype.isWifiEnabled = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
 						errorCallback,
@@ -79,15 +77,13 @@ Diagnostic.prototype.isWifiEnabled = function(successCallback, errorCallback) {
 };
 
 /**
- * Checks if exists camera.
+ * Checks if camera exists and is available.
  *
- * @param successCallback	The callback which will be called when diagnostic of camera is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of camera encounters an error.
- * 							This callback function have a string param with the error.
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
  */
-
-
 Diagnostic.prototype.isCameraEnabled = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
 						errorCallback,
@@ -97,15 +93,13 @@ Diagnostic.prototype.isCameraEnabled = function(successCallback, errorCallback) 
 };
 
 /**
- * Checks if Bluetooth is enabled
+ * Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on
  *
- * @param successCallback	The callback which will be called when diagnostic of Bluetooth is successful.
- * 							This callback function have a boolean param with the diagnostic result.
- * @param errorCallback		The callback which will be called when diagnostic of Bluetooth encounters an error.
- * 							This callback function have a string param with the error.
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
  */
-
-
 Diagnostic.prototype.isBluetoothEnabled = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
 		errorCallback,
@@ -117,10 +111,10 @@ Diagnostic.prototype.isBluetoothEnabled = function(successCallback, errorCallbac
 /**
  * Switch to settings app. Opens settings page for this app.
  *
- * @param successCallback	The callback which will be called when switch to settings is successful.
- * @param errorCallback		The callback which will be called when switch to settings encounters an error.
- * 							This callback function have a string param with the error.
- *	 						This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
+ * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+ * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ * This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
  */
 Diagnostic.prototype.switchToSettings = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
