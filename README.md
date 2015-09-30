@@ -338,8 +338,8 @@ This callback function is passed a single string parameter containing the error 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isLocationAuthorizedWhenInUse(function(always){
-        console.log("App " + (always ? "is" : "isn't") + " authorized for location when in use");
+    cordova.plugins.diagnostic.isLocationAuthorizedWhenInUse(function(whenInUse){
+        console.log("App " + (whenInUse ? "is" : "isn't") + " authorized for location when in use");
     }, function(error){
         console.error("The following error occurred: "+error);
     });
