@@ -19,6 +19,8 @@ Cordova diagnostic plugin
     * [iOS only](#ios-only)
         - [isLocationEnabledSetting()](#isLocationEnabledSetting)
         - [isLocationAuthorized()](#islocationauthorized)
+        - [isLocationAuthorizedAlways()](#islocationauthorizedalways)
+        - [isLocationAuthorizedWhenInUse()](#islocationauthorizedwheninuse)
         - [switchToSettings()](#switchtosettings)
 * [Example project](#example-project)
 * [Credits](#credits)
@@ -291,6 +293,53 @@ This callback function is passed a single string parameter containing the error 
 
     cordova.plugins.diagnostic.isLocationAuthorized(function(enabled){
         console.log("Location authorization is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isLocationAuthorizedAlways()
+
+Checks and returns true if the application is authorized to use location "always" (foreground and background).
+If your app uses background location mode then location mode must be set to this to receive location updates while in the background.
+
+    cordova.plugins.diagnostic.isLocationAuthorizedAlways(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isLocationAuthorizedAlways(function(always){
+        console.log("App " + (always ? "is" : "isn't") + " always authorized to use location");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isLocationAuthorizedWhenInUse()
+
+Checks and returns true if the application is authorized to use location "when in use" (only in foreground).
+If this location mode is set, the app will only receive location updates while in the foreground (not be background),
+even if your app uses background location mode.
+
+    cordova.plugins.diagnostic.isLocationAuthorizedWhenInUse(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isLocationAuthorizedWhenInUse(function(always){
+        console.log("App " + (always ? "is" : "isn't") + " authorized for location when in use");
     }, function(error){
         console.error("The following error occurred: "+error);
     });

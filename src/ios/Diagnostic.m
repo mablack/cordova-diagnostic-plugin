@@ -1,9 +1,10 @@
-//
-//  Diagnostic.m
-//  Plugin diagnostic
-//
-//  Copyright (c) 2012 AVANTIC ESTUDIO DE INGENIEROS
-//
+/*
+ *  Diagnostic.h
+ *  Plugin diagnostic
+ *
+ *  Copyright (c) 2015 Working Edge Ltd.
+ *  Copyright (c) 2012 AVANTIC ESTUDIO DE INGENIEROS
+ */
 
 #import "Diagnostic.h"
 #import <CoreLocation/CoreLocation.h>
@@ -80,6 +81,40 @@
     
 }
 
+- (void) isLocationAuthorizedAlways: (CDVInvokedUrlCommand*)command
+{
+    NSLog(@"Loading Location authentication...");
+    CDVPluginResult* pluginResult;
+    if([self isLocationAuthorizedAlways]) {
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        
+    } else {
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
+- (void) isLocationAuthorizedWhenInUse: (CDVInvokedUrlCommand*)command
+{
+    NSLog(@"Loading Location authentication...");
+    CDVPluginResult* pluginResult;
+    if([self isLocationAuthorizedWhenInUse]) {
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        
+    } else {
+        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
 - (BOOL) isLocationEnabled
 {
 
@@ -107,6 +142,31 @@
 
 }
 
+- (BOOL) isLocationAuthorizedAlways
+{
+
+    if([CLLocationManager  authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
+        NSLog(@"This app is authorized to use location always");
+        return true;
+    } else {
+        NSLog(@"This app is not authorized to use location always.");
+        return false;
+    }
+
+}
+
+- (BOOL) isLocationAuthorizedWhenInUse
+{
+
+    if([CLLocationManager  authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        NSLog(@"This app is authorized to use location when in use");
+        return true;
+    } else {
+        NSLog(@"This app is not authorized to use location when in use.");
+        return false;
+    }
+
+}
 
 - (void) isWifiEnabled: (CDVInvokedUrlCommand*)command
 {
