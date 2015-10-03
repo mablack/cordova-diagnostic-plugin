@@ -18,11 +18,18 @@
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabledSetting: (CDVInvokedUrlCommand*)command;
 - (void) isLocationAuthorized: (CDVInvokedUrlCommand*)command;
-- (void) isLocationAuthorizedAlways: (CDVInvokedUrlCommand*)command;
-- (void) isLocationAuthorizedWhenInUse: (CDVInvokedUrlCommand*)command;
-- (void) isWifiEnabled: (CDVInvokedUrlCommand*)command;
+- (void) getLocationAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+
 - (void) isCameraEnabled: (CDVInvokedUrlCommand*)command;
+- (void) isCameraPresent: (CDVInvokedUrlCommand*)command;
+- (void) isCameraAuthorized: (CDVInvokedUrlCommand*)command;
+- (void) getCameraAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) isCameraRollAuthorized: (CDVInvokedUrlCommand*)command;
+- (void) getCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+
+- (void) isWifiEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isBluetoothEnabled: (CDVInvokedUrlCommand*)command;
+
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 
 @end

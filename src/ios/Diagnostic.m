@@ -8,6 +8,8 @@
 
 #import "Diagnostic.h"
 #import <CoreLocation/CoreLocation.h>
+#import <AVFoundation/AVFoundation.h>
+#import <Photos/Photos.h>
 
 #import <arpa/inet.h> // For AF_INET, etc.
 #import <ifaddrs.h> // For getifaddrs()
@@ -19,9 +21,6 @@
 
 - (void)pluginInitialize {
     
-    NSLog(@"RFduino Cordova Plugin");
-    NSLog(@"(c)2013-2015 Don Coleman");
-    
     [super pluginInitialize];
     
     self.bluetoothManager = [[CBCentralManager alloc]
@@ -30,16 +29,21 @@
                              options:@{CBCentralManagerOptionShowPowerAlertKey: @(NO)}];
 }
 
+/*************
+ * Plugin API
+ *************/
+
+// Location
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command
 {
-    NSLog(@"Loading Location status...");
     CDVPluginResult* pluginResult;
-    if([self isLocationEnabled] && [self isLocationAuthorized]) {   
+    if([CLLocationManager locationServicesEnabled] && [self isLocationAuthorized]) {   
+        NSLog(@"Location is enabled.");
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];   
     }
     else {
+        NSLog(@"Location is disabled.");
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-                
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 
@@ -47,17 +51,14 @@
 
 - (void) isLocationEnabledSetting: (CDVInvokedUrlCommand*)command
 {
-    NSLog(@"Loading Location status...");
     CDVPluginResult* pluginResult;
-    if([self isLocationEnabled]) {
-        
+    if([CLLocationManager locationServicesEnabled]) {
+        NSLog(@"Location Services is enabled");
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
-        
     }
     else {
-        
+        NSLog(@"Location Services is disabled");
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-        
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     
@@ -66,123 +67,216 @@
 
 - (void) isLocationAuthorized: (CDVInvokedUrlCommand*)command
 {
-    NSLog(@"Loading Location authentication...");
     CDVPluginResult* pluginResult;
+    
     if([self isLocationAuthorized]) {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
-        
-    } else {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-        
-    }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
-}
-
-- (void) isLocationAuthorizedAlways: (CDVInvokedUrlCommand*)command
-{
-    NSLog(@"Loading Location authentication...");
-    CDVPluginResult* pluginResult;
-    if([self isLocationAuthorizedAlways]) {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
-        
-    } else {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-        
-    }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
-}
-
-- (void) isLocationAuthorizedWhenInUse: (CDVInvokedUrlCommand*)command
-{
-    NSLog(@"Loading Location authentication...");
-    CDVPluginResult* pluginResult;
-    if([self isLocationAuthorizedWhenInUse]) {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
-        
-    } else {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-        
-    }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
-}
-
-- (BOOL) isLocationEnabled
-{
-
-    if([CLLocationManager locationServicesEnabled]) {
-        NSLog(@"Location is enabled.");
-        return true;
-    } else {
-        NSLog(@"Location is disabled.");
-        return false;
-    }
-    
-
-}
-
-- (BOOL) isLocationAuthorized
-{
-
-    if([CLLocationManager  authorizationStatus] != kCLAuthorizationStatusDenied) {
         NSLog(@"This app is authorized to use location.");
-        return true;
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
     } else {
         NSLog(@"This app is not authorized to use location.");
-        return false;
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
     }
-
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
 }
 
-- (BOOL) isLocationAuthorizedAlways
+- (void) getLocationAuthorizationStatus: (CDVInvokedUrlCommand*)command
 {
-
-    if([CLLocationManager  authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
-        NSLog(@"This app is authorized to use location always");
-        return true;
-    } else {
-        NSLog(@"This app is not authorized to use location always.");
-        return false;
+    CDVPluginResult* pluginResult;
+    NSString* status = @"unknown";
+    int locationAuthorization = [CLLocationManager authorizationStatus];
+    
+    if(locationAuthorization == kCLAuthorizationStatusDenied || locationAuthorization == kCLAuthorizationStatusRestricted){
+        status = @"denied";
+    }else if(locationAuthorization == kCLAuthorizationStatusNotDetermined){
+        status = @"not_determined";
+    }else if(locationAuthorization == kCLAuthorizationStatusAuthorizedAlways){
+        status = @"authorized_always";
+    }else if(locationAuthorization == kCLAuthorizationStatusAuthorizedWhenInUse){
+        status = @"authorized_when_in_use";
     }
-
+    NSLog([NSString stringWithFormat:@"Location authorization status is: %@", status]);
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
 }
 
-- (BOOL) isLocationAuthorizedWhenInUse
+
+// Camera
+- (void) isCameraEnabled: (CDVInvokedUrlCommand*)command
 {
-
-    if([CLLocationManager  authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        NSLog(@"This app is authorized to use location when in use");
-        return true;
-    } else {
-        NSLog(@"This app is not authorized to use location when in use.");
-        return false;
+    CDVPluginResult* pluginResult;
+    if([self isCameraPresent] && [self isCameraAuthorized]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
     }
-
+    else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
 }
 
+- (void) isCameraPresent: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if([self isCameraPresent]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+    }
+    else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
+- (void) isCameraAuthorized: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if([self isCameraAuthorized]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+    }
+    else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
+- (void) getCameraAuthorizationStatus: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    NSString* status = @"unknown";
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    
+    if(authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted){
+        status = @"denied";
+    }else if(authStatus == AVAuthorizationStatusNotDetermined){
+        status = @"not_determined";
+    }else if(authStatus == AVAuthorizationStatusAuthorized){
+        status = @"authorized";
+    }
+    NSLog([NSString stringWithFormat:@"Camera authorization status is: %@", status]);
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+   
+}
+
+- (void) isCameraRollAuthorized: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if([self getCameraRollAuthorizationStatus] == @"authorized") {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+    }
+    else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
+- (void) getCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    NSString* status = [self getCameraRollAuthorizationStatus];
+
+    NSLog([NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]);
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+   
+}
+
+// Wifi
 - (void) isWifiEnabled: (CDVInvokedUrlCommand*)command
 {
-    NSLog(@"Loading WiFi status...");
     CDVPluginResult* pluginResult;
     if([self connectedToWifi]) {
-        
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+// Bluetooth
+- (void) isBluetoothEnabled: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if(self.bluetoothEnabled) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
         
     } else {
-        
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-    
+        
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];    
+}
+
+- (void) switchToSettings: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if (UIApplicationOpenSettingsURLString != nil){
+        [[UIApplication sharedApplication] openURL: [NSURL URLWithString: UIApplicationOpenSettingsURLString]];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    }else{
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not supported below iOS 8"];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
 
+/*********************
+ * Internal functions
+ *********************/
+ 
+- (BOOL) isLocationAuthorized
+{
+     if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+         return true;
+     } else {
+         return false;
+     }
+}
+
+- (BOOL) isCameraPresent
+{
+    BOOL cameraAvailable = 
+    [UIImagePickerController 
+     isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    if(cameraAvailable) {
+        NSLog(@"Camera available");
+        return true;
+    }
+    else {
+        NSLog(@"Camera unavailable");
+        return false;
+    }
+}
+
+- (BOOL) isCameraAuthorized
+{
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if(authStatus == AVAuthorizationStatusAuthorized) {
+             return true;
+         } else {
+             return false;
+     }
+}
+
+- (NSString*) getCameraRollAuthorizationStatus
+{
+    CDVPluginResult* pluginResult;
+    NSString* status = @"unknown";
+    PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
+    
+    if(authStatus == PHAuthorizationStatusDenied || authStatus == PHAuthorizationStatusRestricted){
+        status = @"denied";
+    }else if(authStatus == PHAuthorizationStatusNotDetermined ){
+        status = @"not_determined";
+    }else if(authStatus == PHAuthorizationStatusAuthorized){
+        status = @"authorized";
+    }
+    
+    return status;
+   
 }
 
 - (BOOL) connectedToWifi  // Don't work on iOS Simulator, only in the device
@@ -196,78 +290,21 @@
     }
     
     cursor = addresses;
-    
     while (cursor != NULL)  {
         if (cursor -> ifa_addr -> sa_family == AF_INET && !(cursor -> ifa_flags & IFF_LOOPBACK)) // Ignore the loopback address
         {
             // Check for WiFi adapter
-            
             if (strcmp(cursor -> ifa_name, "en0") == 0) {
                 
                 NSLog(@"Wifi ON");
                 wiFiAvailable = YES;
                 break;
-                
             }
-            
         }
-        
         cursor = cursor -> ifa_next;
     }
-    
     freeifaddrs(addresses);
     return wiFiAvailable;
-}
-
-- (void) isCameraEnabled: (CDVInvokedUrlCommand*)command
-{
-    NSLog(@"Loading camera status...");
-    CDVPluginResult* pluginResult;
-    if([self isCameraEnabled]) {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
-        
-    }
-    else {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-        
-    }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
-}
-
-
-- (BOOL) isCameraEnabled
-{
-
-    BOOL cameraAvailable = 
-    [UIImagePickerController 
-     isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
-    if(cameraAvailable) {
-        NSLog(@"Camera enabled");
-        return true;
-    }
-    else {
-        NSLog(@"Camera disabled");
-        return false;
-    }
-
-}
-
-- (void) isBluetoothEnabled: (CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult;
-    if(self.bluetoothEnabled) {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
-        
-    } else {
-        
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-        
-    }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];    
 }
 
 
@@ -283,18 +320,6 @@
         NSLog(@"Bluetooth disabled or unavailable");
         self.bluetoothEnabled = false;
     }
-}
-
-- (void) switchToSettings: (CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult;
-    if (UIApplicationOpenSettingsURLString != nil){
-        [[UIApplication sharedApplication] openURL: [NSURL URLWithString: UIApplicationOpenSettingsURLString]];
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    }else{
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not supported below iOS 8"];
-    }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 @end

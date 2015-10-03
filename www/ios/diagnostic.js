@@ -60,59 +60,25 @@ Diagnostic.prototype.isLocationAuthorized = function(successCallback, errorCallb
 };
 
 /**
- * Checks and returns true if the application is authorized to use location "always" (foreground and background).
- * If your app uses background location mode then location mode must be set to this to receive location updates while in the background.
+ * Returns the location authorization status for the application.
  *
  * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
- * This callback function is passed a single boolean parameter with the diagnostic result.
+ * This callback function is passed a single string parameter which indicates the location authorization status.
+ * Possible values are: "unknown", "denied", "not_determined", "authorized_always", "authorized_when_in_use"
  * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
  * This callback function is passed a single string parameter containing the error message.
  */
-Diagnostic.prototype.isLocationAuthorizedAlways = function(successCallback, errorCallback) {
+Diagnostic.prototype.getLocationAuthorizationStatus = function(successCallback, errorCallback) {
 	return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
-		'isLocationAuthorizedAlways',
+		'getLocationAuthorizationStatus',
 		[]);
 };
 
 /**
- * Checks and returns true if the application is authorized to use location "when in use" (only in foreground).
- * If this location mode is set, the app will only receive location updates while in the foreground (not be background),
- * even if your app uses background location mode.
- *
- * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
- * This callback function is passed a single boolean parameter with the diagnostic result.
- * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
- * This callback function is passed a single string parameter containing the error message.
- */
-Diagnostic.prototype.isLocationAuthorizedWhenInUse = function(successCallback, errorCallback) {
-	return cordova.exec(successCallback,
-		errorCallback,
-		'Diagnostic',
-		'isLocationAuthorizedWhenInUse',
-		[]);
-};
-
-/**
- * Checks if Wi-Fi connection exists.
- * On iOS this returns true if the device is connected to a network by WiFi.
- *
- * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
- * This callback function is passed a single boolean parameter with the diagnostic result.
- * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
- * This callback function is passed a single string parameter containing the error message.
- */
-Diagnostic.prototype.isWifiEnabled = function(successCallback, errorCallback) {
-	return cordova.exec(successCallback,
-						errorCallback,
-						'Diagnostic',
-						'isWifiEnabled',
-						[]);
-};
-
-/**
- * Checks if camera exists and is available.
+ * Checks if camera is enabled for use.
+ * On iOS this returns true if both the device has a camera AND the application is authorized to use it.
  *
  * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
  * This callback function is passed a single boolean parameter with the diagnostic result.
@@ -126,6 +92,107 @@ Diagnostic.prototype.isCameraEnabled = function(successCallback, errorCallback) 
 						'isCameraEnabled',
 						[]);
 };
+
+/**
+ * Checks is the device has a camera.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.isCameraPresent = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'isCameraPresent',
+		[]);
+};
+
+
+/**
+ * Checks if the application is authorized to use the camera.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.isCameraAuthorized = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'isCameraAuthorized',
+		[]);
+};
+
+/**
+ * Returns the camera authorization status for the application.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single string parameter which indicates the authorization status.
+ * Possible values are: "unknown", "denied", "not_determined", "authorized"
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.getCameraAuthorizationStatus = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'getCameraAuthorizationStatus',
+		[]);
+};
+
+/**
+ * Checks if the application is authorized to use the Camera Roll in Photos app.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.isCameraRollAuthorized = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'isCameraAuthorized',
+		[]);
+};
+
+/**
+ * Returns the authorization status for the application to use the Camera Roll in Photos app.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single string parameter which indicates the authorization status.
+ * Possible values are: "unknown", "denied", "not_determined", "authorized"
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.getCameraRollAuthorizationStatus = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'getCameraAuthorizationStatus',
+		[]);
+};
+
+/**
+ * Checks if Wi-Fi connection exists.
+ * On iOS this returns true if the device is connected to a network by WiFi.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.isWifiEnabled = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'isWifiEnabled',
+		[]);
+};
+
 
 /**
  * Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on
