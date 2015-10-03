@@ -19,7 +19,6 @@ Cordova diagnostic plugin
     * [iOS only](#ios-only)
         - [isLocationEnabledSetting()](#isLocationEnabledSetting)
         - [isLocationAuthorized()](#islocationauthorized)
-
         - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
         - [requestLocationAuthorization()](#requestlocationauthorization)
         - [registerLocationAuthorizationStatusChangeHandler()](#registerlocationauthorizationstatuschangehandler)
@@ -32,7 +31,6 @@ Cordova diagnostic plugin
         - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
         - [getBluetoothState()](#getbluetoothstate)
         - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
-
         - [switchToSettings()](#switchtosettings)
 * [Example project](#example-project)
 * [Credits](#credits)
