@@ -77,6 +77,24 @@ Diagnostic.prototype.getLocationAuthorizationStatus = function(successCallback, 
 };
 
 /**
+ * Requests location authorization for the application.
+ * Authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
+ * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ * @param {String} mode - (optional) location authorization mode: "always" or "when_in_use". If not specified, defaults to "when_in_use".
+ */
+Diagnostic.prototype.requestLocationAuthorization = function(successCallback, errorCallback, mode) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'requestLocationAuthorization',
+		[mode && mode === "always"]);
+};
+
+/**
  * Checks if camera is enabled for use.
  * On iOS this returns true if both the device has a camera AND the application is authorized to use it.
  *
@@ -144,6 +162,23 @@ Diagnostic.prototype.getCameraAuthorizationStatus = function(successCallback, er
 };
 
 /**
+ * Requests camera authorization for the application.
+ * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single boolean parameter indicating whether access to the camera was granted or denied.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.requestCameraAuthorization = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'requestCameraAuthorization',
+		[]);
+};
+
+/**
  * Checks if the application is authorized to use the Camera Roll in Photos app.
  *
  * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
@@ -155,7 +190,7 @@ Diagnostic.prototype.isCameraRollAuthorized = function(successCallback, errorCal
 	return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
-		'isCameraAuthorized',
+		'isCameraRollAuthorized',
 		[]);
 };
 
@@ -172,7 +207,24 @@ Diagnostic.prototype.getCameraRollAuthorizationStatus = function(successCallback
 	return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
-		'getCameraAuthorizationStatus',
+		'getCameraRollAuthorizationStatus',
+		[]);
+};
+
+/**
+ * Requests camera roll authorization for the application.
+ * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+ *
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single string parameter indicating the new authorization status: "denied" or "authorized"
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.requestCameraRollAuthorization = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'requestCameraRollAuthorization',
 		[]);
 };
 
