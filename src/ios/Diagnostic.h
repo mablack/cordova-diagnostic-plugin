@@ -12,9 +12,10 @@
 
 @interface Diagnostic : CDVPlugin <CBCentralManagerDelegate, CLLocationManagerDelegate>
 
-    @property (nonatomic, retain) CBCentralManager *bluetoothManager;
+    @property (nonatomic, retain) CBCentralManager* bluetoothManager;
     @property (nonatomic) BOOL bluetoothEnabled;
-    @property (strong, nonatomic) CLLocationManager *locationManager;
+    @property (nonatomic) NSString* bluetoothState;
+    @property (strong, nonatomic) CLLocationManager* locationManager;
 
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabledSetting: (CDVInvokedUrlCommand*)command;

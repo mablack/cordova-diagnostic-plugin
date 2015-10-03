@@ -29,6 +29,7 @@
                              initWithDelegate:self
                              queue:dispatch_get_main_queue()
                              options:@{CBCentralManagerOptionShowPowerAlertKey: @(NO)}];
+    [self centralManagerDidUpdateState:self.bluetoothManager]; // Show initial state                             
 }
 
 /*************
@@ -99,18 +100,7 @@
 {
     CDVPluginResult* pluginResult;
     @try {
-        NSString* status = @"unknown";
-        int locationAuthorization = [CLLocationManager authorizationStatus];
-
-        if(locationAuthorization == kCLAuthorizationStatusDenied || locationAuthorization == kCLAuthorizationStatusRestricted){
-            status = @"denied";
-        }else if(locationAuthorization == kCLAuthorizationStatusNotDetermined){
-            status = @"not_determined";
-        }else if(locationAuthorization == kCLAuthorizationStatusAuthorizedAlways){
-            status = @"authorized_always";
-        }else if(locationAuthorization == kCLAuthorizationStatusAuthorizedWhenInUse){
-            status = @"authorized_when_in_use";
-        }
+        NSString* status = [self getLocationAuthorizationStatusAsString:[CLLocationManager authorizationStatus]];
         NSLog([NSString stringWithFormat:@"Location authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
@@ -320,6 +310,22 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];    
 }
 
+- (void) getBluetoothState: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        NSString* state = self.bluetoothState;
+        NSLog([NSString stringWithFormat:@"Bluetooth state is: %@", state]);
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:state];
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
+}
+
+// Settings
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult;
@@ -340,14 +346,37 @@
 /*********************
  * Internal functions
  *********************/
+- (NSString*) getLocationAuthorizationStatusAsString: (CLAuthorizationStatus)authStatus
+{
+    NSString* status = @"unknown";    
+    if(authStatus == kCLAuthorizationStatusDenied || authStatus == kCLAuthorizationStatusRestricted){
+            status = @"denied";
+        }else if(authStatus == kCLAuthorizationStatusNotDetermined){
+            status = @"not_determined";
+        }else if(authStatus == kCLAuthorizationStatusAuthorizedAlways){
+            status = @"authorized_always";
+        }else if(authStatus == kCLAuthorizationStatusAuthorizedWhenInUse){
+            status = @"authorized_when_in_use";
+    }
+    return status;
+}
  
 - (BOOL) isLocationAuthorized
 {
-     if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
-         return true;
-     } else {
-         return false;
-     }
+    CLAuthorizationStatus authStatus = [CLLocationManager authorizationStatus];
+    NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
+    if(status == @"authorized_always" || status == @"authorized_when_in_use") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
+    NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
+    NSLog([NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
+    NSString* jsString = [NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationAuthorizationStatusChange(\"%@\");", status];
+    [self.webView stringByEvaluatingJavaScriptFromString:jsString];
 }
 
 - (BOOL) isCameraPresent
@@ -428,15 +457,49 @@
 #pragma mark - CBCentralManagerDelegate
 
 - (void) centralManagerDidUpdateState:(CBCentralManager *)central {
+    NSString* state;
+    NSString* description;
     
-    if ([central state] == CBCentralManagerStatePoweredOn) {
-        NSLog(@"Bluetooth enabled");
-        self.bluetoothEnabled = true;
+    switch(self.bluetoothManager.state)
+    {
+        case CBCentralManagerStateResetting:
+            state = @"resetting";
+            description =@"The connection with the system service was momentarily lost, update imminent.";
+            break;
+
+        case CBCentralManagerStateUnsupported:
+            state = @"unsupported";
+            description = @"The platform doesn't support Bluetooth Low Energy.";
+            break;
+
+        case CBCentralManagerStateUnauthorized:
+            state = @"unauthorized";
+            description = @"The app is not authorized to use Bluetooth Low Energy.";
+            break;
+        case CBCentralManagerStatePoweredOff:
+            state = @"powered_off";
+            description = @"Bluetooth is currently powered off.";
+            break;
+        case CBCentralManagerStatePoweredOn:
+            state = @"powered_on";
+            description = @"Bluetooth is currently powered on and available to use.";
+            break;
+        default:
+            state = @"unknown";
+            description = @"State unknown, update imminent.";
+            break;
     }
-    else {
-        NSLog(@"Bluetooth disabled or unavailable");
+    NSLog(@"Bluetooth state changed: %@",description);
+    
+    self.bluetoothState = state;
+    if(state == @"powered_on"){
+        self.bluetoothEnabled = true;
+    }else{
         self.bluetoothEnabled = false;
     }
+    
+    NSString* jsString = [NSString stringWithFormat:@"cordova.plugins.diagnostic._onBluetoothStateChange(\"%@\");", state];
+    [self.webView stringByEvaluatingJavaScriptFromString:jsString];
 }
 
 @end
