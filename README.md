@@ -16,6 +16,8 @@ Cordova diagnostic plugin
         - [switchToMobileDataSettings()](#switchtomobiledatasettings)
         - [switchToBluetoothSettings()](#switchtobluetoothsettings)
         - [switchToWifiSettings()](#switchtowifisettings)
+        - [setWifiState()](#setwifistate)
+        - [setBluetoothState()](#setbluetoothstate)
     * [iOS only](#ios-only)
         - [isLocationEnabledSetting()](#isLocationEnabledSetting)
         - [isLocationAuthorized()](#islocationauthorized)
@@ -116,6 +118,8 @@ Checks if Wifi is connected/enabled.
 On iOS this returns true if the device is connected to a network by WiFi.
 On Android this returns true if the WiFi setting is set to enabled.
 
+On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
+
     cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
 
 #### Parameters
@@ -162,6 +166,8 @@ This callback function is passed a single string parameter containing the error 
 ### isBluetoothEnabled()
 
 Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on (same on Android and iOS)
+
+On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
 
     cordova.plugins.diagnostic.isBluetoothEnabled(successCallback, errorCallback);
 
@@ -261,6 +267,60 @@ Displays Bluetooth settings to allow user to enable Bluetooth.
 Displays WiFi settings to allow user to enable WiFi.
 
     cordova.plugins.diagnostic.switchToWifiSettings();
+
+### setWifiState()
+
+Enables/disables WiFi on the device.
+
+    cordova.plugins.diagnostic.setWifiState(successCallback, errorCallback, state);
+
+Requires the following permissions:
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+#### Parameters
+
+- {Function} successCallback - function to call on successful setting of WiFi state
+- {Function} errorCallback - function to call on failure to set WiFi state.
+- {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.setWifiState(function(){
+        console.log("Wifi was enabled");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    },
+    true);
+
+### setBluetoothState()
+
+Enables/disables Bluetooth on the device.
+
+    cordova.plugins.diagnostic.setBluetoothState(successCallback, errorCallback, state);
+
+Requires the following permissions:
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+#### Parameters
+
+- {Function} successCallback - function to call on successful setting of Bluetooth state
+- {Function} errorCallback - function to call on failure to set Bluetooth state.
+- {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.setBluetoothState(function(){
+        console.log("Bluetooth was enabled");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    },
+    true);
 
 ## iOS only
 

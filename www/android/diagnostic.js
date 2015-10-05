@@ -158,5 +158,37 @@ Diagnostic.prototype.switchToWifiSettings = function() {
 		[]);
 };
 
+/**
+ * Enables/disables WiFi on the device.
+ *
+ * @param {Function} successCallback - function to call on successful setting of WiFi state
+ * @param {Function} errorCallback - function to call on failure to set WiFi state.
+ * This callback function is passed a single string parameter containing the error message.
+ * @param {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
+ */
+Diagnostic.prototype.setWifiState = function(successCallback, errorCallback, state) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'setWifiState',
+		[state]);
+};
+
+/**
+ * Enables/disables Bluetooth on the device.
+ *
+ * @param {Function} successCallback - function to call on successful setting of Bluetooth state
+ * @param {Function} errorCallback - function to call on failure to set Bluetooth state.
+ * This callback function is passed a single string parameter containing the error message.
+ * @param {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
+ */
+Diagnostic.prototype.setBluetoothState = function(successCallback, errorCallback, state) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'setBluetoothState',
+		[state]);
+};
+
 module.exports = new Diagnostic();
 
