@@ -34,6 +34,8 @@ Cordova diagnostic plugin
         - [getBluetoothState()](#getbluetoothstate)
         - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
         - [switchToSettings()](#switchtosettings)
+* [Notes](#notes)
+    * [Android permissions](#android-permissions)
 * [Example project](#example-project)
 * [Credits](#credits)
 
@@ -48,7 +50,7 @@ This Cordova/Phonegap plugin for iOS and Android is used to check the state of t
 
 The plugin also enables an app to show the relevant settings screen, to allow users to change the above device settings.
 
-The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io/#/package/cordova.plugins.diagnostic)(Cordova CLI 3/4) and on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) (Cordova CLI 5+) as `cordova.plugins.diagnostic`
+The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
 
 # Installation
 
@@ -56,6 +58,8 @@ The plugin is registered in the [the Cordova Registry](http://plugins.cordova.io
 
     $ cordova plugin add cordova.plugins.diagnostic
     $ phonegap plugin add cordova.plugins.diagnostic
+
+**NOTE**: Make sure your Cordova CLI version is 5.0.0+ (check with `cordova -v`). Cordova 4.x and below uses the now deprecated [Cordova Plugin Registry](http://plugins.cordova.io) as its plugin repository, so using a version of Cordova 4.x or below will result in installing an [old version](http://plugins.cordova.io/#/package/cordova.plugins.diagnostic) of this plugin.
 
 ## Using [Cordova Plugman](https://github.com/apache/cordova-plugman)
 
@@ -66,11 +70,7 @@ For example, to install for the Android platform
     $ plugman install --plugin=cordova.plugins.diagnostic --platform=android --project=platforms/android --plugins_dir=plugins
 
 ## PhoneGap Build
-Add the following xml to your config.xml to use the latest version of this plugin from [the Cordova Registry](http://plugins.cordova.io/#/package/cordova.plugins.diagnostic):
-
-    <gap:plugin name="cordova.plugins.diagnostic" source="plugins.cordova.io" />
-
-or from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
+Add the following xml to your config.xml to use the latest version of this plugin from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
 
     <gap:plugin name="cordova.plugins.diagnostic" source="npm" />
 
@@ -415,7 +415,11 @@ This callback function is passed a single string parameter containing the error 
 
 ### registerLocationAuthorizationStatusChangeHandler()
 
- Registers a function to be called when a change in location authorization status occurs..
+ Registers a function to be called when a change in location authorization status occurs.
+
+ Note that the callback function registered with `registerLocationAuthorizationStatusChangeHandler()` will only be called when your app is in the foreground, so if you are leaving your app to go to Settings in order to change the app-specific location authorization setting, then your app is in the background and so `registerLocationAuthorizationStatusChangeHandler()` callback will not be invoked. To handle this situation, you should use `cordova.plugins.diagnostic.isLocationAuthorized()` to check the location authorization state when your app is resumed from the background.
+
+ In practice, `registerLocationAuthorizationStatusChangeHandler()` is only useful when the location authorization is requested for the first time and the native dialog pops up asking the user to allow or deny location access by the app. This only happens the first time the app is run and when location authorization status changes from "not_determined" to "authorized_always" or "authorized_when_in_use". When the user presses either "OK" or "Don't Allow" in the native dialog, the registered callback will be invoked.
 
     cordova.plugins.diagnostic.registerLocationAuthorizationStatusChangeHandler(fn);
 
@@ -423,12 +427,12 @@ This callback function is passed a single string parameter containing the error 
 
 - {Function} fn - function call when a change in location authorization status occurs.
 This callback function is passed a single string parameter containing new status.
-Possible values are: "unknown", "denied", "not_determined", "authorized_always" or "authorized_when_in_use"
+Expected values are: "denied", "authorized_always" or "authorized_when_in_use"
 
 #### Example usage
 
     cordova.plugins.diagnostic.registerLocationAuthorizationStatusChangeHandler(function(status){
-        console.log("Location authorization status changed to: "+status);
+        console.log("Location authorization status changed from \"not_determined\" to: "+status);
     });
 
 ### isCameraPresent()
@@ -641,6 +645,17 @@ Switch to Settings app. Opens settings page for this app. This works only on iOS
     }, function(error){
         console.error("The following error occurred: "+error);
     });
+
+# Notes
+
+## Android permissions
+
+Some of functions offered by this plugin require specific permissions to be set in the AndroidManifest.xml. Where additional permissions are needed, they are listed alongside the function that requires them.
+
+These permissions will not be set by this plugin, to avoid asking for unnecessary permissions in your app, in the case that you do not use a particular part of the plugin.
+Instead, you can add these permissions as necessary, depending what functions in the plugin you decide to use.
+
+You can add these permissions either by manually editing the AndroidManifest.xml if `/platform/android/`, or define them in the config.xml and apply them using the [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin.
 
 # Example project
 
