@@ -279,6 +279,8 @@ Displays the device location settings to allow user to enable location services/
 
     cordova.plugins.diagnostic.switchToLocationSettings();
 
+Note: You may want to consider using the [Request Location Accuracy Plugin for Android](https://github.com/dpa99c/cordova-plugin-request-location-accuracy) to request the desired location accuracy without needing the user to manually do this on the Location Settings page.
+
 ### switchToMobileDataSettings()
 
 Displays mobile settings to allow user to enable mobile data.
@@ -696,4 +698,4 @@ An example project illustrating use of this plugin can be found here: [https://g
 
 Forked from: [https://github.com/mablack/cordova-diagnostic-plugin](https://github.com/mablack/cordova-diagnostic-plugin)
 
-Orignal Cordova 2 implementation by: AVANTIC ESTUDIO DE INGENIEROS ([www.avantic.net](http://www.avantic.net/))
+Original Cordova 2 implementation by: AVANTIC ESTUDIO DE INGENIEROS ([www.avantic.net](http://www.avantic.net/))
