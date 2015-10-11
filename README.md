@@ -260,7 +260,7 @@ Values that may be passed to the success callback:
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when diagnostic is successful.
-This callback function is passed a single boolean parameter with the diagnostic result.
+This callback function is passed a single string parameter with the diagnostic result.
 - {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
