@@ -104,7 +104,9 @@ public class Diagnostic extends CordovaPlugin {
             } else if(action.equals("setBluetoothState")) {
                 setBluetoothState(args.getBoolean(0));
                 callbackContext.success();
-            } else {
+            } else if(action.equals("getLocationMode")) {
+                callbackContext.success(getLocationMode());
+            }else {
                 String msg = "Invalid action";
                 Log.e(TAG, msg);
                 callbackContext.error(msg);
@@ -130,6 +132,20 @@ public class Diagnostic extends CordovaPlugin {
         boolean result = isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER);
         Log.d(TAG, "Network enabled: " + result);
         return result;
+    }
+
+    public String getLocationMode(){
+        String mode;
+        if(isGpsLocationEnabled() && isNetworkLocationEnabled()){
+            mode = "high_accuracy";
+        }else if(isGpsLocationEnabled()){
+            mode = "device_only";
+        }else if(isNetworkLocationEnabled()){
+            mode = "battery_saving";
+        }else{
+            mode = "location_off";
+        }
+        return mode;
     }
 
     public boolean isWifiEnabled() {

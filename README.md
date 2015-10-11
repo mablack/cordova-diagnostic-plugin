@@ -12,6 +12,7 @@ Cordova diagnostic plugin
     * [Android only](#android-only)
         - [isGpsLocationEnabled()](#isgpslocationenabled)
         - [isNetworkLocationEnabled()](#isnetworklocationenabled)
+        - [getLocationMode()](#getlocationmode)
         - [switchToLocationSettings()](#switchtolocationsettings)
         - [switchToMobileDataSettings()](#switchtomobiledatasettings)
         - [switchToBluetoothSettings()](#switchtobluetoothsettings)
@@ -239,6 +240,35 @@ This callback function is passed a single string parameter containing the error 
 
     cordova.plugins.diagnostic.isNetworkLocationEnabled(function(enabled){
         console.log("Network location is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getLocationMode()
+
+Returns the current location mode setting for the device.
+
+    cordova.plugins.diagnostic.getLocationMode(successCallback, errorCallback);
+
+Values that may be passed to the success callback:
+
+- "high_accuracy" - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+- "device_only" - GPS hardware only (high accuracy)
+- "battery_saving" - network triangulation and Wifi network IDs (low accuracy)
+- "location_off" - Location is turned off
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+This callback function is passed a single boolean parameter with the diagnostic result.
+- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getLocationMode(function(mode){
+        console.log("Current location mode is: " + mode);
     }, function(error){
         console.error("The following error occurred: "+error);
     });

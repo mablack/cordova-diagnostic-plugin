@@ -8,11 +8,7 @@ var Diagnostic = function(){};
 
 /**
  * Checks if location is enabled.
- * On Android, this returns true if Location mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
- * When location is enabled, the locations returned are dependent on the location mode:
- * Battery saving = network triangulation and Wifi network IDs (low accuracy)
- * Device only = GPS hardware only (high accuracy)
- * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+ * On Android, this returns true if Location Mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
  *
  * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
  * This callback function is passed a single boolean parameter with the diagnostic result.
@@ -62,6 +58,26 @@ Diagnostic.prototype.isNetworkLocationEnabled = function(successCallback, errorC
 		errorCallback,
 		'Diagnostic',
 		'isNetworkLocationEnabled',
+		[]);
+};
+
+/**
+ * Returns the current location mode setting for the device.
+ *
+ * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single string parameter with the diagnostic result. Values that may be passed to the success callback:
+ * "high_accuracy" - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy);
+ * "device_only" - GPS hardware only (high accuracy);
+ * "battery_saving" - network triangulation and Wifi network IDs (low accuracy);
+ * "location_off" - Location is turned off
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ *  This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.getLocationMode = function(successCallback, errorCallback) {
+	return cordova.exec(successCallback,
+		errorCallback,
+		'Diagnostic',
+		'getLocationMode',
 		[]);
 };
 
