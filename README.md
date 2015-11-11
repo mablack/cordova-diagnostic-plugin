@@ -4,21 +4,22 @@ Cordova diagnostic plugin
 * [Overview](#overview)
 * [Installation](#installation)
 * [Usage](#usage)
-    * [Android and iOS](#android-and-ios)
+    * [Android, iOS and Windows 10 Mobile](#android-and-ios-and-windows)
         - [isLocationEnabled()](#islocationenabled)
         - [isWifiEnabled()](#iswifienabled)
         - [isCameraEnabled()](#iscameraenabled)
         - [isBluetoothEnabled()](#isbluetoothenabled)
-    * [Android only](#android-only)
-        - [isGpsLocationEnabled()](#isgpslocationenabled)
-        - [isNetworkLocationEnabled()](#isnetworklocationenabled)
-        - [getLocationMode()](#getlocationmode)
+    * [Android and Windows 10 Mobile](#android-and-windows)
         - [switchToLocationSettings()](#switchtolocationsettings)
         - [switchToMobileDataSettings()](#switchtomobiledatasettings)
         - [switchToBluetoothSettings()](#switchtobluetoothsettings)
         - [switchToWifiSettings()](#switchtowifisettings)
         - [setWifiState()](#setwifistate)
         - [setBluetoothState()](#setbluetoothstate)
+    * [Android only](#android-only)
+        - [isGpsLocationEnabled()](#isgpslocationenabled)
+        - [isNetworkLocationEnabled()](#isnetworklocationenabled)
+        - [getLocationMode()](#getlocationmode)
     * [iOS only](#ios-only)
         - [isLocationEnabledSetting()](#isLocationEnabledSetting)
         - [isLocationAuthorized()](#islocationauthorized)
@@ -37,12 +38,13 @@ Cordova diagnostic plugin
         - [switchToSettings()](#switchtosettings)
 * [Notes](#notes)
     * [Android permissions](#android-permissions)
+    * [Windows 10 Mobile permissions](#windows-permissions)
 * [Example project](#example-project)
 * [Credits](#credits)
 
 # Overview
 
-This Cordova/Phonegap plugin for iOS and Android is used to check the state of the following device settings:
+This Cordova/Phonegap plugin for iOS, Android and Windows 10 Mobile is used to check the state of the following device settings:
 
 - Location
 - WiFi
@@ -79,7 +81,7 @@ Add the following xml to your config.xml to use the latest version of this plugi
 
 The plugin is exposed via the `cordova.plugins.diagnostic` object and provides the following functions:
 
-## Android and iOS
+## Android, iOS and Windows 10 Mobile
 
 ### isLocationEnabled()
 
@@ -87,7 +89,7 @@ Checks if app is able to access device location.
 
     cordova.plugins.diagnostic.isLocationEnabled(successCallback, errorCallback);
 
-On iOS this returns true if both the device setting for Location Services is ON, AND the application is authorized to use location.
+On iOS and Windows 10 Mobile this returns true if both the device setting for Location Services is ON, AND the application is authorized to use location.
 When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
 
 On Android, this returns true if Location mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
@@ -117,7 +119,7 @@ This callback function is passed a single string parameter containing the error 
 
 Checks if Wifi is connected/enabled.
 On iOS this returns true if the device is connected to a network by WiFi.
-On Android this returns true if the WiFi setting is set to enabled.
+On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled.
 
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
@@ -145,6 +147,7 @@ This callback function is passed a single string parameter containing the error 
 Checks if the device has a camera.
 On Android this returns true if the device has a camera.
 On iOS this returns true if both the device has a camera AND the application is authorized to use it.
+On Windows 10 Mobile this returns true if both the device has a rear-facing camera AND the application is authorized to use it.
 
     cordova.plugins.diagnostic.isCameraEnabled(successCallback, errorCallback);
 
@@ -166,7 +169,7 @@ This callback function is passed a single string parameter containing the error 
 
 ### isBluetoothEnabled()
 
-Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on (same on Android and iOS)
+Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on (same on Android, iOS and Windows 10 Mobile)
 
 On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
 
@@ -187,6 +190,96 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     });
+
+## Android and Windows 10 Mobile only
+
+### switchToLocationSettings()
+
+Displays the device location settings to allow user to enable location services/change location mode.
+
+    cordova.plugins.diagnostic.switchToLocationSettings();
+
+Note: For Android, you may want to consider using the [Request Location Accuracy Plugin for Android](https://github.com/dpa99c/cordova-plugin-request-location-accuracy) to request the desired location accuracy without needing the user to manually do this on the Location Settings page.
+
+### switchToMobileDataSettings()
+
+Displays mobile settings to allow user to enable mobile data.
+
+    cordova.plugins.diagnostic.switchToMobileDataSettings();
+
+### switchToBluetoothSettings()
+
+Displays Bluetooth settings to allow user to enable Bluetooth.
+
+    cordova.plugins.diagnostic.switchToBluetoothSettings();
+
+### switchToWifiSettings()
+
+Displays WiFi settings to allow user to enable WiFi.
+
+    cordova.plugins.diagnostic.switchToWifiSettings();
+
+### setWifiState()
+
+Enables/disables WiFi on the device.
+
+    cordova.plugins.diagnostic.setWifiState(successCallback, errorCallback, state);
+
+Requires the following permissions for Android:
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+Requires the following capabilities for Windows 10 Mobile:
+
+    <DeviceCapability Name="radios" />
+
+#### Parameters
+
+- {Function} successCallback - function to call on successful setting of WiFi state
+- {Function} errorCallback - function to call on failure to set WiFi state.
+- {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.setWifiState(function(){
+        console.log("Wifi was enabled");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    },
+    true);
+
+### setBluetoothState()
+
+Enables/disables Bluetooth on the device.
+
+    cordova.plugins.diagnostic.setBluetoothState(successCallback, errorCallback, state);
+
+Requires the following permissions on Android:
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+Requires the following capabilities for Windows 10 Mobile:
+
+    <DeviceCapability Name="radios" />
+
+#### Parameters
+
+- {Function} successCallback - function to call on successful setting of Bluetooth state
+- {Function} errorCallback - function to call on failure to set Bluetooth state.
+- {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.setBluetoothState(function(){
+        console.log("Bluetooth was enabled");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    },
+    true);
 
 ## Android only
 
@@ -272,87 +365,6 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     });
-
-### switchToLocationSettings()
-
-Displays the device location settings to allow user to enable location services/change location mode.
-
-    cordova.plugins.diagnostic.switchToLocationSettings();
-
-Note: You may want to consider using the [Request Location Accuracy Plugin for Android](https://github.com/dpa99c/cordova-plugin-request-location-accuracy) to request the desired location accuracy without needing the user to manually do this on the Location Settings page.
-
-### switchToMobileDataSettings()
-
-Displays mobile settings to allow user to enable mobile data.
-
-    cordova.plugins.diagnostic.switchToMobileDataSettings();
-
-### switchToBluetoothSettings()
-
-Displays Bluetooth settings to allow user to enable Bluetooth.
-
-    cordova.plugins.diagnostic.switchToBluetoothSettings();
-
-
-### switchToWifiSettings()
-
-Displays WiFi settings to allow user to enable WiFi.
-
-    cordova.plugins.diagnostic.switchToWifiSettings();
-
-### setWifiState()
-
-Enables/disables WiFi on the device.
-
-    cordova.plugins.diagnostic.setWifiState(successCallback, errorCallback, state);
-
-Requires the following permissions:
-
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-
-#### Parameters
-
-- {Function} successCallback - function to call on successful setting of WiFi state
-- {Function} errorCallback - function to call on failure to set WiFi state.
-- {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.setWifiState(function(){
-        console.log("Wifi was enabled");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    },
-    true);
-
-### setBluetoothState()
-
-Enables/disables Bluetooth on the device.
-
-    cordova.plugins.diagnostic.setBluetoothState(successCallback, errorCallback, state);
-
-Requires the following permissions:
-
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-
-#### Parameters
-
-- {Function} successCallback - function to call on successful setting of Bluetooth state
-- {Function} errorCallback - function to call on failure to set Bluetooth state.
-- {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.setBluetoothState(function(){
-        console.log("Bluetooth was enabled");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    },
-    true);
 
 ## iOS only
 
@@ -688,6 +700,15 @@ These permissions will not be set by this plugin, to avoid asking for unnecessar
 Instead, you can add these permissions as necessary, depending what functions in the plugin you decide to use.
 
 You can add these permissions either by manually editing the AndroidManifest.xml if `/platform/android/`, or define them in the config.xml and apply them using the [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin.
+
+## Windows 10 Mobile permissions
+
+Some of functions offered by this plugin require specific permissions to be set in the package.windows10.appxmanifest. Where additional permissions are needed, they are listed alongside the function that requires them.
+
+These permissions will not be set by this plugin, to avoid asking for unnecessary permissions in your app, in the case that you do not use a particular part of the plugin.
+Instead, you can add these permissions as necessary, depending what functions in the plugin you decide to use.
+
+You can add these permissions by manually editing the package.windows10.appxmanifest if `/platform/windows/`.
 
 # Example project
 

@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova.plugins.diagnostic"
-    version="2.2.3">
+    version="2.2.4">
 
     <name>Diagnostic</name>
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
@@ -36,17 +36,33 @@
         <framework src="Photos.framework" />
     </platform>
 
-    <!-- android -->
-    <platform name="android">
-        <config-file target="config.xml" parent="/*">
-            <feature name="Diagnostic" >
-                <param name="android-package" value="cordova.plugins.Diagnostic"/>
-            </feature>
-        </config-file>
+	<!-- android -->
+	<platform name="android">
+		<config-file target="config.xml" parent="/*">
+			<feature name="Diagnostic" >
+				<param name="android-package" value="cordova.plugins.Diagnostic"/>
+			</feature>
+		</config-file>
 
-        <js-module src="www/android/diagnostic.js" name="Diagnostic">
-            <clobbers target="cordova.plugins.diagnostic" />
-        </js-module>
-        <source-file src="src/android/Diagnostic.java" target-dir="src/cordova/plugins" />
-    </platform>
+		<js-module src="www/android/diagnostic.js" name="Diagnostic">
+			<clobbers target="cordova.plugins.diagnostic" />
+		</js-module>
+		<source-file src="src/android/Diagnostic.java" target-dir="src/cordova/plugins" />
+	</platform>
+
+	<!-- windows -->
+	<platform name="windows">
+		<config-file target="config.xml" parent="/*">
+			<feature name="Diagnostic" >
+				<param name="windows-package" value="cordova.plugins.Diagnostic"/>
+			</feature>
+		</config-file>
+
+		<js-module src="www/windows/diagnostic.js" name="Diagnostic">
+			<clobbers target="cordova.plugins.diagnostic" />
+		</js-module>
+		<js-module src="src/windows/diagnosticProxy.js" name="diagnosticProxy">
+			<merges target="" />
+		</js-module>
+	</platform>
 </plugin>
