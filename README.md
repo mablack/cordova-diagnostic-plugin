@@ -38,6 +38,7 @@ Cordova diagnostic plugin
 * [Notes](#notes)
     * [Android permissions](#android-permissions)
 * [Example project](#example-project)
+    * [Screenshots](#screenshots)
 * [Credits](#credits)
 
 # Overview
@@ -692,6 +693,18 @@ You can add these permissions either by manually editing the AndroidManifest.xml
 # Example project
 
 An example project illustrating use of this plugin can be found here: [https://github.com/dpa99c/cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example)
+
+## Screenshots
+
+### Android
+
+![iOS screenshot](https://raw.githubusercontent.com/dpa99c/cordova-diagnostic-plugin-example/master/screenshots/android_1.png)
+![iOS screenshot](https://raw.githubusercontent.com/dpa99c/cordova-diagnostic-plugin-example/master/screenshots/android_2.png)
+
+### iOS
+
+![Android screenshot](https://raw.githubusercontent.com/dpa99c/cordova-diagnostic-plugin-example/master/screenshots/ios_1.png)
+![Android screenshot](https://raw.githubusercontent.com/dpa99c/cordova-diagnostic-plugin-example/master/screenshots/ios_2.png)
 
 
 # Credits
