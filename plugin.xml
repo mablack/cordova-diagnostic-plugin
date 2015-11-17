@@ -8,7 +8,7 @@
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
     <author>Dave Alden</author>
     <license>MIT</license>
-    <keywords>ecosystem:cordova,cordova,phonegap,android,ios,diagnostic,wifi,location,gps,camera,bluetooth,settings</keywords>
+    <keywords>ecosystem:cordova,cordova,phonegap,android,ios,windows,diagnostic,wifi,location,gps,camera,bluetooth,settings</keywords>
     <engines>
         <engine name="cordova" version=">=3.0.0" />
     </engines>
