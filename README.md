@@ -700,7 +700,15 @@ Some of functions offered by this plugin require specific permissions to be set 
 These permissions will not be set by this plugin, to avoid asking for unnecessary permissions in your app, in the case that you do not use a particular part of the plugin.
 Instead, you can add these permissions as necessary, depending what functions in the plugin you decide to use.
 
-You can add these permissions either by manually editing the AndroidManifest.xml if `/platform/android/`, or define them in the config.xml and apply them using the [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin.
+You can add these permissions either by manually editing the AndroidManifest.xml in `/platforms/android/`, or define them in the config.xml and apply them using the [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin, for example:
+
+    <platform name="android">
+        <plugin name="cordova-custom-config" version="*"/>
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+        </config-file>
+    </platform>
 
 ## Windows 10 Mobile permissions
 
@@ -709,7 +717,7 @@ Some of functions offered by this plugin require specific permissions to be set 
 These permissions will not be set by this plugin, to avoid asking for unnecessary permissions in your app, in the case that you do not use a particular part of the plugin.
 Instead, you can add these permissions as necessary, depending what functions in the plugin you decide to use.
 
-You can add these permissions by manually editing the package.windows10.appxmanifest if `/platform/windows/`.
+You can add these permissions by manually editing the package.windows10.appxmanifest in `/platforms/windows/`.
 
 # Example project
 

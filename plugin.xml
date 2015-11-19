@@ -44,11 +44,7 @@
 			</feature>
 		</config-file>
 
-		<preference name="android-minSdkVersion" value="14" />
-        <preference name="android-targetSdkVersion" value="23" />
-
         <framework src="com.android.support:support-v4:23.0.0" />
-        <framework src="com.android.support:support-v13:23.0.0" />
 
         <js-module src="www/android/diagnostic.js" name="Diagnostic">
             <clobbers target="cordova.plugins.diagnostic" />
