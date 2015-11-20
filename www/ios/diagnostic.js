@@ -22,9 +22,9 @@ var Diagnostic = (function(){
 	 * On iOS this returns true if both the device setting for Location Services is ON, AND the application is authorized to use location.
 	 * When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationEnabled = function(successCallback, errorCallback) {
@@ -39,9 +39,9 @@ var Diagnostic = (function(){
 	 * Checks the device setting for Location Services
 	 * Returns true if Location Services is enabled.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if Location Services is enabled.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationEnabledSetting = function(successCallback, errorCallback) {
@@ -55,11 +55,10 @@ var Diagnostic = (function(){
 
 	/**
 	 * Checks if the application is authorized to use location.
-	 * Returns true if application is authorized to use location either "when in use" (only in foreground) or "always" (foreground and background).
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if application is authorized to use location either "when in use" (only in foreground) OR "always" (foreground and background).
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationAuthorized = function(successCallback, errorCallback) {
@@ -73,10 +72,10 @@ var Diagnostic = (function(){
 	/**
 	 * Returns the location authorization status for the application.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
 	 * This callback function is passed a single string parameter which indicates the location authorization status.
 	 * Possible values are: "unknown", "denied", "not_determined", "authorized_always", "authorized_when_in_use"
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.getLocationAuthorizationStatus = function(successCallback, errorCallback) {
@@ -92,8 +91,8 @@ var Diagnostic = (function(){
 	 * Authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
 	 * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called on successfully requesting location authorization.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 * @param {String} mode - (optional) location authorization mode: "always" or "when_in_use". If not specified, defaults to "when_in_use".
 	 */
@@ -130,9 +129,9 @@ var Diagnostic = (function(){
 	 * Checks if camera is enabled for use.
 	 * On iOS this returns true if both the device has a camera AND the application is authorized to use it.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if camera is present and authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraEnabled = function(successCallback, errorCallback) {
@@ -144,11 +143,11 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Checks if the device has a camera present.
+	 * Checks if camera hardware is present on device.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if camera is present
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
@@ -163,9 +162,9 @@ var Diagnostic = (function(){
 	/**
 	 * Checks if the application is authorized to use the camera.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if camera is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraAuthorized = function(successCallback, errorCallback) {
@@ -179,10 +178,10 @@ var Diagnostic = (function(){
 	/**
 	 * Returns the camera authorization status for the application.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
 	 * This callback function is passed a single string parameter which indicates the authorization status.
 	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.getCameraAuthorizationStatus = function(successCallback, errorCallback) {
@@ -197,9 +196,9 @@ var Diagnostic = (function(){
 	 * Requests camera authorization for the application.
 	 * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
 	 * This callback function is passed a single boolean parameter indicating whether access to the camera was granted or denied.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback) {
@@ -213,9 +212,9 @@ var Diagnostic = (function(){
 	/**
 	 * Checks if the application is authorized to use the Camera Roll in Photos app.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if access to Camera Roll is authorized.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraRollAuthorized = function(successCallback, errorCallback) {
@@ -229,10 +228,10 @@ var Diagnostic = (function(){
 	/**
 	 * Returns the authorization status for the application to use the Camera Roll in Photos app.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
 	 * This callback function is passed a single string parameter which indicates the authorization status.
 	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.getCameraRollAuthorizationStatus = function(successCallback, errorCallback) {
@@ -247,9 +246,9 @@ var Diagnostic = (function(){
 	 * Requests camera roll authorization for the application.
 	 * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
 	 * This callback function is passed a single string parameter indicating the new authorization status: "denied" or "authorized"
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.requestCameraRollAuthorization = function(successCallback, errorCallback) {
@@ -264,9 +263,9 @@ var Diagnostic = (function(){
 	 * Checks if Wi-Fi connection exists.
 	 * On iOS this returns true if the device is connected to a network by WiFi.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device is connected by WiFi.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
@@ -281,9 +280,9 @@ var Diagnostic = (function(){
 	/**
 	 * Checks if the device has Bluetooth LE capabilities and if so that Bluetooth is switched on
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE and Bluetooth is switched on.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isBluetoothEnabled = function(successCallback, errorCallback) {
@@ -297,10 +296,10 @@ var Diagnostic = (function(){
 	/**
 	 * Returns the state of Bluetooth LE on the device.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
 	 * This callback function is passed a single string parameter which indicates the bluetooth state.
 	 * Possible values are: "unknown", "resetting", "unsupported", "unauthorized", "powered_off", "powered_on"
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.getBluetoothState = function(successCallback, errorCallback) {

@@ -69,9 +69,9 @@ var Diagnostic = (function(){
 	};
 
 	Diagnostic.runtimePermissionStatus = {
-		"GRANTED": "GRANTED", //  permission has already been granted or the device is running Android 5.1 (API level 22) or lower
+		"GRANTED": "GRANTED", //  Permission has already been granted, the device is running Android 5.x or below, or the app is built with API 22 or below
 		"DENIED": "DENIED", // User denied access to this permission
-		"NOT_REQUESTED": "NOT_REQUESTED", // app has not yet requested this permission
+		"NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested this permission
 		"DENIED_ALWAYS": "DENIED_ALWAYS" // User denied access to this permission and checked "Never Ask Again" box.
 	};
 
@@ -156,6 +156,23 @@ var Diagnostic = (function(){
 		}
 	}
 
+	function combineLocationStatuses(statuses){
+		var coarseStatus = statuses[Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION],
+			fineStatus = statuses[Diagnostic.runtimePermission.ACCESS_FINE_LOCATION],
+			status;
+
+		if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS || fineStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS){
+			status = Diagnostic.runtimePermissionStatus.DENIED_ALWAYS;
+		}else if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED || fineStatus == Diagnostic.runtimePermissionStatus.DENIED){
+			status = Diagnostic.runtimePermissionStatus.DENIED;
+		}else if(coarseStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED || fineStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED){
+			status = Diagnostic.runtimePermissionStatus.NOT_REQUESTED;
+		}else{
+			status = Diagnostic.runtimePermissionStatus.GRANTED;
+		}
+		return status;
+	}
+
 
 	/**********************
 	 * Public API functions
@@ -166,9 +183,9 @@ var Diagnostic = (function(){
 	 * On Android, this returns true if Location Mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
 	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback - The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationEnabled = function(successCallback, errorCallback) {
@@ -186,9 +203,9 @@ var Diagnostic = (function(){
 	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isGpsLocationEnabled = function(successCallback, errorCallback) {
@@ -206,9 +223,9 @@ var Diagnostic = (function(){
 	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isNetworkLocationEnabled = function(successCallback, errorCallback) {
@@ -222,13 +239,13 @@ var Diagnostic = (function(){
 	/**
 	 * Returns the current location mode setting for the device.
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single string parameter with the diagnostic result. Values that may be passed to the success callback:
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single string parameter. Values that may be passed to the success callback:
 	 * "high_accuracy" - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy);
 	 * "device_only" - GPS hardware only (high accuracy);
 	 * "battery_saving" - network triangulation and Wifi network IDs (low accuracy);
 	 * "location_off" - Location is turned off
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.getLocationMode = function(successCallback, errorCallback) {
@@ -243,9 +260,9 @@ var Diagnostic = (function(){
 	 * Checks if Wifi is connected/enabled.
 	 * On Android this returns true if the WiFi setting is set to enabled.
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device is connected by WiFi.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
@@ -259,9 +276,9 @@ var Diagnostic = (function(){
 	/**
 	 * Checks if camera is usable: both present and authorised for use.
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if camera is present and authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraEnabled = function(successCallback, errorCallback) {
@@ -275,11 +292,11 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Checks if exists camera.
+	 * Checks if camera hardware is present on device.
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if camera is present
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
@@ -291,11 +308,11 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Checks if Bluetooth is enabled
+	 * Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
-	 * This callback function is passed a single boolean parameter with the diagnostic result.
-	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth capabilities and Bluetooth is switched on.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isBluetoothEnabled = function(successCallback, errorCallback) {
@@ -389,9 +406,10 @@ var Diagnostic = (function(){
 
 	/**
 	 * Returns the current authorisation status for a given permission.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful retrieval of status.
-	 * This callback function is passed a single {String} argument which defines the current authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.runtimePermissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to retrieve authorisation status.
 	 * This callback function is passed a single string parameter containing the error message.
 	 * @param {String} permission - permission to request authorisation status for, defined as a value in Diagnostic.runtimePermission
@@ -412,10 +430,11 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Returns the current authorisation status for a given permission.
+	 * Returns the current authorisation status for multiple permissions.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful retrieval of status.
-	 * This callback function is passed a single {Object} argument which defines a key/value map, where the key is the permission defined as a value in Diagnostic.runtimePermissio, and the value is the current authorisation statuses as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the requested permission defined as a value in Diagnostic.runtimePermission, and the value is the current authorisation status of that permission as a value in Diagnostic.runtimePermissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to retrieve authorisation statuses.
 	 * This callback function is passed a single string parameter containing the error message.
 	 * @param {Array} permissions - list of permissions to request authorisation statuses for, defined as values in Diagnostic.runtimePermission
@@ -441,8 +460,10 @@ var Diagnostic = (function(){
 
 	/**
 	 * Requests app to be granted authorisation for a runtime permission.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+	 *
 	 * @param {Function} successCallback - function to call on successful request for runtime permission.
-	 * This callback function is passed a single {String} argument which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 * This callback function is passed a single string parameter containing the error message.
 	 * @param {String} permission - permission to request authorisation for, defined as a value in Diagnostic.runtimePermission
@@ -465,9 +486,11 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Requests app to be granted authorisation for runtime permissions.
+	 * Requests app to be granted authorisation for multiple runtime permissions.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+	 *
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
-	 * This callback function is passed a single {String} argument which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the permission to request defined as a value in Diagnostic.runtimePermission, and the value is the resulting authorisation status of that permission as a value in Diagnostic.runtimePermissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 * This callback function is passed a single string parameter containing the error message.
 	 * @param {Array} permissions - permissions to request authorisation for, defined as values in Diagnostic.runtimePermission
@@ -497,30 +520,33 @@ var Diagnostic = (function(){
 	 * iOS runtime equivalents
 	 **************************/
 
+	/**
+	 * Requests location authorization for the application.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * @param {Function} errorCallback - function to call on failure to request authorisation.
+	 */
 	Diagnostic.requestLocationAuthorization = function(successCallback, errorCallback){
-		Diagnostic.requestRuntimePermissions(successCallback, errorCallback, [
+		function onSuccess(statuses){
+			successCallback(combineLocationStatuses(statuses));
+		}
+		Diagnostic.requestRuntimePermissions(onSuccess, errorCallback, [
 			Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION,
 			Diagnostic.runtimePermission.ACCESS_FINE_LOCATION
 		]);
 	};
 
+	/**
+	 * Returns the location authorization status for the application.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
+	 */
 	Diagnostic.getLocationAuthorizationStatus = function(successCallback, errorCallback){
 		function onSuccess(statuses){
-			var coarseStatus = statuses[Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION],
-				fineStatus = statuses[Diagnostic.runtimePermission.ACCESS_FINE_LOCATION],
-				status;
-
-			if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS || fineStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS){
-				status = Diagnostic.runtimePermissionStatus.DENIED_ALWAYS;
-			}else if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED || fineStatus == Diagnostic.runtimePermissionStatus.DENIED){
-				status = Diagnostic.runtimePermissionStatus.DENIED;
-			}else if(coarseStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED || fineStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED){
-				status = Diagnostic.runtimePermissionStatus.NOT_REQUESTED;
-			}else{
-				status = Diagnostic.runtimePermissionStatus.GRANTED;
-			}
-
-			successCallback(status);
+			successCallback(combineLocationStatuses(statuses));
 		}
 		Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
 			Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION,
@@ -528,6 +554,13 @@ var Diagnostic = (function(){
 		]);
 	};
 
+	/**
+	 * Checks if the application is authorized to use location.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
+	 * This callback function is passed a single boolean parameter which is TRUE if the app currently has runtime authorisation to use location.
+	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
+	 */
 	Diagnostic.isLocationAuthorized = function(successCallback, errorCallback){
 		function onSuccess(status){
 			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
@@ -535,14 +568,36 @@ var Diagnostic = (function(){
 		Diagnostic.getLocationAuthorizationStatus(onSuccess, errorCallback);
 	};
 
+
+	/**
+	 * Requests authorisation for runtime permissions to use the camera.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * @param {Function} errorCallback - function to call on failure to request authorisation.
+	 */
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback){
 		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.runtimePermission.CAMERA);
 	};
 
+	/**
+	 * Returns the authorisation status for runtime permissions to use the camera.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
+	 */
 	Diagnostic.getCameraAuthorizationStatus = function(successCallback, errorCallback){
 		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.runtimePermission.CAMERA);
 	};
 
+	/**
+	 * Checks if the application is authorized to use the camera.
+	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
+	 * This callback function is passed a single boolean parameter which is TRUE if the app currently has runtime authorisation to use location.
+	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
+	 */
 	Diagnostic.isCameraAuthorized = function(successCallback, errorCallback){
 		function onSuccess(status){
 			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
