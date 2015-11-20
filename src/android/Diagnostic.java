@@ -516,21 +516,22 @@ public class Diagnostic extends CordovaPlugin{
 
     private boolean hasPermission(String permission) throws Exception{
         boolean hasPermission = true;
-        java.lang.reflect.Method method = cordova.getClass().getMethod("hasPermission", permission.getClass());
-        if (method != null) {
-            Boolean bool = (Boolean)method.invoke(cordova, permission);
+        Method method = null;
+        try {
+            method = cordova.getClass().getMethod("hasPermission", permission.getClass());
+            Boolean bool = (Boolean) method.invoke(cordova, permission);
             hasPermission = bool.booleanValue();
-        }else{
-            Log.w(TAG, "Cordova v"+CordovaWebView.CORDOVA_VERSION+" does not support runtime permissions so defaulting to GRANTED for "+permission);
+        } catch (NoSuchMethodException e) {
+            Log.w(TAG, "Cordova v" + CordovaWebView.CORDOVA_VERSION + " does not support runtime permissions so defaulting to GRANTED for " + permission);
         }
         return hasPermission;
     }
 
     private void requestPermissions(CordovaPlugin plugin, int requestCode, String [] permissions) throws Exception{
-        java.lang.reflect.Method method = cordova.getClass().getMethod("requestPermissions", org.apache.cordova.CordovaPlugin.class ,int.class, java.lang.String[].class);
-        if (method != null) {
+        try {
+            java.lang.reflect.Method method = cordova.getClass().getMethod("requestPermissions", org.apache.cordova.CordovaPlugin.class ,int.class, java.lang.String[].class);
             method.invoke(cordova, plugin, requestCode, permissions);
-        } else {
+        } catch (NoSuchMethodException e) {
             throw new Exception("requestPermissions() method not found in CordovaInterface implementation of Cordova v" + CordovaWebView.CORDOVA_VERSION);
         }
     }
