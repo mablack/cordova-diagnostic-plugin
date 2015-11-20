@@ -164,6 +164,7 @@ var Diagnostic = (function(){
 	/**
 	 * Checks if location is enabled.
 	 * On Android, this returns true if Location Mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
+	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
 	 * This callback function is passed a single boolean parameter with the diagnostic result.
@@ -183,6 +184,7 @@ var Diagnostic = (function(){
 	 * Returns true if Location mode is enabled and is set to either:
 	 * Device only = GPS hardware only (high accuracy)
 	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
 	 * This callback function is passed a single boolean parameter with the diagnostic result.
@@ -202,6 +204,7 @@ var Diagnostic = (function(){
 	 * Returns true if Location mode is enabled and is set to either:
 	 * Battery saving = network triangulation and Wifi network IDs (low accuracy)
 	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
 	 * This callback function is passed a single boolean parameter with the diagnostic result.
@@ -254,7 +257,7 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Checks if exists camera.
+	 * Checks if camera is usable: both present and authorised for use.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
 	 * This callback function is passed a single boolean parameter with the diagnostic result.
@@ -262,10 +265,28 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraEnabled = function(successCallback, errorCallback) {
+		Diagnostic.isCameraPresent(function(isPresent){
+			if(isPresent){
+				Diagnostic.isCameraAuthorized(successCallback, errorCallback);
+			}else{
+				successCallback(isPresent);
+			}
+		},errorCallback);
+	};
+
+	/**
+	 * Checks if exists camera.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
+	 * This callback function is passed a single boolean parameter with the diagnostic result.
+	 * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
 		return cordova.exec(successCallback,
 			errorCallback,
 			'Diagnostic',
-			'isCameraEnabled',
+			'isCameraPresent',
 			[]);
 	};
 
@@ -484,10 +505,34 @@ var Diagnostic = (function(){
 	};
 
 	Diagnostic.getLocationAuthorizationStatus = function(successCallback, errorCallback){
-		Diagnostic.getPermissionsAuthorizationStatus(successCallback, errorCallback, [
+		function onSuccess(statuses){
+			var coarseStatus = statuses[Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION],
+				fineStatus = statuses[Diagnostic.runtimePermission.ACCESS_FINE_LOCATION],
+				status;
+
+			if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS || fineStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS){
+				status = Diagnostic.runtimePermissionStatus.DENIED_ALWAYS;
+			}else if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED || fineStatus == Diagnostic.runtimePermissionStatus.DENIED){
+				status = Diagnostic.runtimePermissionStatus.DENIED;
+			}else if(coarseStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED || fineStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED){
+				status = Diagnostic.runtimePermissionStatus.NOT_REQUESTED;
+			}else{
+				status = Diagnostic.runtimePermissionStatus.GRANTED;
+			}
+
+			successCallback(status);
+		}
+		Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
 			Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION,
 			Diagnostic.runtimePermission.ACCESS_FINE_LOCATION
 		]);
+	};
+
+	Diagnostic.isLocationAuthorized = function(successCallback, errorCallback){
+		function onSuccess(status){
+			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
+		}
+		Diagnostic.getLocationAuthorizationStatus(onSuccess, errorCallback);
 	};
 
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback){
@@ -495,9 +540,14 @@ var Diagnostic = (function(){
 	};
 
 	Diagnostic.getCameraAuthorizationStatus = function(successCallback, errorCallback){
-		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, [
-			Diagnostic.runtimePermission.CAMERA
-		]);
+		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.runtimePermission.CAMERA);
+	};
+
+	Diagnostic.isCameraAuthorized = function(successCallback, errorCallback){
+		function onSuccess(status){
+			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
+		}
+		Diagnostic.getCameraAuthorizationStatus(onSuccess, errorCallback);
 	};
 
 

@@ -21,6 +21,8 @@ package cordova.plugins;
 /*
  * Imports
  */
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -179,8 +181,8 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isNetworkLocationEnabled() ? 1 : 0);
             } else if(action.equals("isWifiEnabled")) {
                 callbackContext.success(isWifiEnabled() ? 1 : 0);
-            } else if(action.equals("isCameraEnabled")) {
-                callbackContext.success(isCameraEnabled() ? 1 : 0);
+            } else if(action.equals("isCameraPresent")) {
+                callbackContext.success(isCameraPresent() ? 1 : 0);
             } else if(action.equals("isBluetoothEnabled")) {
                 callbackContext.success(isBluetoothEnabled() ? 1 : 0);
             } else if(action.equals("setWifiState")) {
@@ -190,7 +192,7 @@ public class Diagnostic extends CordovaPlugin{
                 setBluetoothState(args.getBoolean(0));
                 callbackContext.success();
             } else if(action.equals("getLocationMode")) {
-                callbackContext.success(getLocationMode());
+                callbackContext.success(getLocationModeName());
             }else if(action.equals("getPermissionAuthorizationStatus")) {
                 this.getPermissionAuthorizationStatus(args);
             }else if(action.equals("getPermissionsAuthorizationStatus")) {
@@ -211,30 +213,40 @@ public class Diagnostic extends CordovaPlugin{
     }
 
 
-    public boolean isGpsLocationEnabled() {
-        boolean result = isLocationProviderEnabled(LocationManager.GPS_PROVIDER);
+    public boolean isGpsLocationEnabled() throws Exception {
+        int mode = getLocationMode();
+        boolean result = (mode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY || mode == Settings.Secure.LOCATION_MODE_SENSORS_ONLY) && isLocationAuthorized();
         Log.d(TAG, "GPS enabled: " + result);
         return result;
     }
 
-    public boolean isNetworkLocationEnabled() {
-        boolean result = isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    public boolean isNetworkLocationEnabled() throws Exception {
+        int mode = getLocationMode();
+        boolean result = (mode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY || mode == Settings.Secure.LOCATION_MODE_BATTERY_SAVING) && isLocationAuthorized();
         Log.d(TAG, "Network enabled: " + result);
         return result;
     }
 
-    public String getLocationMode(){
-        String mode;
-        if(isGpsLocationEnabled() && isNetworkLocationEnabled()){
-            mode = "high_accuracy";
-        }else if(isGpsLocationEnabled()){
-            mode = "device_only";
-        }else if(isNetworkLocationEnabled()){
-            mode = "battery_saving";
-        }else{
-            mode = "location_off";
+    public String getLocationModeName() throws Exception {
+        String modeName;
+        int mode = getLocationMode();
+        switch(mode){
+            case Settings.Secure.LOCATION_MODE_HIGH_ACCURACY:
+                modeName = "high_accuracy";
+                break;
+            case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
+                modeName = "device_only";
+                break;
+            case Settings.Secure.LOCATION_MODE_BATTERY_SAVING:
+                modeName = "battery_saving";
+                break;
+            case Settings.Secure.LOCATION_MODE_OFF:
+                modeName = "location_off";
+                break;
+            default:
+                modeName = "unknown";
         }
-        return mode;
+        return modeName;
     }
 
     public boolean isWifiEnabled() {
@@ -243,7 +255,7 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
-    public boolean isCameraEnabled() {
+    public boolean isCameraPresent() {
         PackageManager pm = this.cordova.getActivity().getPackageManager();
         boolean result = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
         return result;
@@ -374,13 +386,16 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     /**
-     * Determines if a given location provider is enabled
-     * @param provider - location provided to check
-     * @return flag indicating if provider is enabled
+     * Returns current location mode
      */
-    private boolean isLocationProviderEnabled(String provider) {
-        LocationManager locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(provider);
+    private int getLocationMode() throws Settings.SettingNotFoundException {
+        return Settings.Secure.getInt(this.cordova.getActivity().getContentResolver(), Settings.Secure.LOCATION_MODE);
+    }
+
+    private boolean isLocationAuthorized() throws Exception {
+        boolean authorized = hasPermission(permissionsMap.get("ACCESS_FINE_LOCATION")) && hasPermission(permissionsMap.get("ACCESS_COARSE_LOCATION"));
+        Log.v(TAG, "Location permission is "+(authorized ? "authorized" : "unauthorized"));
+        return authorized;
     }
 
 
@@ -393,7 +408,7 @@ public class Diagnostic extends CordovaPlugin{
             }
             String androidPermission = permissionsMap.get(permission);
             Log.v(TAG, "Get authorisation status for "+androidPermission);
-            boolean granted = cordova.hasPermission(androidPermission);
+            boolean granted = hasPermission(androidPermission);
             if(granted){
                 statuses.put(permission, Diagnostic.STATUS_GRANTED);
             }else{
@@ -427,7 +442,7 @@ public class Diagnostic extends CordovaPlugin{
         }
         if(permissionsToRequest.length() > 0){
             Log.v(TAG, "Requesting permissions");
-            cordova.requestPermissions(this, requestId, jsonArrayToStringArray(permissionsToRequest));
+            requestPermissions(this, requestId, jsonArrayToStringArray(permissionsToRequest));
 
         }else{
             Log.d(TAG, "No permissions to request: returning result");
@@ -499,6 +514,27 @@ public class Diagnostic extends CordovaPlugin{
         map.put(value, key);
     }
 
+    private boolean hasPermission(String permission) throws Exception{
+        boolean hasPermission = true;
+        java.lang.reflect.Method method = cordova.getClass().getMethod("hasPermission", permission.getClass());
+        if (method != null) {
+            Boolean bool = (Boolean)method.invoke(cordova, permission);
+            hasPermission = bool.booleanValue();
+        }else{
+            Log.w(TAG, "Cordova v"+CordovaWebView.CORDOVA_VERSION+" does not support runtime permissions so defaulting to GRANTED for "+permission);
+        }
+        return hasPermission;
+    }
+
+    private void requestPermissions(CordovaPlugin plugin, int requestCode, String [] permissions) throws Exception{
+        java.lang.reflect.Method method = cordova.getClass().getMethod("requestPermissions", org.apache.cordova.CordovaPlugin.class ,int.class, java.lang.String[].class);
+        if (method != null) {
+            method.invoke(cordova, plugin, requestCode, permissions);
+        } else {
+            throw new Exception("requestPermissions() method not found in CordovaInterface implementation of Cordova v" + CordovaWebView.CORDOVA_VERSION);
+        }
+    }
+
     /************
      * Overrides
      ***********/
@@ -512,7 +548,6 @@ public class Diagnostic extends CordovaPlugin{
      * @param permissions - list of permissions that were requested
      * @param grantResults - list of flags indicating if above permissions were granted or denied
      */
-    @Override
     public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
         String sRequestId = String.valueOf(requestCode);
         Log.v(TAG, "Received result for permissions request id="+sRequestId);
