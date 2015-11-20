@@ -965,11 +965,11 @@ Permissions are grouped as follows:
     SMS: [SEND_SMS, RECEIVE_SMS, READ_SMS, RECEIVE_WAP_PUSH, RECEIVE_MMS],
     STORAGE: [READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE]
 
-#### Runtime permission example project
+#### Runtime permissions example project
 
-While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/ordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin:
+While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin:
 
-[https://github.com/dpa99c/ordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/ordova-diagnostic-plugin-android-runtime-example)
+[https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example)
 
 ## Windows 10 Mobile permissions
 
