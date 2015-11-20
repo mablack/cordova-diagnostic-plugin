@@ -546,11 +546,11 @@ Returns the current location mode setting for the device.
 - {Function} successCallback -  The callback which will be called when operation is successful.
 This callback function is passed a single string parameter which indicates the current location mode.
 Values that may be passed to the success callback:
-- "high_accuracy" - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-- "device_only" - GPS hardware only (high accuracy)
-- "battery_saving" - network triangulation and Wifi network IDs (low accuracy)
-- "location_off" - Location is turned off
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+    - "high_accuracy" - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+    - "device_only" - GPS hardware only (high accuracy)
+    - "battery_saving" - network triangulation and Wifi network IDs (low accuracy)
+    - "location_off" - Location is turned off
+    - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
 
@@ -907,9 +907,9 @@ You can add these permissions either by manually editing the AndroidManifest.xml
 
 Android 6 / API 23 introduces the concept of [runtime permissions](http://developer.android.com/training/permissions/requesting.html). Similar to iOS, certain "dangerous" permissions must be requested at runtime __in addition__ to being listed in the Android manifest.
 
-Runtime permissions only apply if the device/emulator the app is running on has Android 6.0 or above __AND__ the app is built using API 23 or higher. For Cordova, this means using the Cordova Android platform [version 5.0.0](https://github.com/apache/cordova-android/tree/5.0.x) or above: `cordova platform add android@5.0.0`. If the app is build with version 4.x or below (API 22 or below), runtime permissions do not apply - all permissions are granted at installation time.
+Runtime permissions only apply if the device/emulator the app is running on has Android 6.0 or above __AND__ the app is built using API 23 or higher. For Cordova, this means using the Cordova Android platform [version 5.0.0](https://github.com/apache/cordova-android/tree/5.0.x) or above: `cordova platform add android@5.0.0`. If the app is built with version 4.x or below (API 22 or below), runtime permissions do not apply - all permissions are granted at installation time.
 
-This plugin now supports [checking]() and [requesting]() Android runtime permissions.
+This plugin supports [checking](#getpermissionauthorizationstatus) and [requesting](#requestruntimepermission) of Android runtime permissions.
 
 #### "Dangerous" runtime permissions
 
@@ -967,7 +967,9 @@ Permissions are grouped as follows:
 
 #### Runtime permission example project
 
-While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/ordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin.
+While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/ordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin:
+
+[https://github.com/dpa99c/ordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/ordova-diagnostic-plugin-android-runtime-example)
 
 ## Windows 10 Mobile permissions
 
