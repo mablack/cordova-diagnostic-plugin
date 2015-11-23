@@ -115,13 +115,18 @@
 {
     CDVPluginResult* pluginResult;
     @try {
-        BOOL always = [[command argumentAtIndex:0] boolValue];
-        if(always){
-            [self.locationManager requestAlwaysAuthorization];
-            NSLog(@"Requesting location authorization: always");
-        }else{
-            [self.locationManager requestWhenInUseAuthorization];
-            NSLog(@"Requesting location authorization: when in use");
+        if ([CLLocationManager instancesRespondToSelector:@selector(requestWhenInUseAuthorization)])
+        {
+            BOOL always = [[command argumentAtIndex:0] boolValue];
+            if(always){
+                NSAssert([[[NSBundle mainBundle] infoDictionary] valueForKey:@"NSLocationAlwaysUsageDescription"], @"For iOS 8 and above, your app must have a value for NSLocationAlwaysUsageDescription in its Info.plist");
+                [self.locationManager requestAlwaysAuthorization];
+                NSLog(@"Requesting location authorization: always");
+            }else{
+                NSAssert([[[NSBundle mainBundle] infoDictionary] valueForKey:@"NSLocationWhenInUseUsageDescription"], @"For iOS 8 and above, your app must have a value for NSLocationWhenInUseUsageDescription in its Info.plist");
+                [self.locationManager requestWhenInUseAuthorization];
+                NSLog(@"Requesting location authorization: when in use");
+            }
         }
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];        
     }
