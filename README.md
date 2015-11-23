@@ -66,11 +66,7 @@ The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugi
 
 ## Important Android Note
 
-This plugin now supports Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html). However, in order to do this, it must depend on Android Support Library v23+, which means you __must build using SDK v23 or above__. The means using [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above, e.g.
-
-    cordova platform add android@5.0.0
-
-See the [Android runtime permissions](#android-runtime-permissions) section for more details.
+This plugin now supports Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html). However, in order to do this, it must depend on Android Support Library v23+, which means you __must build using Android SDK v23 or above__. See the [Android runtime permissions build requirements](#android-runtime-permissions-build-requirements) section for more details.
 
 # Installation
 
@@ -917,9 +913,19 @@ You can add these permissions either by manually editing the AndroidManifest.xml
 
 Android 6 / API 23 introduces the concept of [runtime permissions](http://developer.android.com/training/permissions/requesting.html). Similar to iOS, certain "dangerous" permissions must be requested at runtime __in addition__ to being listed in the Android manifest.
 
-Runtime permissions only apply if the device/emulator the app is running on has Android 6.0 or above __AND__ the app is built using API 23 or higher. For Cordova, this means using the Cordova Android platform [version 5.0.0](https://github.com/apache/cordova-android/tree/5.0.x) or above: `cordova platform add android@5.0.0`. If the app is built with version 4.x or below (API 22 or below), runtime permissions do not apply - all permissions are granted at installation time.
+Runtime permissions only apply if the device/emulator the app is running on has Android 6.0 or above. If the app is running on Android 5.x or below, runtime permissions do not apply - all permissions are granted at installation time.
 
 This plugin supports [checking](#getpermissionauthorizationstatus) and [requesting](#requestruntimepermission) of Android runtime permissions.
+
+#### Android runtime permissions build requirements
+
+In order to support Android 6 runtime permissions, this plugin must depend on Android Support Library v23+, which means you __must build using SDK v23 or above__. This means using [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above:
+
+    cordova platform add android@5.0.0
+
+Attempting to build with API 22 or below will result in a build error.
+
+You must also make sure your build environment has __Android Support Library v23+__ installed via the Android SDK Manager.
 
 #### "Dangerous" runtime permissions
 
