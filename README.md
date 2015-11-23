@@ -2,6 +2,7 @@ Cordova diagnostic plugin
 =========================
 
 * [Overview](#overview)
+    * [Important Android Note](#important-android-note)
 * [Installation](#installation)
 * [Usage](#usage)
     * [Android, iOS and Windows 10 Mobile](#android-and-ios-and-windows)
@@ -62,6 +63,14 @@ This Cordova/Phonegap plugin for iOS, Android and Windows 10 Mobile is used to c
 The plugin also enables an app to show the relevant settings screen, to allow users to change the above device settings.
 
 The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
+
+## Important Android Note
+
+This plugin now supports Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html). However, in order to do this, it must depend on Android Support Library v23+, which means you __must build using SDK v23 or above__. The means using [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above, e.g.
+
+    cordova platform add android@5.0.0
+
+See the [Android runtime permissions](#android-runtime-permissions) section for more details.
 
 # Installation
 
