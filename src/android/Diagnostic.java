@@ -38,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Build;
 import android.util.Log;
@@ -408,7 +409,7 @@ public class Diagnostic extends CordovaPlugin{
             if(granted){
                 statuses.put(permission, Diagnostic.STATUS_GRANTED);
             }else{
-                boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
+                boolean showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
                 if(!showRationale){
                     statuses.put(permission, Diagnostic.STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS);
                 }else{
@@ -532,6 +533,18 @@ public class Diagnostic extends CordovaPlugin{
         }
     }
 
+    private boolean shouldShowRequestPermissionRationale(Activity activity, String permission) throws Exception{
+        boolean shouldShow;
+        try {
+            java.lang.reflect.Method method = ActivityCompat.class.getMethod("shouldShowRequestPermissionRationale", Activity.class, java.lang.String.class);
+            Boolean bool = (Boolean) method.invoke(null, activity, permission);
+            shouldShow = bool.booleanValue();
+        } catch (NoSuchMethodException e) {
+            throw new Exception("shouldShowRequestPermissionRationale() method not found in ActivityCompat class. Check you have Android Support Library v23+ installed");
+        }
+        return shouldShow;
+    }
+
     /************
      * Overrides
      ***********/
@@ -562,7 +575,7 @@ public class Diagnostic extends CordovaPlugin{
                 String androidPermission = permissions[i];
                 String permission = permissionsMap.get(androidPermission);
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                    boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
+                    boolean showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
                     if (!showRationale) {
                         // EITHER: The app doesn't have a permission and the user has not been asked for the permission before
                         // OR: user denied WITH "never ask again"
