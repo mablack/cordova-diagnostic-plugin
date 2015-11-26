@@ -173,6 +173,23 @@ var Diagnostic = (function(){
 		return status;
 	}
 
+	function combineCameraStatuses(statuses){
+		var cameraStatus = statuses[Diagnostic.runtimePermission.CAMERA],
+			mediaStatus = statuses[Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE],
+			status;
+
+		if(cameraStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS || mediaStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS){
+			status = Diagnostic.runtimePermissionStatus.DENIED_ALWAYS;
+		}else if(cameraStatus == Diagnostic.runtimePermissionStatus.DENIED || mediaStatus == Diagnostic.runtimePermissionStatus.DENIED){
+			status = Diagnostic.runtimePermissionStatus.DENIED;
+		}else if(cameraStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED || mediaStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED){
+			status = Diagnostic.runtimePermissionStatus.NOT_REQUESTED;
+		}else{
+			status = Diagnostic.runtimePermissionStatus.GRANTED;
+		}
+		return status;
+	}
+
 
 	/**********************
 	 * Public API functions
@@ -577,7 +594,13 @@ var Diagnostic = (function(){
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 */
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback){
-		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.runtimePermission.CAMERA);
+		function onSuccess(statuses){
+			successCallback(combineCameraStatuses(statuses));
+		}
+		Diagnostic.requestRuntimePermissions(onSuccess, errorCallback, [
+			Diagnostic.runtimePermission.CAMERA,
+			Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE
+		]);
 	};
 
 	/**
@@ -588,7 +611,13 @@ var Diagnostic = (function(){
 	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
 	 */
 	Diagnostic.getCameraAuthorizationStatus = function(successCallback, errorCallback){
-		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.runtimePermission.CAMERA);
+		function onSuccess(statuses){
+			successCallback(combineCameraStatuses(statuses));
+		}
+		Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
+			Diagnostic.runtimePermission.CAMERA,
+			Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE
+		]);
 	};
 
 	/**
