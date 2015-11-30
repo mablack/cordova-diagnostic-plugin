@@ -697,7 +697,7 @@ This callback function is passed a single string parameter containing the error 
 
     cordova.plugins.diagnostic.requestRuntimePermissions(function(statuses){
         for (var permission in statuses){
-            switch(statuses[permission){
+            switch(statuses[permission]){
                 case cordova.plugins.diagnostic.runtimePermissionStatus.GRANTED:
                     console.log("Permission granted to use "+permission);
                     break;
