@@ -11,7 +11,7 @@ var Diagnostic = (function(){
 
 	// Callback function to execute upon change in Bluetooth state
 	var _onBluetoothStateChangeCallback = function(){};
-	
+
 	/*
 	 * Public API
 	 */
@@ -346,7 +346,23 @@ var Diagnostic = (function(){
 			'switchToSettings',
 			[]);
 	};
-	
+
+	/**
+	 * Requests access to microphone if authorization was never granted nor denied, will only return access status otherwise.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+	 * @param {Function} errorCallback - The callback which will be called when an error occurs.
+	 * This callback function is passed a single string parameter containing the error message.
+	 * This works only on iOS 7+.
+	 */
+	Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'requestMicrophoneAuthorization',
+			[]);
+	};
+
 	return Diagnostic;
 })();
 
