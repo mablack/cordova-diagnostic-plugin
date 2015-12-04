@@ -341,6 +341,21 @@ var Diagnostic = (function(){
 	};
 
 	/**
+	 * Opens settings page for this app.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+	 * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.switchToSettings = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'switchToSettings',
+			[]);
+	};
+
+	/**
 	 * Switches to the Location page in the Settings app
 	 */
 	Diagnostic.switchToLocationSettings = function() {

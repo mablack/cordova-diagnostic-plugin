@@ -21,7 +21,6 @@ package cordova.plugins;
 /*
  * Imports
  */
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,14 +39,13 @@ import org.json.JSONObject;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.os.Build;
+import android.net.Uri;
 import android.util.Log;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
-import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 
 import android.support.v4.app.ActivityCompat;
@@ -158,7 +156,10 @@ public class Diagnostic extends CordovaPlugin{
         currentContext = callbackContext;
 
         try {
-            if (action.equals("switchToLocationSettings")){
+            if (action.equals("switchToSettings")){
+                switchToAppSettings();
+                callbackContext.success();
+            } else if (action.equals("switchToLocationSettings")){
                 switchToLocationSettings();
                 callbackContext.success();
             } else if (action.equals("switchToMobileDataSettings")){
@@ -262,6 +263,14 @@ public class Diagnostic extends CordovaPlugin{
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         boolean result = mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
         return result;
+    }
+
+    public void switchToAppSettings() {
+        Log.d(TAG, "Switch to App Settings");
+        Intent appIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", cordova.getActivity().getPackageName(), null);
+        appIntent.setData(uri);
+        cordova.getActivity().startActivity(appIntent);
     }
 
     public void switchToLocationSettings() {

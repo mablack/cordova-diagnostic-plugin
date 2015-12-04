@@ -25,6 +25,7 @@ Cordova diagnostic plugin
         - [isCameraAuthorized()](#iscameraauthorized)
         - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
         - [requestCameraAuthorization()](#requestcameraauthorization)
+        - [switchToSettings()](#switchtosettings)
     * [Android only](#android-only)
         - [isGpsLocationEnabled()](#isgpslocationenabled)
         - [isNetworkLocationEnabled()](#isnetworklocationenabled)
@@ -41,7 +42,6 @@ Cordova diagnostic plugin
         - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
         - [getBluetoothState()](#getbluetoothstate)
         - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
-        - [switchToSettings()](#switchtosettings)
         - [requestMicrophoneAuthorization()](#requestMicrophoneAuthorization)
 * [Notes](#notes)
     * [Android permissions](#android-permissions)
@@ -486,6 +486,30 @@ This callback function is passed a single string parameter containing the error 
         console.error(error);
     });
 
+### switchToSettings()
+
+Opens settings page for this app.
+
+On Android, this opens the "App Info" page in the Settings app.
+
+On iOS, this opens the app settings page in the Settings app. This works only on iOS 8+ - iOS 7 and below will invoke the errorCallback.
+
+    cordova.plugins.diagnostic.switchToSettings(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback - The callback which will be called when switch to settings is successful.
+- {Function} errorCallback - The callback which will be called when switch to settings encounters an error. This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.switchToSettings(function(){
+        console.log("Successfully switched to Settings app"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
 ## Android only
 
 ### isGpsLocationEnabled()
@@ -870,26 +894,6 @@ Possible values are: "unknown", "resetting", "unsupported", "unauthorized", "pow
         console.log("Bluetooth state changed to: " + state);
     });
 
-
-### switchToSettings()
-
-Switch to Settings app. Opens settings page for this app. This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
-
-    cordova.plugins.diagnostic.switchToSettings(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback - The callback which will be called when switch to settings is successful.
-- {Function} errorCallback - The callback which will be called when switch to settings encounters an error. This callback function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.switchToSettings(function(){
-        console.log("Successfully switched to Settings app"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 ### requestMicrophoneAuthorization()
 
