@@ -42,6 +42,7 @@ Cordova diagnostic plugin
         - [getBluetoothState()](#getbluetoothstate)
         - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
         - [switchToSettings()](#switchtosettings)
+        - [requestMicrophoneAuthorization()](#requestMicrophoneAuthorization)
 * [Notes](#notes)
     * [Android permissions](#android-permissions)
         * [Android runtime permissions](#android-runtime-permissions)
@@ -114,7 +115,7 @@ When location is enabled, the locations returned are dependent on the location m
 
 #### Parameters
 
-- {Function} successCallback -  The callback which will be called when operation is successful. 
+- {Function} successCallback -  The callback which will be called when operation is successful.
 This callback function is passed a single boolean parameter which is TRUE if location is available for use.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
@@ -886,6 +887,30 @@ Switch to Settings app. Opens settings page for this app. This works only on iOS
 
     cordova.plugins.diagnostic.switchToSettings(function(){
         console.log("Successfully switched to Settings app"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### requestMicrophoneAuthorization()
+
+Requests access to microphone if authorization was never granted nor denied, will only return access status otherwise.
+Works on iOS 7+.
+
+    cordova.plugins.diagnostic.requestMicrophoneAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status.
+Possible values are: "unknown", "denied", "not_determined", "authorized"
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestMicrophoneAuthorization(function(granted){
+        if (granted)
+          console.log("Microphone access is granted.");
+        else
+          console.log("Microphone access is denied.");
     }, function(error){
         console.error("The following error occurred: "+error);
     });

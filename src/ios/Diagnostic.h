@@ -36,4 +36,6 @@
 
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 
+- (void) requestMicrophoneAuthorization: (CDVInvokedUrlCommand*)command;
+
 @end
