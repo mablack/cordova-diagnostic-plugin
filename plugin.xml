@@ -17,6 +17,12 @@
 
     <!-- ios -->
     <platform name="ios">
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+          <string>This app requires constant access to your location in order to track your position, even when the screen is off.</string>
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+          <string>This app will now only track your location when the screen is on and the app is displayed.</string>
+        </config-file>
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic">
                 <param name="ios-package" value="Diagnostic" />
