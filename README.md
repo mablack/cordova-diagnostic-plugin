@@ -47,6 +47,7 @@ Cordova diagnostic plugin
     * [Android permissions](#android-permissions)
         * [Android runtime permissions](#android-runtime-permissions)
     * [Windows 10 Mobile permissions](#windows-permissions)
+    * [iOS location permission messages](#ios-location-permission-messages)
 * [Example project](#example-project)
     * [Screenshots](#screenshots)
 * [Credits](#credits)
@@ -351,8 +352,11 @@ This callback function is passed a single string parameter containing the error 
 
  Requests location authorization for the application.
 
- On iOS, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
- This should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+ Notes for iOS:
+ - Calling this on iOS 7 or below will have no effect, as location permissions are are implicitly granted.
+ - On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
+ - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
+ - This plugin adds default messages which are displayed to the user upon requesting location authorization - see the [iOS location permission messages](#ios-location-permission-messages) section for how to customise them.
 
  Note for Android: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 
@@ -1024,6 +1028,29 @@ These permissions will not be set by this plugin, to avoid asking for unnecessar
 Instead, you can add these permissions as necessary, depending what functions in the plugin you decide to use.
 
 You can add these permissions by manually editing the package.windows10.appxmanifest in `/platforms/windows/`.
+
+## iOS location permission messages
+
+When location permission is requested on iOS 8+, a message is displayed to the user indicating the reason for the request. These messages are stored in the `{project}-Info.plist` file under the keys `NSLocationAlwaysUsageDescription` and `NSLocationWhenInUseUsageDescription`, which are displayed when requesting to use location **always** or **when in use**, respectively.
+
+Upon installing this plugin into your project, it will add the following default messages to your plist:
+
+- NSLocationAlwaysUsageDescription: "This app requires constant access to your location in order to track your position, even when the screen is off."
+- NSLocationWhenInUseUsageDescription: "This app will now only track your location when the screen is on and the app is displayed."
+
+To override these defaults, you can either edit the messages directly in the plist file, or to persist the changes between platform updates, use my [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin to add overrides directly from the config xml:
+
+`config.xml`
+
+    <platform name="ios">
+        <plugin name="cordova-custom-config" version="*"/>
+        <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+            <string>My custom message for always using location.</string>
+        </config-file>
+        <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+            <string>My custom message for using location when in use.</string>
+        </config-file>
+    </platform>
 
 # Example project
 
