@@ -363,6 +363,74 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+	/**
+	 * Checks if remote (push) notifications are enabled.
+	 * On iOS 8+, returns true if app is registered for remote notifications AND "Allow Notifications" switch is ON AND alert style is not set to "None" (i.e. "Banners" or "Alerts").
+	 * On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as isRegisteredForRemoteNotifications().
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if remote (push) notifications are enabled.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isRemoteNotificationsEnabled = function(successCallback, errorCallback) {
+		return cordova.exec(function(enabled){
+				successCallback(!!enabled);
+			},
+			errorCallback,
+			'Diagnostic',
+			'isRemoteNotificationsEnabled',
+			[]);
+	};
+
+	/**
+	 * Indicates the current setting of notification types for the app in the Settings app.
+	 * Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be returned as disabled.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single object parameter where the key is the notification type and the value is a boolean indicating whether it's enabled:
+	 * "alert" => alert style is not set to "None" (i.e. "Banners" or "Alerts");
+	 * "badge" => "Badge App Icon" switch is ON;
+	 * "sound" => "Sounds"/"Alert Sound" switch is ON.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getRemoteNotificationTypes = function(successCallback, errorCallback) {
+		return cordova.exec(function(sTypes){
+				var oTypes = JSON.parse(sTypes);
+				for(var type in oTypes){
+					oTypes[type] = parseInt(oTypes[type]) === 1 ;
+				}
+				successCallback(oTypes);
+			},
+			errorCallback,
+			'Diagnostic',
+			'getRemoteNotificationTypes',
+			[]);
+	};
+
+	/**
+	 * Indicates if the app is registered for remote notifications on the device.
+	 * On iOS 8+, returns true if the app is registered for remote notifications and received its device token,
+	 * or false if registration has not occurred, has failed, or has been denied by the user.
+	 * Note that user preferences for notifications in the Settings app will not affect this.
+	 * On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as isRemoteNotificationsEnabled().
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if the device is registered for remote (push) notifications.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isRegisteredForRemoteNotifications = function(successCallback, errorCallback) {
+		return cordova.exec(function(registered){
+				successCallback(!!registered);
+			},
+			errorCallback,
+			'Diagnostic',
+			'isRegisteredForRemoteNotifications',
+			[]);
+	};
+
 	return Diagnostic;
 })();
 

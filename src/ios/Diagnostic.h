@@ -34,6 +34,10 @@
 - (void) isWifiEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isBluetoothEnabled: (CDVInvokedUrlCommand*)command;
 
+- (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command;
+- (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command;
+- (void) isRegisteredForRemoteNotifications: (CDVInvokedUrlCommand*)command;
+
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 
 - (void) requestMicrophoneAuthorization: (CDVInvokedUrlCommand*)command;

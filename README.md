@@ -43,6 +43,9 @@ Cordova diagnostic plugin
         - [getBluetoothState()](#getbluetoothstate)
         - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
         - [requestMicrophoneAuthorization()](#requestMicrophoneAuthorization)
+        - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
+        - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
+        - [getRemoteNotificationTypes()](#getremotenotificationtypes)
 * [Notes](#notes)
     * [Android permissions](#android-permissions)
         * [Android runtime permissions](#android-runtime-permissions)
@@ -919,6 +922,79 @@ Possible values are: "unknown", "denied", "not_determined", "authorized"
           console.log("Microphone access is granted.");
         else
           console.log("Microphone access is denied.");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isRemoteNotificationsEnabled()
+
+Checks if remote (push) notifications are enabled.
+
+On iOS 8+, returns true if app is registered for remote notifications **AND** "Allow Notifications" switch is ON **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts").
+
+On iOS lte;=7, returns true if app is registered for remote notifications **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications).
+
+    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if remote (push) notifications are enabled.
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(function(enabled){
+        console.log("Remote notifications are " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isRegisteredForRemoteNotifications()
+
+Indicates if the app is registered for remote (push) notifications on the device.
+
+On iOS 8+, returns true if the app is registered for remote notifications and received its device token, or false if registration has not occurred, has failed, or has been denied by the user.
+Note that user preferences for notifications in the Settings app will not affect this.
+
+On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRemoteNotificationsEnabled()](#isremotenotificationsenabled).
+
+    cordova.plugins.diagnostic.isRegisteredForRemoteNotifications(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if the device is registered for remote (push) notifications.
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isRegisteredForRemoteNotifications(function(registered){
+        console.log("Device " + (registered ? "is" : "isn't") + " registered for remote notifications");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getRemoteNotificationTypes()
+
+Indicates the current setting of notification types for the app in the Settings app.
+
+Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be returned as disabled.
+
+    cordova.plugins.diagnostic.getRemoteNotificationTypes(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single object parameter where the key is the notification type and the value is a boolean indicating whether it's enabled:
+	 * "alert" => alert style is not set to "None" (i.e. "Banners" or "Alerts");
+	 * "badge" => "Badge App Icon" switch is ON;
+	 * "sound" => "Sounds"/"Alert Sound" switch is ON.
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getRemoteNotificationTypes(function(types){
+        for(var type in types){
+            console.log(type + " is " + (types[type] ? "enabled" : "disabled"));
+        }
     }, function(error){
         console.error("The following error occurred: "+error);
     });
