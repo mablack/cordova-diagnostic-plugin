@@ -471,6 +471,15 @@
 /*********************
  * Internal functions
  *********************/
+- (void)jsCallback: (NSString*)jsString
+{
+    if ([self.webView isKindOfClass:[UIWebView class]]) {
+        [(UIWebView*)self.webView stringByEvaluatingJavaScriptFromString:jsString];
+    }else if([self.webView isKindOfClass:[WKWebView class]]) {
+        [(WKWebView*)self.webView evaluateJavaScript:jsString completionHandler:nil];
+    }
+}
+
 - (NSString*) getLocationAuthorizationStatusAsString: (CLAuthorizationStatus)authStatus
 {
     NSString* status = @"unknown";
@@ -501,7 +510,7 @@
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
     NSLog([NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
     NSString* jsString = [NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationAuthorizationStatusChange(\"%@\");", status];
-    [self.webView stringByEvaluatingJavaScriptFromString:jsString];
+    [self jsCallback:jsString];
 }
 
 - (BOOL) isCameraPresent
@@ -639,7 +648,7 @@
     }
     
     NSString* jsString = [NSString stringWithFormat:@"cordova.plugins.diagnostic._onBluetoothStateChange(\"%@\");", state];
-    [self.webView stringByEvaluatingJavaScriptFromString:jsString];
+    [self jsCallback:jsString];
 }
 
 @end
