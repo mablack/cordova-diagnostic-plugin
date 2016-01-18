@@ -39,7 +39,9 @@ import org.json.JSONObject;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import android.content.Context;
@@ -213,17 +215,18 @@ public class Diagnostic extends CordovaPlugin{
 
     public boolean isGpsLocationEnabled() throws Exception {
         int mode = getLocationMode();
-        boolean result = (mode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY || mode == Settings.Secure.LOCATION_MODE_SENSORS_ONLY) && isLocationAuthorized();
+        boolean result = (mode == 3 || mode == 1) && isLocationAuthorized();
         Log.d(TAG, "GPS enabled: " + result);
         return result;
     }
 
     public boolean isNetworkLocationEnabled() throws Exception {
         int mode = getLocationMode();
-        boolean result = (mode == Settings.Secure.LOCATION_MODE_HIGH_ACCURACY || mode == Settings.Secure.LOCATION_MODE_BATTERY_SAVING) && isLocationAuthorized();
+        boolean result = (mode == 3 || mode == 2) && isLocationAuthorized();
         Log.d(TAG, "Network enabled: " + result);
         return result;
     }
+
 
     public String getLocationModeName() throws Exception {
         String modeName;
@@ -394,14 +397,33 @@ public class Diagnostic extends CordovaPlugin{
     /**
      * Returns current location mode
      */
-    private int getLocationMode() throws Settings.SettingNotFoundException {
-        return Settings.Secure.getInt(this.cordova.getActivity().getContentResolver(), Settings.Secure.LOCATION_MODE);
+    private int getLocationMode() throws Exception {
+        int mode;
+        if (Build.VERSION.SDK_INT >= 19){ // Kitkat and above
+            mode = Settings.Secure.getInt(this.cordova.getActivity().getContentResolver(), Settings.Secure.LOCATION_MODE);
+        }else{ // Pre-Kitkat
+            if(isLocationProviderEnabled(LocationManager.GPS_PROVIDER) && isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                mode = 3;
+            }else if(isLocationProviderEnabled(LocationManager.GPS_PROVIDER)){
+                mode = 1;
+            }else if(isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                mode = 2;
+            }else{
+                mode = 0;
+            }
+        }
+        return mode;
     }
 
     private boolean isLocationAuthorized() throws Exception {
         boolean authorized = hasPermission(permissionsMap.get("ACCESS_FINE_LOCATION")) && hasPermission(permissionsMap.get("ACCESS_COARSE_LOCATION"));
         Log.v(TAG, "Location permission is "+(authorized ? "authorized" : "unauthorized"));
         return authorized;
+    }
+
+    private boolean isLocationProviderEnabled(String provider) {
+        LocationManager locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(provider);
     }
 
 
