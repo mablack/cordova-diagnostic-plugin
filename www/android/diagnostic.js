@@ -190,6 +190,12 @@ var Diagnostic = (function(){
 		return status;
 	}
 
+	function ensureBoolean(callback){
+		return function(result){
+			callback(!!result);
+		}
+	}
+
 
 	/**********************
 	 * Public API functions
@@ -206,7 +212,7 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isLocationEnabled',
@@ -226,7 +232,7 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isGpsLocationEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isGpsLocationEnabled',
@@ -246,7 +252,7 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isNetworkLocationEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isNetworkLocationEnabled',
@@ -303,7 +309,7 @@ var Diagnostic = (function(){
 			if(isPresent){
 				Diagnostic.isCameraAuthorized(successCallback, errorCallback);
 			}else{
-				successCallback(isPresent);
+				successCallback(!!isPresent);
 			}
 		},errorCallback);
 	};
@@ -333,7 +339,7 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isBluetoothEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isBluetoothEnabled',

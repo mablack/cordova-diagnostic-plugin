@@ -12,9 +12,19 @@ var Diagnostic = (function(){
 	// Callback function to execute upon change in Bluetooth state
 	var _onBluetoothStateChangeCallback = function(){};
 
-	/*
-	 * Public API
-	 */
+	/********************
+	 * Internal functions
+	 ********************/
+
+	function ensureBoolean(callback){
+		return function(result){
+			callback(!!result);
+		}
+	}
+
+	/**********************
+	 * Public API functions
+	 **********************/
 	var Diagnostic = {};
 
 	/**
@@ -28,7 +38,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isLocationEnabled',
@@ -45,7 +55,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationEnabledSetting = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isLocationEnabledSetting',
@@ -62,7 +72,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isLocationAuthorized = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isLocationAuthorized',
@@ -135,7 +145,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isCameraEnabled',
@@ -151,7 +161,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isCameraPresent',
@@ -168,7 +178,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraAuthorized = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isCameraAuthorized',
@@ -202,7 +212,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'requestCameraAuthorization',
@@ -218,7 +228,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraRollAuthorized = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isCameraRollAuthorized',
@@ -269,7 +279,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isWifiEnabled',
@@ -286,7 +296,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isBluetoothEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isBluetoothEnabled',
@@ -374,9 +384,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isRemoteNotificationsEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(function(enabled){
-				successCallback(!!enabled);
-			},
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isRemoteNotificationsEnabled',
@@ -422,9 +430,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isRegisteredForRemoteNotifications = function(successCallback, errorCallback) {
-		return cordova.exec(function(registered){
-				successCallback(!!registered);
-			},
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isRegisteredForRemoteNotifications',
