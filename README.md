@@ -71,7 +71,32 @@ The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugi
 
 ## Important Android Note
 
-This plugin now supports Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html). However, in order to do this, it must depend on Android Support Library v23+, which means you __must build using Android SDK v23 or above__. See the [Android runtime permissions build requirements](#android-runtime-permissions-build-requirements) section for more details.
+This plugin has been updated to support Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html).
+
+In order to do this it must depend on libraries only present in API 23+, so you __must build using Android SDK Platform v23 or above__. To do this you must have [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above installed in your project. You can check the currently installed platform versions with the following command:
+
+    cordova platform ls
+
+Currently the default version installed (if not specified) is cordova-android@4 which uses API 22, so you need to explicitly specify the version when adding the platform:
+
+    cordova platform add android@5.0.0
+
+__Note:__ Attempting to build with API 22 or below will result in a build error.
+
+
+
+You __must__ also make sure your build environment has the following Android libraries installed. In a local build environment, you'd install these via the Android SDK Manager:
+
+ -  Android Support Library - Rev. 23 or above
+ -  Android Support Repository - Rev. 23 or above
+
+### Building for API 22 or lower
+
+Phonegap Build (at the time of writing) does not support API 23, so for its users and others who wish to build against API 22 or below, there is a branch of this plugin repo which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against earlier API versions. The version of this plugin [published to npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) is the master branch containing Android 6 runtime permissions code, so you'll need to install the plugin directly from the GitHub repo and specify the branch:
+
+    cordova plugin add https://github.com/dpa99c/cordova-diagnostic-plugin#api-22
+
+You can also browse this branch directly: [https://github.com/dpa99c/cordova-diagnostic-plugin#api-22](https://github.com/dpa99c/cordova-diagnostic-plugin#api-22)
 
 # Installation
 
@@ -1025,16 +1050,6 @@ Android 6 / API 23 introduces the concept of [runtime permissions](http://develo
 Runtime permissions only apply if the device/emulator the app is running on has Android 6.0 or above. If the app is running on Android 5.x or below, runtime permissions do not apply - all permissions are granted at installation time.
 
 This plugin supports [checking](#getpermissionauthorizationstatus) and [requesting](#requestruntimepermission) of Android runtime permissions.
-
-#### Android runtime permissions build requirements
-
-In order to support Android 6 runtime permissions, this plugin must depend on Android Support Library v23+, which means you __must build using SDK v23 or above__. This means using [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above:
-
-    cordova platform add android@5.0.0
-
-Attempting to build with API 22 or below will result in a build error.
-
-You must also make sure your build environment has __Android Support Library v23+__ installed via the Android SDK Manager.
 
 #### "Dangerous" runtime permissions
 
