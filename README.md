@@ -96,7 +96,7 @@ Phonegap Build (at the time of writing) does not support API 23, so for its user
 
     cordova plugin add https://github.com/dpa99c/cordova-diagnostic-plugin#api-22
 
-You can also browse this branch directly: [https://github.com/dpa99c/cordova-diagnostic-plugin#api-22](https://github.com/dpa99c/cordova-diagnostic-plugin#api-22)
+You can also browse this branch directly: [https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22)
 
 # Installation
 
