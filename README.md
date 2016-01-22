@@ -84,7 +84,6 @@ Currently the default version installed (if not specified) is cordova-android@4 
 __Note:__ Attempting to build with API 22 or below will result in a build error.
 
 
-
 You __must__ also make sure your build environment has the following Android libraries installed. In a local build environment, you'd install these via the Android SDK Manager:
 
  -  Android Support Library - Rev. 23 or above
@@ -92,11 +91,11 @@ You __must__ also make sure your build environment has the following Android lib
 
 ### Building for API 22 or lower
 
-Phonegap Build (at the time of writing) does not support API 23, so for its users and others who wish to build against API 22 or below, there is a branch of this plugin repo which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against earlier API versions. The version of this plugin [published to npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) is the master branch containing Android 6 runtime permissions code, so you'll need to install the plugin directly from the GitHub repo and specify the branch:
+Phonegap Build (at the time of writing) does not support API 23, so for its users and others who wish to build against API 22 or below, there is a [legacy branch of this plugin repo](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22) which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against earlier API versions.
 
-    cordova plugin add https://github.com/dpa99c/cordova-diagnostic-plugin#api-22
+The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](https://www.npmjs.com/package/cordova.plugins.diagnostic.api-22), so you'll need to use this plugin ID when adding it:
 
-You can also browse this branch directly: [https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22)
+    cordova plugin add cordova.plugins.diagnostic.api-22
 
 # Installation
 
