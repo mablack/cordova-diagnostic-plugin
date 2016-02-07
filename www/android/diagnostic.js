@@ -619,7 +619,6 @@ var Diagnostic = (function(){
 			successCallback(combineCameraStatuses(statuses));
 		}
 		Diagnostic.requestRuntimePermissions(onSuccess, errorCallback, [
-			Diagnostic.runtimePermission.CAMERA,
 			Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE
 		]);
 	};
@@ -636,7 +635,6 @@ var Diagnostic = (function(){
 			successCallback(combineCameraStatuses(statuses));
 		}
 		Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
-			Diagnostic.runtimePermission.CAMERA,
 			Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE
 		]);
 	};
