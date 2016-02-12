@@ -380,20 +380,26 @@ This callback function is passed a single string parameter containing the error 
  Requests location authorization for the application.
 
  Notes for iOS:
+
  - Calling this on iOS 7 or below will have no effect, as location permissions are are implicitly granted.
  - On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
  - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
  - This plugin adds default messages which are displayed to the user upon requesting location authorization - see the [iOS location permission messages](#ios-location-permission-messages) section for how to customise them.
+ - The successCallback is invoked on successfully requesting the permission, **NOT** in response to the user's choice in the permission dialog.
+ - To listen for the outcome of the user's choice in the permission dialog, use [registerLocationAuthorizationStatusChangeHandler()](https://github.com/dpa99c/cordova-diagnostic-plugin#registerlocationauthorizationstatuschangehandler)
 
- Note for Android: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+ Notes for Android:
+
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+ - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
 
     cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode);
 
 #### Parameters
 
-- {Function} successCallback -  The callback which will be called when operation is successful.
-On iOS, no parameters are passed to the callback.
-On Android, the callback function is passed a single string parameter which defines the [resulting authorisation status](#runtime-permission-statuses).
+- {Function} successCallback -
+On iOS, this is invoked on successfully requesting the permission, **NOT** in response to the user's choice in the permission dialog. No parameters are passed to the callback.
+On Android, this is is invoked in response to the user's choice in the permission dialog. It is passed a single string parameter which defines the [resulting authorisation status](#runtime-permission-statuses).
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 - {String} mode - (iOS-only / optional) location authorization mode: "always" or "when_in_use". If not specified, defaults to "when_in_use".
