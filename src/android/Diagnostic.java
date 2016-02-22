@@ -416,7 +416,7 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     private boolean isLocationAuthorized() throws Exception {
-        boolean authorized = hasPermission(permissionsMap.get("ACCESS_FINE_LOCATION")) && hasPermission(permissionsMap.get("ACCESS_COARSE_LOCATION"));
+        boolean authorized = hasPermission(permissionsMap.get("ACCESS_FINE_LOCATION")) || hasPermission(permissionsMap.get("ACCESS_COARSE_LOCATION"));
         Log.v(TAG, "Location permission is "+(authorized ? "authorized" : "unauthorized"));
         return authorized;
     }
