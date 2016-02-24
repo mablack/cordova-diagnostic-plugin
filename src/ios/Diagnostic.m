@@ -473,14 +473,7 @@
  *********************/
 - (void)jsCallback: (NSString*)jsString
 {
-    if ([self.webView isKindOfClass:[UIWebView class]]) {
-        [(UIWebView*)self.webView stringByEvaluatingJavaScriptFromString:jsString];
-    }
-    
-    // TODO - find a way to conditionally cast WKWebView so it doesn't cause compiler error if WKWebView is not defined (iOS 7 / cordova-ios@3)
-    /*else if([self.webView isKindOfClass:[WKWebView class]]) {
-        [(WKWebView*)self.webView evaluateJavaScript:jsString completionHandler:nil];
-    }*/
+    [self.commandDelegate evalJs:jsString];
 }
 
 - (NSString*) getLocationAuthorizationStatusAsString: (CLAuthorizationStatus)authStatus
