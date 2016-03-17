@@ -385,7 +385,8 @@ This callback function is passed a single string parameter containing the error 
  - On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
  - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
  - This plugin adds default messages which are displayed to the user upon requesting location authorization - see the [iOS location permission messages](#ios-location-permission-messages) section for how to customise them.
- - The successCallback is now invoked in response to the user's choice in the permission dialog, **NOT** on requesting the permission.
+ - The successCallback is now invoked in response to the user's choice in the permission dialog, **NOT** on requesting the permission
+    - **NOTE:** this was changed in v2.3.12, prior to which these conditions were the reverse of the above.
 
  Notes for Android:
 
@@ -805,6 +806,8 @@ This callback function is passed a single string parameter containing the error 
     });
 
 ### registerLocationAuthorizationStatusChangeHandler()
+
+**DEPRECATED: This function will be removed in a future version. You should now use the successCallback of [requestLocationAuthorization()](#requestLocationAuthorization) to determine the outcome of user choice in the native dialog.**
 
  Registers a function to be called when a change in location authorization status occurs.
 
