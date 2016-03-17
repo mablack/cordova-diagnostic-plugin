@@ -7,7 +7,7 @@
 var Diagnostic = (function(){
 
 	// Callback function to execute upon change in location authorization status
-	var _onLocationAuthorizationStatusChangeCallback = function(){};
+	var _onLocationAuthorizationStatusChangeCallback = null;
 
 	// Callback function to execute upon change in Bluetooth state
 	var _onBluetoothStateChangeCallback = function(){};
@@ -120,9 +120,12 @@ var Diagnostic = (function(){
 	 * To be notified of a change in location authorization status, register a handler using registerLocationAuthorizationStatusHandler()
 	 * @param {String} status - new location authorization status
 	 * @private
+	 * @deprecated
 	 */
 	Diagnostic._onLocationAuthorizationStatusChange = function(status){
-		_onLocationAuthorizationStatusChangeCallback(status);
+		if(_onLocationAuthorizationStatusChangeCallback){
+			_onLocationAuthorizationStatusChangeCallback(status);
+		}
 	};
 
 	/**
@@ -130,8 +133,10 @@ var Diagnostic = (function(){
 	 * @param {Function} fn - function call when a change in location authorization status occurs.
 	 * This callback function is passed a single string parameter containing new status.
 	 * Possible values are: "unknown", "denied", "not_determined", "authorized_always" or "authorized_when_in_use"
+	 * @deprecated
 	 */
 	Diagnostic.registerLocationAuthorizationStatusChangeHandler = function(fn){
+		console.warn("registerLocationAuthorizationStatusChangeHandler() is deprecated and will be removed in a future version. Update your code pass this function to requestLocationAuthorization() as successCallback, which will now be invoked when a change in location authorization status occurs");
 		_onLocationAuthorizationStatusChangeCallback = fn;
 	};
 

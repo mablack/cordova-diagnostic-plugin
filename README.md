@@ -385,15 +385,14 @@ This callback function is passed a single string parameter containing the error 
  - On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
  - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
  - This plugin adds default messages which are displayed to the user upon requesting location authorization - see the [iOS location permission messages](#ios-location-permission-messages) section for how to customise them.
- - The successCallback is invoked on successfully requesting the permission, **NOT** in response to the user's choice in the permission dialog.
- - To listen for the outcome of the user's choice in the permission dialog, use [registerLocationAuthorizationStatusChangeHandler()](https://github.com/dpa99c/cordova-diagnostic-plugin#registerlocationauthorizationstatuschangehandler)
+ - The successCallback is now invoked in response to the user's choice in the permission dialog, **NOT** on requesting the permission.
 
  Notes for Android:
 
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
  - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
 
-    cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode);
+    `cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode);`
 
 #### Parameters
 
@@ -406,8 +405,8 @@ This callback function is passed a single string parameter containing the error 
 
 #### Example iOS usage
 
-    cordova.plugins.diagnostic.requestLocationAuthorization(function(){
-        console.log("Successfully requested location authorization always");
+    cordova.plugins.diagnostic.requestLocationAuthorization(function(status){
+        console.log("Authorisation status is now: "+status);
     }, function(error){
         console.error(error);
     }, "always");

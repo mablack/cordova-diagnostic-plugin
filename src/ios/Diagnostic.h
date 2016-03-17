@@ -18,6 +18,7 @@
     @property (nonatomic) BOOL bluetoothEnabled;
     @property (nonatomic) NSString* bluetoothState;
     @property (strong, nonatomic) CLLocationManager* locationManager;
+    @property (nonatomic, retain) NSString* locationRequestCallbackId;
 
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabledSetting: (CDVInvokedUrlCommand*)command;

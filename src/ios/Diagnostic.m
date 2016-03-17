@@ -133,6 +133,9 @@
     @catch (NSException *exception) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
     }
+    self.locationRequestCallbackId = command.callbackId;
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
+    [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -236,7 +239,7 @@
 {
     CDVPluginResult* pluginResult;
     @try {
-        if([self getCameraRollAuthorizationStatus] == @"authorized") {
+        if([[self getCameraRollAuthorizationStatus]  isEqual: @"authorized"]) {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
         }
         else {
@@ -495,7 +498,7 @@
 {
     CLAuthorizationStatus authStatus = [CLLocationManager authorizationStatus];
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
-    if(status == @"authorized_always" || status == @"authorized_when_in_use") {
+    if([status  isEqual: @"authorized_always"] || [status  isEqual: @"authorized_when_in_use"]) {
         return true;
     } else {
         return false;
@@ -505,6 +508,16 @@
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
     NSLog([NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
+    
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
+    
+    [self onLocationAuthorizationStatusChange:status]; // Deprecated
+}
+
+
+-(void)onLocationAuthorizationStatusChange:(NSString *)status __attribute__((deprecated))
+{
     NSString* jsString = [NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationAuthorizationStatusChange(\"%@\");", status];
     [self jsCallback:jsString];
 }
@@ -536,7 +549,6 @@
 
 - (NSString*) getCameraRollAuthorizationStatus
 {
-    CDVPluginResult* pluginResult;
     PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
     return [self getCameraRollAuthorizationStatusAsString:authStatus];
     
@@ -637,7 +649,7 @@
     NSLog(@"Bluetooth state changed: %@",description);
     
     self.bluetoothState = state;
-    if(state == @"powered_on"){
+    if([state  isEqual: @"powered_on"]){
         self.bluetoothEnabled = true;
     }else{
         self.bluetoothEnabled = false;
