@@ -450,6 +450,7 @@ Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 - This only checks run-time permission for `READ_EXTERNAL_STORAGE` (not `CAMERA`) - see [Android Camera permissions](#android-camera-permissions).
 
+
     cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback);
 
 #### Parameters
@@ -475,6 +476,7 @@ This callback function is passed a single string parameter containing the error 
  Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
  - This only checks run-time permission for `READ_EXTERNAL_STORAGE` (not `CAMERA`) - see [Android Camera permissions](#android-camera-permissions).
+
 
     cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback);
 
@@ -502,6 +504,7 @@ This callback function is passed a single string parameter containing the error 
  Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
  - This only requests run-time permission for `READ_EXTERNAL_STORAGE` (not `CAMERA`) - see [Android Camera permissions](#android-camera-permissions).
+
 
     cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback);
 
