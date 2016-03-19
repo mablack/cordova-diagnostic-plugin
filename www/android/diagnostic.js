@@ -92,7 +92,7 @@ var Diagnostic = (function(){
 			}
 		});
 		if(invalidPermissions.length > 0){
-			errorCallback("Invalid permissions specified: "+result.invalidPermissions.join(", "));
+			errorCallback("Invalid permissions specified: "+invalidPermissions.join(", "));
 			valid = false;
 		}
 		return valid;
