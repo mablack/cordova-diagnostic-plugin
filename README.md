@@ -25,6 +25,7 @@ Cordova diagnostic plugin
         - [isCameraAuthorized()](#iscameraauthorized)
         - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
         - [requestCameraAuthorization()](#requestcameraauthorization)
+        - [requestMicrophoneAuthorization()](#requestMicrophoneAuthorization)
         - [switchToSettings()](#switchtosettings)
     * [Android only](#android-only)
         - [isGpsLocationEnabled()](#isgpslocationenabled)
@@ -42,7 +43,6 @@ Cordova diagnostic plugin
         - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
         - [getBluetoothState()](#getbluetoothstate)
         - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
-        - [requestMicrophoneAuthorization()](#requestMicrophoneAuthorization)
         - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
         - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
         - [getRemoteNotificationTypes()](#getremotenotificationtypes)
@@ -495,11 +495,12 @@ This callback function is passed a single string parameter containing the error 
 
 ### requestCameraAuthorization()
 
- Requests camera authorization for the application.
+Requests camera authorization for the application.
 
- On iOS, should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+Notes for iOS:
+ - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
 
- Notes for Android:
+Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
  - This only requests run-time permission for `READ_EXTERNAL_STORAGE` (not `CAMERA`) - see [Android Camera permissions](#android-camera-permissions).
 
@@ -525,6 +526,99 @@ This callback function is passed a single string parameter containing the error 
 
     cordova.plugins.diagnostic.requestCameraAuthorization(function(status){
         console.log("Authorization status for camera is " + status);
+    }, function(error){
+        console.error(error);
+    });
+
+### isMicrophoneAuthorized()
+
+Checks if the application is authorized to use the microphone.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+
+Notes for iOS:
+- Requires iOS 8+
+
+    `cordova.plugins.diagnostic.isMicrophoneAuthorized(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if microphone is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isMicrophoneAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to the microphone");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getMicrophoneAuthorizationStatus()
+
+ Returns the microphone authorization status for the application.
+
+ Notes for Android:
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+
+ Notes for iOS:
+ - Requires iOS 8+
+
+    `cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status.
+On iOS, possible values are: "unknown", "denied", "not_determined", "authorized".
+On Android, possible values are defined in the [Runtime permission statuses](#runtime-permission-statuses) section.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(function(status){
+       console.log("Camera authorization status: " + status);
+    }, onError);
+
+
+### requestMicrophoneAuthorization()
+
+Requests microphone authorization for the application.
+
+Notes for iOS:
+ - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+ - Requires iOS 7+
+
+Notes for Android:
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+
+    cordova.plugins.diagnostic.requestMicrophoneAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+On Android this callback function is passed a single string parameter which indicates the authorization status - possible values are: "unknown", "denied", "not_determined", "authorized".
+On iOS this callback function is passed a single boolean parameter which indicates the authorization status.
+
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+#### Example iOS usage
+
+     cordova.plugins.diagnostic.requestMicrophoneAuthorization(function(granted){
+            console.log("Microphone access is: "+(granted ? "granted" : "denied"));
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        });
+#### Example Android usage
+
+    cordova.plugins.diagnostic.requestMicrophoneAuthorization(function(status){
+        console.log(Microphone access is: "+status);
     }, function(error){
         console.error(error);
     });
@@ -939,30 +1033,6 @@ Possible values are: "unknown", "resetting", "unsupported", "unauthorized", "pow
         console.log("Bluetooth state changed to: " + state);
     });
 
-
-### requestMicrophoneAuthorization()
-
-Requests access to microphone if authorization was never granted nor denied, will only return access status otherwise.
-Works on iOS 7+.
-
-    cordova.plugins.diagnostic.requestMicrophoneAuthorization(successCallback, errorCallback);
-
-#### Parameters
-- {Function} successCallback - The callback which will be called when operation is successful.
-This callback function is passed a single string parameter which indicates the authorization status.
-Possible values are: "unknown", "denied", "not_determined", "authorized"
-- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.requestMicrophoneAuthorization(function(granted){
-        if (granted)
-          console.log("Microphone access is granted.");
-        else
-          console.log("Microphone access is denied.");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 ### isRemoteNotificationsEnabled()
 

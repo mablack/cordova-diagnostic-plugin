@@ -352,6 +352,57 @@
 }
 
 // Audio
+- (void) isMicrophoneAuthorized: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+#ifdef __IPHONE_8_0
+        AVAudioSessionRecordPermission recordPermission = [AVAudioSession sharedInstance].recordPermission;
+        
+        if(recordPermission == AVAudioSessionRecordPermissionGranted) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        }
+        else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        }
+#else
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only supported on iOS 8 and higher"];
+#endif
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) getMicrophoneAuthorizationStatus: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+#ifdef __IPHONE_8_0
+        NSString* status = @"unknown";
+        AVAudioSessionRecordPermission recordPermission = [AVAudioSession sharedInstance].recordPermission;
+        switch(recordPermission){
+            case AVAudioSessionRecordPermissionDenied:
+                status = @"denied";
+            case AVAudioSessionRecordPermissionGranted:
+                status = @"granted";
+            case AVAudioSessionRecordPermissionUndetermined:
+                status = @"undetermined";
+        }
+        
+        NSLog([NSString stringWithFormat:@"Microphone authorization status is: %@", status]);
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+#else
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only supported on iOS 8 and higher"];
+#endif
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void) requestMicrophoneAuthorization: (CDVInvokedUrlCommand*)command
 {
     @try {

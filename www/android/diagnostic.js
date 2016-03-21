@@ -653,6 +653,46 @@ var Diagnostic = (function(){
 		Diagnostic.getCameraAuthorizationStatus(onSuccess, errorCallback);
 	};
 
+	/**
+	 * Checks if the application is authorized to use the microphone for recording audio.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if access to microphone is authorized.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isMicrophoneAuthorized = function(successCallback, errorCallback) {
+		function onSuccess(status){
+			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
+		}
+		Diagnostic.getMicrophoneAuthorizationStatus(onSuccess, errorCallback);
+	};
+
+	/**
+	 * Returns the authorization status for the application to use the microphone for recording audio.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status.
+	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getMicrophoneAuthorizationStatus = function(successCallback, errorCallback) {
+		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.runtimePermission.RECORD_AUDIO);
+	};
+
+	/**
+	 * Requests access to microphone if authorization was never granted nor denied, will only return access status otherwise.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+	 * @param {Function} errorCallback - The callback which will be called when an error occurs.
+	 * This callback function is passed a single string parameter containing the error message.
+	 * This works only on iOS 7+.
+	 */
+	Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
+		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.runtimePermission.RECORD_AUDIO);
+	};
+
 
 	/**************
 	 * Constructor

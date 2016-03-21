@@ -363,6 +363,39 @@ var Diagnostic = (function(){
 	};
 
 	/**
+	 * Checks if the application is authorized to use the microphone for recording audio.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if access to microphone is authorized.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isMicrophoneAuthorized = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isMicrophoneAuthorized',
+			[]);
+	};
+
+	/**
+	 * Returns the authorization status for the application to use the microphone for recording audio.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status.
+	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getMicrophoneAuthorizationStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getMicrophoneAuthorizationStatus',
+			[]);
+	};
+
+	/**
 	 * Requests access to microphone if authorization was never granted nor denied, will only return access status otherwise.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
