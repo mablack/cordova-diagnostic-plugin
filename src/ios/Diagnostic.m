@@ -388,7 +388,7 @@
             case AVAudioSessionRecordPermissionGranted:
                 status = @"granted";
             case AVAudioSessionRecordPermissionUndetermined:
-                status = @"undetermined";
+                status = @"not_determined";
         }
         
         NSLog([NSString stringWithFormat:@"Microphone authorization status is: %@", status]);
