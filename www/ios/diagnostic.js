@@ -6,9 +6,6 @@
  **/
 var Diagnostic = (function(){
 
-	// Callback function to execute upon change in location authorization status
-	var _onLocationAuthorizationStatusChangeCallback = null;
-
 	// Callback function to execute upon change in Bluetooth state
 	var _onBluetoothStateChangeCallback = function(){};
 
@@ -112,32 +109,6 @@ var Diagnostic = (function(){
 			'Diagnostic',
 			'requestLocationAuthorization',
 			[mode && mode === "always"]);
-	};
-
-	/**
-	 * Called by native element of the plugin on a change in location authorization status
-	 * NOTE: this should not be invoked manually; it is present in the public API so it is visible to the native part of the plugin.
-	 * To be notified of a change in location authorization status, register a handler using registerLocationAuthorizationStatusHandler()
-	 * @param {String} status - new location authorization status
-	 * @private
-	 * @deprecated
-	 */
-	Diagnostic._onLocationAuthorizationStatusChange = function(status){
-		if(_onLocationAuthorizationStatusChangeCallback){
-			_onLocationAuthorizationStatusChangeCallback(status);
-		}
-	};
-
-	/**
-	 * Registers a function to be called when a change in location authorization status occurs.
-	 * @param {Function} fn - function call when a change in location authorization status occurs.
-	 * This callback function is passed a single string parameter containing new status.
-	 * Possible values are: "unknown", "denied", "not_determined", "authorized_always" or "authorized_when_in_use"
-	 * @deprecated
-	 */
-	Diagnostic.registerLocationAuthorizationStatusChangeHandler = function(fn){
-		console.warn("registerLocationAuthorizationStatusChangeHandler() is deprecated and will be removed in a future version. Update your code pass this function to requestLocationAuthorization() as successCallback, which will now be invoked when a change in location authorization status occurs");
-		_onLocationAuthorizationStatusChangeCallback = fn;
 	};
 
 	/**

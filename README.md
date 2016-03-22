@@ -46,7 +46,6 @@ Cordova diagnostic plugin
     - [requestRuntimePermissions()](#requestruntimepermissions)
   - [iOS only](#ios-only)
     - [isLocationEnabledSetting()](#islocationenabledsetting)
-    - [registerLocationAuthorizationStatusChangeHandler()](#registerlocationauthorizationstatuschangehandler)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
@@ -919,29 +918,6 @@ This callback function is passed a single string parameter containing the error 
         console.error("The following error occurred: "+error);
     });
 
-### registerLocationAuthorizationStatusChangeHandler()
-
-**DEPRECATED: This function will be removed in a future version. You should now use the successCallback of [requestLocationAuthorization()](#requestLocationAuthorization) to determine the outcome of user choice in the native dialog.**
-
- Registers a function to be called when a change in location authorization status occurs.
-
- Note that the callback function registered with `registerLocationAuthorizationStatusChangeHandler()` will only be called when your app is in the foreground, so if you are leaving your app to go to Settings in order to change the app-specific location authorization setting, then your app is in the background and so `registerLocationAuthorizationStatusChangeHandler()` callback will not be invoked. To handle this situation, you should use `cordova.plugins.diagnostic.isLocationAuthorized()` to check the location authorization state when your app is resumed from the background.
-
- In practice, `registerLocationAuthorizationStatusChangeHandler()` is only useful when the location authorization is requested for the first time and the native dialog pops up asking the user to allow or deny location access by the app. This only happens the first time the app is run and when location authorization status changes from "not_determined" to "authorized_always" or "authorized_when_in_use". When the user presses either "OK" or "Don't Allow" in the native dialog, the registered callback will be invoked.
-
-    cordova.plugins.diagnostic.registerLocationAuthorizationStatusChangeHandler(fn);
-
-#### Parameters
-
-- {Function} fn - function call when a change in location authorization status occurs.
-This callback function is passed a single string parameter containing new status.
-Expected values are: "denied", "authorized_always" or "authorized_when_in_use"
-
-#### Example usage
-
-    cordova.plugins.diagnostic.registerLocationAuthorizationStatusChangeHandler(function(status){
-        console.log("Location authorization status changed from \"not_determined\" to: "+status);
-    });
 
 ### isCameraRollAuthorized()
 

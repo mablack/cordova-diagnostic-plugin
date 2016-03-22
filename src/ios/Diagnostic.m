@@ -562,15 +562,6 @@
     
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
-    
-    [self onLocationAuthorizationStatusChange:status]; // Deprecated
-}
-
-
--(void)onLocationAuthorizationStatusChange:(NSString *)status __attribute__((deprecated))
-{
-    NSString* jsString = [NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationAuthorizationStatusChange(\"%@\");", status];
-    [self jsCallback:jsString];
 }
 
 - (BOOL) isCameraPresent
