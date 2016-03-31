@@ -195,7 +195,7 @@
 {
     CDVPluginResult* pluginResult;
     @try {
-        NSString* status = @"unknown";
+        NSString* status;
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         
         if(authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted){
@@ -380,7 +380,7 @@
     CDVPluginResult* pluginResult;
     @try {
 #ifdef __IPHONE_8_0
-        NSString* status = @"unknown";
+        NSString* status;
         AVAudioSessionRecordPermission recordPermission = [AVAudioSession sharedInstance].recordPermission;
         switch(recordPermission){
             case AVAudioSessionRecordPermissionDenied:
@@ -532,13 +532,13 @@
 
 - (NSString*) getLocationAuthorizationStatusAsString: (CLAuthorizationStatus)authStatus
 {
-    NSString* status = @"unknown";
+    NSString* status;
     if(authStatus == kCLAuthorizationStatusDenied || authStatus == kCLAuthorizationStatusRestricted){
         status = @"denied";
     }else if(authStatus == kCLAuthorizationStatusNotDetermined){
         status = @"not_determined";
     }else if(authStatus == kCLAuthorizationStatusAuthorizedAlways){
-        status = @"authorized_always";
+        status = @"authorized";
     }else if(authStatus == kCLAuthorizationStatusAuthorizedWhenInUse){
         status = @"authorized_when_in_use";
     }
@@ -549,7 +549,7 @@
 {
     CLAuthorizationStatus authStatus = [CLLocationManager authorizationStatus];
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
-    if([status  isEqual: @"authorized_always"] || [status  isEqual: @"authorized_when_in_use"]) {
+    if([status  isEqual: @"authorized"] || [status  isEqual: @"authorized_when_in_use"]) {
         return true;
     } else {
         return false;
@@ -598,7 +598,7 @@
 
 - (NSString*) getCameraRollAuthorizationStatusAsString: (PHAuthorizationStatus)authStatus
 {
-    NSString* status = @"unknown";
+    NSString* status;
     if(authStatus == PHAuthorizationStatusDenied || authStatus == PHAuthorizationStatusRestricted){
         status = @"denied";
     }else if(authStatus == PHAuthorizationStatusNotDetermined ){

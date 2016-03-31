@@ -68,10 +68,10 @@ var Diagnostic = (function(){
 		"STORAGE": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
 	};
 
-	Diagnostic.runtimePermissionStatus = {
-		"GRANTED": "GRANTED", //  Permission has already been granted, the device is running Android 5.x or below, or the app is built with API 22 or below
+	Diagnostic.runtimePermissionStatus = Diagnostic.permissionStatus = {
+		"GRANTED": "GRANTED", //  User granted access to this permission, the device is running Android 5.x or below, or the app is built with API 22 or below.
 		"DENIED": "DENIED", // User denied access to this permission
-		"NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested this permission
+		"NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested access to this permission.
 		"DENIED_ALWAYS": "DENIED_ALWAYS" // User denied access to this permission and checked "Never Ask Again" box.
 	};
 
