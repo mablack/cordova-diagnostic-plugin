@@ -105,7 +105,9 @@ You __must__ also make sure your build environment has the following Android lib
 
 ### Building for API 22 or lower
 
-Phonegap Build (at the time of writing) does not support API 23, so for its users and others who wish to build against API 22 or below, there is a [legacy branch of this plugin repo](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22) which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against earlier API versions.
+If you wish to build against API 22 or below, there is a [legacy branch of this plugin repo](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22) which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against earlier API versions.
+
+**NOTE**: Phonegap Build now supports API 23, so its users may use the main plugin branch (`cordova.plugins.diagnostic`).
 
 The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](https://www.npmjs.com/package/cordova.plugins.diagnostic.api-22), so you'll need to use this plugin ID when adding it:
 
@@ -131,7 +133,7 @@ For example, to install for the Android platform
 ## PhoneGap Build
 Add the following xml to your config.xml to use the latest version of this plugin from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
 
-    <gap:plugin name="cordova.plugins.diagnostic" source="npm" />
+    <plugin name="cordova.plugins.diagnostic" source="npm" />
 
 # Usage
 
