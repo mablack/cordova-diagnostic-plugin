@@ -479,7 +479,7 @@ This callback function is passed a single string parameter containing the error 
 
  - Calling this on iOS 7 or below will have no effect, as location permissions are are implicitly granted.
  - On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
- - This should only be called if authorization status is NOT_REQUESTED - calling it when in any other state will have no effect.
+ - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
  - This plugin adds default messages which are displayed to the user upon requesting location authorization - see the [iOS location permission messages](#ios-location-permission-messages) section for how to customise them.
 
  Notes for Android:
@@ -616,7 +616,7 @@ This callback function is passed a single string parameter containing the error 
 Requests camera authorization for the application.
 
 Notes for iOS:
- - Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+ - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
 
 Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
@@ -699,7 +699,7 @@ This callback function is passed a single string parameter containing the error 
 Requests microphone authorization for the application.
 
 Notes for iOS:
- - Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect and just return the current authorization status.
+ - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
  - Requires iOS 7+
 
 Notes for Android:
@@ -746,16 +746,6 @@ On iOS, this opens the app settings page in the Settings app. This works only on
     });
 
 ## Android only
-
-### locationMode constants
-
-The various states in which Android's location mode can be reported are defined in `cordova.plugins.diagnostic.locationMode`:
-
-* `HIGH_ACCURACY` - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-* `DEVICE_ONLY` - GPS hardware only (high accuracy)
-* `BATTERY_SAVING` - Network triangulation and Wifi network IDs (low accuracy)
-* `LOCATION_OFF` - Location is turned off
-
 
 ### isGpsLocationEnabled()
 
@@ -820,8 +810,13 @@ Returns the current location mode setting for the device.
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-This callback function is passed a single string parameter defined as a constant in [`cordova.plugins.diagnostic.locationMode`](#locationmode-constants).
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter which indicates the current location mode.
+Values that may be passed to the success callback:
+    - "high_accuracy" - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+    - "device_only" - GPS hardware only (high accuracy)
+    - "battery_saving" - network triangulation and Wifi network IDs (low accuracy)
+    - "location_off" - Location is turned off
+    - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
 
@@ -904,8 +899,8 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     },[
-        cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION,
-        cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION
+        cordova.plugins.diagnostic.runtimePermission.ACCESS_FINE_LOCATION,
+        cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION
     ]);
 
 ### requestRuntimePermission()
@@ -941,7 +936,7 @@ This callback function is passed a single string parameter containing the error 
         }
     }, function(error){
         console.error("The following error occurred: "+error);
-    }, cordova.plugins.diagnostic.permission.CAMERA);
+    }, cordova.plugins.diagnostic.runtimePermission.CAMERA);
 
 
 ### requestRuntimePermissions()
@@ -980,8 +975,8 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     },[
-        cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION,
-        cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION
+        cordova.plugins.diagnostic.runtimePermission.ACCESS_FINE_LOCATION,
+        cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION
     ]);
 
 ## iOS only
@@ -1243,32 +1238,32 @@ This plugin supports [checking](#getpermissionauthorizationstatus) and [requesti
 
 #### "Dangerous" runtime permissions
 
-The plugin defines the [full list of dangersous permissions available in API 23](http://developer.android.com/guide/topics/security/permissions.html#perm-groups) as a list of constants available via the `cordova.plugins.diagnostic.permission` object. The following permissions are available:
+The plugin defines the [full list of dangersous permissions available in API 23](http://developer.android.com/guide/topics/security/permissions.html#perm-groups) as a list of constants available via the `cordova.plugins.diagnostic.runtimePermission` object. The following permissions are available:
 
-- `cordova.plugins.diagnostic.permission.READ_CALENDAR`
-- `cordova.plugins.diagnostic.permission.WRITE_CALENDAR`
-- `cordova.plugins.diagnostic.permission.CAMERA`
-- `cordova.plugins.diagnostic.permission.READ_CONTACTS`
-- `cordova.plugins.diagnostic.permission.WRITE_CONTACTS`
-- `cordova.plugins.diagnostic.permission.GET_ACCOUNTS`
-- `cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION`
-- `cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION`
-- `cordova.plugins.diagnostic.permission.RECORD_AUDIO`
-- `cordova.plugins.diagnostic.permission.READ_PHONE_STATE`
-- `cordova.plugins.diagnostic.permission.CALL_PHONE`
-- `cordova.plugins.diagnostic.permission.ADD_VOICEMAIL`
-- `cordova.plugins.diagnostic.permission.USE_SIP`
-- `cordova.plugins.diagnostic.permission.PROCESS_OUTGOING_CALLS`
-- `cordova.plugins.diagnostic.permission.READ_CALL_LOG`
-- `cordova.plugins.diagnostic.permission.WRITE_CALL_LOG`
-- `cordova.plugins.diagnostic.permission.SEND_SMS`
-- `cordova.plugins.diagnostic.permission.RECEIVE_SMS`
-- `cordova.plugins.diagnostic.permission.READ_SMS`
-- `cordova.plugins.diagnostic.permission.RECEIVE_WAP_PUSH`
-- `cordova.plugins.diagnostic.permission.RECEIVE_MMS`
-- `cordova.plugins.diagnostic.permission.WRITE_EXTERNAL_STORAGE`
-- `cordova.plugins.diagnostic.permission.READ_EXTERNAL_STORAGE`
-- `cordova.plugins.diagnostic.permission.BODY_SENSORS`
+- `cordova.plugins.diagnostic.runtimePermission.READ_CALENDAR`
+- `cordova.plugins.diagnostic.runtimePermission.WRITE_CALENDAR`
+- `cordova.plugins.diagnostic.runtimePermission.CAMERA`
+- `cordova.plugins.diagnostic.runtimePermission.READ_CONTACTS`
+- `cordova.plugins.diagnostic.runtimePermission.WRITE_CONTACTS`
+- `cordova.plugins.diagnostic.runtimePermission.GET_ACCOUNTS`
+- `cordova.plugins.diagnostic.runtimePermission.ACCESS_FINE_LOCATION`
+- `cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION`
+- `cordova.plugins.diagnostic.runtimePermission.RECORD_AUDIO`
+- `cordova.plugins.diagnostic.runtimePermission.READ_PHONE_STATE`
+- `cordova.plugins.diagnostic.runtimePermission.CALL_PHONE`
+- `cordova.plugins.diagnostic.runtimePermission.ADD_VOICEMAIL`
+- `cordova.plugins.diagnostic.runtimePermission.USE_SIP`
+- `cordova.plugins.diagnostic.runtimePermission.PROCESS_OUTGOING_CALLS`
+- `cordova.plugins.diagnostic.runtimePermission.READ_CALL_LOG`
+- `cordova.plugins.diagnostic.runtimePermission.WRITE_CALL_LOG`
+- `cordova.plugins.diagnostic.runtimePermission.SEND_SMS`
+- `cordova.plugins.diagnostic.runtimePermission.RECEIVE_SMS`
+- `cordova.plugins.diagnostic.runtimePermission.READ_SMS`
+- `cordova.plugins.diagnostic.runtimePermission.RECEIVE_WAP_PUSH`
+- `cordova.plugins.diagnostic.runtimePermission.RECEIVE_MMS`
+- `cordova.plugins.diagnostic.runtimePermission.WRITE_EXTERNAL_STORAGE`
+- `cordova.plugins.diagnostic.runtimePermission.READ_EXTERNAL_STORAGE`
+- `cordova.plugins.diagnostic.runtimePermission.BODY_SENSORS`
 
 
 #### Runtime permission groups
@@ -1304,7 +1299,7 @@ If you need to request `CAMERA` permission explicitly, you can do so using [`req
 
     cordova.plugins.diagnostic.requestRuntimePermission(successFn,
         errorFn,
-        cordova.plugins.diagnostic.permission.CAMERA
+        cordova.plugins.diagnostic.runtimePermission.CAMERA
     );
 
 **UPDATE**
