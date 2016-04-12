@@ -24,7 +24,8 @@ var Diagnostic = (function(){
 	 * See http://developer.android.com/guide/topics/security/permissions.html#perm-groups
 	 * @type {Object}
 	 */
-	Diagnostic.runtimePermission = {
+	Diagnostic.runtimePermission = // deprecated
+	Diagnostic.permission = {
 		"READ_CALENDAR": "READ_CALENDAR",
 		"WRITE_CALENDAR": "WRITE_CALENDAR",
 		"CAMERA": "CAMERA",
@@ -56,7 +57,8 @@ var Diagnostic = (function(){
 	 * See http://developer.android.com/guide/topics/security/permissions.html#perm-groups
 	 * @type {Object}
 	 */
-	Diagnostic.runtimePermissionGroups = {
+	Diagnostic.runtimePermissionGroups = // deprecated
+	Diagnostic.permissionGroups = {
 		"CALENDAR": ["READ_CALENDAR", "WRITE_CALENDAR"],
 		"CAMERA": ["CAMERA"],
 		"CONTACTS": ["READ_CONTACTS", "WRITE_CONTACTS", "GET_ACCOUNTS"],
@@ -68,11 +70,19 @@ var Diagnostic = (function(){
 		"STORAGE": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
 	};
 
-	Diagnostic.runtimePermissionStatus = {
-		"GRANTED": "GRANTED", //  Permission has already been granted, the device is running Android 5.x or below, or the app is built with API 22 or below
+	Diagnostic.runtimePermissionStatus = // deprecated
+	Diagnostic.permissionStatus = {
+		"GRANTED": "GRANTED", //  User granted access to this permission, the device is running Android 5.x or below, or the app is built with API 22 or below.
 		"DENIED": "DENIED", // User denied access to this permission
-		"NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested this permission
+		"NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested access to this permission.
 		"DENIED_ALWAYS": "DENIED_ALWAYS" // User denied access to this permission and checked "Never Ask Again" box.
+	};
+	
+	Diagnostic.locationMode = {
+		"HIGH_ACCURACY": "high_accuracy",
+		"DEVICE_ONLY": "device_only",
+		"BATTERY_SAVING": "battery_saving",
+		"LOCATION_OFF": "location_off"
 	};
 
 
@@ -87,7 +97,7 @@ var Diagnostic = (function(){
 		if(typeof(permissions) !== "object") permissions = [permissions];
 		var valid = true, invalidPermissions = [];
 		permissions.forEach(function(permission){
-			if(!Diagnostic.runtimePermission[permission]){
+			if(!Diagnostic.permission[permission]){
 				invalidPermissions.push(permission);
 			}
 		});
@@ -113,7 +123,7 @@ var Diagnostic = (function(){
 
 
 		for(var group in groups){
-			Diagnostic.runtimePermissionGroups[group].forEach(function(permission){
+			Diagnostic.permissionGroups[group].forEach(function(permission){
 				if(!Diagnostic.firstRequestedPermissions[permission]){
 					setPermissionFirstRequested(permission);
 				}
@@ -131,7 +141,7 @@ var Diagnostic = (function(){
 			buildRuntimeGroupsMap();
 		}
 		Diagnostic.firstRequestedPermissions = {};
-		for(var permission in Diagnostic.runtimePermission){
+		for(var permission in Diagnostic.permission){
 			if(localStorage.getItem(runtimeStoragePrefix+permission) == 1){
 				Diagnostic.firstRequestedPermissions[permission] = 1;
 			}
@@ -141,15 +151,15 @@ var Diagnostic = (function(){
 
 	function resolveStatus(permission, status){
 		if(status == "STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS"){
-			status = Diagnostic.firstRequestedPermissions[permission] ? Diagnostic.runtimePermissionStatus.DENIED_ALWAYS : Diagnostic.runtimePermissionStatus.NOT_REQUESTED;
+			status = Diagnostic.firstRequestedPermissions[permission] ? Diagnostic.permissionStatus.DENIED_ALWAYS : Diagnostic.permissionStatus.NOT_REQUESTED;
 		}
 		return status;
 	}
 
 	function buildRuntimeGroupsMap(){
 		runtimeGroupsMap = {};
-		for(var group in Diagnostic.runtimePermissionGroups){
-			var permissions = Diagnostic.runtimePermissionGroups[group];
+		for(var group in Diagnostic.permissionGroups){
+			var permissions = Diagnostic.permissionGroups[group];
 			for(var i=0; i<permissions.length; i++){
 				runtimeGroupsMap[permissions[i]] = group;
 			}
@@ -157,35 +167,35 @@ var Diagnostic = (function(){
 	}
 
 	function combineLocationStatuses(statuses){
-		var coarseStatus = statuses[Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION],
-			fineStatus = statuses[Diagnostic.runtimePermission.ACCESS_FINE_LOCATION],
+		var coarseStatus = statuses[Diagnostic.permission.ACCESS_COARSE_LOCATION],
+			fineStatus = statuses[Diagnostic.permission.ACCESS_FINE_LOCATION],
 			status;
 
-		if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS || fineStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS){
-			status = Diagnostic.runtimePermissionStatus.DENIED_ALWAYS;
-		}else if(coarseStatus == Diagnostic.runtimePermissionStatus.DENIED || fineStatus == Diagnostic.runtimePermissionStatus.DENIED){
-			status = Diagnostic.runtimePermissionStatus.DENIED;
-		}else if(coarseStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED || fineStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED){
-			status = Diagnostic.runtimePermissionStatus.NOT_REQUESTED;
+		if(coarseStatus == Diagnostic.permissionStatus.DENIED_ALWAYS || fineStatus == Diagnostic.permissionStatus.DENIED_ALWAYS){
+			status = Diagnostic.permissionStatus.DENIED_ALWAYS;
+		}else if(coarseStatus == Diagnostic.permissionStatus.DENIED || fineStatus == Diagnostic.permissionStatus.DENIED){
+			status = Diagnostic.permissionStatus.DENIED;
+		}else if(coarseStatus == Diagnostic.permissionStatus.NOT_REQUESTED || fineStatus == Diagnostic.permissionStatus.NOT_REQUESTED){
+			status = Diagnostic.permissionStatus.NOT_REQUESTED;
 		}else{
-			status = Diagnostic.runtimePermissionStatus.GRANTED;
+			status = Diagnostic.permissionStatus.GRANTED;
 		}
 		return status;
 	}
 
 	function combineCameraStatuses(statuses){
-		var cameraStatus = statuses[Diagnostic.runtimePermission.CAMERA],
-			mediaStatus = statuses[Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE],
+		var cameraStatus = statuses[Diagnostic.permission.CAMERA],
+			mediaStatus = statuses[Diagnostic.permission.READ_EXTERNAL_STORAGE],
 			status;
 
-		if(cameraStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS || mediaStatus == Diagnostic.runtimePermissionStatus.DENIED_ALWAYS){
-			status = Diagnostic.runtimePermissionStatus.DENIED_ALWAYS;
-		}else if(cameraStatus == Diagnostic.runtimePermissionStatus.DENIED || mediaStatus == Diagnostic.runtimePermissionStatus.DENIED){
-			status = Diagnostic.runtimePermissionStatus.DENIED;
-		}else if(cameraStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED || mediaStatus == Diagnostic.runtimePermissionStatus.NOT_REQUESTED){
-			status = Diagnostic.runtimePermissionStatus.NOT_REQUESTED;
+		if(cameraStatus == Diagnostic.permissionStatus.DENIED_ALWAYS || mediaStatus == Diagnostic.permissionStatus.DENIED_ALWAYS){
+			status = Diagnostic.permissionStatus.DENIED_ALWAYS;
+		}else if(cameraStatus == Diagnostic.permissionStatus.DENIED || mediaStatus == Diagnostic.permissionStatus.DENIED){
+			status = Diagnostic.permissionStatus.DENIED;
+		}else if(cameraStatus == Diagnostic.permissionStatus.NOT_REQUESTED || mediaStatus == Diagnostic.permissionStatus.NOT_REQUESTED){
+			status = Diagnostic.permissionStatus.NOT_REQUESTED;
 		}else{
-			status = Diagnostic.runtimePermissionStatus.GRANTED;
+			status = Diagnostic.permissionStatus.GRANTED;
 		}
 		return status;
 	}
@@ -263,11 +273,7 @@ var Diagnostic = (function(){
 	 * Returns the current location mode setting for the device.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single string parameter. Values that may be passed to the success callback:
-	 * "high_accuracy" - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy);
-	 * "device_only" - GPS hardware only (high accuracy);
-	 * "battery_saving" - network triangulation and Wifi network IDs (low accuracy);
-	 * "location_off" - Location is turned off
+	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
 	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
@@ -447,10 +453,10 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful retrieval of status.
-	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to retrieve authorisation status.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {String} permission - permission to request authorisation status for, defined as a value in Diagnostic.runtimePermission
+	 * @param {String} permission - permission to request authorisation status for, defined as a value in Diagnostic.permission
 	 */
 	Diagnostic.getPermissionAuthorizationStatus = function(successCallback, errorCallback, permission){
 		if(!checkForInvalidPermissions(permission, errorCallback)) return;
@@ -472,10 +478,10 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful retrieval of status.
-	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the requested permission defined as a value in Diagnostic.runtimePermission, and the value is the current authorisation status of that permission as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the requested permission defined as a value in Diagnostic.permission, and the value is the current authorisation status of that permission as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to retrieve authorisation statuses.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {Array} permissions - list of permissions to request authorisation statuses for, defined as values in Diagnostic.runtimePermission
+	 * @param {Array} permissions - list of permissions to request authorisation statuses for, defined as values in Diagnostic.permission
 	 */
 	Diagnostic.getPermissionsAuthorizationStatus = function(successCallback, errorCallback, permissions){
 		if(!checkForInvalidPermissions(permissions, errorCallback)) return;
@@ -501,10 +507,10 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful request for runtime permission.
-	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {String} permission - permission to request authorisation for, defined as a value in Diagnostic.runtimePermission
+	 * @param {String} permission - permission to request authorisation for, defined as a value in Diagnostic.permission
 	 */
 	Diagnostic.requestRuntimePermission = function(successCallback, errorCallback, permission) {
 		if(!checkForInvalidPermissions(permission, errorCallback)) return;
@@ -528,10 +534,10 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
-	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the permission to request defined as a value in Diagnostic.runtimePermission, and the value is the resulting authorisation status of that permission as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the permission to request defined as a value in Diagnostic.permission, and the value is the resulting authorisation status of that permission as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {Array} permissions - permissions to request authorisation for, defined as values in Diagnostic.runtimePermission
+	 * @param {Array} permissions - permissions to request authorisation for, defined as values in Diagnostic.permission
 	 */
 	Diagnostic.requestRuntimePermissions = function(successCallback, errorCallback, permissions){
 		if(!checkForInvalidPermissions(permissions, errorCallback)) return;
@@ -562,7 +568,7 @@ var Diagnostic = (function(){
 	 * Requests location authorization for the application.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
-	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 */
 	Diagnostic.requestLocationAuthorization = function(successCallback, errorCallback){
@@ -570,8 +576,8 @@ var Diagnostic = (function(){
 			successCallback(combineLocationStatuses(statuses));
 		}
 		Diagnostic.requestRuntimePermissions(onSuccess, errorCallback, [
-			Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION,
-			Diagnostic.runtimePermission.ACCESS_FINE_LOCATION
+			Diagnostic.permission.ACCESS_COARSE_LOCATION,
+			Diagnostic.permission.ACCESS_FINE_LOCATION
 		]);
 	};
 
@@ -579,7 +585,7 @@ var Diagnostic = (function(){
 	 * Returns the location authorization status for the application.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
-	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
 	 */
 	Diagnostic.getLocationAuthorizationStatus = function(successCallback, errorCallback){
@@ -587,8 +593,8 @@ var Diagnostic = (function(){
 			successCallback(combineLocationStatuses(statuses));
 		}
 		Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
-			Diagnostic.runtimePermission.ACCESS_COARSE_LOCATION,
-			Diagnostic.runtimePermission.ACCESS_FINE_LOCATION
+			Diagnostic.permission.ACCESS_COARSE_LOCATION,
+			Diagnostic.permission.ACCESS_FINE_LOCATION
 		]);
 	};
 
@@ -601,7 +607,7 @@ var Diagnostic = (function(){
 	 */
 	Diagnostic.isLocationAuthorized = function(successCallback, errorCallback){
 		function onSuccess(status){
-			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
+			successCallback(status == Diagnostic.permissionStatus.GRANTED);
 		}
 		Diagnostic.getLocationAuthorizationStatus(onSuccess, errorCallback);
 	};
@@ -611,7 +617,7 @@ var Diagnostic = (function(){
 	 * Requests authorisation for runtime permissions to use the camera.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
-	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 */
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback){
@@ -619,7 +625,7 @@ var Diagnostic = (function(){
 			successCallback(combineCameraStatuses(statuses));
 		}
 		Diagnostic.requestRuntimePermissions(onSuccess, errorCallback, [
-			Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE
+			Diagnostic.permission.READ_EXTERNAL_STORAGE
 		]);
 	};
 
@@ -627,7 +633,7 @@ var Diagnostic = (function(){
 	 * Returns the authorisation status for runtime permissions to use the camera.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
-	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.runtimePermissionStatus.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
 	 */
 	Diagnostic.getCameraAuthorizationStatus = function(successCallback, errorCallback){
@@ -635,7 +641,7 @@ var Diagnostic = (function(){
 			successCallback(combineCameraStatuses(statuses));
 		}
 		Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
-			Diagnostic.runtimePermission.READ_EXTERNAL_STORAGE
+			Diagnostic.permission.READ_EXTERNAL_STORAGE
 		]);
 	};
 
@@ -648,7 +654,7 @@ var Diagnostic = (function(){
 	 */
 	Diagnostic.isCameraAuthorized = function(successCallback, errorCallback){
 		function onSuccess(status){
-			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
+			successCallback(status == Diagnostic.permissionStatus.GRANTED);
 		}
 		Diagnostic.getCameraAuthorizationStatus(onSuccess, errorCallback);
 	};
@@ -663,7 +669,7 @@ var Diagnostic = (function(){
 	 */
 	Diagnostic.isMicrophoneAuthorized = function(successCallback, errorCallback) {
 		function onSuccess(status){
-			successCallback(status == Diagnostic.runtimePermissionStatus.GRANTED);
+			successCallback(status == Diagnostic.permissionStatus.GRANTED);
 		}
 		Diagnostic.getMicrophoneAuthorizationStatus(onSuccess, errorCallback);
 	};
@@ -678,7 +684,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.getMicrophoneAuthorizationStatus = function(successCallback, errorCallback) {
-		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.runtimePermission.RECORD_AUDIO);
+		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.permission.RECORD_AUDIO);
 	};
 
 	/**
@@ -690,7 +696,7 @@ var Diagnostic = (function(){
 	 * This works only on iOS 7+.
 	 */
 	Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
-		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.runtimePermission.RECORD_AUDIO);
+		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.RECORD_AUDIO);
 	};
 
 
