@@ -44,6 +44,8 @@ Cordova diagnostic plugin
     - [getPermissionsAuthorizationStatus()](#getpermissionsauthorizationstatus)
     - [requestRuntimePermission()](#requestruntimepermission)
     - [requestRuntimePermissions()](#requestruntimepermissions)
+    - [hasBluetoothLESupport()](#hasbluetoothlesupport)
+    - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
   - [iOS only](#ios-only)
     - [isLocationEnabledSetting()](#islocationenabledsetting)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
@@ -979,26 +981,49 @@ This callback function is passed a single string parameter containing the error 
         cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION
     ]);
 
+### hasBluetoothLESupport()
+
+Checks if the device has Bluetooth Low Energy (LE) capabilities.
+See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
+
+    cordova.plugins.diagnostic.hasBluetoothLESupport(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE capabilities.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.hasBluetoothLESupport(function(supported){
+        console.log("Bluetooth LE is " + (supported ? "supported" : "unsupported"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+
+### hasBluetoothLEPeripheralSupport()
+Checks if the device supports Bluetooth Low Energy (LE) Peripheral mode.
+See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html#roles.
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if device supports Bluetooth LE Peripheral mode.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.hasBluetoothLEPeripheralSupport(function(supported){
+        console.log("Bluetooth LE Peripheral Mode is " + (supported ? "supported" : "unsupported"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
 ## iOS only
-
-### locationAuthorizationMode constants
-
-When requesting location authorization on iOS, access can be requested "always" or "while in use" .
-These constants are defined in `cordova.plugins.diagnostic.locationAuthorizationMode`:
-
-- `locationAuthorizationMode.ALWAYS` - request access while the app is both the foreground and background
-- `locationAuthorizationMode.WHEN_IN_USE` - only while the app is in the foreground
-
-### bluetoothState constants
-
-The various states in which the Bluetooth hardware can be reported are defined in `cordova.plugins.diagnostic.bluetoothState`:
-
-- `bluetoothState.UNKNOWN` - State unknown, update imminent.
-- `bluetoothState.RESETTING` - The connection with the system service was momentarily lost, update imminent.
-- `bluetoothState.UNSUPPORTED` - The platform doesn't support Bluetooth Low Energy.
-- `bluetoothState.UNAUTHORIZED` - The app is not authorized to use Bluetooth Low Energy.
-- `bluetoothState.POWERED_OFF` - Bluetooth is currently powered off.
-- `bluetoothState.POWERED_ON` - Bluetooth is currently powered on and available to use.
 
 ### isLocationEnabledSetting()
 

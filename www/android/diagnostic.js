@@ -352,6 +352,38 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+    /**
+     * Checks if the device has Bluetooth Low Energy (LE) capabilities.
+	 * See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE capabilities.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.hasBluetoothLESupport = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'hasBluetoothLESupport', []);
+    };
+
+    /**
+     * Checks if the device has Bluetooth Low Energy (LE) peripheral capabilities.
+	 * See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html#roles.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE peripheral capabilities.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.hasBluetoothLEPeripheralSupport = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'hasBluetoothLEPeripheralSupport', []);
+    };
+
 	/**
 	 * Opens settings page for this app.
 	 *
