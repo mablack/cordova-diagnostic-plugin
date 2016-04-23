@@ -66,10 +66,9 @@ Cordova diagnostic plugin
   - [Screenshots](#screenshots)
     - [Android](#android)
     - [iOS](#ios)
+- [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
-- [# License](#-license)
-
 <!-- END table-of-contents -->
 
 
@@ -93,10 +92,6 @@ This plugin has been updated to support Android 6 (API 23) [runtime permissions]
 In order to do this it must depend on libraries only present in API 23+, so you __must build using Android SDK Platform v23 or above__. To do this you must have [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above installed in your project. You can check the currently installed platform versions with the following command:
 
     cordova platform ls
-
-Currently the default version installed (if not specified) is cordova-android@4 which uses API 22, so you need to explicitly specify the version when adding the platform:
-
-    cordova platform add android@5.0.0
 
 __Note:__ Attempting to build with API 22 or below will result in a build error.
 
@@ -1312,6 +1307,9 @@ An example project illustrating use of this plugin can be found here: [https://g
 ![iOS screenshot](https://raw.githubusercontent.com/dpa99c/cordova-diagnostic-plugin-example/master/screenshots/ios_1.png)
 ![iOS screenshot](https://raw.githubusercontent.com/dpa99c/cordova-diagnostic-plugin-example/master/screenshots/ios_2.png)
 
+# Release notes
+
+See the [release notes wiki page](https://github.com/dpa99c/cordova-diagnostic-plugin/wiki/Release-notes)
 
 # Credits
 
