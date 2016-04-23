@@ -467,7 +467,7 @@ Checks if the application is authorized to use the camera.
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
-- This only checks run-time permission for `READ_EXTERNAL_STORAGE` (not `CAMERA`) - see [Android Camera permissions](#android-camera-permissions).
+- This checks for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions - see [Android camera permissions](#android-camera-permissions).
 
     `cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback);`
 
@@ -493,7 +493,7 @@ This callback function is passed a single string parameter containing the error 
 
  Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
- - This only checks run-time permission for `READ_EXTERNAL_STORAGE` (not `CAMERA`) - see [Android Camera permissions](#android-camera-permissions).
+ - This checks for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions - see [Android camera permissions](#android-camera-permissions).
 
     `cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback);`
 
@@ -521,7 +521,7 @@ Notes for iOS:
 
 Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
- - This only requests run-time permission for `READ_EXTERNAL_STORAGE` (not `CAMERA`) - see [Android Camera permissions](#android-camera-permissions).
+ - This requests permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions - see [Android camera permissions](#android-camera-permissions).
 
     `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback);`
 
@@ -1257,23 +1257,11 @@ While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-
 
 #### Android Camera permissions
 
-Note that (currently) the Android variant of [`requestCameraAuthorization()`](#requestcameraauthorization) only requests `READ_EXTERNAL_STORAGE` permission, not `CAMERA` permission.
-This is because the [Cordova camera plugin](https://github.com/apache/cordova-plugin-camera) only needs `READ_EXTERNAL_STORAGE` permission.
+Note that the Android variant of [`requestCameraAuthorization()`](#requestcameraauthorization) requests the `READ_EXTERNAL_STORAGE` permission, in addition to the `CAMERA` permission.
+This is because the [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 
-In fact, due to [a bug in the Cordova camera plugin](https://issues.apache.org/jira/browse/CB-10120), requesting `CAMERA` permission actually causes the camera activity of `cordova-plugin-camera` to crash if it's denied.
+So to use this method in conjunction with the Cordova camera plugin, make sure you are using the most recent `cordova-plugin-camera` release: v2.2.0 or above.
 
-If you need to request `CAMERA` permission explicitly, you can do so using [`requestRuntimePermission()`](#requestruntimepermission):
-
-    cordova.plugins.diagnostic.requestRuntimePermission(successFn,
-        errorFn,
-        cordova.plugins.diagnostic.runtimePermission.CAMERA
-    );
-
-**UPDATE**
-
-[The bug](https://issues.apache.org/jira/browse/CB-10120]) causing the [Cordova camera plugin](https://github.com/apache/cordova-plugin-camera) to crash when `CAMERA` permission is denied has [been fixed](https://github.com/apache/cordova-plugin-camera/commit/0cd962466d2641fcd05155690e23432db02cc79a) on the [master branch of cordova-plugin-camera](https://github.com/apache/cordova-plugin-camera) which is currently on `v2.1.2-dev`. That fix causes `CAMERA` permission to be requested again by `cordova-plugin-camera`.
-
-Once `cordova-plugin-camera@2.1.2` is published as a release [to npm](https://www.npmjs.com/package/cordova-plugin-camera), [`requestCameraAuthorization()`](#requestcameraauthorization) will be updated to request `CAMERA` permission.
 
 ## Windows 10 Mobile permissions
 
