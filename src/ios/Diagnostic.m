@@ -22,6 +22,7 @@
     
     [super pluginInitialize];
     
+    self.locationRequestCallbackId = nil;
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     
@@ -563,8 +564,10 @@
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
     NSLog([NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
     
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
+    if(self.locationRequestCallbackId != nil){
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
+    }
     
     [self onLocationAuthorizationStatusChange:status]; // Deprecated
 }
