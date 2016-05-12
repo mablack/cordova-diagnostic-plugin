@@ -323,7 +323,7 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isCameraPresent',
