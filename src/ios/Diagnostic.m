@@ -21,7 +21,8 @@
 - (void)pluginInitialize {
     
     [super pluginInitialize];
-    
+
+    self.locationRequestCallbackId = nil;
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     
@@ -562,9 +563,11 @@
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
     NSLog([NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
-    
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
+
+    if(self.locationRequestCallbackId != nil){
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
+    }
 }
 
 - (BOOL) isCameraPresent

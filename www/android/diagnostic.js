@@ -329,7 +329,7 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(ensureBoolean(successCallback),
 			errorCallback,
 			'Diagnostic',
 			'isCameraPresent',
@@ -657,6 +657,7 @@ var Diagnostic = (function(){
 			successCallback(combineCameraStatuses(statuses));
 		}
 		Diagnostic.requestRuntimePermissions(onSuccess, errorCallback, [
+			Diagnostic.permission.CAMERA,
 			Diagnostic.permission.READ_EXTERNAL_STORAGE
 		]);
 	};
@@ -673,6 +674,7 @@ var Diagnostic = (function(){
 			successCallback(combineCameraStatuses(statuses));
 		}
 		Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
+			Diagnostic.permission.CAMERA,
 			Diagnostic.permission.READ_EXTERNAL_STORAGE
 		]);
 	};
