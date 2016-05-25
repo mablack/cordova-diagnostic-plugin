@@ -6,8 +6,10 @@
  **/
 var Diagnostic = (function(){
 
-	/**********************
+	/***********************
+	 *
 	 * Internal properties
+	 *
 	 *********************/
 	var Diagnostic = {};
 
@@ -16,8 +18,14 @@ var Diagnostic = (function(){
 	var runtimeGroupsMap;
 
 	/********************
+	 *
 	 * Public properties
+	 *
 	 ********************/
+
+	// Placeholder listeners
+	Diagnostic._onBluetoothStateChange =
+		Diagnostic._onLocationStateChange = function(){};
 
 	/**
 	 * "Dangerous" permissions that need to be requested at run-time (Android 6.0/API 23 and above)
@@ -77,7 +85,8 @@ var Diagnostic = (function(){
 		"NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested access to this permission.
 		"DENIED_ALWAYS": "DENIED_ALWAYS" // User denied access to this permission and checked "Never Ask Again" box.
 	};
-	
+
+
 	Diagnostic.locationMode = {
 		"HIGH_ACCURACY": "high_accuracy",
 		"DEVICE_ONLY": "device_only",
@@ -88,9 +97,19 @@ var Diagnostic = (function(){
 
 	Diagnostic.firstRequestedPermissions;
 
+	Diagnostic.bluetoothState = {
+		"UNKNOWN": "unknown",
+		"POWERED_OFF": "powered_off",
+		"POWERED_ON": "powered_on",
+		"POWERING_OFF": "powering_off",
+		"POWERING_ON": "powering_on"
+	};
+
 
 	/********************
+	 *
 	 * Internal functions
+	 *
 	 ********************/
 
 	function checkForInvalidPermissions(permissions, errorCallback){
@@ -208,181 +227,15 @@ var Diagnostic = (function(){
 
 
 	/**********************
+	 *
 	 * Public API functions
+	 *
 	 **********************/
 
-	/**
-	 * Checks if location is enabled.
-	 * On Android, this returns true if Location Mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
-	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
-	 *
-	 * @param {Function} successCallback - The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if location is available for use.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.isLocationEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(ensureBoolean(successCallback),
-			errorCallback,
-			'Diagnostic',
-			'isLocationEnabled',
-			[]);
-	};
 
-	/**
-	 * Checks if location mode is set to return high-accuracy locations from GPS hardware.
-	 * Returns true if Location mode is enabled and is set to either:
-	 * Device only = GPS hardware only (high accuracy)
-	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
-	 *
-	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available for use.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.isGpsLocationEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(ensureBoolean(successCallback),
-			errorCallback,
-			'Diagnostic',
-			'isGpsLocationEnabled',
-			[]);
-	};
-
-	/**
-	 * Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points.
-	 * Returns true if Location mode is enabled and is set to either:
-	 * Battery saving = network triangulation and Wifi network IDs (low accuracy)
-	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
-	 *
-	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available for use.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.isNetworkLocationEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(ensureBoolean(successCallback),
-			errorCallback,
-			'Diagnostic',
-			'isNetworkLocationEnabled',
-			[]);
-	};
-
-	/**
-	 * Returns the current location mode setting for the device.
-	 *
-	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.getLocationMode = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
-			errorCallback,
-			'Diagnostic',
-			'getLocationMode',
-			[]);
-	};
-
-	/**
-	 * Checks if Wifi is connected/enabled.
-	 * On Android this returns true if the WiFi setting is set to enabled.
-	 *
-	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if device is connected by WiFi.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
-			errorCallback,
-			'Diagnostic',
-			'isWifiEnabled',
-			[]);
-	};
-
-	/**
-	 * Checks if camera is usable: both present and authorised for use.
-	 *
-	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if camera is present and authorized for use.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.isCameraEnabled = function(successCallback, errorCallback) {
-		Diagnostic.isCameraPresent(function(isPresent){
-			if(isPresent){
-				Diagnostic.isCameraAuthorized(successCallback, errorCallback);
-			}else{
-				successCallback(!!isPresent);
-			}
-		},errorCallback);
-	};
-
-	/**
-	 * Checks if camera hardware is present on device.
-	 *
-	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if camera is present
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
-		return cordova.exec(ensureBoolean(successCallback),
-			errorCallback,
-			'Diagnostic',
-			'isCameraPresent',
-			[]);
-	};
-
-	/**
-	 * Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on
-	 *
-	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth capabilities and Bluetooth is switched on.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
-	 */
-	Diagnostic.isBluetoothEnabled = function(successCallback, errorCallback) {
-		return cordova.exec(ensureBoolean(successCallback),
-			errorCallback,
-			'Diagnostic',
-			'isBluetoothEnabled',
-			[]);
-	};
-
-    /**
-     * Checks if the device has Bluetooth Low Energy (LE) capabilities.
-	 * See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
-     *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE capabilities.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.hasBluetoothLESupport = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'hasBluetoothLESupport', []);
-    };
-
-    /**
-     * Checks if the device has Bluetooth Low Energy (LE) peripheral capabilities.
-	 * See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html#roles.
-     *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE peripheral capabilities.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.hasBluetoothLEPeripheralSupport = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'hasBluetoothLEPeripheralSupport', []);
-    };
+	/***********
+	 * General
+	 ***********/
 
 	/**
 	 * Opens settings page for this app.
@@ -398,87 +251,6 @@ var Diagnostic = (function(){
 			'switchToSettings',
 			[]);
 	};
-
-	/**
-	 * Switches to the Location page in the Settings app
-	 */
-	Diagnostic.switchToLocationSettings = function() {
-		return cordova.exec(null,
-			null,
-			'Diagnostic',
-			'switchToLocationSettings',
-			[]);
-	};
-
-	/**
-	 * Switches to the Mobile Data page in the Settings app
-	 */
-	Diagnostic.switchToMobileDataSettings = function() {
-		return cordova.exec(null,
-			null,
-			'Diagnostic',
-			'switchToMobileDataSettings',
-			[]);
-	};
-
-	/**
-	 * Switches to the Bluetooth page in the Settings app
-	 */
-	Diagnostic.switchToBluetoothSettings = function() {
-		return cordova.exec(null,
-			null,
-			'Diagnostic',
-			'switchToBluetoothSettings',
-			[]);
-	};
-
-	/**
-	 * Switches to the WiFi page in the Settings app
-	 */
-	Diagnostic.switchToWifiSettings = function() {
-		return cordova.exec(null,
-			null,
-			'Diagnostic',
-			'switchToWifiSettings',
-			[]);
-	};
-
-	/**
-	 * Enables/disables WiFi on the device.
-	 *
-	 * @param {Function} successCallback - function to call on successful setting of WiFi state
-	 * @param {Function} errorCallback - function to call on failure to set WiFi state.
-	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
-	 */
-	Diagnostic.setWifiState = function(successCallback, errorCallback, state) {
-		return cordova.exec(successCallback,
-			errorCallback,
-			'Diagnostic',
-			'setWifiState',
-			[state]);
-	};
-
-	/**
-	 * Enables/disables Bluetooth on the device.
-	 *
-	 * @param {Function} successCallback - function to call on successful setting of Bluetooth state
-	 * @param {Function} errorCallback - function to call on failure to set Bluetooth state.
-	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
-	 */
-	Diagnostic.setBluetoothState = function(successCallback, errorCallback, state) {
-		return cordova.exec(successCallback,
-			errorCallback,
-			'Diagnostic',
-			'setBluetoothState',
-			[state]);
-	};
-
-
-	/*********************************
-	 * Android 6.0 runtime permissions
-	 *********************************/
 
 	/**
 	 * Returns the current authorisation status for a given permission.
@@ -592,9 +364,94 @@ var Diagnostic = (function(){
 	};
 
 
-	/**************************
-	 * iOS runtime equivalents
-	 **************************/
+	/************
+	 * Location *
+	 ************/
+
+	/**
+	 * Checks if location is enabled.
+	 * On Android, this returns true if Location Mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
+	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isLocationEnabled = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isLocationEnabled',
+			[]);
+	};
+
+	/**
+	 * Checks if location mode is set to return high-accuracy locations from GPS hardware.
+	 * Returns true if Location mode is enabled and is set to either:
+	 * Device only = GPS hardware only (high accuracy)
+	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isGpsLocationEnabled = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isGpsLocationEnabled',
+			[]);
+	};
+
+	/**
+	 * Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points.
+	 * Returns true if Location mode is enabled and is set to either:
+	 * Battery saving = network triangulation and Wifi network IDs (low accuracy)
+	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isNetworkLocationEnabled = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isNetworkLocationEnabled',
+			[]);
+	};
+
+	/**
+	 * Returns the current location mode setting for the device.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getLocationMode = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getLocationMode',
+			[]);
+	};
+
+	/**
+	 * Switches to the Location page in the Settings app
+	 */
+	Diagnostic.switchToLocationSettings = function() {
+		return cordova.exec(null,
+			null,
+			'Diagnostic',
+			'switchToLocationSettings',
+			[]);
+	};
 
 	/**
 	 * Requests location authorization for the application.
@@ -644,6 +501,91 @@ var Diagnostic = (function(){
 		Diagnostic.getLocationAuthorizationStatus(onSuccess, errorCallback);
 	};
 
+	/************
+	 * WiFi     *
+	 ************/
+
+	/**
+	 * Checks if Wifi is connected/enabled.
+	 * On Android this returns true if the WiFi setting is set to enabled.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device is connected by WiFi.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'isWifiEnabled',
+			[]);
+	};
+
+	/**
+	 * Switches to the WiFi page in the Settings app
+	 */
+	Diagnostic.switchToWifiSettings = function() {
+		return cordova.exec(null,
+			null,
+			'Diagnostic',
+			'switchToWifiSettings',
+			[]);
+	};
+
+	/**
+	 * Enables/disables WiFi on the device.
+	 *
+	 * @param {Function} successCallback - function to call on successful setting of WiFi state
+	 * @param {Function} errorCallback - function to call on failure to set WiFi state.
+	 * This callback function is passed a single string parameter containing the error message.
+	 * @param {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
+	 */
+	Diagnostic.setWifiState = function(successCallback, errorCallback, state) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'setWifiState',
+			[state]);
+	};
+
+	/************
+	 * Camera   *
+	 ************/
+
+	/**
+	 * Checks if camera is usable: both present and authorised for use.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if camera is present and authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isCameraEnabled = function(successCallback, errorCallback) {
+		Diagnostic.isCameraPresent(function(isPresent){
+			if(isPresent){
+				Diagnostic.isCameraAuthorized(successCallback, errorCallback);
+			}else{
+				successCallback(!!isPresent);
+			}
+		},errorCallback);
+	};
+
+	/**
+	 * Checks if camera hardware is present on device.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if camera is present
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isCameraPresent',
+			[]);
+	};
 
 	/**
 	 * Requests authorisation for runtime permissions to use the camera.
@@ -692,6 +634,165 @@ var Diagnostic = (function(){
 		}
 		Diagnostic.getCameraAuthorizationStatus(onSuccess, errorCallback);
 	};
+
+	/***************
+	 * Bluetooth   *
+	 ***************/
+
+	/**
+	 * Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth capabilities and Bluetooth is switched on.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isBluetoothEnabled = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isBluetoothEnabled',
+			[]);
+	};
+
+	/**
+	 * Enables/disables Bluetooth on the device.
+	 *
+	 * @param {Function} successCallback - function to call on successful setting of Bluetooth state
+	 * @param {Function} errorCallback - function to call on failure to set Bluetooth state.
+	 * This callback function is passed a single string parameter containing the error message.
+	 * @param {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
+	 */
+	Diagnostic.setBluetoothState = function(successCallback, errorCallback, state) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'setBluetoothState',
+			[state]);
+	};
+
+	/**
+	 * Returns current state of Bluetooth hardware on the device.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.bluetoothState`.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getBluetoothState = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getBluetoothState',
+			[]);
+	};
+
+	/**
+	 * Registers a listener function to call when the state of Bluetooth hardware changes.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the state of Bluetooth hardware changes.
+	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.bluetoothState`.
+	 */
+	Diagnostic.registerBluetoothStateChangeHandler = function(successCallback) {
+		Diagnostic._onBluetoothStateChange = successCallback;
+	};
+
+
+	/**
+	 * Checks if the device has Bluetooth capabilities.
+	 * See http://developer.android.com/guide/topics/connectivity/bluetooth.html.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth capabilities.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.hasBluetoothSupport = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'hasBluetoothSupport', []);
+	};
+
+	/**
+	 * Checks if the device has Bluetooth Low Energy (LE) capabilities.
+	 * See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE capabilities.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.hasBluetoothLESupport = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'hasBluetoothLESupport', []);
+	};
+
+    /**
+     * Checks if the device has Bluetooth Low Energy (LE) capabilities.
+	 * See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE capabilities.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.hasBluetoothLESupport = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'hasBluetoothLESupport', []);
+    };
+
+    /**
+     * Checks if the device has Bluetooth Low Energy (LE) peripheral capabilities.
+	 * See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html#roles.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE peripheral capabilities.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.hasBluetoothLEPeripheralSupport = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'hasBluetoothLEPeripheralSupport', []);
+    };
+
+	/**
+	 * Switches to the Bluetooth page in the Settings app
+	 */
+	Diagnostic.switchToBluetoothSettings = function() {
+		return cordova.exec(null,
+			null,
+			'Diagnostic',
+			'switchToBluetoothSettings',
+			[]);
+	};
+
+
+	/*************
+	 * Mobile Data
+	 *************/
+
+	/**
+	 * Switches to the Mobile Data page in the Settings app
+	 */
+	Diagnostic.switchToMobileDataSettings = function() {
+		return cordova.exec(null,
+			null,
+			'Diagnostic',
+			'switchToMobileDataSettings',
+			[]);
+	};
+
+
+	/***************************
+	 * Microphone / Record Audio
+	 ***************************/
 
 	/**
 	 * Checks if the application is authorized to use the microphone for recording audio.

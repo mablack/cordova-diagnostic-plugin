@@ -39,6 +39,8 @@ import org.json.JSONObject;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -56,6 +58,16 @@ import android.support.v4.app.ActivityCompat;
  * Diagnostic plugin implementation for Android
  */
 public class Diagnostic extends CordovaPlugin{
+
+
+    /*************
+     * Constants *
+     *************/
+
+    /**
+     * Tag for debug log messages
+     */
+    public static final String TAG = "Diagnostic";
 
     /**
      * Map of "dangerous" permissions that need to be requested at run-time (Android 6.0/API 23 and above)
@@ -120,15 +132,52 @@ public class Diagnostic extends CordovaPlugin{
     private static final String STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS = "STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS";
 
     /**
+     * Current state of Bluetooth hardware is unknown
+     */
+    private static final String BLUETOOTH_STATE_UNKNOWN = "unknown";
+
+    /**
+     * Current state of Bluetooth hardware is ON
+     */
+    private static final String BLUETOOTH_STATE_POWERED_ON = "powered_on";
+
+    /**
+     * Current state of Bluetooth hardware is OFF
+     */
+    private static final String BLUETOOTH_STATE_POWERED_OFF = "powered_off";
+
+    /**
+     * Current state of Bluetooth hardware is transitioning to ON
+     */
+    private static final String BLUETOOTH_STATE_POWERING_ON = "powering_on";
+
+    /**
+     * Current state of Bluetooth hardware is transitioning to OFF
+     */
+    private static final String BLUETOOTH_STATE_POWERING_OFF = "powering_off";
+
+    /*************
+     * Variables *
+     *************/
+
+    /**
+     * Singleton class instance
+     */
+    public static Diagnostic instance;
+
+    /**
      * Current Cordova callback context (on this thread)
      */
     protected CallbackContext currentContext;
 
+    /**
+     * Current state of bluetooth hardware
+     */
+    private String bluetoothState = BLUETOOTH_STATE_UNKNOWN;
+
     /*************
      * Public API
      ************/
-
-    public static final String TAG = "Diagnostic";
 
     /**
      * Constructor.
@@ -143,7 +192,24 @@ public class Diagnostic extends CordovaPlugin{
      * @param webView The CordovaWebView Cordova is running in.
      */
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        instance = this;
+        this.cordova.getActivity().registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        if(this.hasBluetoothSupport()){
+            if(this.isBluetoothEnabled()){
+                bluetoothState = BLUETOOTH_STATE_POWERED_ON;
+            }else{
+                bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
+            }
+
+        }
         super.initialize(cordova, webView);
+    }
+
+    /**
+     * Called on destroying activity
+     */
+    public void onDestroy() {
+        this.cordova.getActivity().unregisterReceiver(mReceiver);
     }
 
     /**
@@ -185,7 +251,9 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isCameraPresent() ? 1 : 0);
             } else if(action.equals("isBluetoothEnabled")) {
                 callbackContext.success(isBluetoothEnabled() ? 1 : 0);
-            } else if(action.equals("hasBluetoothLESupport")) {
+            } else if(action.equals("hasBluetoothSupport")) {
+                callbackContext.success(hasBluetoothSupport() ? 1 : 0);
+            }else if(action.equals("hasBluetoothLESupport")) {
                 callbackContext.success(hasBluetoothLESupport() ? 1 : 0);
             } else if(action.equals("hasBluetoothLEPeripheralSupport")) {
                 callbackContext.success(hasBluetoothLEPeripheralSupport() ? 1 : 0);
@@ -195,7 +263,9 @@ public class Diagnostic extends CordovaPlugin{
             } else if(action.equals("setBluetoothState")) {
                 setBluetoothState(args.getBoolean(0));
                 callbackContext.success();
-            } else if(action.equals("getLocationMode")) {
+            } else if(action.equals("getBluetoothState")) {
+                callbackContext.success(getBluetoothState());
+            }else if(action.equals("getLocationMode")) {
                 callbackContext.success(getLocationModeName());
             }else if(action.equals("getPermissionAuthorizationStatus")) {
                 this.getPermissionAuthorizationStatus(args);
@@ -272,10 +342,16 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
+    public boolean hasBluetoothSupport() {
+        PackageManager pm = this.cordova.getActivity().getPackageManager();
+        boolean result = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+        return result;
+    }
+
     public boolean hasBluetoothLESupport() {
-      PackageManager pm = this.cordova.getActivity().getPackageManager();
-      boolean result = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
-      return result;
+        PackageManager pm = this.cordova.getActivity().getPackageManager();
+        boolean result = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+        return result;
     }
 
     public boolean hasBluetoothLEPeripheralSupport() {
@@ -335,6 +411,10 @@ public class Diagnostic extends CordovaPlugin{
             return bluetoothAdapter.disable();
         }
         return true;
+    }
+
+    public String getBluetoothState(){
+        return bluetoothState;
     }
 
     public void getPermissionsAuthorizationStatus(JSONArray args) throws Exception{
@@ -592,6 +672,15 @@ public class Diagnostic extends CordovaPlugin{
         return shouldShow;
     }
 
+    public void executeGlobalJavascript(final String jsString){
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                webView.loadUrl("javascript:cordova.diagnostic.plugins." + jsString);
+            }
+        });
+    }
+
     /************
      * Overrides
      ***********/
@@ -643,4 +732,33 @@ public class Diagnostic extends CordovaPlugin{
             handleError("Exception occurred onRequestPermissionsResult: ".concat(e.getMessage()), requestCode);
         }
     }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        bluetoothState = BLUETOOTH_STATE_POWERING_OFF;
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        bluetoothState = BLUETOOTH_STATE_POWERED_ON;
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        bluetoothState = BLUETOOTH_STATE_POWERING_ON;
+                        break;
+                    default:
+                        bluetoothState = BLUETOOTH_STATE_UNKNOWN;
+                }
+                instance.executeGlobalJavascript("_onBluetoothStateChange(\""+bluetoothState+"\");");
+            }
+        }
+    };
 }

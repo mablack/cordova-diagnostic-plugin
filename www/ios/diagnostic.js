@@ -6,9 +6,6 @@
  **/
 var Diagnostic = (function(){
 
-	// Callback function to execute upon change in Bluetooth state
-	var _onBluetoothStateChangeCallback = function(){};
-
 	/********************
 	 * Internal functions
 	 ********************/
@@ -18,6 +15,7 @@ var Diagnostic = (function(){
 			callback(!!result);
 		}
 	}
+
 
 
 	/********************
@@ -53,6 +51,11 @@ var Diagnostic = (function(){
 	/**********************
 	 * Public API functions
 	 **********************/
+
+	// Placeholder listeners
+	Diagnostic._onBluetoothStateChange =
+		Diagnostic._onLocationStateChange = function(){};
+
 
 	/**
 	 * Checks if location is enabled.
@@ -340,16 +343,6 @@ var Diagnostic = (function(){
 			[]);
 	};
 
-	/**
-	 * Called by native element of the plugin on a change in Bluetooth state
-	 * NOTE: this should not be invoked manually; it is present in the public API so it is visible to the native part of the plugin.
-	 * To be notified of a change in Bluetooth state, register a handler using registerLocationAuthorizationStatusHandler()
-	 * @param {String} status - new location authorization status
-	 * @private
-	 */
-	Diagnostic._onBluetoothStateChange = function(state){
-		_onBluetoothStateChangeCallback(state);
-	};
 
 	/**
 	 * Registers a function to be called when a change in Bluetooth state occurs.
@@ -357,7 +350,7 @@ var Diagnostic = (function(){
 	 * This callback function is passed a single string parameter which indicates the Bluetooth state as a constant in `cordova.plugins.diagnostic.bluetoothState`.
 	 */
 	Diagnostic.registerBluetoothStateChangeHandler = function(fn){
-		_onBluetoothStateChangeCallback = fn;
+		Diagnostic._onBluetoothStateChange = fn;
 	};
 
 	/**
