@@ -47,4 +47,9 @@
 - (void) getMicrophoneAuthorizationStatus: (CDVInvokedUrlCommand*)command;
 - (void) requestMicrophoneAuthorization: (CDVInvokedUrlCommand*)command;
 
+- (void) getAddressBookAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) isAddressBookAuthorized: (CDVInvokedUrlCommand*)command;
+- (void) requestAddressBookAuthorization: (CDVInvokedUrlCommand*)command;
+
+
 @end

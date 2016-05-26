@@ -40,6 +40,7 @@
         <framework src="CoreBluetooth.framework" />
         <framework src="AVFoundation.framework" />
         <framework src="Photos.framework" />
+        <framework src="AddressBook.framework" />
     </platform>
 
 	<!-- android -->

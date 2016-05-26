@@ -644,7 +644,7 @@ Notes for iOS:
 
 Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
- - This requests permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions - see [Android camera permissions](#android-camera-permissions).
+ - This requests permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions which must be added to `AndroidManifest.xml` - see [Android camera permissions](#android-camera-permissions).
 
     `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback);`
 
@@ -728,6 +728,7 @@ Notes for iOS:
 
 Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+ - This requests permission for `RECORD_AUDIO` which must be added to `AndroidManifest.xml` - see [Android permissions](#android-permissions).
 
     cordova.plugins.diagnostic.requestMicrophoneAuthorization(successCallback, errorCallback);
 
@@ -745,6 +746,82 @@ This callback function is passed a single string parameter indicating whether ac
         console.error(error);
     });
 
+### isContactsAuthorized()
+
+Checks if the application is authorized to use contacts (address book).
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+
+    `cordova.plugins.diagnostic.isContactsAuthorized(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if contacts is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isContactsAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to contacts");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getContactsAuthorizationStatus()
+
+ Returns the contacts authorization status for the application.
+
+ Notes for Android:
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+
+    `cordova.plugins.diagnostic.getContactsAuthorizationStatus(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getContactsAuthorizationStatus(function(status){
+       console.log("Contacts authorization status: " + status);
+    }, onError);
+
+
+### requestContactsAuthorization()
+
+Requests contacts authorization for the application.
+
+Notes for iOS:
+ - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+
+Notes for Android:
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+ - This requests permission for `READ_CONTACTS` run-time permission
+ - Required permissions must be added to `AndroidManifest.xml` - see [Android permissions](#android-permissions): `READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS`
+
+    cordova.plugins.diagnostic.requestContactsAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single string parameter indicating whether access to contacts was granted or denied:
+`Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestContactsAuthorization(function(status){
+        console.log(Contacts access is: "+status);
+    }, function(error){
+        console.error(error);
+    });
+    
 ### switchToSettings()
 
 Opens settings page for this app.

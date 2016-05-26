@@ -844,13 +844,56 @@ var Diagnostic = (function(){
 	/**
 	 * Requests access to microphone if authorization was never granted nor denied, will only return access status otherwise.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+	 * @param {Function} successCallback - The callback which will be called when authorization request is successful.
 	 * @param {Function} errorCallback - The callback which will be called when an error occurs.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * This works only on iOS 7+.
 	 */
 	Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
 		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.RECORD_AUDIO);
+	};
+
+	/*************
+	 * Contacts
+	 *************/
+
+	/**
+	 *Checks if the application is authorized to use contacts (address book).
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if access to microphone is authorized.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isContactsAuthorized = function(successCallback, errorCallback) {
+		function onSuccess(status){
+			successCallback(status == Diagnostic.permissionStatus.GRANTED);
+		}
+		Diagnostic.getContactsAuthorizationStatus(onSuccess, errorCallback);
+	};
+
+	/**
+	 * Returns the contacts (address book) authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status.
+	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getContactsAuthorizationStatus = function(successCallback, errorCallback) {
+		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.permission.READ_CONTACTS);
+	};
+
+	/**
+	 *  Requests contacts (address book) authorization for the application.
+	 *  Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when authorization request is successful.
+	 * @param {Function} errorCallback - The callback which will be called when an error occurs.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestContactsAuthorization = function(successCallback, errorCallback) {
+		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_CONTACTS);
 	};
 
 

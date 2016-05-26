@@ -48,13 +48,39 @@ var Diagnostic = (function(){
 		"POWERED_ON": "powered_on"
 	};
 
-	/**********************
-	 * Public API functions
-	 **********************/
-
 	// Placeholder listeners
 	Diagnostic._onBluetoothStateChange =
 		Diagnostic._onLocationStateChange = function(){};
+
+	/**********************
+	 *
+	 * Public API functions
+	 *
+	 **********************/
+
+	/***********
+	 * General
+	 ***********/
+
+	/**
+	 * Switch to settings app. Opens settings page for this app.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+	 * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 * This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
+	 */
+	Diagnostic.switchToSettings = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'switchToSettings',
+			[]);
+	};
+
+	/************
+	 * Location *
+	 ************/
 
 
 	/**
@@ -168,6 +194,10 @@ var Diagnostic = (function(){
 	Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
 		Diagnostic._onLocationStateChange = successCallback;
 	};
+
+	/************
+	 * Camera   *
+	 ************/
 
 	/**
 	 * Checks if camera is enabled for use.
@@ -307,6 +337,10 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+	/************
+	 * WiFi     *
+	 ************/
+
 	/**
 	 * Checks if Wi-Fi connection exists.
 	 * On iOS this returns true if the device is connected to a network by WiFi.
@@ -324,6 +358,9 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+	/***************
+	 * Bluetooth   *
+	 ***************/
 
 	/**
 	 * Checks if the device has Bluetooth LE capabilities and if so that Bluetooth is switched on
@@ -369,21 +406,9 @@ var Diagnostic = (function(){
 		Diagnostic._onBluetoothStateChange = successCallback;
 	};
 
-	/**
-	 * Switch to settings app. Opens settings page for this app.
-	 *
-	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
-	 * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
-	 * This callback function is passed a single string parameter containing the error message.
-	 * This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
-	 */
-	Diagnostic.switchToSettings = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
-			errorCallback,
-			'Diagnostic',
-			'switchToSettings',
-			[]);
-	};
+	/***************************
+	 * Microphone / Record Audio
+	 ***************************/
 
 	/**
 	 * Checks if the application is authorized to use the microphone for recording audio.
@@ -436,6 +461,10 @@ var Diagnostic = (function(){
 			'requestMicrophoneAuthorization',
 			[]);
 	};
+
+	/***********************
+	 * Remote Notifications
+	 ***********************/
 
 	/**
 	 * Checks if remote (push) notifications are enabled.
@@ -501,9 +530,62 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+	/*************
+	 * Contacts
+	 *************/
+
+	/**
+	 * Checks if the application is authorized to use contacts (address book).
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if contacts is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isContactsAuthorized = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isAddressBookAuthorized',
+			[]);
+	};
+
+	/**
+	 * Returns the contacts (address book) authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getContactsAuthorizationStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getAddressBookAuthorizationStatus',
+			[]);
+	};
+
+	/**
+	 * Requests contacts (address book) authorization for the application.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter indicating whether access to contacts was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestContactsAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
+			errorCallback,
+			'Diagnostic',
+			'requestAddressBookAuthorization',
+			[]);
+	};
+
 	return Diagnostic;
 })();
-
-
-
 module.exports = Diagnostic;

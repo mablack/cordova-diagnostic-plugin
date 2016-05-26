@@ -9,6 +9,7 @@
 #import "Diagnostic.h"
 #import <AVFoundation/AVFoundation.h>
 #import <Photos/Photos.h>
+#import <AddressBook/AddressBook.h>
 
 #import <arpa/inet.h> // For AF_INET, etc.
 #import <ifaddrs.h> // For getifaddrs()
@@ -17,6 +18,8 @@
 
 
 @implementation Diagnostic
+
+ABAddressBookRef _addressBook;
 
 - (void)pluginInitialize {
     
@@ -526,6 +529,70 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+// Address Book (Contacts)
+
+- (void) getAddressBookAuthorizationStatus: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        NSString* status;
+        ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
+        
+        if(authStatus == kABAuthorizationStatusDenied || authStatus == kABAuthorizationStatusRestricted){
+            status = @"denied";
+        }else if(authStatus == kABAuthorizationStatusNotDetermined){
+            status = @"not_determined";
+        }else if(authStatus == kABAuthorizationStatusAuthorized){
+            status = @"authorized";
+        }
+        NSLog([NSString stringWithFormat:@"Address book authorization status is: %@", status]);
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) isAddressBookAuthorized: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
+        if(authStatus == kABAuthorizationStatusAuthorized) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        }
+        else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        }
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) requestAddressBookAuthorization: (CDVInvokedUrlCommand*)command
+{
+    @try {
+        ABAddressBookRequestAccessWithCompletion(self.addressBook, ^(bool granted, CFErrorRef error) {
+            NSLog(@"Access request to address book: %d", granted);
+            CDVPluginResult* pluginResult;
+            if(granted) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+            } else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+            
+        });
+    }
+    @catch (NSException *exception) {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+}
+
 /*********************
  * Internal functions
  *********************/
@@ -660,6 +727,39 @@
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:inputObject options:NSJSONWritingPrettyPrinted error:&error];
     NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     return jsonString;
+}
+
+- (ABAddressBookRef)addressBook {
+    if (!_addressBook) {
+        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+        
+        if (addressBook) {
+            [self setAddressBook:CFAutorelease(addressBook)];
+        }
+    }
+    
+    return _addressBook;
+}
+
+- (void)setAddressBook:(ABAddressBookRef)newAddressBook {
+    if (_addressBook != newAddressBook) {
+        if (_addressBook) {
+            CFRelease(_addressBook);
+        }
+        
+        if (newAddressBook) {
+            CFRetain(newAddressBook);
+        }
+        
+        _addressBook = newAddressBook;
+    }
+}
+
+- (void)dealloc {
+    if (_addressBook) {
+        CFRelease(_addressBook);
+        _addressBook = NULL;
+    }
 }
 
 #pragma mark - CBCentralManagerDelegate
