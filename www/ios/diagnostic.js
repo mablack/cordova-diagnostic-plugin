@@ -6,12 +6,6 @@
  **/
 var Diagnostic = (function(){
 
-	// Callback function to execute upon change in location authorization status
-	var _onLocationAuthorizationStatusChangeCallback = null;
-
-	// Callback function to execute upon change in Bluetooth state
-	var _onBluetoothStateChangeCallback = function(){};
-
 	/********************
 	 * Internal functions
 	 ********************/
@@ -22,10 +16,72 @@ var Diagnostic = (function(){
 		}
 	}
 
-	/**********************
-	 * Public API functions
-	 **********************/
+
+
+	/********************
+	 * Public properties
+	 ********************/
 	var Diagnostic = {};
+
+	/**
+	 * Permission states
+	 * @type {object}
+	 */
+	Diagnostic.permissionStatus = {
+		"NOT_REQUESTED": "not_determined", // App has not yet requested this permission
+		"DENIED": "denied", // User denied access to this permission
+		"GRANTED": "authorized", //  User granted access to this permission
+		"GRANTED_WHEN_IN_USE": "authorized_when_in_use" //  User granted access use location permission only when app is in use
+	};
+
+	Diagnostic.locationAuthorizationMode = {
+		"ALWAYS": "always",
+		"WHEN_IN_USE": "when_in_use"
+	};
+
+	Diagnostic.bluetoothState = {
+		"UNKNOWN": "unknown",
+		"RESETTING": "resetting",
+		"UNSUPPORTED": "unsupported",
+		"UNAUTHORIZED": "unauthorized",
+		"POWERED_OFF": "powered_off",
+		"POWERED_ON": "powered_on"
+	};
+
+	// Placeholder listeners
+	Diagnostic._onBluetoothStateChange =
+		Diagnostic._onLocationStateChange = function(){};
+
+	/**********************
+	 *
+	 * Public API functions
+	 *
+	 **********************/
+
+	/***********
+	 * General
+	 ***********/
+
+	/**
+	 * Switch to settings app. Opens settings page for this app.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+	 * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 * This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
+	 */
+	Diagnostic.switchToSettings = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'switchToSettings',
+			[]);
+	};
+
+	/************
+	 * Location *
+	 ************/
+
 
 	/**
 	 * Checks if location is enabled.
@@ -83,8 +139,13 @@ var Diagnostic = (function(){
 	 * Returns the location authorization status for the application.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when operation is successful.
-	 * This callback function is passed a single string parameter which indicates the location authorization status.
-	 * Possible values are: "unknown", "denied", "not_determined", "authorized_always", "authorized_when_in_use"
+	 * This callback function is passed a single string parameter which indicates the location authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * Possible values are:
+	 * `cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED`
+	 * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+	 * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
+	 * `cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE`
+	 * Note that `GRANTED` indicates the app is always granted permission (even when in background).
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
@@ -99,46 +160,44 @@ var Diagnostic = (function(){
 	/**
 	 * Requests location authorization for the application.
 	 * Authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
-	 * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
 	 *
-	 * @param {Function} successCallback - The callback which will be called on successfully requesting location authorization.
+	 * @param {Function} successCallback - Invoked in response to the user's choice in the permission dialog.
+	 * It is passed a single string parameter which defines the resulting authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * Possible values are:
+	 * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+	 * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
+	 * `cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE`
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {String} mode - (optional) location authorization mode: "always" or "when_in_use". If not specified, defaults to "when_in_use".
+	 * @param {String} mode - (optional) location authorization mode as a constant in `cordova.plugins.diagnostic.locationAuthorizationMode`.
+	 * If not specified, defaults to `cordova.plugins.diagnostic.locationAuthorizationMode.WHEN_IN_USE`.
 	 */
 	Diagnostic.requestLocationAuthorization = function(successCallback, errorCallback, mode) {
 		return cordova.exec(successCallback,
 			errorCallback,
 			'Diagnostic',
 			'requestLocationAuthorization',
-			[mode && mode === "always"]);
+			[mode && mode === Diagnostic.locationAuthorizationMode.ALWAYS]);
 	};
 
 	/**
-	 * Called by native element of the plugin on a change in location authorization status
-	 * NOTE: this should not be invoked manually; it is present in the public API so it is visible to the native part of the plugin.
-	 * To be notified of a change in location authorization status, register a handler using registerLocationAuthorizationStatusHandler()
-	 * @param {String} status - new location authorization status
-	 * @private
-	 * @deprecated
+	 * Registers a function to be called when a change in Location state occurs.
+	 * On iOS, this occurs when location authorization status is changed.
+	 * This can be triggered either by the user's response to a location permission authorization dialog,
+	 * by the user turning on/off Location Services,
+	 * or by the user changing the Location authorization state specifically for your app.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the Location state changes.
+	 * This callback function is passed a single string parameter indicating the new location authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
 	 */
-	Diagnostic._onLocationAuthorizationStatusChange = function(status){
-		if(_onLocationAuthorizationStatusChangeCallback){
-			_onLocationAuthorizationStatusChangeCallback(status);
-		}
+	Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
+		Diagnostic._onLocationStateChange = successCallback;
 	};
 
-	/**
-	 * Registers a function to be called when a change in location authorization status occurs.
-	 * @param {Function} fn - function call when a change in location authorization status occurs.
-	 * This callback function is passed a single string parameter containing new status.
-	 * Possible values are: "unknown", "denied", "not_determined", "authorized_always" or "authorized_when_in_use"
-	 * @deprecated
-	 */
-	Diagnostic.registerLocationAuthorizationStatusChangeHandler = function(fn){
-		console.warn("registerLocationAuthorizationStatusChangeHandler() is deprecated and will be removed in a future version. Update your code pass this function to requestLocationAuthorization() as successCallback, which will now be invoked when a change in location authorization status occurs");
-		_onLocationAuthorizationStatusChangeCallback = fn;
-	};
+	/************
+	 * Camera   *
+	 ************/
 
 	/**
 	 * Checks if camera is enabled for use.
@@ -194,8 +253,7 @@ var Diagnostic = (function(){
 	 * Returns the camera authorization status for the application.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when operation is successful.
-	 * This callback function is passed a single string parameter which indicates the authorization status.
-	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
@@ -209,15 +267,18 @@ var Diagnostic = (function(){
 
 	/**
 	 * Requests camera authorization for the application.
-	 * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when operation is successful.
-	 * This callback function is passed a single boolean parameter indicating whether access to the camera was granted or denied.
+	 * This callback function is passed a single string parameter indicating whether access to the camera was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback) {
-		return cordova.exec(ensureBoolean(successCallback),
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
 			errorCallback,
 			'Diagnostic',
 			'requestCameraAuthorization',
@@ -244,8 +305,7 @@ var Diagnostic = (function(){
 	 * Returns the authorization status for the application to use the Camera Roll in Photos app.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when operation is successful.
-	 * This callback function is passed a single string parameter which indicates the authorization status.
-	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
@@ -259,20 +319,27 @@ var Diagnostic = (function(){
 
 	/**
 	 * Requests camera roll authorization for the application.
-	 * Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when operation is successful.
-	 * This callback function is passed a single string parameter indicating the new authorization status: "denied" or "authorized"
+	 * This callback function is passed a single string parameter indicating the new authorization status:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.requestCameraRollAuthorization = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(function(status){
+				successCallback(status == "authorized" ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
 			errorCallback,
 			'Diagnostic',
 			'requestCameraRollAuthorization',
 			[]);
 	};
+
+	/************
+	 * WiFi     *
+	 ************/
 
 	/**
 	 * Checks if Wi-Fi connection exists.
@@ -291,6 +358,9 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+	/***************
+	 * Bluetooth   *
+	 ***************/
 
 	/**
 	 * Checks if the device has Bluetooth LE capabilities and if so that Bluetooth is switched on
@@ -312,8 +382,7 @@ var Diagnostic = (function(){
 	 * Returns the state of Bluetooth LE on the device.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when operation is successful.
-	 * This callback function is passed a single string parameter which indicates the bluetooth state.
-	 * Possible values are: "unknown", "resetting", "unsupported", "unauthorized", "powered_off", "powered_on"
+	 * This callback function is passed a single string parameter which indicates the Bluetooth state as a constant in `cordova.plugins.diagnostic.bluetoothState`.
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
@@ -325,42 +394,21 @@ var Diagnostic = (function(){
 			[]);
 	};
 
-	/**
-	 * Called by native element of the plugin on a change in Bluetooth state
-	 * NOTE: this should not be invoked manually; it is present in the public API so it is visible to the native part of the plugin.
-	 * To be notified of a change in Bluetooth state, register a handler using registerLocationAuthorizationStatusHandler()
-	 * @param {String} status - new location authorization status
-	 * @private
-	 */
-	Diagnostic._onBluetoothStateChange = function(state){
-		_onBluetoothStateChangeCallback(state);
-	};
 
 	/**
 	 * Registers a function to be called when a change in Bluetooth state occurs.
-	 * @param {Function} fn - function call when a change in Bluetooth state occurs.
-	 * This callback function is passed a single string parameter containing new state.
-	 * Possible values are: "unknown", "resetting", "unsupported", "unauthorized", "powered_off", "powered_on"
+	 * @param {Function} successCallback - function call when a change in Bluetooth state occurs.
+	 * This callback function is passed a single string parameter which indicates the Bluetooth state as a constant in `cordova.plugins.diagnostic.bluetoothState`.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
 	 */
-	Diagnostic.registerBluetoothStateChangeHandler = function(fn){
-		_onBluetoothStateChangeCallback = fn;
+	Diagnostic.registerBluetoothStateChangeHandler = function(successCallback, errorCallback){
+		Diagnostic._onBluetoothStateChange = successCallback;
 	};
 
-	/**
-	 * Switch to settings app. Opens settings page for this app.
-	 *
-	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
-	 * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
-	 * This callback function is passed a single string parameter containing the error message.
-	 * This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
-	 */
-	Diagnostic.switchToSettings = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
-			errorCallback,
-			'Diagnostic',
-			'switchToSettings',
-			[]);
-	};
+	/***************************
+	 * Microphone / Record Audio
+	 ***************************/
 
 	/**
 	 * Checks if the application is authorized to use the microphone for recording audio.
@@ -382,8 +430,7 @@ var Diagnostic = (function(){
 	 * Returns the authorization status for the application to use the microphone for recording audio.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when operation is successful.
-	 * This callback function is passed a single string parameter which indicates the authorization status.
-	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
 	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
 	 * This callback function is passed a single string parameter containing the error message.
 	 */
@@ -398,18 +445,26 @@ var Diagnostic = (function(){
 	/**
 	 * Requests access to microphone if authorization was never granted nor denied, will only return access status otherwise.
 	 *
-	 * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter indicating whether access to the microphone was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
 	 * @param {Function} errorCallback - The callback which will be called when an error occurs.
 	 * This callback function is passed a single string parameter containing the error message.
 	 * This works only on iOS 7+.
 	 */
 	Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
-		return cordova.exec(successCallback,
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
 			errorCallback,
 			'Diagnostic',
 			'requestMicrophoneAuthorization',
 			[]);
 	};
+
+	/***********************
+	 * Remote Notifications
+	 ***********************/
 
 	/**
 	 * Checks if remote (push) notifications are enabled.
@@ -475,9 +530,174 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+	/*************
+	 * Contacts
+	 *************/
+
+	/**
+	 * Checks if the application is authorized to use contacts (address book).
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if contacts is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isContactsAuthorized = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isAddressBookAuthorized',
+			[]);
+	};
+
+	/**
+	 * Returns the contacts (address book) authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getContactsAuthorizationStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getAddressBookAuthorizationStatus',
+			[]);
+	};
+
+	/**
+	 * Requests contacts (address book) authorization for the application.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter indicating whether access to contacts was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestContactsAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
+			errorCallback,
+			'Diagnostic',
+			'requestAddressBookAuthorization',
+			[]);
+	};
+
+	/*****************
+	 * Calendar events
+	 *****************/
+
+	/**
+	 * Checks if the application is authorized to use calendar.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if calendar is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isCalendarAuthorized = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isCalendarAuthorized',
+			[]);
+	};
+
+	/**
+	 * Returns the calendar event authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getCalendarAuthorizationStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getCalendarAuthorizationStatus',
+			[]);
+	};
+
+	/**
+	 * Requests calendar event authorization for the application.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter indicating whether access to calendar was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestCalendarAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
+			errorCallback,
+			'Diagnostic',
+			'requestCalendarAuthorization',
+			[]);
+	};
+
+	/*********************
+	 * Calendar reminders
+	 *********************/
+
+	/**
+	 * Checks if the application is authorized to use calendar reminders.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if reminders is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isRemindersAuthorized = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isRemindersAuthorized',
+			[]);
+	};
+
+	/**
+	 * Returns the calendar event authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getRemindersAuthorizationStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getRemindersAuthorizationStatus',
+			[]);
+	};
+
+	/**
+	 * Requests calendar reminders authorization for the application.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter indicating whether access to reminders was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestRemindersAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
+			errorCallback,
+			'Diagnostic',
+			'requestRemindersAuthorization',
+			[]);
+	};
+
 	return Diagnostic;
 })();
-
-
-
 module.exports = Diagnostic;

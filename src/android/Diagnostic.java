@@ -39,9 +39,15 @@ import org.json.JSONObject;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import android.content.Context;
@@ -56,6 +62,16 @@ import android.support.v4.app.ActivityCompat;
  * Diagnostic plugin implementation for Android
  */
 public class Diagnostic extends CordovaPlugin{
+
+
+    /*************
+     * Constants *
+     *************/
+
+    /**
+     * Tag for debug log messages
+     */
+    public static final String TAG = "Diagnostic";
 
     /**
      * Map of "dangerous" permissions that need to be requested at run-time (Android 6.0/API 23 and above)
@@ -113,6 +129,9 @@ public class Diagnostic extends CordovaPlugin{
      */
     private static final String STATUS_DENIED = "DENIED";
 
+    private static String gpsLocationPermission = "ACCESS_FINE_LOCATION";
+    private static String networkLocationPermission = "ACCESS_COARSE_LOCATION";
+
     /**
      * Either user denied permission and checked "never ask again"
      * Or authorisation has not yet been requested for permission
@@ -120,15 +139,63 @@ public class Diagnostic extends CordovaPlugin{
     private static final String STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS = "STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS";
 
     /**
+     * Current state of Bluetooth hardware is unknown
+     */
+    private static final String BLUETOOTH_STATE_UNKNOWN = "unknown";
+
+    /**
+     * Current state of Bluetooth hardware is ON
+     */
+    private static final String BLUETOOTH_STATE_POWERED_ON = "powered_on";
+
+    /**
+     * Current state of Bluetooth hardware is OFF
+     */
+    private static final String BLUETOOTH_STATE_POWERED_OFF = "powered_off";
+
+    /**
+     * Current state of Bluetooth hardware is transitioning to ON
+     */
+    private static final String BLUETOOTH_STATE_POWERING_ON = "powering_on";
+
+    /**
+     * Current state of Bluetooth hardware is transitioning to OFF
+     */
+    private static final String BLUETOOTH_STATE_POWERING_OFF = "powering_off";
+
+    private static final String LOCATION_MODE_HIGH_ACCURACY = "high_accuracy";
+    private static final String LOCATION_MODE_DEVICE_ONLY = "device_only";
+    private static final String LOCATION_MODE_BATTERY_SAVING = "battery_saving";
+    private static final String LOCATION_MODE_OFF = "location_off";
+    private static final String LOCATION_MODE_UNKNOWN = "unknown";
+
+    /*************
+     * Variables *
+     *************/
+
+    /**
+     * Singleton class instance
+     */
+    public static Diagnostic instance;
+
+    public static LocationManager locationManager;
+
+    /**
      * Current Cordova callback context (on this thread)
      */
     protected CallbackContext currentContext;
 
+    /**
+     * Current state of bluetooth hardware
+     */
+    private String bluetoothState = BLUETOOTH_STATE_UNKNOWN;
+
+    private boolean bluetoothListenerInitialized = false;
+    private String currentLocationMode = null;
+
     /*************
      * Public API
      ************/
-
-    public static final String TAG = "Diagnostic";
 
     /**
      * Constructor.
@@ -143,7 +210,26 @@ public class Diagnostic extends CordovaPlugin{
      * @param webView The CordovaWebView Cordova is running in.
      */
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        instance = this;
+
+        if(this.hasBluetoothSupport()){
+            if(this.isBluetoothEnabled()){
+                bluetoothState = BLUETOOTH_STATE_POWERED_ON;
+            }else{
+                bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
+            }
+
+        }
+
+        locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
         super.initialize(cordova, webView);
+    }
+
+    /**
+     * Called on destroying activity
+     */
+    public void onDestroy() {
+        this.cordova.getActivity().unregisterReceiver(mReceiver);
     }
 
     /**
@@ -179,12 +265,16 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isGpsLocationEnabled() ? 1 : 0);
             } else if(action.equals("isNetworkLocationEnabled")) {
                 callbackContext.success(isNetworkLocationEnabled() ? 1 : 0);
+            } else if(action.equals("getLocationMode")) {
+                callbackContext.success(getLocationModeName());
             } else if(action.equals("isWifiEnabled")) {
                 callbackContext.success(isWifiEnabled() ? 1 : 0);
             } else if(action.equals("isCameraPresent")) {
                 callbackContext.success(isCameraPresent() ? 1 : 0);
             } else if(action.equals("isBluetoothEnabled")) {
                 callbackContext.success(isBluetoothEnabled() ? 1 : 0);
+            } else if(action.equals("hasBluetoothSupport")) {
+                callbackContext.success(hasBluetoothSupport() ? 1 : 0);
             } else if(action.equals("hasBluetoothLESupport")) {
                 callbackContext.success(hasBluetoothLESupport() ? 1 : 0);
             } else if(action.equals("hasBluetoothLEPeripheralSupport")) {
@@ -195,15 +285,18 @@ public class Diagnostic extends CordovaPlugin{
             } else if(action.equals("setBluetoothState")) {
                 setBluetoothState(args.getBoolean(0));
                 callbackContext.success();
-            } else if(action.equals("getLocationMode")) {
-                callbackContext.success(getLocationModeName());
-            }else if(action.equals("getPermissionAuthorizationStatus")) {
+            } else if(action.equals("getBluetoothState")) {
+                callbackContext.success(getBluetoothState());
+            } else if(action.equals("initializeBluetoothListener")) {
+                initializeBluetoothListener();
+                callbackContext.success();
+            } else if(action.equals("getPermissionAuthorizationStatus")) {
                 this.getPermissionAuthorizationStatus(args);
-            }else if(action.equals("getPermissionsAuthorizationStatus")) {
+            } else if(action.equals("getPermissionsAuthorizationStatus")) {
                 this.getPermissionsAuthorizationStatus(args);
-            }else if(action.equals("requestRuntimePermission")) {
+            } else if(action.equals("requestRuntimePermission")) {
                 this.requestRuntimePermission(args);
-            }else if(action.equals("requestRuntimePermissions")) {
+            } else if(action.equals("requestRuntimePermissions")) {
                 this.requestRuntimePermissions(args);
             }else {
                 handleError("Invalid action");
@@ -237,21 +330,35 @@ public class Diagnostic extends CordovaPlugin{
         int mode = getLocationMode();
         switch(mode){
             case Settings.Secure.LOCATION_MODE_HIGH_ACCURACY:
-                modeName = "high_accuracy";
+                modeName = LOCATION_MODE_HIGH_ACCURACY;
                 break;
             case Settings.Secure.LOCATION_MODE_SENSORS_ONLY:
-                modeName = "device_only";
+                modeName = LOCATION_MODE_DEVICE_ONLY;
                 break;
             case Settings.Secure.LOCATION_MODE_BATTERY_SAVING:
-                modeName = "battery_saving";
+                modeName = LOCATION_MODE_BATTERY_SAVING;
                 break;
             case Settings.Secure.LOCATION_MODE_OFF:
-                modeName = "location_off";
+                modeName = LOCATION_MODE_OFF;
                 break;
             default:
-                modeName = "unknown";
+                modeName = LOCATION_MODE_UNKNOWN;
         }
+        currentLocationMode = modeName;
         return modeName;
+    }
+
+    public void notifyLocationStateChange(){
+        try {
+            String currentMode = currentLocationMode;
+            String newMode = getLocationModeName();
+            if(!currentMode.equals(newMode)){
+                Log.d(TAG, "Location mode change to: " + getLocationModeName());
+                executeGlobalJavascript("_onLocationStateChange(\"" + getLocationModeName() +"\");");
+            }
+        }catch(Exception e){
+            Log.e(TAG, "Error retrieving current location mode on location state change: "+e.toString());
+        }
     }
 
     public boolean isWifiEnabled() {
@@ -272,10 +379,16 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
+    public boolean hasBluetoothSupport() {
+        PackageManager pm = this.cordova.getActivity().getPackageManager();
+        boolean result = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+        return result;
+    }
+
     public boolean hasBluetoothLESupport() {
-      PackageManager pm = this.cordova.getActivity().getPackageManager();
-      boolean result = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
-      return result;
+        PackageManager pm = this.cordova.getActivity().getPackageManager();
+        boolean result = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+        return result;
     }
 
     public boolean hasBluetoothLEPeripheralSupport() {
@@ -337,6 +450,10 @@ public class Diagnostic extends CordovaPlugin{
         return true;
     }
 
+    public String getBluetoothState(){
+        return bluetoothState;
+    }
+
     public void getPermissionsAuthorizationStatus(JSONArray args) throws Exception{
         JSONArray permissions = args.getJSONArray(0);
         JSONObject statuses = _getPermissionsAuthorizationStatus(jsonArrayToStringArray(permissions));
@@ -358,10 +475,16 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public void requestRuntimePermission(JSONArray args) throws Exception{
-        String permission = args.getString(0);
+        requestRuntimePermission(args.getString(0));
+    }
+
+    public void requestRuntimePermission(String permission) throws Exception{
+        requestRuntimePermission(permission, storeContextByRequestId());
+    }
+
+    public void requestRuntimePermission(String permission, int requestId) throws Exception{
         JSONArray permissions = new JSONArray();
         permissions.put(permission);
-        int requestId = storeContextByRequestId();
         _requestRuntimePermissions(permissions, requestId);
     }
 
@@ -387,7 +510,7 @@ public class Diagnostic extends CordovaPlugin{
      * Calls the registered Javascript plugin error handler callback.
      * @param errorMsg Error message to pass to the JS error handler
      */
-    private void handleError(String errorMsg){
+    private void handleError(String errorMsg) {
         handleError(errorMsg, currentContext);
     }
 
@@ -420,9 +543,9 @@ public class Diagnostic extends CordovaPlugin{
         }else{ // Pre-Kitkat
             if(isLocationProviderEnabled(LocationManager.GPS_PROVIDER) && isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER)){
                 mode = 3;
-            }else if(isLocationProviderEnabled(LocationManager.GPS_PROVIDER)){
+            } else if(isLocationProviderEnabled(LocationManager.GPS_PROVIDER)){
                 mode = 1;
-            }else if(isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            } else if(isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER)){
                 mode = 2;
             }else{
                 mode = 0;
@@ -432,14 +555,20 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     private boolean isLocationAuthorized() throws Exception {
-        boolean authorized = hasPermission(permissionsMap.get("ACCESS_FINE_LOCATION")) || hasPermission(permissionsMap.get("ACCESS_COARSE_LOCATION"));
+        boolean authorized = hasPermission(permissionsMap.get(gpsLocationPermission)) || hasPermission(permissionsMap.get(networkLocationPermission));
         Log.v(TAG, "Location permission is "+(authorized ? "authorized" : "unauthorized"));
         return authorized;
     }
 
     private boolean isLocationProviderEnabled(String provider) {
-        LocationManager locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(provider);
+    }
+
+    private void initializeBluetoothListener(){
+        if(!bluetoothListenerInitialized){
+            this.cordova.getActivity().registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+            bluetoothListenerInitialized = true;
+        }
     }
 
 
@@ -538,6 +667,13 @@ public class Diagnostic extends CordovaPlugin{
         return arr;
     }
 
+    private CallbackContext getContextById(String requestId) throws Exception{
+        if (!callbackContexts.containsKey(requestId)) {
+            throw new Exception("No context found for request id=" + requestId);
+        }
+        return callbackContexts.get(requestId);
+    }
+
     private void clearRequest(int requestId){
         String sRequestId = String.valueOf(requestId);
         if (!callbackContexts.containsKey(sRequestId)) {
@@ -592,6 +728,15 @@ public class Diagnostic extends CordovaPlugin{
         return shouldShow;
     }
 
+    public void executeGlobalJavascript(final String jsString){
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                webView.loadUrl("javascript:cordova.plugins.diagnostic." + jsString);
+            }
+        });
+    }
+
     /************
      * Overrides
      ***********/
@@ -607,40 +752,80 @@ public class Diagnostic extends CordovaPlugin{
      */
     public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
         String sRequestId = String.valueOf(requestCode);
-        Log.v(TAG, "Received result for permissions request id="+sRequestId);
+        Log.v(TAG, "Received result for permissions request id=" + sRequestId);
+        boolean returnStatuses = true;
         try {
 
-            if (!callbackContexts.containsKey(sRequestId)) {
-                handleError("No context found for request id=" + sRequestId, requestCode);
-                return;
-            }
-
-            CallbackContext context = callbackContexts.get(sRequestId);
+            CallbackContext context = getContextById(sRequestId);
             JSONObject statuses = permissionStatuses.get(sRequestId);
 
             for (int i = 0, len = permissions.length; i < len; i++) {
                 String androidPermission = permissions[i];
                 String permission = permissionsMap.get(androidPermission);
+                String status;
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
                     boolean showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
                     if (!showRationale) {
                         // EITHER: The app doesn't have a permission and the user has not been asked for the permission before
                         // OR: user denied WITH "never ask again"
-                        statuses.put(permission, Diagnostic.STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS);
+                        status = Diagnostic.STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS;
                     } else {
                         // user denied WITHOUT "never ask again"
-                        statuses.put(permission, Diagnostic.STATUS_DENIED);
+                        status = Diagnostic.STATUS_DENIED;
                     }
                 } else {
                     // Permission granted
-                    statuses.put(permission, Diagnostic.STATUS_GRANTED);
+                    status = Diagnostic.STATUS_GRANTED;
                 }
-                Log.v(TAG, "Authorisation for "+permission+" is "+statuses.get(permission));
+                statuses.put(permission, status);
+                Log.v(TAG, "Authorisation for " + permission + " is " + statuses.get(permission));
+                clearRequest(requestCode);
             }
-            context.success(statuses);
-            clearRequest(requestCode);
+
+            if(returnStatuses){
+                context.success(statuses);
+            }
         }catch(Exception e ) {
             handleError("Exception occurred onRequestPermissionsResult: ".concat(e.getMessage()), requestCode);
         }
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        bluetoothState = BLUETOOTH_STATE_POWERING_OFF;
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        bluetoothState = BLUETOOTH_STATE_POWERED_ON;
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        bluetoothState = BLUETOOTH_STATE_POWERING_ON;
+                        break;
+                    default:
+                        bluetoothState = BLUETOOTH_STATE_UNKNOWN;
+                }
+                instance.executeGlobalJavascript("_onBluetoothStateChange(\""+bluetoothState+"\");");
+            }
+        }
+    };
+
+    public static class LocationProviderChangedReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v(TAG, "onReceiveLocationProviderChange");
+            instance.notifyLocationStateChange();
+        }
+
     }
 }

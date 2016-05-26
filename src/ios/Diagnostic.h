@@ -11,6 +11,7 @@
 #import <WebKit/WebKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreLocation/CoreLocation.h>
+#import <EventKit/EventKit.h>
 
 @interface Diagnostic : CDVPlugin <CBCentralManagerDelegate, CLLocationManagerDelegate>
 
@@ -19,6 +20,7 @@
     @property (nonatomic) NSString* bluetoothState;
     @property (strong, nonatomic) CLLocationManager* locationManager;
     @property (nonatomic, retain) NSString* locationRequestCallbackId;
+    @property (nonatomic) EKEventStore *eventStore;
 
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabledSetting: (CDVInvokedUrlCommand*)command;
@@ -46,5 +48,17 @@
 - (void) isMicrophoneAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getMicrophoneAuthorizationStatus: (CDVInvokedUrlCommand*)command;
 - (void) requestMicrophoneAuthorization: (CDVInvokedUrlCommand*)command;
+
+- (void) getAddressBookAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) isAddressBookAuthorized: (CDVInvokedUrlCommand*)command;
+- (void) requestAddressBookAuthorization: (CDVInvokedUrlCommand*)command;
+
+- (void) getCalendarAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) isCalendarAuthorized: (CDVInvokedUrlCommand*)command;
+- (void) requestCalendarAuthorization: (CDVInvokedUrlCommand*)command;
+- (void) getRemindersAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) isRemindersAuthorized: (CDVInvokedUrlCommand*)command;
+- (void) requestRemindersAuthorization: (CDVInvokedUrlCommand*)command;
+
 
 @end
