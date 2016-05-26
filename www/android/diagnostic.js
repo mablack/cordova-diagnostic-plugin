@@ -501,6 +501,18 @@ var Diagnostic = (function(){
 		Diagnostic.getLocationAuthorizationStatus(onSuccess, errorCallback);
 	};
 
+	/**
+	 * Registers a listener function to call when the state of Location mode changes.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the state of Bluetooth hardware changes.
+	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.registerLocationStateChangeHandler = function(successCallback, errorCallback) {
+		Diagnostic._onLocationStateChange = successCallback;
+	};
+
 	/************
 	 * WiFi     *
 	 ************/
@@ -692,9 +704,17 @@ var Diagnostic = (function(){
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when the state of Bluetooth hardware changes.
 	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.bluetoothState`.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
 	 */
-	Diagnostic.registerBluetoothStateChangeHandler = function(successCallback) {
-		Diagnostic._onBluetoothStateChange = successCallback;
+	Diagnostic.registerBluetoothStateChangeHandler = function(successCallback, errorCallback) {
+		cordova.exec(function(){
+				Diagnostic._onBluetoothStateChange = successCallback;
+			},
+			errorCallback,
+			'Diagnostic',
+			'initializeBluetoothListener',
+			[]);
 	};
 
 
