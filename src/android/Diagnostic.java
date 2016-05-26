@@ -57,6 +57,7 @@ import android.provider.Settings;
 import android.net.wifi.WifiManager;
 
 import android.support.v4.app.ActivityCompat;
+import java.lang.SecurityException;
 
 /**
  * Diagnostic plugin implementation for Android
@@ -211,15 +212,19 @@ public class Diagnostic extends CordovaPlugin{
      */
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         instance = this;
-
-        if(this.hasBluetoothSupport()){
-            if(this.isBluetoothEnabled()){
-                bluetoothState = BLUETOOTH_STATE_POWERED_ON;
-            }else{
-                bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
-            }
-
+        try {
+               if(this.hasBluetoothSupport()){
+                      if(this.isBluetoothEnabled()){
+                              bluetoothState = BLUETOOTH_STATE_POWERED_ON;
+                      } else{
+                              bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
+                      }
+               }
         }
+        catch(SecurityException e) {
+               bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
+        }
+       }
 
         locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
         super.initialize(cordova, webView);
