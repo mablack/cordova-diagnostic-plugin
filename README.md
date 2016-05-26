@@ -5,7 +5,9 @@ Cordova diagnostic plugin
 **Table of Contents**
 
 - [Overview](#overview)
-  - [Building for API 22 or lower](#building-for-api-22-or-lower)
+  - [Important notes](#important-notes)
+    - [Version 3 backward-incompatibility](#version-3-backward-incompatibility)
+    - [Building for API 22 or lower](#building-for-api-22-or-lower)
 - [Installation](#installation)
   - [Using the Cordova/Phonegap CLI](#using-the-cordovaphonegap-cli)
   - [Using Cordova Plugman](#using-cordova-plugman)
@@ -73,7 +75,6 @@ Cordova diagnostic plugin
 - [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
-- [# License](#-license)
 
 <!-- END table-of-contents -->
 
@@ -92,13 +93,25 @@ The plugin also enables an app to show the relevant settings screen, to allow us
 The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
 
 
-## Building for API 22 or lower
+## Important notes
 
-Phonegap Build (at the time of writing) does not support API 23, so for its users and others who wish to build against API 22 or below, there is a [legacy branch of this plugin repo](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22) which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against earlier API versions.
+### Version 3 backward-incompatibility
+
+In order to make cross-platform use of the shared plugin functions easier, some **backwardly-incompatible changes** have been made to existing API functions in v3 of the plugin.
+
+To avoid breaking existing code which uses the old API syntax, you can continue to use the v2 API by specifying the plugin version when adding it: `cordova.plugins.diagnostic@2`
+
+See the [release notes page ](https://github.com/dpa99c/cordova-diagnostic-plugin/wiki/Release-notes) for details of the backward-incompatible changes.
+
+### Building for API 22 or lower
+
+For users who wish to build against API 22 or below, there is a branch of the plugin repo which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against legacy API versions (22 and below).
 
 The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](https://www.npmjs.com/package/cordova.plugins.diagnostic.api-22), so you'll need to use this plugin ID when adding it:
 
     cordova plugin add cordova.plugins.diagnostic.api-22
+
+**NOTE**: Phonegap Build now supports API 23, so its users may use the main plugin branch (`cordova.plugins.diagnostic`).
 
 # Installation
 
@@ -1507,7 +1520,7 @@ Windows 10 implementation by [Mike Dailor](https://github.com/mdailor) / [Next W
 
 The MIT License
 
-Copyright (c) 2015 Dave Alden / Working Edge Ltd.
+Copyright (c) 2016 Dave Alden / Working Edge Ltd.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
