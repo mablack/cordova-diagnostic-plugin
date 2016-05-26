@@ -567,7 +567,10 @@
     if(self.locationRequestCallbackId != nil){
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
+        self.locationRequestCallbackId = nil;
     }
+
+    [self jsCallback:[NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationStateChange(\"%@\");", status]];
 }
 
 - (BOOL) isCameraPresent

@@ -502,14 +502,13 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Registers a listener function to call when the state of Location mode changes.
+	 * Registers a function to be called when a change in Location state occurs.
+	 * On Android, this occurs when the Location Mode is changed.
 	 *
-	 * @param {Function} successCallback -  The callback which will be called when the state of Bluetooth hardware changes.
+	 * @param {Function} successCallback -  The callback which will be called when the Location state changes.
 	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
-	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-	 *  This callback function is passed a single string parameter containing the error message.
 	 */
-	Diagnostic.registerLocationStateChangeHandler = function(successCallback, errorCallback) {
+	Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
 		Diagnostic._onLocationStateChange = successCallback;
 	};
 

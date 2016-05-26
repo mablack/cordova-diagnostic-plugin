@@ -5,11 +5,7 @@ Cordova diagnostic plugin
 **Table of Contents**
 
 - [Overview](#overview)
-- [Version notes](#version-notes)
-  - [3.0.0](#300)
-    - [iOS](#ios)
-  - [2.3.0](#230)
-    - [Building for API 22 or lower](#building-for-api-22-or-lower)
+  - [Building for API 22 or lower](#building-for-api-22-or-lower)
 - [Installation](#installation)
   - [Using the Cordova/Phonegap CLI](#using-the-cordovaphonegap-cli)
   - [Using Cordova Plugman](#using-cordova-plugman)
@@ -43,6 +39,7 @@ Cordova diagnostic plugin
     - [switchToSettings()](#switchtosettings)
     - [getBluetoothState()](#getbluetoothstate)
     - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
   - [Android only](#android-only)
     - [locationMode](#locationmode)
     - [isGpsLocationEnabled()](#isgpslocationenabled)
@@ -72,7 +69,7 @@ Cordova diagnostic plugin
 - [Example project](#example-project)
   - [Screenshots](#screenshots)
     - [Android](#android)
-    - [iOS](#ios-1)
+    - [iOS](#ios)
 - [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
@@ -94,43 +91,8 @@ The plugin also enables an app to show the relevant settings screen, to allow us
 
 The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
 
-# Version notes
 
-Current version: 3.0.0
-
-## 3.0.0
-In order to make cross-platform use of the shared plugin functions easier, some **backwardly-incompatible changes** have been made to existing API functions.
-
-To avoid breaking existing code which uses the old API syntax, you can continue to use the v2 API by specifying the plugin version when adding it: `cordova.plugins.diagnostic@2`
-
-v3 contains the following backwardly-incompatible changes:
-
-### iOS
-
-- `requestCameraAuthorization()` and `requestMicrophoneAuthorization()`: success callback is now passed a {string} referencing the `permissionStatus` constants instead of a {boolean}
-
-
-## 2.3.0
-
-This version updates the plugin to support Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html).
-
-In order to do this it must depend on libraries only present in API 23+, so you __must build using Android SDK Platform v23 or above__. To do this you must have [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above installed in your project. You can check the currently installed platform versions with the following command:
-
-    cordova platform ls
-
-Currently the default version installed (if not specified) is cordova-android@4 which uses API 22, so you need to explicitly specify the version when adding the platform:
-
-    cordova platform add android@5.0.0
-
-__Note:__ Attempting to build with API 22 or below will result in a build error.
-
-
-You __must__ also make sure your build environment has the following Android libraries installed. In a local build environment, you'd install these via the Android SDK Manager:
-
- -  Android Support Library - Rev. 23 or above
- -  Android Support Repository - Rev. 23 or above
-
-### Building for API 22 or lower
+## Building for API 22 or lower
 
 Phonegap Build (at the time of writing) does not support API 23, so for its users and others who wish to build against API 22 or below, there is a [legacy branch of this plugin repo](https://github.com/dpa99c/cordova-diagnostic-plugin/tree/api-22) which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against earlier API versions.
 
@@ -831,6 +793,35 @@ This callback function is passed a single string parameter which indicates the B
 
     cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(function(state){
         console.log("Bluetooth state changed to: " + state);
+    });
+
+### registerLocationStateChangeHandler()
+
+Registers a function to be called when a change in Location state occurs.
+
+On Android, this occurs when the Location Mode is changed.
+
+On iOS, this occurs when location authorization status is changed.
+This can be triggered either by the user's response to a location permission authorization dialog,
+by the user turning on/off Location Services,
+or by the user changing the Location authorization state specifically for your app.
+
+    cordova.plugins.diagnostic.registerLocationStateChangeHandler(successCallback);
+
+#### Parameters
+
+- {Function} successCallback - function call when a change in Bluetooth state occurs.
+On Android, the function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
+On iOS, the function is passed a single string parameter indicating the new location authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.registerLocationStateChangeHandler(function(state){
+        if(device.platform === "Android"){
+            console.log("Location mode changed to: " + state);
+        }else if(device.platform === "iOS"){
+            console.log("Location authorization status changed to: " + state);
+        }
     });
 
 ## Android only

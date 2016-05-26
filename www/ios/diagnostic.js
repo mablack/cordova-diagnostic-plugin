@@ -156,6 +156,20 @@ var Diagnostic = (function(){
 	};
 
 	/**
+	 * Registers a function to be called when a change in Location state occurs.
+	 * On iOS, this occurs when location authorization status is changed.
+	 * This can be triggered either by the user's response to a location permission authorization dialog,
+	 * by the user turning on/off Location Services,
+	 * or by the user changing the Location authorization state specifically for your app.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the Location state changes.
+	 * This callback function is passed a single string parameter indicating the new location authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 */
+	Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
+		Diagnostic._onLocationStateChange = successCallback;
+	};
+
+	/**
 	 * Checks if camera is enabled for use.
 	 * On iOS this returns true if both the device has a camera AND the application is authorized to use it.
 	 *
