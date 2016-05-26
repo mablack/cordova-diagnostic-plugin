@@ -593,6 +593,144 @@ ABAddressBookRef _addressBook;
     }
 }
 
+// Calendar Events
+
+- (void) getCalendarAuthorizationStatus: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        NSString* status;
+        
+        EKAuthorizationStatus authStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+        
+        if(authStatus == EKAuthorizationStatusDenied || authStatus == EKAuthorizationStatusRestricted){
+            status = @"denied";
+        }else if(authStatus == EKAuthorizationStatusNotDetermined){
+            status = @"not_determined";
+        }else if(authStatus == EKAuthorizationStatusAuthorized){
+            status = @"authorized";
+        }
+        NSLog([NSString stringWithFormat:@"Calendar event authorization status is: %@", status]);
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) isCalendarAuthorized: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        EKAuthorizationStatus authStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+        if(authStatus == EKAuthorizationStatusAuthorized) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        }
+        else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        }
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) requestCalendarAuthorization: (CDVInvokedUrlCommand*)command
+{
+    @try {
+        
+        if (!self.eventStore) {
+            self.eventStore = [EKEventStore new];
+        }
+        
+        [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+            NSLog(@"Access request to calendar events: %d", granted);
+            CDVPluginResult* pluginResult;
+            if(granted) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+            } else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+    }
+    @catch (NSException *exception) {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+}
+
+// Reminder Events
+
+- (void) getRemindersAuthorizationStatus: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        NSString* status;
+        
+        EKAuthorizationStatus authStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeReminder];
+        
+        if(authStatus == EKAuthorizationStatusDenied || authStatus == EKAuthorizationStatusRestricted){
+            status = @"denied";
+        }else if(authStatus == EKAuthorizationStatusNotDetermined){
+            status = @"not_determined";
+        }else if(authStatus == EKAuthorizationStatusAuthorized){
+            status = @"authorized";
+        }
+        NSLog([NSString stringWithFormat:@"Reminders authorization status is: %@", status]);
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) isRemindersAuthorized: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        EKAuthorizationStatus authStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeReminder];
+        if(authStatus == EKAuthorizationStatusAuthorized) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        }
+        else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        }
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) requestRemindersAuthorization: (CDVInvokedUrlCommand*)command
+{
+    @try {
+        
+        if (!self.eventStore) {
+            self.eventStore = [EKEventStore new];
+        }
+        
+        [self.eventStore requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError *error) {
+            NSLog(@"Access request to reminders: %d", granted);
+            CDVPluginResult* pluginResult;
+            if(granted) {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+            } else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+    }
+    @catch (NSException *exception) {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+}
+
 /*********************
  * Internal functions
  *********************/

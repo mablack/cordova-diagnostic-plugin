@@ -896,6 +896,50 @@ var Diagnostic = (function(){
 		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_CONTACTS);
 	};
 
+	/*************
+	 * Calendar
+	 *************/
+
+	/**
+	 *Checks if the application is authorized to use calendar.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if access to microphone is authorized.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isCalendarAuthorized = function(successCallback, errorCallback) {
+		function onSuccess(status){
+			successCallback(status == Diagnostic.permissionStatus.GRANTED);
+		}
+		Diagnostic.getCalendarAuthorizationStatus(onSuccess, errorCallback);
+	};
+
+	/**
+	 * Returns the calendar authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status.
+	 * Possible values are: "unknown", "denied", "not_determined", "authorized"
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getCalendarAuthorizationStatus = function(successCallback, errorCallback) {
+		Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.permission.READ_CALENDAR);
+	};
+
+	/**
+	 *  Requests calendar authorization for the application.
+	 *  Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when authorization request is successful.
+	 * @param {Function} errorCallback - The callback which will be called when an error occurs.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestCalendarAuthorization = function(successCallback, errorCallback) {
+		Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_CALENDAR);
+	};
+
 
 	/**************
 	 * Constructor

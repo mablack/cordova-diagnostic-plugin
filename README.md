@@ -80,14 +80,7 @@ Cordova diagnostic plugin
 
 # Overview
 
-This Cordova/Phonegap plugin for iOS, Android and Windows 10 Mobile is used to check the state of the following device settings:
-
-- Location
-- WiFi
-- Camera
-- Bluetooth
-
-The plugin also enables an app to show the relevant settings screen, to allow users to change the above device settings.
+This Cordova/Phonegap plugin for iOS, Android and Windows 10 Mobile is used to manage device settings such as Location,  Bluetooth and WiFi. It enables management of run-time permissions, device hardware and core OS features.
 
 The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
 
@@ -632,7 +625,9 @@ This callback function is passed a single string parameter containing the error 
 #### Example usage
 
     cordova.plugins.diagnostic.getCameraAuthorizationStatus(function(status){
-       console.log("Camera authorization status: " + status);
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Camera use is authorized");
+        }
     }, onError);
 
 ### requestCameraAuthorization()
@@ -659,7 +654,7 @@ This callback function is passed a single string parameter containing the error 
 #### Example usage
 
     cordova.plugins.diagnostic.requestCameraAuthorization(function(status){
-        console.log("Authorization request for camera use was " + (status == Diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+        console.log("Authorization request for camera use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
     }, function(error){
         console.error(error);
     });
@@ -714,7 +709,9 @@ This callback function is passed a single string parameter containing the error 
 #### Example usage
 
     cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(function(status){
-       console.log("Microphone authorization status: " + status);
+       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+           console.log("Microphone use is authorized");
+       }
     }, onError);
 
 
@@ -735,13 +732,15 @@ Notes for Android:
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 This callback function is passed a single string parameter indicating whether access to the microphone was granted or denied:
-`Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
 - {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
 
 #### Example usage
 
     cordova.plugins.diagnostic.requestMicrophoneAuthorization(function(status){
-        console.log(Microphone access is: "+status);
+       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+           console.log("Microphone use is authorized");
+       }
     }, function(error){
         console.error(error);
     });
@@ -790,7 +789,9 @@ This callback function is passed a single string parameter containing the error 
 #### Example usage
 
     cordova.plugins.diagnostic.getContactsAuthorizationStatus(function(status){
-       console.log("Contacts authorization status: " + status);
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Contacts use is authorized");
+        }
     }, onError);
 
 
@@ -804,20 +805,109 @@ Notes for iOS:
 Notes for Android:
  - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
  - This requests permission for `READ_CONTACTS` run-time permission
- - Required permissions must be added to `AndroidManifest.xml` - see [Android permissions](#android-permissions): `READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS`
+ - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS`
 
     cordova.plugins.diagnostic.requestContactsAuthorization(successCallback, errorCallback);
 
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 This callback function is passed a single string parameter indicating whether access to contacts was granted or denied:
-`Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
 - {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
 
 #### Example usage
 
     cordova.plugins.diagnostic.requestContactsAuthorization(function(status){
-        console.log(Contacts access is: "+status);
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Contacts use is authorized");
+        }
+    }, function(error){
+        console.error(error);
+    });
+    
+### isCalendarAuthorized()
+
+Checks if the application is authorized to use the calendar.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+
+Notes for iOS:
+- This relates to Calendar Events (not Calendar Reminders)
+
+    `cordova.plugins.diagnostic.isCalendarAuthorized(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if calendar is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isCalendarAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to calendar");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getCalendarAuthorizationStatus()
+
+ Returns the calendar authorization status for the application.
+
+ Notes for Android:
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+
+ Notes for iOS:
+ - This relates to Calendar Events (not Calendar Reminders)
+
+    `cordova.plugins.diagnostic.getCalendarAuthorizationStatus(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getCalendarAuthorizationStatus(function(status){
+       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+           console.log("Calendar use is authorized");
+       }
+    }, onError);
+
+
+### requestCalendarAuthorization()
+
+Requests calendar authorization for the application.
+
+Notes for iOS:
+ - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+ - This relates to Calendar Events (not Calendar Reminders)
+
+Notes for Android:
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+ - This requests permission for `READ_CALENDAR` run-time permission
+ - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CALENDAR, WRITE_CALENDAR`
+
+    cordova.plugins.diagnostic.requestCalendarAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single string parameter indicating whether access to calendar was granted or denied:
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestCalendarAuthorization(function(status){
+       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+           console.log("Calendar use is authorized");
+       }
     }, function(error){
         console.error(error);
     });
@@ -862,7 +952,9 @@ This callback function is passed a single string parameter containing the error 
 #### Example usage
 
     cordova.plugins.diagnostic.getBluetoothState(function(state){
-        console.log("Current Bluetooth state is: " + state);
+       if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
+           console.log("Bluetooth is able to connect");
+       }
     }, function(error){
         console.error(error);
     });
@@ -881,7 +973,9 @@ This callback function is passed a single string parameter which indicates the B
 #### Example usage
 
     cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(function(state){
-        console.log("Bluetooth state changed to: " + state);
+       if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
+           console.log("Bluetooth is able to connect");
+       }
     });
 
 ### registerLocationStateChangeHandler()
@@ -906,16 +1000,17 @@ On iOS, the function is passed a single string parameter indicating the new loca
 #### Example usage
 
     cordova.plugins.diagnostic.registerLocationStateChangeHandler(function(state){
-        if(device.platform === "Android"){
-            console.log("Location mode changed to: " + state);
-        }else if(device.platform === "iOS"){
-            console.log("Location authorization status changed to: " + state);
+        if((device.platform === "Android" && state !== cordova.plugins.diagnostic.locationMode.LOCATION_OFF)
+            || (device.platform === "iOS) && ( state === cordova.plugins.diagnostic.permissionStatus.GRANTED
+                || state === cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE
+        ))){
+            console.log("Location is available");
         }
     });
 
 ## Android only
 
-### locationMode
+### locationMode constants
 
 Defines constants for the various location modes on Android.
 
@@ -1340,14 +1435,14 @@ This callback function is passed a single string parameter containing the error 
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
 This callback function is passed a single string parameter indicating the new authorization status:
-`Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
 #### Example usage
 
     cordova.plugins.diagnostic.requestCameraRollAuthorization(function(status){
-        console.log("Authorization request for camera roll was " + (status == Diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+        console.log("Authorization request for camera roll was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
     }, function(error){
         console.error(error);
     });
@@ -1424,6 +1519,74 @@ This callback function is passed a single object parameter where the key is the 
         }
     }, function(error){
         console.error("The following error occurred: "+error);
+    });
+
+### isRemindersAuthorized()
+
+Checks if the application is authorized to use reminders.
+
+    `cordova.plugins.diagnostic.isRemindersAuthorized(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if reminders access is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isRemindersAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to reminders");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getRemindersAuthorizationStatus()
+
+ Returns the reminders authorization status for the application.
+
+    `cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getRemindersAuthorizationStatus(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Reminders authorization allowed");
+        }
+    }, onError);
+
+
+### requestRemindersAuthorization()
+
+Requests reminders authorization for the application.
+
+- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+
+    cordova.plugins.diagnostic.requestRemindersAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single string parameter indicating whether access to calendar was granted or denied:
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestRemindersAuthorization(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Reminders authorization allowed");
+        }
+    }, function(error){
+        console.error(error);
     });
 
 # Notes

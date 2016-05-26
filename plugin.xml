@@ -41,6 +41,7 @@
         <framework src="AVFoundation.framework" />
         <framework src="Photos.framework" />
         <framework src="AddressBook.framework" />
+        <framework src="EventKit.framework" />
     </platform>
 
 	<!-- android -->

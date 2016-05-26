@@ -586,6 +586,118 @@ var Diagnostic = (function(){
 			[]);
 	};
 
+	/*****************
+	 * Calendar events
+	 *****************/
+
+	/**
+	 * Checks if the application is authorized to use calendar.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if calendar is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isCalendarAuthorized = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isCalendarAuthorized',
+			[]);
+	};
+
+	/**
+	 * Returns the calendar event authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getCalendarAuthorizationStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getCalendarAuthorizationStatus',
+			[]);
+	};
+
+	/**
+	 * Requests calendar event authorization for the application.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter indicating whether access to calendar was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestCalendarAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
+			errorCallback,
+			'Diagnostic',
+			'requestCalendarAuthorization',
+			[]);
+	};
+
+	/*********************
+	 * Calendar reminders
+	 *********************/
+
+	/**
+	 * Checks if the application is authorized to use calendar reminders.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if reminders is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isRemindersAuthorized = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isRemindersAuthorized',
+			[]);
+	};
+
+	/**
+	 * Returns the calendar event authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getRemindersAuthorizationStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getRemindersAuthorizationStatus',
+			[]);
+	};
+
+	/**
+	 * Requests calendar reminders authorization for the application.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter indicating whether access to reminders was granted or denied:
+	 * `Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestRemindersAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(function(isGranted){
+				successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
+			},
+			errorCallback,
+			'Diagnostic',
+			'requestRemindersAuthorization',
+			[]);
+	};
+
 	return Diagnostic;
 })();
 module.exports = Diagnostic;
