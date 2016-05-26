@@ -53,7 +53,6 @@ Cordova diagnostic plugin
     - [requestRuntimePermissions()](#requestruntimepermissions)
     - [hasBluetoothSupport()](#hasbluetoothsupport)
     - [hasBluetoothLESupport()](#hasbluetoothlesupport)
-    - [onBluetoothStateChange()](#onbluetoothstatechange)
     - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
   - [iOS only](#ios-only)
     - [isLocationEnabledSetting()](#islocationenabledsetting)
@@ -1154,24 +1153,6 @@ This callback function is passed a single string parameter containing the error 
 
     cordova.plugins.diagnostic.hasBluetoothLESupport(function(supported){
         console.log("Bluetooth LE is " + (supported ? "supported" : "unsupported"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-
-### onBluetoothStateChange()
-Registers a listener function to call when the state of Bluetooth hardware changes.
-
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when the state of Bluetooth hardware changes.
-This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.bluetoothState`.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.onBluetoothStateChange(function(bluetoothState){
-        console.log("Bluetooth LE Peripheral Mode is " + (supported ? "supported" : "unsupported"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
