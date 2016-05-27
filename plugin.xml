@@ -76,6 +76,7 @@
 			<feature name="Diagnostic" >
 				<param name="windows-package" value="cordova.plugins.Diagnostic"/>
 			</feature>
+            <preference name="windows-target-version" value="10.0" />
 		</config-file>
 
 		<js-module src="www/windows/diagnostic.js" name="Diagnostic">

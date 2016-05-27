@@ -71,15 +71,18 @@ Cordova diagnostic plugin
     - [isRemindersAuthorized()](#isremindersauthorized)
     - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
     - [requestRemindersAuthorization()](#requestremindersauthorization)
-- [Notes](#notes)
-  - [Android permissions](#android-permissions)
-    - [Android runtime permissions](#android-runtime-permissions)
-  - [Windows 10 Mobile permissions](#windows-10-mobile-permissions)
-  - [iOS location permission messages](#ios-location-permission-messages)
+- [Platform Notes](#platform-notes)
+  - [Android](#android)
+    - [Android permissions](#android-permissions)
+  - [Windows](#windows)
+    - [Supported Windows versions](#supported-windows-versions)
+    - [Windows 10 Mobile permissions](#windows-10-mobile-permissions)
+  - [iOS](#ios)
+    - [iOS location permission messages](#ios-location-permission-messages)
 - [Example project](#example-project)
   - [Screenshots](#screenshots)
-    - [Android](#android)
-    - [iOS](#ios)
+    - [Android](#android-1)
+    - [iOS](#ios-1)
 - [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
@@ -1598,9 +1601,11 @@ This callback function is passed a single string parameter indicating whether ac
         console.error(error);
     });
 
-# Notes
+# Platform Notes
 
-## Android permissions
+## Android
+
+### Android permissions
 
 Some of functions offered by this plugin require specific permissions to be set in the AndroidManifest.xml. Where additional permissions are needed, they are listed alongside the function that requires them.
 
@@ -1617,7 +1622,7 @@ You can add these permissions either by manually editing the AndroidManifest.xml
         </config-file>
     </platform>
 
-### Android runtime permissions
+#### Android runtime permissions
 
 Android 6 / API 23 introduces the concept of [runtime permissions](http://developer.android.com/training/permissions/requesting.html). Similar to iOS, certain "dangerous" permissions must be requested at runtime __in addition__ to being listed in the Android manifest.
 
@@ -1625,7 +1630,7 @@ Runtime permissions only apply if the device/emulator the app is running on has 
 
 This plugin supports [checking](#getpermissionauthorizationstatus) and [requesting](#requestruntimepermission) of Android runtime permissions.
 
-#### "Dangerous" runtime permissions
+##### "Dangerous" runtime permissions
 
 The plugin defines the [full list of dangersous permissions available in API 23](http://developer.android.com/guide/topics/security/permissions.html#perm-groups) as a list of constants available via the `cordova.plugins.diagnostic.runtimePermission` object. The following permissions are available:
 
@@ -1655,7 +1660,7 @@ The plugin defines the [full list of dangersous permissions available in API 23]
 - `cordova.plugins.diagnostic.runtimePermission.BODY_SENSORS`
 
 
-#### Runtime permission groups
+##### Runtime permission groups
 
 Each runtime permission belongs to a permission group. Requesting a permission also requests authorisation for all other permissions in that group. If other permissions in the group are not defined in the manifest, they will default to DENIED_ALWAYS status. Otherwise, if user grants permission, all other permissions in the group will be granted; if user denies permission, all other permissions in the group will be denied.
 
@@ -1671,20 +1676,32 @@ Permissions are grouped as follows:
     SMS: [SEND_SMS, RECEIVE_SMS, READ_SMS, RECEIVE_WAP_PUSH, RECEIVE_MMS],
     STORAGE: [READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE]
 
-#### Runtime permissions example project
+##### Runtime permissions example project
 
 While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin:
 
 [https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example)
 
-#### Android Camera permissions
+##### Android Camera permissions
 
 Note that the Android variant of [`requestCameraAuthorization()`](#requestcameraauthorization) requests the `READ_EXTERNAL_STORAGE` permission, in addition to the `CAMERA` permission.
 This is because the [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 
 So to use this method in conjunction with the Cordova camera plugin, make sure you are using the most recent `cordova-plugin-camera` release: v2.2.0 or above.
 
-## Windows 10 Mobile permissions
+## Windows
+
+### Supported Windows versions
+
+Currently the plugin only supports Windows 10 and Windows 10 Mobile, not Windows Phone 8.0 or 8.1.
+
+The reason being that the native functionality required by the plugin's current Windows implementation is only available since Windows 10.
+
+For example, `isLocationEnabled()` [invokes](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/src/windows/diagnosticProxy.js#L19) `Windows.Devices.Geolocation.Geolocator.requestAccessAsync()`. And this was only [introduced in Windows 10](https://msdn.microsoft.com/library/windows/apps/windows.devices.geolocation.geolocator.requestaccessasync.aspx).
+
+Windows Phone 8.x would require a different implementation (even if possible), and I don't plan to add that since the Windows 8.x global marketshare is below 5% and falling, and is also rendered obsolete by Windows 10 Mobile.
+
+### Windows 10 Mobile permissions
 
 Some of functions offered by this plugin require specific permissions to be set in the package.windows10.appxmanifest. Where additional permissions are needed, they are listed alongside the function that requires them.
 
@@ -1693,7 +1710,9 @@ Instead, you can add these permissions as necessary, depending what functions in
 
 You can add these permissions by manually editing the package.windows10.appxmanifest in `/platforms/windows/`.
 
-## iOS location permission messages
+## iOS
+
+### iOS location permission messages
 
 When location permission is requested on iOS 8+, a message is displayed to the user indicating the reason for the request. These messages are stored in the `{project}-Info.plist` file under the keys `NSLocationAlwaysUsageDescription` and `NSLocationWhenInUseUsageDescription`, which are displayed when requesting to use location **always** or **when in use**, respectively.
 
