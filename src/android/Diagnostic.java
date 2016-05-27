@@ -233,7 +233,13 @@ public class Diagnostic extends CordovaPlugin{
      * Called on destroying activity
      */
     public void onDestroy() {
-        this.cordova.getActivity().unregisterReceiver(mReceiver);
+        try {
+            if (bluetoothListenerInitialized) {
+                this.cordova.getActivity().unregisterReceiver(mReceiver);
+            }
+        }catch(Exception e){
+            Log.w(TAG, "Unable to unregister Bluetooth receiver: "+e.getMessage());
+        }
     }
 
     /**
