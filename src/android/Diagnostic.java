@@ -224,7 +224,6 @@ public class Diagnostic extends CordovaPlugin{
         catch(SecurityException e) {
                bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
         }
-       }
 
         locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
         super.initialize(cordova, webView);
