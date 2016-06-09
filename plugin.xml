@@ -49,6 +49,7 @@
 		<config-file target="config.xml" parent="/*">
 			<feature name="Diagnostic" >
 				<param name="android-package" value="cordova.plugins.Diagnostic"/>
+                <param name="onload" value="true" />
 			</feature>
 		</config-file>
 
