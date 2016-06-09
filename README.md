@@ -7,7 +7,7 @@ Cordova diagnostic plugin
 - [Overview](#overview)
   - [Important notes](#important-notes)
     - [Version 3 backward-incompatibility](#version-3-backward-incompatibility)
-    - [Building for API 22 or lower](#building-for-api-22-or-lower)
+    - [Building for Android](#building-for-android)
 - [Installation](#installation)
   - [Using the Cordova/Phonegap CLI](#using-the-cordovaphonegap-cli)
   - [Using Cordova Plugman](#using-cordova-plugman)
@@ -107,7 +107,22 @@ To avoid breaking existing code which uses the old API syntax, you can continue 
 
 See the [release notes page ](https://github.com/dpa99c/cordova-diagnostic-plugin/wiki/Release-notes) for details of the backward-incompatible changes.
 
-### Building for API 22 or lower
+### Building for Android
+
+In order to support Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html), this plugin must depend on libraries only present in API 23+, so you __must build using Android SDK Platform v23 or above__. To do this you must have [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above installed in your project. You can check the currently installed platform versions with the following command:
+
+    cordova platform ls
+
+__Note:__ Attempting to build with API 22 or below will result in a build error.
+
+
+You __must__ also make sure your build environment has the following Android libraries installed. In a local build environment, you'd install these via the Android SDK Manager:
+
+ -  Android Support Library - Rev. 23 or above
+ -  Android Support Repository - Rev. 23 or above
+
+
+#### Building for API 22 or lower
 
 For users who wish to build against API 22 or below, there is a branch of the plugin repo which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against legacy API versions (22 and below).
 
@@ -1518,9 +1533,9 @@ Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be retur
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 This callback function is passed a single object parameter where the key is the notification type and the value is a boolean indicating whether it's enabled:
-	 * "alert" => alert style is not set to "None" (i.e. "Banners" or "Alerts");
-	 * "badge" => "Badge App Icon" switch is ON;
-	 * "sound" => "Sounds"/"Alert Sound" switch is ON.
+     * "alert" => alert style is not set to "None" (i.e. "Banners" or "Alerts");
+     * "badge" => "Badge App Icon" switch is ON;
+     * "sound" => "Sounds"/"Alert Sound" switch is ON.
 - {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
 
 #### Example usage
