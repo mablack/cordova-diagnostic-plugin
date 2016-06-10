@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova.plugins.diagnostic"
-    version="3.0.2">
+    version="3.0.3">
 
     <name>Diagnostic</name>
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
@@ -44,14 +44,14 @@
         <framework src="EventKit.framework" />
     </platform>
 
-	<!-- android -->
-	<platform name="android">
-		<config-file target="config.xml" parent="/*">
-			<feature name="Diagnostic" >
-				<param name="android-package" value="cordova.plugins.Diagnostic"/>
+    <!-- android -->
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic" >
+                <param name="android-package" value="cordova.plugins.Diagnostic"/>
                 <param name="onload" value="true" />
-			</feature>
-		</config-file>
+            </feature>
+        </config-file>
 
         <framework src="com.android.support:support-v4:23.+" />
         <framework src="com.android.support:appcompat-v7:23.+" />
@@ -71,20 +71,20 @@
         </config-file>
     </platform>
 
-	<!-- windows -->
-	<platform name="windows">
-		<config-file target="config.xml" parent="/*">
-			<feature name="Diagnostic" >
-				<param name="windows-package" value="cordova.plugins.Diagnostic"/>
-			</feature>
+    <!-- windows -->
+    <platform name="windows">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic" >
+                <param name="windows-package" value="cordova.plugins.Diagnostic"/>
+            </feature>
             <preference name="windows-target-version" value="10.0" />
-		</config-file>
+        </config-file>
 
-		<js-module src="www/windows/diagnostic.js" name="Diagnostic">
-			<clobbers target="cordova.plugins.diagnostic" />
-		</js-module>
-		<js-module src="src/windows/diagnosticProxy.js" name="diagnosticProxy">
-			<merges target="" />
-		</js-module>
-	</platform>
+        <js-module src="www/windows/diagnostic.js" name="Diagnostic">
+            <clobbers target="cordova.plugins.diagnostic" />
+        </js-module>
+        <js-module src="src/windows/diagnosticProxy.js" name="diagnosticProxy">
+            <merges target="" />
+        </js-module>
+    </platform>
 </plugin>
