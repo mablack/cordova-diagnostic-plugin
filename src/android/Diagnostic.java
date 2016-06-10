@@ -211,6 +211,7 @@ public class Diagnostic extends CordovaPlugin{
      * @param webView The CordovaWebView Cordova is running in.
      */
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+		Log.d(TAG, "initialize()");
         instance = this;
         try {
                if(this.hasBluetoothSupport()){
@@ -362,7 +363,7 @@ public class Diagnostic extends CordovaPlugin{
         try {
             String currentMode = currentLocationMode;
             String newMode = getLocationModeName();
-            if(!currentMode.equals(newMode)){
+            if(!newMode.equals(currentMode)){
                 Log.d(TAG, "Location mode change to: " + getLocationModeName());
                 executeGlobalJavascript("_onLocationStateChange(\"" + getLocationModeName() +"\");");
             }
