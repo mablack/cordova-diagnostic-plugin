@@ -177,7 +177,7 @@ public class Diagnostic extends CordovaPlugin{
     /**
      * Singleton class instance
      */
-    public static Diagnostic instance;
+    public static Diagnostic instance = null;
 
     public static LocationManager locationManager;
 
@@ -834,8 +834,10 @@ public class Diagnostic extends CordovaPlugin{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.v(TAG, "onReceiveLocationProviderChange");
-            instance.notifyLocationStateChange();
+			if(instance != null){ // if app is running
+				Log.v(TAG, "onReceiveLocationProviderChange");
+            	instance.notifyLocationStateChange();
+			}
         }
 
     }
