@@ -170,6 +170,7 @@ On iOS and Windows 10 Mobile this returns true if both the device setting for Lo
 When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
 
 On Android, this returns true if Location mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
+AND on Android 6.0+ (API 23+), if the application has runtime authorisation to use location.
 When location is enabled, the locations returned are dependent on the location mode:
 
 * Battery saving = network triangulation and Wifi network IDs (low accuracy)
@@ -1073,7 +1074,8 @@ Defines constants for the various location modes on Android.
 
 ### isGpsLocationEnabled()
 
-Checks if location mode is set to return high-accuracy locations from GPS hardware.
+Checks if location mode is set to return high-accuracy locations from GPS hardware
+AND on Android 6.0+ (API 23+), if the application has runtime authorisation to use location.
 
     cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
 
@@ -1100,7 +1102,8 @@ This callback function is passed a single string parameter containing the error 
 
 ### isNetworkLocationEnabled()
 
-Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points.
+Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points
+AND on Android 6.0+ (API 23+), if the application has runtime authorisation to use location.
 
     cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
 
