@@ -22,13 +22,13 @@
     @property (nonatomic, retain) NSString* locationRequestCallbackId;
     @property (nonatomic) EKEventStore *eventStore;
 
+- (void) isLocationAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
-- (void) isLocationEnabledSetting: (CDVInvokedUrlCommand*)command;
 - (void) isLocationAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getLocationAuthorizationStatus: (CDVInvokedUrlCommand*)command;
 - (void) requestLocationAuthorization: (CDVInvokedUrlCommand*)command;
 
-- (void) isCameraEnabled: (CDVInvokedUrlCommand*)command;
+- (void) isCameraAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isCameraPresent: (CDVInvokedUrlCommand*)command;
 - (void) isCameraAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getCameraAuthorizationStatus: (CDVInvokedUrlCommand*)command;
@@ -36,8 +36,8 @@
 - (void) isCameraRollAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command;
 
-- (void) isWifiEnabled: (CDVInvokedUrlCommand*)command;
-- (void) isBluetoothEnabled: (CDVInvokedUrlCommand*)command;
+- (void) isWifiAvailable: (CDVInvokedUrlCommand*)command;
+- (void) isBluetoothAvailable: (CDVInvokedUrlCommand*)command;
 
 - (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command;
 - (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command;

@@ -369,12 +369,29 @@ var Diagnostic = (function(){
 	 ************/
 
 	/**
-	 * Checks if location is enabled.
+	 * Checks if location is available for use by the app.
 	 * On Android, this returns true if Location Mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
-	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
+	 * AND if the app is authorised to use location.
 	 *
 	 * @param {Function} successCallback - The callback which will be called when the operation is successful.
 	 * This callback function is passed a single boolean parameter which is TRUE if location is available for use.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isLocationAvailable = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isLocationAvailable',
+			[]);
+	};
+
+	/**
+	 * Checks if the device location setting is enabled.
+	 * On Android, this returns true if Location Mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
+	 *
+	 * @param {Function} successCallback - The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if location setting is enabled.
 	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
@@ -387,14 +404,31 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Checks if location mode is set to return high-accuracy locations from GPS hardware.
+	 * Checks if high-accuracy locations are available to the app from GPS hardware.
+	 * Returns true if Location mode is enabled and is set to "Device only" or "High accuracy"
+	 * AND if the app is authorised to use location.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isGpsLocationAvailable = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isGpsLocationAvailable',
+			[]);
+	};
+
+	/**
+	 * Checks if the device location setting is set to return high-accuracy locations from GPS hardware.
 	 * Returns true if Location mode is enabled and is set to either:
 	 * Device only = GPS hardware only (high accuracy)
 	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available for use.
+	 * This callback function is passed a single boolean parameter which is TRUE if device setting is set to return high-accuracy GPS-based location.
 	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
@@ -407,14 +441,31 @@ var Diagnostic = (function(){
 	};
 
 	/**
-	 * Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points.
+	 * Checks if low-accuracy locations are available to the app from network triangulation/WiFi access points.
+	 * Returns true if Location mode is enabled and is set to "Battery saving" or "High accuracy"
+	 * AND if the app is authorised to use location.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isNetworkLocationAvailable = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isNetworkLocationAvailable',
+			[]);
+	};
+
+	/**
+	 * Checks if the device location setting is set to return low-accuracy locations from network triangulation/WiFi access points.
 	 * Returns true if Location mode is enabled and is set to either:
 	 * Battery saving = network triangulation and Wifi network IDs (low accuracy)
 	 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-	 * and on Android 6.0+ / API 23, if use of location has runtime authorisation.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available for use.
+	 * This callback function is passed a single boolean parameter which is TRUE if device setting is set to return low-accuracy network-based location.
 	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
@@ -525,11 +576,11 @@ var Diagnostic = (function(){
 	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
-	Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
+	Diagnostic.isWifiAvailable = Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
 		return cordova.exec(successCallback,
 			errorCallback,
 			'Diagnostic',
-			'isWifiEnabled',
+			'isWifiAvailable',
 			[]);
 	};
 
@@ -572,7 +623,7 @@ var Diagnostic = (function(){
 	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
-	Diagnostic.isCameraEnabled = function(successCallback, errorCallback) {
+	Diagnostic.isCameraAvailable = function(successCallback, errorCallback) {
 		Diagnostic.isCameraPresent(function(isPresent){
 			if(isPresent){
 				Diagnostic.isCameraAuthorized(successCallback, errorCallback);
@@ -651,10 +702,27 @@ var Diagnostic = (function(){
 	 ***************/
 
 	/**
-	 * Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on
+	 * Checks if Bluetooth is available to the app.
+	 * Returns true if the device has Bluetooth capabilities and if so that Bluetooth is switched on
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-	 * This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth capabilities and Bluetooth is switched on.
+	 * This callback function is passed a single boolean parameter which is TRUE if Bluetooth is available.
+	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+	 *  This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isBluetoothAvailable = function(successCallback, errorCallback) {
+		return cordova.exec(ensureBoolean(successCallback),
+			errorCallback,
+			'Diagnostic',
+			'isBluetoothAvailable',
+			[]);
+	};
+
+	/**
+	 * Checks if the device setting for Bluetooth is switched on.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if Bluetooth is switched on.
 	 * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */

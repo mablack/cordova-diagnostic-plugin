@@ -270,19 +270,27 @@ public class Diagnostic extends CordovaPlugin{
             } else if (action.equals("switchToWifiSettings")){
                 switchToWifiSettings();
                 callbackContext.success();
+            } else if(action.equals("isLocationAvailable")) {
+                callbackContext.success(isGpsLocationAvailable() || isNetworkLocationAvailable() ? 1 : 0);
             } else if(action.equals("isLocationEnabled")) {
                 callbackContext.success(isGpsLocationEnabled() || isNetworkLocationEnabled() ? 1 : 0);
+            } else if(action.equals("isGpsLocationAvailable")) {
+                callbackContext.success(isGpsLocationAvailable() ? 1 : 0);
+            } else if(action.equals("isNetworkLocationAvailable")) {
+                callbackContext.success(isNetworkLocationAvailable() ? 1 : 0);
             } else if(action.equals("isGpsLocationEnabled")) {
                 callbackContext.success(isGpsLocationEnabled() ? 1 : 0);
             } else if(action.equals("isNetworkLocationEnabled")) {
                 callbackContext.success(isNetworkLocationEnabled() ? 1 : 0);
             } else if(action.equals("getLocationMode")) {
                 callbackContext.success(getLocationModeName());
-            } else if(action.equals("isWifiEnabled")) {
-                callbackContext.success(isWifiEnabled() ? 1 : 0);
+            } else if(action.equals("isWifiAvailable")) {
+                callbackContext.success(isWifiAvailable() ? 1 : 0);
             } else if(action.equals("isCameraPresent")) {
                 callbackContext.success(isCameraPresent() ? 1 : 0);
-            } else if(action.equals("isBluetoothEnabled")) {
+            } else if(action.equals("isBluetoothAvailable")) {
+                callbackContext.success(isBluetoothAvailable() ? 1 : 0);
+            }else if(action.equals("isBluetoothEnabled")) {
                 callbackContext.success(isBluetoothEnabled() ? 1 : 0);
             } else if(action.equals("hasBluetoothSupport")) {
                 callbackContext.success(hasBluetoothSupport() ? 1 : 0);
@@ -321,20 +329,31 @@ public class Diagnostic extends CordovaPlugin{
     }
 
 
+    public boolean isGpsLocationAvailable() throws Exception {
+        boolean result = isGpsLocationEnabled() && isLocationAuthorized();
+        Log.d(TAG, "GPS location available: " + result);
+        return result;
+    }
+
     public boolean isGpsLocationEnabled() throws Exception {
         int mode = getLocationMode();
-        boolean result = (mode == 3 || mode == 1) && isLocationAuthorized();
-        Log.d(TAG, "GPS enabled: " + result);
+        boolean result = (mode == 3 || mode == 1);
+        Log.d(TAG, "GPS location setting enabled: " + result);
+        return result;
+    }
+
+    public boolean isNetworkLocationAvailable() throws Exception {
+        boolean result =  isNetworkLocationEnabled() && isLocationAuthorized();
+        Log.d(TAG, "Network location available: " + result);
         return result;
     }
 
     public boolean isNetworkLocationEnabled() throws Exception {
         int mode = getLocationMode();
-        boolean result = (mode == 3 || mode == 2) && isLocationAuthorized();
-        Log.d(TAG, "Network enabled: " + result);
+        boolean result = (mode == 3 || mode == 2);
+        Log.d(TAG, "Network location setting enabled: " + result);
         return result;
     }
-
 
     public String getLocationModeName() throws Exception {
         String modeName;
@@ -372,7 +391,7 @@ public class Diagnostic extends CordovaPlugin{
         }
     }
 
-    public boolean isWifiEnabled() {
+    public boolean isWifiAvailable() {
         WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getSystemService(Context.WIFI_SERVICE);
         boolean result = wifiManager.isWifiEnabled();
         return result;
@@ -381,6 +400,11 @@ public class Diagnostic extends CordovaPlugin{
     public boolean isCameraPresent() {
         PackageManager pm = this.cordova.getActivity().getPackageManager();
         boolean result = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+        return result;
+    }
+
+    public boolean isBluetoothAvailable() {
+        boolean result = hasBluetoothSupport() && isBluetoothEnabled();
         return result;
     }
 

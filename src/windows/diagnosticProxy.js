@@ -13,8 +13,8 @@ cordova.commandProxy.add("Diagnostic", {
      * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
      *  This callback function is passed a single string parameter containing the error message.
      */
-    // exec(win, fail, 'Diagnostic', 'isLocationEnabled', []);
-    isLocationEnabled: function (successCallback, errorCallback) {
+    // exec(win, fail, 'Diagnostic', 'isLocationAvailable', []);
+    isLocationAvailable: function (successCallback, errorCallback) {
 
         Windows.Devices.Geolocation.Geolocator.requestAccessAsync().done(
             function (accessStatus) {
@@ -81,8 +81,8 @@ cordova.commandProxy.add("Diagnostic", {
      * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
      *  This callback function is passed a single string parameter containing the error message.
      */
-    // exec(win, fail, 'Diagnostic', 'isCameraEnabled', []);
-    isCameraEnabled: function (successCallback, errorCallback) {
+    // exec(win, fail, 'Diagnostic', 'isCameraAvailable', []);
+    isCameraAvailable: function (successCallback, errorCallback) {
 
         Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture).then(
             function (deviceList) {
@@ -232,5 +232,5 @@ cordova.commandProxy.add("Diagnostic", {
                 errorCallback(error);
             }
         );
-    },
+    }
 });

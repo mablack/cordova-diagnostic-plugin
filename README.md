@@ -6,6 +6,7 @@ Cordova diagnostic plugin
 
 - [Overview](#overview)
   - [Important notes](#important-notes)
+    - [Version 3.1 backward-incompatibility](#version-31-backward-incompatibility)
     - [Version 3 backward-incompatibility](#version-3-backward-incompatibility)
     - [Building for Android](#building-for-android)
 - [Installation](#installation)
@@ -14,20 +15,22 @@ Cordova diagnostic plugin
   - [PhoneGap Build](#phonegap-build)
 - [Usage](#usage)
   - [Android, iOS and Windows 10 Mobile](#android-ios-and-windows-10-mobile)
-    - [isLocationEnabled()](#islocationenabled)
-    - [isWifiEnabled()](#iswifienabled)
-    - [isCameraEnabled()](#iscameraenabled)
-    - [isBluetoothEnabled()](#isbluetoothenabled)
+    - [isLocationAvailable()](#islocationavailable)
+    - [isWifiAvailable()](#iswifiavailable)
+    - [isCameraAvailable()](#iscameraavailable)
+    - [isBluetoothAvailable()](#isbluetoothavailable)
   - [Android and Windows 10 Mobile only](#android-and-windows-10-mobile-only)
     - [switchToLocationSettings()](#switchtolocationsettings)
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
     - [switchToWifiSettings()](#switchtowifisettings)
+    - [isWifiEnabled()](#iswifienabled)
     - [setWifiState()](#setwifistate)
     - [setBluetoothState()](#setbluetoothstate)
   - [Android and iOS](#android-and-ios)
     - [permissionStatus constants](#permissionstatus-constants)
     - [bluetoothState constants](#bluetoothstate-constants)
+    - [isLocationEnabled()](#islocationenabled)
     - [isLocationAuthorized()](#islocationauthorized)
     - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
     - [requestLocationAuthorization()](#requestlocationauthorization)
@@ -50,18 +53,20 @@ Cordova diagnostic plugin
     - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
   - [Android only](#android-only)
     - [locationMode constants](#locationmode-constants)
+    - [isGpsLocationAvailable()](#isgpslocationavailable)
     - [isGpsLocationEnabled()](#isgpslocationenabled)
+    - [isNetworkLocationAvailable()](#isnetworklocationavailable)
     - [isNetworkLocationEnabled()](#isnetworklocationenabled)
     - [getLocationMode()](#getlocationmode)
     - [getPermissionAuthorizationStatus()](#getpermissionauthorizationstatus)
     - [getPermissionsAuthorizationStatus()](#getpermissionsauthorizationstatus)
     - [requestRuntimePermission()](#requestruntimepermission)
     - [requestRuntimePermissions()](#requestruntimepermissions)
+    - [isBluetoothEnabled()](#isbluetoothenabled)
     - [hasBluetoothSupport()](#hasbluetoothsupport)
     - [hasBluetoothLESupport()](#hasbluetoothlesupport)
     - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
   - [iOS only](#ios-only)
-    - [isLocationEnabledSetting()](#islocationenabledsetting)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
@@ -98,6 +103,12 @@ The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugi
 
 
 ## Important notes
+
+### Version 3.1 backward-incompatibility
+
+This version contains backwardly-incompatible renaming of some functions in order to logically separate those which check if a device OS setting is enabled (`isSomethingEnabled()`) vs those which check if hardware/sensor is available for use by the app (device OS setting is enabled AND app has authorisation AND hardware is present - `isSomethingAvailable()`).
+
+To avoid breaking existing code which uses the prior function names, either fix the version of the plugin in your config.xml to `cordova.plugins.diagnostic@3.0` or update your code to use [the revised names detailed in the release notes](https://github.com/dpa99c/cordova-diagnostic-plugin/wiki/Release-notes).
 
 ### Version 3 backward-incompatibility
 
@@ -160,17 +171,17 @@ The plugin is exposed via the `cordova.plugins.diagnostic` object and provides t
 
 ## Android, iOS and Windows 10 Mobile
 
-### isLocationEnabled()
+### isLocationAvailable()
 
 Checks if app is able to access device location.
 
-    cordova.plugins.diagnostic.isLocationEnabled(successCallback, errorCallback);
+    cordova.plugins.diagnostic.isLocationAvailable(successCallback, errorCallback);
 
-On iOS and Windows 10 Mobile this returns true if both the device setting for Location Services is ON, AND the application is authorized to use location.
+On iOS and Windows 10 Mobile this returns true if both the device setting is enabled AND the application is authorized to use location.
 When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
 
 On Android, this returns true if Location mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
-AND on Android 6.0+ (API 23+), if the application has runtime authorisation to use location.
+AND if the app is authorised to use location.
 When location is enabled, the locations returned are dependent on the location mode:
 
 * Battery saving = network triangulation and Wifi network IDs (low accuracy)
@@ -187,47 +198,46 @@ This callback function is passed a single string parameter containing the error 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
-        console.log("Location is " + (enabled ? "enabled" : "disabled"));
+    cordova.plugins.diagnostic.isLocationAvailable(function(available){
+        console.log("Location is " + (available ? "available" : "not available"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
 
-### isWifiEnabled()
+### isWifiAvailable()
 
-Checks if Wifi is connected/enabled.
+Checks if Wifi is available.
 On iOS this returns true if the device is connected to a network by WiFi.
-On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled.
+On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as (`isWifiEnabled()`)[#iswifienabled]
 
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
-    cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
+    cordova.plugins.diagnostic.isWifiAvailable(successCallback, errorCallback);
 
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-This callback function is passed a single boolean parameter which is TRUE if device is connected by WiFi.
+This callback function is passed a single boolean parameter which is TRUE if WiFi is available.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
-        console.log("WiFi is " + (enabled ? "enabled" : "disabled"));
+    cordova.plugins.diagnostic.isWifiAvailable(function(available){
+        console.log("WiFi is " + (available ? "available" : "not available"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
 
 
-### isCameraEnabled()
+### isCameraAvailable()
 
-Checks if the device has a camera.
-On Android this returns true if the device has a camera.
-On iOS this returns true if both the device has a camera AND the application is authorized to use it.
-On Windows 10 Mobile this returns true if both the device has a rear-facing camera AND the application is authorized to use it.
+Checks if camera is available.
+On Android & iOS this returns true if the device has a camera AND the application is authorized to use it.
+On Windows 10 Mobile this returns true if the device has a **rear-facing** camera.
 
-    cordova.plugins.diagnostic.isCameraEnabled(successCallback, errorCallback);
+    cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback);
 
 #### Parameters
 
@@ -239,32 +249,33 @@ This callback function is passed a single string parameter containing the error 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isCameraEnabled(function(exists){
-        console.log("Device " + (exists ? "does" : "does not") + " have a camera");
+    cordova.plugins.diagnostic.isCameraAvailable(function(available){
+        console.log("Camera is " + (available ? "available" : "not available"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
 
-### isBluetoothEnabled()
+### isBluetoothAvailable()
 
-Checks if the device has Bluetooth capabilities and if so that Bluetooth is switched on (same on Android, iOS and Windows 10 Mobile)
+Checks if Bluetooth is available to the app.
+Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS and Windows 10 Mobile)
 
 On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
 
-    cordova.plugins.diagnostic.isBluetoothEnabled(successCallback, errorCallback);
+    cordova.plugins.diagnostic.isBluetoothAvailable(successCallback, errorCallback);
 
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-This callback function is passed a single boolean parameter which is TRUE if device has Bluetooth LE and Bluetooth is switched on.
+This callback function is passed a single boolean parameter which is TRUE if Bluetooth is available.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isBluetoothEnabled(function(enabled){
-        console.log("Bluetooth is " + (enabled ? "enabled" : "disabled"));
+    cordova.plugins.diagnostic.isBluetoothAvailable(function(available){
+        console.log("Bluetooth is " + (available ? "available" : "not available"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
@@ -296,6 +307,30 @@ Displays Bluetooth settings to allow user to enable Bluetooth.
 Displays WiFi settings to allow user to enable WiFi.
 
     cordova.plugins.diagnostic.switchToWifiSettings();
+
+### isWifiEnabled()
+
+Returns true if the WiFi setting is set to enabled, and is the same as (`isWifiAvailable()`)[#iswifiavailable]
+
+On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
+
+    cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is true if the device setting is enabled.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
+        console.log("WiFi is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 ### setWifiState()
 
@@ -430,6 +465,30 @@ Defines constants for the various Bluetooth hardware states
         }
     }, function(error){
         console.error(error);
+    });
+
+### isLocationEnabled()
+
+Returns true if the device setting for location is on.
+On Android this returns true if Location Mode is switched on.
+On iOS this returns true if Location Services is switched on.
+
+    cordova.plugins.diagnostic.isLocationEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if location setting is enabled.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
+        console.log("Location setting is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
     });
 
 ### isLocationAuthorized()
@@ -1072,22 +1131,44 @@ Defines constants for the various location modes on Android.
         console.error("The following error occurred: "+error);
     });
 
+### isGpsLocationAvailable()
+
+Checks if high-accuracy locations are available to the app from GPS hardware.
+Returns true if Location mode is enabled and is set to "Device only" or "High accuracy" AND if the app is authorised to use location.
+
+    cordova.plugins.diagnostic.isGpsLocationAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isGpsLocationAvailable(function(available){
+        console.log("GPS location is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
 ### isGpsLocationEnabled()
 
-Checks if location mode is set to return high-accuracy locations from GPS hardware
-AND on Android 6.0+ (API 23+), if the application has runtime authorisation to use location.
-
-    cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
-
+Checks if the device location setting is set to return high-accuracy locations from GPS hardware.
 Returns true if Location mode is enabled and is set to either:
 
 * Device only = GPS hardware only (high accuracy)
 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 
+
+    cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
+
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-This callback function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available for use.
+This callback function is passed a single boolean parameter which is TRUE if device setting is set to return high-accuracy GPS-based location.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
@@ -1100,22 +1181,45 @@ This callback function is passed a single string parameter containing the error 
         console.error("The following error occurred: "+error);
     });
 
+### isNetworkLocationAvailable()
+
+Checks if low-accuracy locations are available to the app from network triangulation/WiFi access points.
+Returns true if Location mode is enabled and is set to "Battery saving" or "High accuracy"
+AND if the app is authorised to use location.
+
+    cordova.plugins.diagnostic.isNetworkLocationAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNetworkLocationAvailable(function(available){
+        console.log("Network location is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
 ### isNetworkLocationEnabled()
 
 Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points
-AND on Android 6.0+ (API 23+), if the application has runtime authorisation to use location.
-
-    cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
-
 Returns true if Location mode is enabled and is set to either:
 
 * Battery saving = network triangulation and Wifi network IDs (low accuracy)
 * High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 
+
+    cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
+
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-This callback function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available for use.
+This callback function is passed a single boolean parameter which is TRUE if device setting is set to return low-accuracy network-based location.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
@@ -1315,6 +1419,31 @@ This callback function is passed a single string parameter containing the error 
         cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION
     ]);
 
+
+### isBluetoothEnabled()
+
+Checks if the device setting for Bluetooth is switched on.
+
+On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
+
+    cordova.plugins.diagnostic.isBluetoothAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if Bluetooth is switched on.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isBluetoothEnabled(function(enabled){
+        console.log("Bluetooth is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
 ### hasBluetoothSupport()
 
 Checks if the device has Bluetooth capabilities.
@@ -1379,28 +1508,6 @@ This callback function is passed a single string parameter containing the error 
     });
 
 ## iOS only
-
-### isLocationEnabledSetting()
-
-Returns true if the device setting for location is on.
-
-    cordova.plugins.diagnostic.isLocationEnabledSetting(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-This callback function is passed a single boolean parameter which is TRUE if Location Services is enabled.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-This callback function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isLocationEnabledSetting(function(enabled){
-        console.log("Location setting is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 
 ### isCameraRollAuthorized()
@@ -1715,7 +1822,7 @@ Currently the plugin only supports Windows 10 and Windows 10 Mobile, not Windows
 
 The reason being that the native functionality required by the plugin's current Windows implementation is only available since Windows 10.
 
-For example, `isLocationEnabled()` [invokes](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/src/windows/diagnosticProxy.js#L19) `Windows.Devices.Geolocation.Geolocator.requestAccessAsync()`. And this was only [introduced in Windows 10](https://msdn.microsoft.com/library/windows/apps/windows.devices.geolocation.geolocator.requestaccessasync.aspx).
+For example, `isLocationAvailable()` [invokes](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/src/windows/diagnosticProxy.js#L19) `Windows.Devices.Geolocation.Geolocator.requestAccessAsync()`. And this was only [introduced in Windows 10](https://msdn.microsoft.com/library/windows/apps/windows.devices.geolocation.geolocator.requestaccessasync.aspx).
 
 Windows Phone 8.x would require a different implementation (even if possible), and I don't plan to add that since the Windows 8.x global marketshare is below 5% and falling, and is also rendered obsolete by Windows 10 Mobile.
 

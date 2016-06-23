@@ -13,24 +13,23 @@ var Diagnostic = function () { };
  * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
  *  This callback function is passed a single string parameter containing the error message.
  */
-Diagnostic.prototype.isLocationEnabled = function (successCallback, errorCallback) {
+Diagnostic.prototype.isLocationAvailable = function (successCallback, errorCallback) {
     return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
-		'isLocationEnabled',
+		'isLocationAvailable',
 		[]);
 };
 
 /**
  * Checks if Wifi is enabled.
- * On Android this returns true if the WiFi setting is set to enabled.
  *
  * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
  * This callback function is passed a single boolean parameter with the diagnostic result.
  * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
  *  This callback function is passed a single string parameter containing the error message.
  */
-Diagnostic.prototype.isWifiEnabled = function (successCallback, errorCallback) {
+Diagnostic.prototype.isWifiAvailable = Diagnostic.isWifiEnabled = function (successCallback, errorCallback) {
     return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
@@ -46,7 +45,7 @@ Diagnostic.prototype.isWifiEnabled = function (successCallback, errorCallback) {
  * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
  *  This callback function is passed a single string parameter containing the error message.
  */
-Diagnostic.prototype.isBluetoothEnabled = function (successCallback, errorCallback) {
+Diagnostic.prototype.isBluetoothAvailable = function (successCallback, errorCallback) {
     return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
@@ -62,11 +61,11 @@ Diagnostic.prototype.isBluetoothEnabled = function (successCallback, errorCallba
  * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
  *  This callback function is passed a single string parameter containing the error message.
  */
-Diagnostic.prototype.isCameraEnabled = function (successCallback, errorCallback) {
+Diagnostic.prototype.isCameraAvailable = function (successCallback, errorCallback) {
     return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
-		'isCameraEnabled',
+		'isCameraAvailable',
 		[]);
 };
 

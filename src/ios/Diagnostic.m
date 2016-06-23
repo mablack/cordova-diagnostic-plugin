@@ -41,16 +41,16 @@ ABAddressBookRef _addressBook;
  *************/
 
 // Location
-- (void) isLocationEnabled: (CDVInvokedUrlCommand*)command
+- (void) isLocationAvailable: (CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult;
     @try {
         if([CLLocationManager locationServicesEnabled] && [self isLocationAuthorized]) {
-            NSLog(@"Location is enabled.");
+            NSLog(@"Location is available.");
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
         }
         else {
-            NSLog(@"Location is disabled.");
+            NSLog(@"Location is not available.");
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
         }
     }
@@ -60,16 +60,16 @@ ABAddressBookRef _addressBook;
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void) isLocationEnabledSetting: (CDVInvokedUrlCommand*)command
+- (void) isLocationEnabled: (CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult;
     @try {
         if([CLLocationManager locationServicesEnabled]) {
-            NSLog(@"Location Services is enabled");
+            NSLog(@"Location setting is enabled");
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
         }
         else {
-            NSLog(@"Location Services is disabled");
+            NSLog(@"Location setting is disabled");
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
         }
     }
@@ -144,7 +144,7 @@ ABAddressBookRef _addressBook;
 }
 
 // Camera
-- (void) isCameraEnabled: (CDVInvokedUrlCommand*)command
+- (void) isCameraAvailable: (CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult;
     @try {
@@ -287,7 +287,7 @@ ABAddressBookRef _addressBook;
 }
 
 // Wifi
-- (void) isWifiEnabled: (CDVInvokedUrlCommand*)command
+- (void) isWifiAvailable: (CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult;
     @try {
@@ -304,7 +304,7 @@ ABAddressBookRef _addressBook;
 }
 
 // Bluetooth
-- (void) isBluetoothEnabled: (CDVInvokedUrlCommand*)command
+- (void) isBluetoothAvailable: (CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult;
     @try {
