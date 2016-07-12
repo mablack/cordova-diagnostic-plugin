@@ -24,7 +24,7 @@ ABAddressBookRef _addressBook;
 - (void)pluginInitialize {
     
     [super pluginInitialize];
-
+    
     self.locationRequestCallbackId = nil;
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -105,7 +105,7 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* status = [self getLocationAuthorizationStatusAsString:[CLLocationManager authorizationStatus]];
-        NSLog([NSString stringWithFormat:@"Location authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Location authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -209,7 +209,7 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == AVAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Camera authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Camera authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -262,7 +262,7 @@ ABAddressBookRef _addressBook;
     @try {
         NSString* status = [self getCameraRollAuthorizationStatus];
         
-        NSLog([NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -327,7 +327,7 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* state = self.bluetoothState;
-        NSLog([NSString stringWithFormat:@"Bluetooth state is: %@", state]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Bluetooth state is: %@", state]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:state];
     }
     @catch (NSException *exception) {
@@ -342,7 +342,7 @@ ABAddressBookRef _addressBook;
 {
     CDVPluginResult* pluginResult;
     @try {
-        if (UIApplicationOpenSettingsURLString != nil && &UIApplicationOpenSettingsURLString != NULL){
+        if (UIApplicationOpenSettingsURLString != nil ){
             [[UIApplication sharedApplication] openURL: [NSURL URLWithString: UIApplicationOpenSettingsURLString]];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         }else{
@@ -388,17 +388,17 @@ ABAddressBookRef _addressBook;
         AVAudioSessionRecordPermission recordPermission = [AVAudioSession sharedInstance].recordPermission;
         switch(recordPermission){
             case AVAudioSessionRecordPermissionDenied:
-                status = @"denied";
-                break;
+            status = @"denied";
+            break;
             case AVAudioSessionRecordPermissionGranted:
-                status = @"granted";
-                break;
+            status = @"granted";
+            break;
             case AVAudioSessionRecordPermissionUndetermined:
-                status = @"not_determined";
-                break;
+            status = @"not_determined";
+            break;
         }
         
-        NSLog([NSString stringWithFormat:@"Microphone authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Microphone authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
 #else
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only supported on iOS 8 and higher"];
@@ -443,8 +443,10 @@ ABAddressBookRef _addressBook;
             isEnabled = remoteNotificationsEnabled && userNotificationSettings.types != UIUserNotificationTypeNone;
         } else {
             // iOS7 and below
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
             isEnabled = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+#endif
         }
         
         if(isEnabled) {
@@ -473,11 +475,13 @@ ABAddressBookRef _addressBook;
             soundsEnabled = userNotificationSettings.types & UIUserNotificationTypeSound;
         } else {
             // iOS7 and below
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
             noneEnabled = enabledRemoteNotificationTypes == UIRemoteNotificationTypeNone;
             alertsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeAlert;
             badgesEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeBadge;
             soundsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeSound;
+#endif
         }
         
         NSMutableDictionary* types = [[NSMutableDictionary alloc]init];
@@ -513,9 +517,11 @@ ABAddressBookRef _addressBook;
             // iOS8+
             registered = [UIApplication sharedApplication].isRegisteredForRemoteNotifications;
         } else {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             // iOS7 and below
             UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
             registered = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+#endif
         }
         if(registered) {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
@@ -545,7 +551,7 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == kABAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Address book authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Address book authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -610,7 +616,7 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == EKAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Calendar event authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Calendar event authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -679,7 +685,7 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == EKAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Reminders authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Reminders authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -767,14 +773,14 @@ ABAddressBookRef _addressBook;
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
-    NSLog([NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
-
+    NSLog(@"%@",[NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
+    
     if(self.locationRequestCallbackId != nil){
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
         self.locationRequestCallbackId = nil;
     }
-
+    
     [self jsCallback:[NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationStateChange(\"%@\");", status]];
 }
 
@@ -909,31 +915,31 @@ ABAddressBookRef _addressBook;
     switch(self.bluetoothManager.state)
     {
         case CBCentralManagerStateResetting:
-            state = @"resetting";
-            description =@"The connection with the system service was momentarily lost, update imminent.";
-            break;
-            
+        state = @"resetting";
+        description =@"The connection with the system service was momentarily lost, update imminent.";
+        break;
+        
         case CBCentralManagerStateUnsupported:
-            state = @"unsupported";
-            description = @"The platform doesn't support Bluetooth Low Energy.";
-            break;
-            
+        state = @"unsupported";
+        description = @"The platform doesn't support Bluetooth Low Energy.";
+        break;
+        
         case CBCentralManagerStateUnauthorized:
-            state = @"unauthorized";
-            description = @"The app is not authorized to use Bluetooth Low Energy.";
-            break;
+        state = @"unauthorized";
+        description = @"The app is not authorized to use Bluetooth Low Energy.";
+        break;
         case CBCentralManagerStatePoweredOff:
-            state = @"powered_off";
-            description = @"Bluetooth is currently powered off.";
-            break;
+        state = @"powered_off";
+        description = @"Bluetooth is currently powered off.";
+        break;
         case CBCentralManagerStatePoweredOn:
-            state = @"powered_on";
-            description = @"Bluetooth is currently powered on and available to use.";
-            break;
+        state = @"powered_on";
+        description = @"Bluetooth is currently powered on and available to use.";
+        break;
         default:
-            state = @"unknown";
-            description = @"State unknown, update imminent.";
-            break;
+        state = @"unknown";
+        description = @"State unknown, update imminent.";
+        break;
     }
     NSLog(@"Bluetooth state changed: %@",description);
     
