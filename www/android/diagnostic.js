@@ -94,6 +94,8 @@ var Diagnostic = (function(){
 		"LOCATION_OFF": "location_off"
 	};
 
+	Diagnostic.locationAuthorizationMode = {}; // Empty object to enable easy cross-platform compatibility with iOS
+
 
 	Diagnostic.firstRequestedPermissions;
 
