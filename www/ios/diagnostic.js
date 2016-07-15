@@ -30,6 +30,7 @@ var Diagnostic = (function(){
 	Diagnostic.permissionStatus = {
 		"NOT_REQUESTED": "not_determined", // App has not yet requested this permission
 		"DENIED": "denied", // User denied access to this permission
+		"RESTRICTED": "restricted", // Permission is unavailable and user cannot enable it.  For example, when parental controls are in effect for the current user.
 		"GRANTED": "authorized", //  User granted access to this permission
 		"GRANTED_WHEN_IN_USE": "authorized_when_in_use" //  User granted access use location permission only when app is in use
 	};
@@ -696,6 +697,40 @@ var Diagnostic = (function(){
 			'Diagnostic',
 			'requestRemindersAuthorization',
 			[]);
+	};
+
+	/*********************
+	 * Background refresh
+	 *********************/
+
+	/**
+	 * Returns the background refresh authorization status for the application.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.getBackgroundRefreshStatus = function(successCallback, errorCallback) {
+		return cordova.exec(successCallback,
+			errorCallback,
+			'Diagnostic',
+			'getBackgroundRefreshStatus',
+			[]);
+	};
+
+	/**
+	 * Checks if the application is authorized for background refresh.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is passed a single boolean parameter which is TRUE if background refresh is authorized for use.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.isBackgroundRefreshAuthorized = function(successCallback, errorCallback) {
+		Diagnostic.getBackgroundRefreshStatus(function(status){
+			successCallback(status === Diagnostic.permissionStatus.GRANTED);
+		}, errorCallback);
 	};
 
 	return Diagnostic;
