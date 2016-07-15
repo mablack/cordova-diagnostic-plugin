@@ -93,7 +93,8 @@ Cordova diagnostic plugin
 - [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
-- [# License](#-license)
+- [# License
+](#-license)
 
 <!-- END table-of-contents -->
 
@@ -1667,7 +1668,7 @@ This callback function is passed a single object parameter where the key is the 
 
 Checks if the application is authorized to use reminders.
 
-    `cordova.plugins.diagnostic.isRemindersAuthorized(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.isRemindersAuthorized(successCallback, errorCallback);
 
 #### Parameters
 
@@ -1689,7 +1690,7 @@ This callback function is passed a single string parameter containing the error 
 
  Returns the reminders authorization status for the application.
 
-    `cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);
 
 #### Parameters
 
@@ -1735,7 +1736,7 @@ This callback function is passed a single string parameter indicating whether ac
 
 Checks if the application is authorized for background refresh.
 
-    `cordova.plugins.diagnostic.isBackgroundRefreshAuthorized(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.isBackgroundRefreshAuthorized(successCallback, errorCallback);
 
 #### Parameters
 
@@ -1757,7 +1758,7 @@ This callback function is passed a single string parameter containing the error 
 
 Returns the background refresh authorization status for the application.
 
-    `cordova.plugins.diagnostic.getBackgroundRefreshStatus(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.getBackgroundRefreshStatus(successCallback, errorCallback);
 
 #### Parameters
 
