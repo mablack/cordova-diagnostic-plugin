@@ -737,6 +737,32 @@ ABAddressBookRef _addressBook;
     }
 }
 
+// Background refresh
+- (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        NSString* status;
+
+        if ([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusAvailable) {
+            status = @"authorized";
+            NSLog(@"Background updates are available for the app.");
+        }else if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied){
+            status = @"denied";
+            NSLog(@"The user explicitly disabled background behavior for this app or for the whole system.");
+        }else if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusRestricted){
+            status = @"restricted";
+            NSLog(@"Background updates are unavailable and the user cannot enable them again. For example, this status can occur when parental controls are in effect for the current user.");
+        }
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
+}
+
 /*********************
  * Internal functions
  *********************/

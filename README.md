@@ -76,6 +76,8 @@ Cordova diagnostic plugin
     - [isRemindersAuthorized()](#isremindersauthorized)
     - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
     - [requestRemindersAuthorization()](#requestremindersauthorization)
+    - [isBackgroundRefreshAuthorized()](#isbackgroundrefreshauthorized)
+    - [getBackgroundRefreshStatus()](#getbackgroundrefreshstatus)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
@@ -91,6 +93,8 @@ Cordova diagnostic plugin
 - [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
+- [# License
+](#-license)
 
 <!-- END table-of-contents -->
 
@@ -424,6 +428,8 @@ App can request permission and user will be prompted to allow/deny.
 - `DENIED` - User denied access to this permission.
 App can never ask for permission again.
 The only way around this is to instruct the user to manually change the permission in the Settings app.
+- `RESTRICTED` - Permission is unavailable and user cannot enable it.
+For example, when parental controls are in effect for the current user.
 - `GRANTED` - User granted access to this permission.
 For location permission, this indicates the user has granted access to the permission "always" (when app is both in foreground and background).
 - `GRANTED_WHEN_IN_USE` - Used only for location permission.
@@ -1662,7 +1668,7 @@ This callback function is passed a single object parameter where the key is the 
 
 Checks if the application is authorized to use reminders.
 
-    `cordova.plugins.diagnostic.isRemindersAuthorized(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.isRemindersAuthorized(successCallback, errorCallback);
 
 #### Parameters
 
@@ -1684,7 +1690,7 @@ This callback function is passed a single string parameter containing the error 
 
  Returns the reminders authorization status for the application.
 
-    `cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);
 
 #### Parameters
 
@@ -1725,6 +1731,51 @@ This callback function is passed a single string parameter indicating whether ac
     }, function(error){
         console.error(error);
     });
+
+### isBackgroundRefreshAuthorized()
+
+Checks if the application is authorized for background refresh.
+
+    cordova.plugins.diagnostic.isBackgroundRefreshAuthorized(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if background refresh access is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isBackgroundRefreshAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "not authorized") + " to perform background refresh");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getBackgroundRefreshStatus()
+
+Returns the background refresh authorization status for the application.
+
+    cordova.plugins.diagnostic.getBackgroundRefreshStatus(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getBackgroundRefreshStatus(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Background refresh is allowed");
+        }
+    }, onError);
+
+
 
 # Platform Notes
 

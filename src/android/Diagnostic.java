@@ -186,11 +186,6 @@ public class Diagnostic extends CordovaPlugin{
      */
     protected CallbackContext currentContext;
 
-    /**
-     * Current state of bluetooth hardware
-     */
-    private String bluetoothState = BLUETOOTH_STATE_UNKNOWN;
-
     private boolean bluetoothListenerInitialized = false;
     private String currentLocationMode = null;
 
@@ -213,18 +208,6 @@ public class Diagnostic extends CordovaPlugin{
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
 		Log.d(TAG, "initialize()");
         instance = this;
-        try {
-               if(this.hasBluetoothSupport()){
-                      if(this.isBluetoothEnabled()){
-                              bluetoothState = BLUETOOTH_STATE_POWERED_ON;
-                      } else{
-                              bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
-                      }
-               }
-        }
-        catch(SecurityException e) {
-               bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
-        }
 
         locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
         super.initialize(cordova, webView);
@@ -239,7 +222,7 @@ public class Diagnostic extends CordovaPlugin{
                 this.cordova.getActivity().unregisterReceiver(mReceiver);
             }
         }catch(Exception e){
-            Log.w(TAG, "Unable to unregister Bluetooth receiver: "+e.getMessage());
+            Log.w(TAG, "Unable to unregister Bluetooth receiver: " + e.getMessage());
         }
     }
 
@@ -486,6 +469,26 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public String getBluetoothState(){
+
+        String bluetoothState = BLUETOOTH_STATE_UNKNOWN;
+        if(hasBluetoothSupport()){
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            int state = mBluetoothAdapter.getState();
+            switch(state){
+                case BluetoothAdapter.STATE_OFF:
+                    bluetoothState = BLUETOOTH_STATE_POWERED_OFF;
+                    break;
+                case BluetoothAdapter.STATE_ON:
+                    bluetoothState = BLUETOOTH_STATE_POWERED_ON;
+                    break;
+                case BluetoothAdapter.STATE_TURNING_OFF:
+                    bluetoothState = BLUETOOTH_STATE_POWERING_OFF;
+                    break;
+                case BluetoothAdapter.STATE_TURNING_ON:
+                    bluetoothState = BLUETOOTH_STATE_POWERING_ON;
+                    break;
+            }
+        }
         return bluetoothState;
     }
 
@@ -829,6 +832,7 @@ public class Diagnostic extends CordovaPlugin{
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            String bluetoothState;
 
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
