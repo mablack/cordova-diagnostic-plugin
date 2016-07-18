@@ -14,13 +14,22 @@
 #import <arpa/inet.h> // For AF_INET, etc.
 #import <ifaddrs.h> // For getifaddrs()
 #import <net/if.h> // For IFF_LOOPBACK
+#import <Contacts/Contacts.h>
 
+@interface Diagnostic()
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+@property (nonatomic, retain) CNContactStore* contactStore;
+#endif
+
+@end
 
 
 @implementation Diagnostic
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 ABAddressBookRef _addressBook;
-
+#endif
 - (void)pluginInitialize {
     
     [super pluginInitialize];
@@ -388,14 +397,14 @@ ABAddressBookRef _addressBook;
         AVAudioSessionRecordPermission recordPermission = [AVAudioSession sharedInstance].recordPermission;
         switch(recordPermission){
             case AVAudioSessionRecordPermissionDenied:
-            status = @"denied";
-            break;
+                status = @"denied";
+                break;
             case AVAudioSessionRecordPermissionGranted:
-            status = @"granted";
-            break;
+                status = @"granted";
+                break;
             case AVAudioSessionRecordPermissionUndetermined:
-            status = @"not_determined";
-            break;
+                status = @"not_determined";
+                break;
         }
         
         NSLog(@"%@",[NSString stringWithFormat:@"Microphone authorization status is: %@", status]);
@@ -542,8 +551,18 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* status;
-        ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
         
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+        CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+        if(authStatus == CNAuthorizationStatusDenied || authStatus == CNAuthorizationStatusRestricted){
+            status = @"denied";
+        }else if(authStatus == CNAuthorizationStatusNotDetermined){
+            status = @"not_determined";
+        }else if(authStatus == CNAuthorizationStatusAuthorized){
+            status = @"authorized";
+        }
+#else
+        ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
         if(authStatus == kABAuthorizationStatusDenied || authStatus == kABAuthorizationStatusRestricted){
             status = @"denied";
         }else if(authStatus == kABAuthorizationStatusNotDetermined){
@@ -551,6 +570,9 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == kABAuthorizationStatusAuthorized){
             status = @"authorized";
         }
+        
+#endif
+        
         NSLog(@"%@",[NSString stringWithFormat:@"Address book authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
@@ -564,6 +586,16 @@ ABAddressBookRef _addressBook;
 {
     CDVPluginResult* pluginResult;
     @try {
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+        CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+        if(authStatus == CNAuthorizationStatusAuthorized) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        }
+        else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        }
+#else
         ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
         if(authStatus == kABAuthorizationStatusAuthorized) {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
@@ -571,6 +603,7 @@ ABAddressBookRef _addressBook;
         else {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
         }
+#endif
     }
     @catch (NSException *exception) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
@@ -581,6 +614,8 @@ ABAddressBookRef _addressBook;
 - (void) requestAddressBookAuthorization: (CDVInvokedUrlCommand*)command
 {
     @try {
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
         ABAddressBookRequestAccessWithCompletion(self.addressBook, ^(bool granted, CFErrorRef error) {
             NSLog(@"Access request to address book: %d", granted);
             CDVPluginResult* pluginResult;
@@ -592,6 +627,25 @@ ABAddressBookRef _addressBook;
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             
         });
+        
+#else
+        [self.contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            
+            CDVPluginResult* pluginResult;
+            if(error == nil) {
+                NSLog(@"Access request to address book: %d", granted);
+                if(granted) {
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+                } else {
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+                }
+            }
+            else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+#endif
     }
     @catch (NSException *exception) {
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
@@ -743,7 +797,7 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* status;
-
+        
         if ([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusAvailable) {
             status = @"authorized";
             NSLog(@"Background updates are available for the app.");
@@ -760,7 +814,7 @@ ABAddressBookRef _addressBook;
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-
+    
 }
 
 /*********************
@@ -899,6 +953,7 @@ ABAddressBookRef _addressBook;
     return jsonString;
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 - (ABAddressBookRef)addressBook {
     if (!_addressBook) {
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
@@ -931,6 +986,7 @@ ABAddressBookRef _addressBook;
         _addressBook = NULL;
     }
 }
+#endif
 
 #pragma mark - CBCentralManagerDelegate
 
@@ -941,31 +997,31 @@ ABAddressBookRef _addressBook;
     switch(self.bluetoothManager.state)
     {
         case CBCentralManagerStateResetting:
-        state = @"resetting";
-        description =@"The connection with the system service was momentarily lost, update imminent.";
-        break;
-        
+            state = @"resetting";
+            description =@"The connection with the system service was momentarily lost, update imminent.";
+            break;
+            
         case CBCentralManagerStateUnsupported:
-        state = @"unsupported";
-        description = @"The platform doesn't support Bluetooth Low Energy.";
-        break;
-        
+            state = @"unsupported";
+            description = @"The platform doesn't support Bluetooth Low Energy.";
+            break;
+            
         case CBCentralManagerStateUnauthorized:
-        state = @"unauthorized";
-        description = @"The app is not authorized to use Bluetooth Low Energy.";
-        break;
+            state = @"unauthorized";
+            description = @"The app is not authorized to use Bluetooth Low Energy.";
+            break;
         case CBCentralManagerStatePoweredOff:
-        state = @"powered_off";
-        description = @"Bluetooth is currently powered off.";
-        break;
+            state = @"powered_off";
+            description = @"Bluetooth is currently powered off.";
+            break;
         case CBCentralManagerStatePoweredOn:
-        state = @"powered_on";
-        description = @"Bluetooth is currently powered on and available to use.";
-        break;
+            state = @"powered_on";
+            description = @"Bluetooth is currently powered on and available to use.";
+            break;
         default:
-        state = @"unknown";
-        description = @"State unknown, update imminent.";
-        break;
+            state = @"unknown";
+            description = @"State unknown, update imminent.";
+            break;
     }
     NSLog(@"Bluetooth state changed: %@",description);
     
