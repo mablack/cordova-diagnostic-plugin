@@ -108,6 +108,11 @@ The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugi
 
 ## Important notes
 
+### Native environment required
+
+Note that this plugin is intended for use in a **native** mobile environment.
+It will **NOT** work in a browser-emulated Cordova environment, for example by running `cordova serve` or using the [Ripple emulator](https://github.com/ripple-emulator/ripple).
+
 ### Version 3.1 backward-incompatibility
 
 This version contains backwardly-incompatible renaming of some functions in order to logically separate those which check if a device OS setting is enabled (`isSomethingEnabled()`) vs those which check if hardware/sensor is available for use by the app (device OS setting is enabled AND app has authorisation AND hardware is present - `isSomethingAvailable()`).
