@@ -14,17 +14,26 @@
 #import <arpa/inet.h> // For AF_INET, etc.
 #import <ifaddrs.h> // For getifaddrs()
 #import <net/if.h> // For IFF_LOOPBACK
+#import <Contacts/Contacts.h>
 
+@interface Diagnostic()
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+@property (nonatomic, retain) CNContactStore* contactStore;
+#endif
+
+@end
 
 
 @implementation Diagnostic
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 ABAddressBookRef _addressBook;
-
+#endif
 - (void)pluginInitialize {
     
     [super pluginInitialize];
-
+    
     self.locationRequestCallbackId = nil;
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -105,7 +114,7 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* status = [self getLocationAuthorizationStatusAsString:[CLLocationManager authorizationStatus]];
-        NSLog([NSString stringWithFormat:@"Location authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Location authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -209,7 +218,7 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == AVAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Camera authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Camera authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -262,7 +271,7 @@ ABAddressBookRef _addressBook;
     @try {
         NSString* status = [self getCameraRollAuthorizationStatus];
         
-        NSLog([NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -327,7 +336,7 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* state = self.bluetoothState;
-        NSLog([NSString stringWithFormat:@"Bluetooth state is: %@", state]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Bluetooth state is: %@", state]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:state];
     }
     @catch (NSException *exception) {
@@ -342,7 +351,7 @@ ABAddressBookRef _addressBook;
 {
     CDVPluginResult* pluginResult;
     @try {
-        if (UIApplicationOpenSettingsURLString != nil && &UIApplicationOpenSettingsURLString != NULL){
+        if (UIApplicationOpenSettingsURLString != nil ){
             [[UIApplication sharedApplication] openURL: [NSURL URLWithString: UIApplicationOpenSettingsURLString]];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         }else{
@@ -398,7 +407,7 @@ ABAddressBookRef _addressBook;
                 break;
         }
         
-        NSLog([NSString stringWithFormat:@"Microphone authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Microphone authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
 #else
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only supported on iOS 8 and higher"];
@@ -443,8 +452,10 @@ ABAddressBookRef _addressBook;
             isEnabled = remoteNotificationsEnabled && userNotificationSettings.types != UIUserNotificationTypeNone;
         } else {
             // iOS7 and below
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
             isEnabled = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+#endif
         }
         
         if(isEnabled) {
@@ -473,11 +484,13 @@ ABAddressBookRef _addressBook;
             soundsEnabled = userNotificationSettings.types & UIUserNotificationTypeSound;
         } else {
             // iOS7 and below
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
             noneEnabled = enabledRemoteNotificationTypes == UIRemoteNotificationTypeNone;
             alertsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeAlert;
             badgesEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeBadge;
             soundsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeSound;
+#endif
         }
         
         NSMutableDictionary* types = [[NSMutableDictionary alloc]init];
@@ -513,9 +526,11 @@ ABAddressBookRef _addressBook;
             // iOS8+
             registered = [UIApplication sharedApplication].isRegisteredForRemoteNotifications;
         } else {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             // iOS7 and below
             UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
             registered = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+#endif
         }
         if(registered) {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
@@ -536,8 +551,18 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* status;
-        ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
         
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+        CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+        if(authStatus == CNAuthorizationStatusDenied || authStatus == CNAuthorizationStatusRestricted){
+            status = @"denied";
+        }else if(authStatus == CNAuthorizationStatusNotDetermined){
+            status = @"not_determined";
+        }else if(authStatus == CNAuthorizationStatusAuthorized){
+            status = @"authorized";
+        }
+#else
+        ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
         if(authStatus == kABAuthorizationStatusDenied || authStatus == kABAuthorizationStatusRestricted){
             status = @"denied";
         }else if(authStatus == kABAuthorizationStatusNotDetermined){
@@ -545,7 +570,10 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == kABAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Address book authorization status is: %@", status]);
+        
+#endif
+        
+        NSLog(@"%@",[NSString stringWithFormat:@"Address book authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -558,6 +586,16 @@ ABAddressBookRef _addressBook;
 {
     CDVPluginResult* pluginResult;
     @try {
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+        CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+        if(authStatus == CNAuthorizationStatusAuthorized) {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+        }
+        else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+        }
+#else
         ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
         if(authStatus == kABAuthorizationStatusAuthorized) {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
@@ -565,6 +603,7 @@ ABAddressBookRef _addressBook;
         else {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
         }
+#endif
     }
     @catch (NSException *exception) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
@@ -575,6 +614,8 @@ ABAddressBookRef _addressBook;
 - (void) requestAddressBookAuthorization: (CDVInvokedUrlCommand*)command
 {
     @try {
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
         ABAddressBookRequestAccessWithCompletion(self.addressBook, ^(bool granted, CFErrorRef error) {
             NSLog(@"Access request to address book: %d", granted);
             CDVPluginResult* pluginResult;
@@ -586,6 +627,25 @@ ABAddressBookRef _addressBook;
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             
         });
+        
+#else
+        [self.contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            
+            CDVPluginResult* pluginResult;
+            if(error == nil) {
+                NSLog(@"Access request to address book: %d", granted);
+                if(granted) {
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+                } else {
+                    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+                }
+            }
+            else {
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+            }
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+#endif
     }
     @catch (NSException *exception) {
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
@@ -610,7 +670,7 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == EKAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Calendar event authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Calendar event authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -679,7 +739,7 @@ ABAddressBookRef _addressBook;
         }else if(authStatus == EKAuthorizationStatusAuthorized){
             status = @"authorized";
         }
-        NSLog([NSString stringWithFormat:@"Reminders authorization status is: %@", status]);
+        NSLog(@"%@",[NSString stringWithFormat:@"Reminders authorization status is: %@", status]);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
     }
     @catch (NSException *exception) {
@@ -737,7 +797,7 @@ ABAddressBookRef _addressBook;
     CDVPluginResult* pluginResult;
     @try {
         NSString* status;
-
+        
         if ([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusAvailable) {
             status = @"authorized";
             NSLog(@"Background updates are available for the app.");
@@ -754,7 +814,7 @@ ABAddressBookRef _addressBook;
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-
+    
 }
 
 /*********************
@@ -793,14 +853,14 @@ ABAddressBookRef _addressBook;
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
-    NSLog([NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
-
+    NSLog(@"%@",[NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
+    
     if(self.locationRequestCallbackId != nil){
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationRequestCallbackId];
         self.locationRequestCallbackId = nil;
     }
-
+    
     [self jsCallback:[NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationStateChange(\"%@\");", status]];
 }
 
@@ -893,6 +953,7 @@ ABAddressBookRef _addressBook;
     return jsonString;
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 - (ABAddressBookRef)addressBook {
     if (!_addressBook) {
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
@@ -925,6 +986,7 @@ ABAddressBookRef _addressBook;
         _addressBook = NULL;
     }
 }
+#endif
 
 #pragma mark - CBCentralManagerDelegate
 
