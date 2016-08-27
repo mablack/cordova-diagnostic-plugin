@@ -471,7 +471,7 @@ Defines constants for the various Bluetooth hardware states
 #### Example
 
     cordova.plugins.diagnostic.getBluetoothState(function(state){
-        if(state === cordova.plugins.diagnostic.POWERED_ON){
+        if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
             // Do something with Bluetooth
         }
     }, function(error){
