@@ -17,6 +17,9 @@ var Diagnostic = (function(){
 
 	var runtimeGroupsMap;
 
+	// Indicates if a runtime permissions request is in progress
+	var requestInProgress = false;
+
 	/********************
 	 *
 	 * Public properties
@@ -25,7 +28,9 @@ var Diagnostic = (function(){
 
 	// Placeholder listeners
 	Diagnostic._onBluetoothStateChange =
-		Diagnostic._onLocationStateChange = function(){};
+	Diagnostic._onLocationStateChange =
+	Diagnostic._onPermissionRequestComplete = function(){};
+
 
 	/**
 	 * "Dangerous" permissions that need to be requested at run-time (Android 6.0/API 23 and above)
@@ -85,7 +90,6 @@ var Diagnostic = (function(){
 		"NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested access to this permission.
 		"DENIED_ALWAYS": "DENIED_ALWAYS" // User denied access to this permission and checked "Never Ask Again" box.
 	};
-
 
 	Diagnostic.locationMode = {
 		"HIGH_ACCURACY": "high_accuracy",
@@ -259,10 +263,10 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful retrieval of status.
-	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to retrieve authorisation status.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {String} permission - permission to request authorisation status for, defined as a value in Diagnostic.permission
+	 * @param {String} permission - permission to request authorisation status for, defined as a value in cordova.plugins.diagnostic.permission
 	 */
 	Diagnostic.getPermissionAuthorizationStatus = function(successCallback, errorCallback, permission){
 		if(!checkForInvalidPermissions(permission, errorCallback)) return;
@@ -284,10 +288,10 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful retrieval of status.
-	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the requested permission defined as a value in Diagnostic.permission, and the value is the current authorisation status of that permission as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the requested permission defined as a value in cordova.plugins.diagnostic.permission, and the value is the current authorisation status of that permission as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to retrieve authorisation statuses.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {Array} permissions - list of permissions to request authorisation statuses for, defined as values in Diagnostic.permission
+	 * @param {Array} permissions - list of permissions to request authorisation statuses for, defined as values in cordova.plugins.diagnostic.permission
 	 */
 	Diagnostic.getPermissionsAuthorizationStatus = function(successCallback, errorCallback, permissions){
 		if(!checkForInvalidPermissions(permissions, errorCallback)) return;
@@ -313,23 +317,37 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful request for runtime permission.
-	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {String} permission - permission to request authorisation for, defined as a value in Diagnostic.permission
+	 * @param {String} permission - permission to request authorisation for, defined as a value in cordova.plugins.diagnostic.permission
 	 */
 	Diagnostic.requestRuntimePermission = function(successCallback, errorCallback, permission) {
 		if(!checkForInvalidPermissions(permission, errorCallback)) return;
 
-		function onSuccess(status){
-			successCallback(resolveStatus(permission, status[permission]));
+		if(requestInProgress){
+			return onError("A runtime permissions request is already in progress");
+		}
 
+		function onSuccess(status){
+			requestInProgress = false;
+			var status = resolveStatus(permission, status[permission]);
+			successCallback(status);
+			var statuses = {};
+			statuses[permission] = status;
+			Diagnostic._onPermissionRequestComplete(statuses);
 			updateFirstRequestedPermissions([permission]);
 		}
 
+		function onError(error){
+			requestInProgress = false;
+			errorCallback(error);
+		}
+
+		requestInProgress = true;
 		return cordova.exec(
 			onSuccess,
-			errorCallback,
+			onError,
 			'Diagnostic',
 			'requestRuntimePermission',
 			[permission]);
@@ -340,29 +358,64 @@ var Diagnostic = (function(){
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 *
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
-	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the permission to request defined as a value in Diagnostic.permission, and the value is the resulting authorisation status of that permission as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the permission to request defined as a value in cordova.plugins.diagnostic.permission, and the value is the resulting authorisation status of that permission as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 * This callback function is passed a single string parameter containing the error message.
-	 * @param {Array} permissions - permissions to request authorisation for, defined as values in Diagnostic.permission
+	 * @param {Array} permissions - permissions to request authorisation for, defined as values in cordova.plugins.diagnostic.permission
 	 */
 	Diagnostic.requestRuntimePermissions = function(successCallback, errorCallback, permissions){
 		if(!checkForInvalidPermissions(permissions, errorCallback)) return;
 
+		if(requestInProgress){
+			return onError("A runtime permissions request is already in progress");
+		}
+
 		function onSuccess(statuses){
+			requestInProgress = false;
 			for(var permission in statuses){
 				statuses[permission] = resolveStatus(permission, statuses[permission]);
 			}
 			successCallback(statuses);
+			Diagnostic._onPermissionRequestComplete(statuses);
 			updateFirstRequestedPermissions(permissions);
 		}
 
+		function onError(error){
+			requestInProgress = false;
+			errorCallback(error);
+		}
+
+		requestInProgress = true;
 		return cordova.exec(
 			onSuccess,
-			errorCallback,
+			onError,
 			'Diagnostic',
 			'requestRuntimePermissions',
 			[permissions]);
 
+	};
+
+	/**
+	 * Indicates if the plugin is currently requesting a runtime permission via the native API.
+	 * Note that only one request can be made concurrently because the native API cannot handle concurrent requests,
+	 * so the plugin will invoke the error callback if attempting to make more than one simultaneous request.
+	 * Multiple permission requests should be grouped into a single call since the native API is setup to handle batch requests of multiple permission groups.
+	 *
+	 * @return {boolean} true if a permission request is currently in progress.
+	 */
+	Diagnostic.isRequestingPermission = function(){
+		return requestInProgress;
+	};
+
+	/**
+	 * Registers a function to be called when a runtime permission request has completed.
+	 * Pass in a falsey value to de-register the currently registered function.
+	 *
+	 * @param {Function} successCallback -  The callback which will be called when a runtime permission request has completed.
+	 * This callback function is passed a single object parameter which defines a key/value map, where the key is the permission requested (defined as a value in cordova.plugins.diagnostic.permission) and the value is the resulting authorisation status of that permission as a value in cordova.plugins.diagnostic.permissionStatus.
+	 */
+	Diagnostic.registerPermissionRequestCompleteHandler = function(successCallback) {
+		Diagnostic._onPermissionRequestComplete = successCallback || function(){};
 	};
 
 
@@ -510,7 +563,7 @@ var Diagnostic = (function(){
 	 * Requests location authorization for the application.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
-	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 */
 	Diagnostic.requestLocationAuthorization = function(successCallback, errorCallback){
@@ -527,7 +580,7 @@ var Diagnostic = (function(){
 	 * Returns the location authorization status for the application.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
-	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
 	 */
 	Diagnostic.getLocationAuthorizationStatus = function(successCallback, errorCallback){
@@ -557,12 +610,13 @@ var Diagnostic = (function(){
 	/**
 	 * Registers a function to be called when a change in Location state occurs.
 	 * On Android, this occurs when the Location Mode is changed.
+	 * Pass in a falsey value to de-register the currently registered function.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when the Location state changes.
 	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
 	 */
 	Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
-		Diagnostic._onLocationStateChange = successCallback;
+		Diagnostic._onLocationStateChange = successCallback || function(){};
 	};
 
 	/************
@@ -655,7 +709,7 @@ var Diagnostic = (function(){
 	 * Requests authorisation for runtime permissions to use the camera.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions.
-	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation.
 	 */
 	Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback){
@@ -672,7 +726,7 @@ var Diagnostic = (function(){
 	 * Returns the authorisation status for runtime permissions to use the camera.
 	 * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 	 * @param {Function} successCallback - function to call on successful request for runtime permissions status.
-	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in Diagnostic.permissionStatus.
+	 * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
 	 * @param {Function} errorCallback - function to call on failure to request authorisation status.
 	 */
 	Diagnostic.getCameraAuthorizationStatus = function(successCallback, errorCallback){
@@ -770,6 +824,7 @@ var Diagnostic = (function(){
 
 	/**
 	 * Registers a listener function to call when the state of Bluetooth hardware changes.
+	 * Pass in a falsey value to de-register the currently registered function.
 	 *
 	 * @param {Function} successCallback -  The callback which will be called when the state of Bluetooth hardware changes.
 	 * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.bluetoothState`.
@@ -777,13 +832,15 @@ var Diagnostic = (function(){
 	 *  This callback function is passed a single string parameter containing the error message.
 	 */
 	Diagnostic.registerBluetoothStateChangeHandler = function(successCallback, errorCallback) {
-		cordova.exec(function(){
-				Diagnostic._onBluetoothStateChange = successCallback;
+		cordova.exec(
+			function(){
+				Diagnostic._onBluetoothStateChange = successCallback || function(){};
 			},
 			errorCallback,
 			'Diagnostic',
 			'initializeBluetoothListener',
-			[]);
+			[]
+		);
 	};
 
 

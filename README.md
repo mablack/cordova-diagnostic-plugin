@@ -6,6 +6,7 @@ Cordova diagnostic plugin
 
 - [Overview](#overview)
   - [Important notes](#important-notes)
+    - [Native environment required](#native-environment-required)
     - [Version 3.1 backward-incompatibility](#version-31-backward-incompatibility)
     - [Version 3 backward-incompatibility](#version-3-backward-incompatibility)
     - [Building for Android](#building-for-android)
@@ -62,6 +63,8 @@ Cordova diagnostic plugin
     - [getPermissionsAuthorizationStatus()](#getpermissionsauthorizationstatus)
     - [requestRuntimePermission()](#requestruntimepermission)
     - [requestRuntimePermissions()](#requestruntimepermissions)
+    - [isRequestingPermission()](#isrequestingpermission)
+    - [registerPermissionRequestCompleteHandler()](#registerpermissionrequestcompletehandler)
     - [isBluetoothEnabled()](#isbluetoothenabled)
     - [hasBluetoothSupport()](#hasbluetoothsupport)
     - [hasBluetoothLESupport()](#hasbluetoothlesupport)
@@ -93,8 +96,6 @@ Cordova diagnostic plugin
 - [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
-- [# License
-](#-license)
 
 <!-- END table-of-contents -->
 
@@ -745,7 +746,7 @@ Notes for Android:
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
 This callback function is passed a single string parameter indicating whether access to the camera was granted or denied:
-`Diagnostic.permissionStatus.GRANTED` or `Diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
@@ -1060,6 +1061,7 @@ This callback function is passed a single string parameter containing the error 
 ### registerBluetoothStateChangeHandler()
 
  Registers a function to be called when a change in Bluetooth state occurs.
+ Pass in a falsey value to de-register the currently registered function.
 
     cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(fn);
 
@@ -1079,6 +1081,7 @@ This callback function is passed a single string parameter which indicates the B
 ### registerLocationStateChangeHandler()
 
 Registers a function to be called when a change in Location state occurs.
+Pass in a falsey value to de-register the currently registered function.
 
 On Android, this occurs when the Location Mode is changed.
 
@@ -1430,6 +1433,62 @@ This callback function is passed a single string parameter containing the error 
         cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION
     ]);
 
+### isRequestingPermission()
+
+Indicates if the plugin is currently requesting a runtime permission via the native API.
+Note that only one request can be made concurrently because the native API cannot handle concurrent requests,
+so the plugin will invoke the error callback if attempting to make more than one simultaneous request.
+Multiple permission requests should be grouped into a single call since the native API is setup to handle batch requests of multiple permission groups.
+
+    var isRequesting = cordova.plugins.diagnostic.isRequestingPermission();
+
+#### Example usage
+
+    var isRequesting = cordova.plugins.diagnostic.isRequestingPermission();
+    if(!isRequesting){
+        requestSomePermissions();
+    }else{
+        cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(function(statuses){
+            cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(null); // de-register handler after single call
+            requestSomePermissions();
+        });
+    }
+
+### registerPermissionRequestCompleteHandler()
+
+Registers a function to be called when a runtime permission request has completed.
+Pass in a falsey value to de-register the currently registered function.
+
+    cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(successCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when a runtime permission request has completed.
+This callback function is passed a single object parameter which defines a key/value map, where the key is the permission requested (defined as a value in cordova.plugins.diagnostic.permission) and the value is the resulting authorisation status of that permission as a value in cordova.plugins.diagnostic.permissionStatus.
+
+#### Example usage
+
+    function onPermissionRequestComplete(statuses){
+        console.info("Permission request complete");
+        for (var permission in statuses){
+            switch(statuses[permission]){
+                case cordova.plugins.diagnostic.permissionStatus.GRANTED:
+                    console.log("Permission granted to use "+permission);
+                    break;
+                case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
+                    console.log("Permission to use "+permission+" has not been requested yet");
+                    break;
+                case cordova.plugins.diagnostic.permissionStatus.DENIED:
+                    console.log("Permission denied to use "+permission);
+                    break;
+                case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
+                    console.log("Permission permanently denied to use "+permission);
+                    break;
+            }
+        }
+        cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(null); // de-register handler
+    }
+    cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(onPermissionRequestComplete);
 
 ### isBluetoothEnabled()
 
