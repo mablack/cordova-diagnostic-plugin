@@ -43,6 +43,7 @@ ABAddressBookRef _addressBook;
                              queue:dispatch_get_main_queue()
                              options:@{CBCentralManagerOptionShowPowerAlertKey: @(NO)}];
     [self centralManagerDidUpdateState:self.bluetoothManager]; // Show initial state
+    self.contactStore = [[CNContactStore alloc] init];
 }
 
 /*************
