@@ -401,7 +401,7 @@ ABAddressBookRef _addressBook;
                 status = @"denied";
                 break;
             case AVAudioSessionRecordPermissionGranted:
-                status = @"granted";
+                status = @"authorized";
                 break;
             case AVAudioSessionRecordPermissionUndetermined:
                 status = @"not_determined";
