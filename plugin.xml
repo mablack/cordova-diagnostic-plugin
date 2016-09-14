@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova.plugins.diagnostic"
-    version="3.1.5">
+    version="3.1.6">
 
     <name>Diagnostic</name>
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
@@ -22,11 +22,38 @@
                 <param name="ios-package" value="Diagnostic" />
             </feature>
         </config-file>
+        
+        <!-- Default usage descriptions: override as necessary in .plist -->
         <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
             <string>This app requires constant access to your location in order to track your position, even when the screen is off.</string>
         </config-file>
+        
         <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
-            <string>This app will now only track your location when the screen is on and the app is displayed.</string>
+            <string>This app requires access to your location when the screen is on and the app is displayed.</string>
+        </config-file>
+        
+        <config-file target="*-Info.plist" parent="NSCalendarsUsageDescription">
+            <string>This app requires calendar access to function properly.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
+            <string>This app requires photo library access to function properly.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
+            <string>This app requires bluetooth access to function properly.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+            <string>This app requires microphone access to function properly.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+            <string>This app requires camera access to function properly.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSMotionUsageDescription">
+            <string>This app requires motion detection access to function properly.</string>
         </config-file>
 
         <js-module src="www/ios/diagnostic.js" name="Diagnostic">
