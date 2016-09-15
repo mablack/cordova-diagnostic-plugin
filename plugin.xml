@@ -56,6 +56,10 @@
             <string>This app requires motion detection access to function properly.</string>
         </config-file>
 
+        <config-file target="*-Info.plist" parent="NSContactsUsageDescription ">
+          <string>This app requires contacts access to function properly.</string>
+        </config-file>
+
         <js-module src="www/ios/diagnostic.js" name="Diagnostic">
             <clobbers target="cordova.plugins.diagnostic" />
         </js-module>
