@@ -56,7 +56,7 @@
             <string>This app requires motion detection access to function properly.</string>
         </config-file>
 
-        <config-file target="*-Info.plist" parent="NSContactsUsageDescription ">
+        <config-file target="*-Info.plist" parent="NSContactsUsageDescription">
           <string>This app requires contacts access to function properly.</string>
         </config-file>
 
