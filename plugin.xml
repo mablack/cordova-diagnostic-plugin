@@ -60,6 +60,10 @@
           <string>This app requires contacts access to function properly.</string>
         </config-file>
 
+        <config-file target="*-Info.plist" parent="NSRemindersUsageDescription">
+            <string>This app requires reminders access to function properly.</string>
+        </config-file>
+
         <js-module src="www/ios/diagnostic.js" name="Diagnostic">
             <clobbers target="cordova.plugins.diagnostic" />
         </js-module>
@@ -74,6 +78,7 @@
         <framework src="AddressBook.framework" />
         <framework src="EventKit.framework" />
         <framework src="Contacts.framework" />
+        <framework src="UserNotifications.framework" />
     </platform>
 
     <!-- android -->
