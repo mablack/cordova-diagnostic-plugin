@@ -9,9 +9,22 @@
 #import <Cordova/CDV.h>
 #import <Cordova/CDVPlugin.h>
 #import <WebKit/WebKit.h>
+
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreLocation/CoreLocation.h>
 #import <EventKit/EventKit.h>
+#import <AVFoundation/AVFoundation.h>
+#import <Photos/Photos.h>
+#import <AddressBook/AddressBook.h>
+#import <Contacts/Contacts.h>
+
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#import <UserNotifications/UserNotifications.h>
+#endif
+
+#import <arpa/inet.h> // For AF_INET, etc.
+#import <ifaddrs.h> // For getifaddrs()
+#import <net/if.h> // For IFF_LOOPBACK
 
 @interface Diagnostic : CDVPlugin <CBCentralManagerDelegate, CLLocationManagerDelegate>
 

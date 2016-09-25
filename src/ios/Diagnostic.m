@@ -7,17 +7,6 @@
  */
 
 #import "Diagnostic.h"
-#import <AVFoundation/AVFoundation.h>
-#import <Photos/Photos.h>
-#import <AddressBook/AddressBook.h>
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-#import <UserNotifications/UserNotifications.h>
-#endif
-
-#import <arpa/inet.h> // For AF_INET, etc.
-#import <ifaddrs.h> // For getifaddrs()
-#import <net/if.h> // For IFF_LOOPBACK
-#import <Contacts/Contacts.h>
 
 @interface Diagnostic()
 
