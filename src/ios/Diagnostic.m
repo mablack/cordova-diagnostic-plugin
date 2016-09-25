@@ -10,7 +10,7 @@
 
 @interface Diagnostic()
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+#if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
 @property (nonatomic, retain) CNContactStore* contactStore;
 #endif
 
@@ -251,7 +251,7 @@ ABAddressBookRef _addressBook;
 {
     @try {
         if (UIApplicationOpenSettingsURLString != nil ){
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString: UIApplicationOpenSettingsURLString] options:@{} completionHandler:^(BOOL success) {
                 if (success) {
                     [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] :command];
@@ -345,12 +345,14 @@ ABAddressBookRef _addressBook;
          if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
              // iOS 8+
              if(NSClassFromString(@"UNUserNotificationCenter")) {
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0             
                  // iOS 10+
                  UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
                  [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
                      BOOL userSettingEnabled = settings.authorizationStatus == UNAuthorizationStatusAuthorized;
                      [self isRemoteNotificationsEnabledResult:userSettingEnabled:command];
                  }];
+#endif                 
              } else{
                  // iOS 8 & 9
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
@@ -388,6 +390,7 @@ ABAddressBookRef _addressBook;
             // iOS 8+
             if(NSClassFromString(@"UNUserNotificationCenter")) {
                 // iOS 10+
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0                  
                 UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
                 [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
                     BOOL alertsEnabled = settings.alertSetting == UNNotificationSettingEnabled;
@@ -396,10 +399,10 @@ ABAddressBookRef _addressBook;
                     BOOL noneEnabled = !alertsEnabled && !badgesEnabled && !soundsEnabled;
                     [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
                 }];
+#endif                
             } else{
                 // iOS 8 & 9
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
-                // iOS 8 & 9
                 UIUserNotificationSettings *userNotificationSettings = [UIApplication sharedApplication].currentUserNotificationSettings;
                 BOOL noneEnabled = userNotificationSettings.types == UIUserNotificationTypeNone;
                 BOOL alertsEnabled = userNotificationSettings.types & UIUserNotificationTypeAlert;
@@ -453,7 +456,9 @@ ABAddressBookRef _addressBook;
     @try {
         if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
             // iOS8+
+#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0           
             registered = [UIApplication sharedApplication].isRegisteredForRemoteNotifications;
+#endif            
         } else {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             // iOS7 and below
@@ -475,7 +480,7 @@ ABAddressBookRef _addressBook;
     @try {
         NSString* status;
         
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+#if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
         CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
         if(authStatus == CNAuthorizationStatusDenied || authStatus == CNAuthorizationStatusRestricted){
             status = @"denied";
@@ -508,7 +513,7 @@ ABAddressBookRef _addressBook;
 {
     @try {
         
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
+#if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
         CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
         [self sendPluginResultBool:authStatus == CNAuthorizationStatusAuthorized :command];
 #else
@@ -881,17 +886,11 @@ ABAddressBookRef _addressBook;
 - (void) centralManagerDidUpdateState:(CBCentralManager *)central {
     NSString* state;
     NSString* description;
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-    
-#else
-    
-#endif
     
     switch(self.bluetoothManager.state)
     {
             
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     case CBManagerStateResetting:
 #else
     case CBCentralManagerStateResetting:
@@ -900,7 +899,7 @@ ABAddressBookRef _addressBook;
             description =@"The connection with the system service was momentarily lost, update imminent.";
             break;
  
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStateUnsupported:
 #else
         case CBCentralManagerStateUnsupported:
@@ -909,7 +908,7 @@ ABAddressBookRef _addressBook;
             description = @"The platform doesn't support Bluetooth Low Energy.";
             break;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStateUnauthorized:
 #else
         case CBCentralManagerStateUnauthorized:
@@ -918,7 +917,7 @@ ABAddressBookRef _addressBook;
             description = @"The app is not authorized to use Bluetooth Low Energy.";
             break;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStatePoweredOff:
 #else
         case CBCentralManagerStatePoweredOff:
@@ -927,7 +926,7 @@ ABAddressBookRef _addressBook;
             description = @"Bluetooth is currently powered off.";
             break;
         
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStatePoweredOn:
 #else
         case CBCentralManagerStatePoweredOn:
