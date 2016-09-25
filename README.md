@@ -1,12 +1,14 @@
 Cordova diagnostic plugin
 =========================
 
-<!-- START table-of-contents -->
-**Table of Contents**
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 
 - [Overview](#overview)
   - [Important notes](#important-notes)
     - [Native environment required](#native-environment-required)
+    - [Version 3.2 for iOS 10](#version-32-for-ios-10)
     - [Version 3.1 backward-incompatibility](#version-31-backward-incompatibility)
     - [Version 3 backward-incompatibility](#version-3-backward-incompatibility)
     - [Building for Android](#building-for-android)
@@ -97,7 +99,7 @@ Cordova diagnostic plugin
 - [Credits](#credits)
 - [License](#license)
 
-<!-- END table-of-contents -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
 # Overview
@@ -113,6 +115,14 @@ The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugi
 
 Note that this plugin is intended for use in a **native** mobile environment.
 It will **NOT** work in a browser-emulated Cordova environment, for example by running `cordova serve` or using the [Ripple emulator](https://github.com/ripple-emulator/ripple).
+
+### Version 3.2 for iOS 10
+
+`cordova.plugins.diagnostic@3.2.0` adds support for the new UserNotifications framework added in iOS 10. To build using v3.2.0, you will need to use XCode 8+ because there's no way to conditionally include a framework using the `<framework>` tag in the plugin.xml.
+
+Currently (25 Sep 2016) cloud-based build platforms such as Phonegap Build, Ionic Cloud and Intel XDK are still using an XCode 7 build environment, so building with `cordova.plugins.diagnostic@3.2` results in a fatal build error `framework not found UserNotifications`.
+
+Therefore, users of these cloud platforms should specify `cordova.plugins.diagnostic@3.1` in their config.xml until such time as their cloud platform is updated to use XCode 8+.
 
 ### Version 3.1 backward-incompatibility
 
