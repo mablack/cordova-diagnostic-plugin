@@ -78,7 +78,7 @@
         <framework src="AddressBook.framework" />
         <framework src="EventKit.framework" />
         <framework src="Contacts.framework" />
-        <framework src="UserNotifications.framework" weak="true" />
+        <framework src="UserNotifications.framework" />
     </platform>
 
     <!-- android -->
