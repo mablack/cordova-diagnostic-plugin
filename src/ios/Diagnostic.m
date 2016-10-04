@@ -356,11 +356,9 @@ ABAddressBookRef _addressBook;
 #endif
             } else{
                 // iOS 8 & 9
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
                 UIUserNotificationSettings *userNotificationSettings = [UIApplication sharedApplication].currentUserNotificationSettings;
                 BOOL userSettingEnabled = userNotificationSettings.types != UIUserNotificationTypeNone;
                 [self isRemoteNotificationsEnabledResult:userSettingEnabled:command];
-#endif
             }
         } else {
             // iOS7 and below
@@ -403,14 +401,12 @@ ABAddressBookRef _addressBook;
 #endif
             } else{
                 // iOS 8 & 9
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_10_0
                 UIUserNotificationSettings *userNotificationSettings = [UIApplication sharedApplication].currentUserNotificationSettings;
                 BOOL noneEnabled = userNotificationSettings.types == UIUserNotificationTypeNone;
                 BOOL alertsEnabled = userNotificationSettings.types & UIUserNotificationTypeAlert;
                 BOOL badgesEnabled = userNotificationSettings.types & UIUserNotificationTypeBadge;
                 BOOL soundsEnabled = userNotificationSettings.types & UIUserNotificationTypeSound;
                 [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
-#endif
             }
         } else {
             // iOS7 and below
