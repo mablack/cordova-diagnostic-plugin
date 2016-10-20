@@ -32,5 +32,6 @@
         "camera",
         "bluetooth",
         "settings"
-    ]
+    ],
+    "types": "./cordova.plugins.diagnostic.d.ts"
 }
