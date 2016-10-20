@@ -228,7 +228,7 @@ This callback function is passed a single string parameter containing the error 
 
 Checks if Wifi is available.
 On iOS this returns true if the device is connected to a network by WiFi.
-On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as (`isWifiEnabled()`)[#iswifienabled]
+On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiEnabled()`](#iswifienabled)
 
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
@@ -330,7 +330,7 @@ Displays WiFi settings to allow user to enable WiFi.
 
 ### isWifiEnabled()
 
-Returns true if the WiFi setting is set to enabled, and is the same as (`isWifiAvailable()`)[#iswifiavailable]
+Returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
 
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
@@ -536,8 +536,8 @@ This callback function is passed a single string parameter containing the error 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isLocationAuthorized(function(enabled){
-        console.log("Location authorization is " + (enabled ? "enabled" : "disabled"));
+    cordova.plugins.diagnostic.isLocationAuthorized(function(authorized){
+        console.log("Location is " + (authorized ? "authorized" : "unauthorized"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
@@ -574,7 +574,9 @@ This callback function is passed a single string parameter containing the error 
                console.log("Permission granted only when in use");
                break;
        }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 #### Example Android usage
 
@@ -737,7 +739,9 @@ This callback function is passed a single string parameter containing the error 
         if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
             console.log("Camera use is authorized");
         }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 ### requestCameraAuthorization()
 
@@ -821,7 +825,9 @@ This callback function is passed a single string parameter containing the error 
        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
            console.log("Microphone use is authorized");
        }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 
 ### requestMicrophoneAuthorization()
@@ -901,7 +907,9 @@ This callback function is passed a single string parameter containing the error 
         if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
             console.log("Contacts use is authorized");
         }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 
 ### requestContactsAuthorization()
@@ -987,7 +995,9 @@ This callback function is passed a single string parameter containing the error 
        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
            console.log("Calendar use is authorized");
        }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 
 ### requestCalendarAuthorization()
@@ -1040,7 +1050,7 @@ On iOS, this opens the app settings page in the Settings app. This works only on
 #### Example usage
 
     cordova.plugins.diagnostic.switchToSettings(function(){
-        console.log("Successfully switched to Settings app"));
+        console.log("Successfully switched to Settings app");
     }, function(error){
         console.error("The following error occurred: "+error);
     });
@@ -1073,11 +1083,11 @@ This callback function is passed a single string parameter containing the error 
  Registers a function to be called when a change in Bluetooth state occurs.
  Pass in a falsey value to de-register the currently registered function.
 
-    cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(fn);
+    cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(successCallback);
 
 #### Parameters
 
-- {Function} fn - function call when a change in Bluetooth state occurs.
+- {Function} successCallback - function call when a change in Bluetooth state occurs.
 This callback function is passed a single string parameter which indicates the Bluetooth state as a constant in [`cordova.plugins.diagnostic.bluetoothState`](#bluetoothstate-constants).
 
 #### Example usage
@@ -1112,9 +1122,9 @@ On iOS, the function is passed a single string parameter indicating the new loca
 
     cordova.plugins.diagnostic.registerLocationStateChangeHandler(function(state){
         if((device.platform === "Android" && state !== cordova.plugins.diagnostic.locationMode.LOCATION_OFF)
-            || (device.platform === "iOS) && ( state === cordova.plugins.diagnostic.permissionStatus.GRANTED
+            || (device.platform === "iOS") && ( state === cordova.plugins.diagnostic.permissionStatus.GRANTED
                 || state === cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE
-        ))){
+        )){
             console.log("Location is available");
         }
     });
@@ -1325,7 +1335,7 @@ This callback function is passed a single string parameter containing the error 
         }
     }, function(error){
         console.error("The following error occurred: "+error);
-    }, cordova.plugins.diagnostic.runtimePermission.CAMERA);
+    }, cordova.plugins.diagnostic.permission.CAMERA);
 
 ### getPermissionsAuthorizationStatus()
 
@@ -1363,8 +1373,8 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     },[
-        cordova.plugins.diagnostic.runtimePermission.ACCESS_FINE_LOCATION,
-        cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION
+        cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION,
+        cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION
     ]);
 
 ### requestRuntimePermission()
@@ -1400,7 +1410,7 @@ This callback function is passed a single string parameter containing the error 
         }
     }, function(error){
         console.error("The following error occurred: "+error);
-    }, cordova.plugins.diagnostic.runtimePermission.CAMERA);
+    }, cordova.plugins.diagnostic.permission.CAMERA);
 
 
 ### requestRuntimePermissions()
@@ -1439,8 +1449,8 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     },[
-        cordova.plugins.diagnostic.runtimePermission.ACCESS_FINE_LOCATION,
-        cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION
+        cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION,
+        cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION
     ]);
 
 ### isRequestingPermission()
@@ -1639,7 +1649,9 @@ This callback function is passed a single string parameter containing the error 
                 console.log("Permission granted");
                 break;
         }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 ### requestCameraRollAuthorization()
 
@@ -1779,7 +1791,9 @@ This callback function is passed a single string parameter containing the error 
         if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
             console.log("Reminders authorization allowed");
         }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 
 ### requestRemindersAuthorization()
@@ -1847,7 +1861,9 @@ This callback function is passed a single string parameter containing the error 
         if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
             console.log("Background refresh is allowed");
         }
-    }, onError);
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 
 
@@ -1884,30 +1900,30 @@ This plugin supports [checking](#getpermissionauthorizationstatus) and [requesti
 
 The plugin defines the [full list of dangersous permissions available in API 23](http://developer.android.com/guide/topics/security/permissions.html#perm-groups) as a list of constants available via the `cordova.plugins.diagnostic.runtimePermission` object. The following permissions are available:
 
-- `cordova.plugins.diagnostic.runtimePermission.READ_CALENDAR`
-- `cordova.plugins.diagnostic.runtimePermission.WRITE_CALENDAR`
-- `cordova.plugins.diagnostic.runtimePermission.CAMERA`
-- `cordova.plugins.diagnostic.runtimePermission.READ_CONTACTS`
-- `cordova.plugins.diagnostic.runtimePermission.WRITE_CONTACTS`
-- `cordova.plugins.diagnostic.runtimePermission.GET_ACCOUNTS`
-- `cordova.plugins.diagnostic.runtimePermission.ACCESS_FINE_LOCATION`
-- `cordova.plugins.diagnostic.runtimePermission.ACCESS_COARSE_LOCATION`
-- `cordova.plugins.diagnostic.runtimePermission.RECORD_AUDIO`
-- `cordova.plugins.diagnostic.runtimePermission.READ_PHONE_STATE`
-- `cordova.plugins.diagnostic.runtimePermission.CALL_PHONE`
-- `cordova.plugins.diagnostic.runtimePermission.ADD_VOICEMAIL`
-- `cordova.plugins.diagnostic.runtimePermission.USE_SIP`
-- `cordova.plugins.diagnostic.runtimePermission.PROCESS_OUTGOING_CALLS`
-- `cordova.plugins.diagnostic.runtimePermission.READ_CALL_LOG`
-- `cordova.plugins.diagnostic.runtimePermission.WRITE_CALL_LOG`
-- `cordova.plugins.diagnostic.runtimePermission.SEND_SMS`
-- `cordova.plugins.diagnostic.runtimePermission.RECEIVE_SMS`
-- `cordova.plugins.diagnostic.runtimePermission.READ_SMS`
-- `cordova.plugins.diagnostic.runtimePermission.RECEIVE_WAP_PUSH`
-- `cordova.plugins.diagnostic.runtimePermission.RECEIVE_MMS`
-- `cordova.plugins.diagnostic.runtimePermission.WRITE_EXTERNAL_STORAGE`
-- `cordova.plugins.diagnostic.runtimePermission.READ_EXTERNAL_STORAGE`
-- `cordova.plugins.diagnostic.runtimePermission.BODY_SENSORS`
+- `cordova.plugins.diagnostic.permission.READ_CALENDAR`
+- `cordova.plugins.diagnostic.permission.WRITE_CALENDAR`
+- `cordova.plugins.diagnostic.permission.CAMERA`
+- `cordova.plugins.diagnostic.permission.READ_CONTACTS`
+- `cordova.plugins.diagnostic.permission.WRITE_CONTACTS`
+- `cordova.plugins.diagnostic.permission.GET_ACCOUNTS`
+- `cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION`
+- `cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION`
+- `cordova.plugins.diagnostic.permission.RECORD_AUDIO`
+- `cordova.plugins.diagnostic.permission.READ_PHONE_STATE`
+- `cordova.plugins.diagnostic.permission.CALL_PHONE`
+- `cordova.plugins.diagnostic.permission.ADD_VOICEMAIL`
+- `cordova.plugins.diagnostic.permission.USE_SIP`
+- `cordova.plugins.diagnostic.permission.PROCESS_OUTGOING_CALLS`
+- `cordova.plugins.diagnostic.permission.READ_CALL_LOG`
+- `cordova.plugins.diagnostic.permission.WRITE_CALL_LOG`
+- `cordova.plugins.diagnostic.permission.SEND_SMS`
+- `cordova.plugins.diagnostic.permission.RECEIVE_SMS`
+- `cordova.plugins.diagnostic.permission.READ_SMS`
+- `cordova.plugins.diagnostic.permission.RECEIVE_WAP_PUSH`
+- `cordova.plugins.diagnostic.permission.RECEIVE_MMS`
+- `cordova.plugins.diagnostic.permission.WRITE_EXTERNAL_STORAGE`
+- `cordova.plugins.diagnostic.permission.READ_EXTERNAL_STORAGE`
+- `cordova.plugins.diagnostic.permission.BODY_SENSORS`
 
 
 ##### Runtime permission groups
