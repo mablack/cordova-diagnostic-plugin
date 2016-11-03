@@ -253,6 +253,28 @@ ABAddressBookRef _addressBook;
 
 }
 
+- (void) requestBluetoothAuthorization: (CDVInvokedUrlCommand*)command
+{
+    @try {
+        NSString* state = [self getBluetoothState];
+
+        if([state isEqual: @"unauthorized"]){
+            /*
+             When the application requests to start scanning for bluetooth devices that is when the user is presented with a consent dialog.
+             */
+            NSLog(@"Requesting bluetooth authorization");
+            [self.bluetoothManager scanForPeripheralsWithServices:nil options:nil];
+            [self.bluetoothManager stopScan];
+        }else{
+            NSLog(@"Bluetooth authorization is already granted");
+        }
+        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] :command];
+    }
+    @catch (NSException *exception) {
+        [self handlePluginException:exception :command];
+    }
+}
+
 #pragma mark -  Settings
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command
 {

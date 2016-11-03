@@ -410,6 +410,24 @@ var Diagnostic = (function(){
 		Diagnostic._onBluetoothStateChange = successCallback || function(){};
 	};
 
+	/**
+	 * Requests Bluetooth authorization for the application.
+	 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+	 *
+	 * @param {Function} successCallback - The callback which will be called when operation is successful.
+	 * This callback function is not passed any parameters.
+	 * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+	 * This callback function is passed a single string parameter containing the error message.
+	 */
+	Diagnostic.requestBluetoothAuthorization = function(successCallback, errorCallback) {
+		return cordova.exec(
+			successCallback,
+			errorCallback,
+			'Diagnostic',
+			'requestBluetoothAuthorization',
+			[]);
+	};
+
 	/***************************
 	 * Microphone / Record Audio
 	 ***************************/
