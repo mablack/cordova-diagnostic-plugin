@@ -1884,7 +1884,8 @@ This callback function is passed a single string parameter containing the error 
 ### requestBluetoothAuthorization()
 
 Requests Bluetooth authorization for the application.
-When calling this function, the message contained in the `NSBluetoothPeripheralUsageDescription` .plist key is displayed to the user;
+- The outcome of the authorization request can be determined by registering a handler using [`registerBluetoothStateChangeHandler()`](#registerbluetoothstatechangehandler).
+- When calling this function, the message contained in the `NSBluetoothPeripheralUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
     cordova.plugins.diagnostic.requestBluetoothAuthorization(successCallback, errorCallback);

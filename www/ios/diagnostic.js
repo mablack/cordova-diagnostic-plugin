@@ -413,7 +413,7 @@ cordova.define("cordova.plugins.diagnostic.Diagnostic", function(require, export
 
 		/**
 		 * Requests Bluetooth authorization for the application.
-		 * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+		 * The outcome of the authorization request can be determined by registering a handler using `registerBluetoothStateChangeHandler()`.
 		 *
 		 * @param {Function} successCallback - The callback which will be called when operation is successful.
 		 * This callback function is not passed any parameters.
