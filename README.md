@@ -153,8 +153,8 @@ __Note:__ Attempting to build with API 22 or below will result in a build error.
 
 You __must__ also make sure your build environment has the following Android libraries installed. In a local build environment, you'd install these via the Android SDK Manager:
 
- -  Android Support Library - Rev. 23 or above
- -  Android Support Repository - Rev. 23 or above
+-  Android Support Library - Rev. 23 or above
+-  Android Support Repository - Rev. 23 or above
 
 
 #### Building for API 22 or lower
@@ -609,15 +609,16 @@ This callback function is passed a single string parameter containing the error 
 
  Notes for iOS:
 
- - Calling this on iOS 7 or below will have no effect, as location permissions are are implicitly granted.
- - On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
- - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
- - This plugin adds default messages which are displayed to the user upon requesting location authorization - see the [iOS location permission messages](#ios-location-permission-messages) section for how to customise them.
+- Calling this on iOS 7 or below will have no effect, as location permissions are are implicitly granted.
+- On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
+- This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
+- When calling this function, the messages contained in the  `NSLocationAlwaysUsageDescription` and `NSLocationWhenInUseUsageDescription` .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
+this plugin provides default messages, but you should override them with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise them.
 
  Notes for Android:
 
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
- - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
 
     `cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode);`
 
@@ -722,11 +723,11 @@ This callback function is passed a single string parameter containing the error 
 
 ### getCameraAuthorizationStatus()
 
- Returns the camera authorization status for the application.
+Returns the camera authorization status for the application.
 
- Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
- - This checks for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions - see [Android camera permissions](#android-camera-permissions).
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This checks for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions - see [Android camera permissions](#android-camera-permissions).
 
     `cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback);`
 
@@ -752,11 +753,13 @@ This callback function is passed a single string parameter containing the error 
 Requests camera authorization for the application.
 
 Notes for iOS:
- - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+- When calling this function, the message contained in the `NSCameraUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
 Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
- - This requests permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions which must be added to `AndroidManifest.xml` - see [Android camera permissions](#android-camera-permissions).
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This requests permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` run-time permissions which must be added to `AndroidManifest.xml` - see [Android camera permissions](#android-camera-permissions).
 
     `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback);`
 
@@ -806,13 +809,13 @@ This callback function is passed a single string parameter containing the error 
 
 ### getMicrophoneAuthorizationStatus()
 
- Returns the microphone authorization status for the application.
+Returns the microphone authorization status for the application.
 
- Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
- Notes for iOS:
- - Requires iOS 8+
+Notes for iOS:
+- Requires iOS 8+
 
     `cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(successCallback, errorCallback);`
 
@@ -839,12 +842,14 @@ This callback function is passed a single string parameter containing the error 
 Requests microphone authorization for the application.
 
 Notes for iOS:
- - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
- - Requires iOS 7+
+- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- When calling this function, the message contained in the `NSMicrophoneUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
+- Requires iOS 7+
 
 Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
- - This requests permission for `RECORD_AUDIO` which must be added to `AndroidManifest.xml` - see [Android permissions](#android-permissions).
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This requests permission for `RECORD_AUDIO` which must be added to `AndroidManifest.xml` - see [Android permissions](#android-permissions).
 
     cordova.plugins.diagnostic.requestMicrophoneAuthorization(successCallback, errorCallback);
 
@@ -891,10 +896,10 @@ This callback function is passed a single string parameter containing the error 
 
 ### getContactsAuthorizationStatus()
 
- Returns the contacts authorization status for the application.
+Returns the contacts authorization status for the application.
 
- Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
     `cordova.plugins.diagnostic.getContactsAuthorizationStatus(successCallback, errorCallback);`
 
@@ -921,12 +926,14 @@ This callback function is passed a single string parameter containing the error 
 Requests contacts authorization for the application.
 
 Notes for iOS:
- - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- When calling this function, the message contained in the `NSContactsUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
 Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
- - This requests permission for `READ_CONTACTS` run-time permission
- - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS`
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This requests permission for `READ_CONTACTS` run-time permission
+- Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS`
 
     cordova.plugins.diagnostic.requestContactsAuthorization(successCallback, errorCallback);
 
@@ -976,13 +983,13 @@ This callback function is passed a single string parameter containing the error 
 
 ### getCalendarAuthorizationStatus()
 
- Returns the calendar authorization status for the application.
+Returns the calendar authorization status for the application.
 
- Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
- Notes for iOS:
- - This relates to Calendar Events (not Calendar Reminders)
+Notes for iOS:
+- This relates to Calendar Events (not Calendar Reminders)
 
     `cordova.plugins.diagnostic.getCalendarAuthorizationStatus(successCallback, errorCallback);`
 
@@ -1009,13 +1016,15 @@ This callback function is passed a single string parameter containing the error 
 Requests calendar authorization for the application.
 
 Notes for iOS:
- - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
- - This relates to Calendar Events (not Calendar Reminders)
+- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- When calling this function, the message contained in the `NSCalendarsUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
+- This relates to Calendar Events (not Calendar Reminders)
 
 Notes for Android:
- - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
- - This requests permission for `READ_CALENDAR` run-time permission
- - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CALENDAR, WRITE_CALENDAR`
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This requests permission for `READ_CALENDAR` run-time permission
+- Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CALENDAR, WRITE_CALENDAR`
 
     cordova.plugins.diagnostic.requestCalendarAuthorization(successCallback, errorCallback);
 
@@ -1061,7 +1070,7 @@ On iOS, this opens the app settings page in the Settings app. This works only on
 
 ### getBluetoothState()
 
- Returns the state of Bluetooth on the device.
+Returns the state of Bluetooth on the device.
 
     cordova.plugins.diagnostic.getBluetoothState(successCallback, errorCallback);
 
@@ -1084,8 +1093,8 @@ This callback function is passed a single string parameter containing the error 
 
 ### registerBluetoothStateChangeHandler()
 
- Registers a function to be called when a change in Bluetooth state occurs.
- Pass in a falsey value to de-register the currently registered function.
+Registers a function to be called when a change in Bluetooth state occurs.
+Pass in a falsey value to de-register the currently registered function.
 
     cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(successCallback);
 
@@ -1197,8 +1206,8 @@ This callback function is passed a single string parameter containing the error 
 Checks if the device location setting is set to return high-accuracy locations from GPS hardware.
 Returns true if Location mode is enabled and is set to either:
 
-* Device only = GPS hardware only (high accuracy)
-* High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+- Device only = GPS hardware only (high accuracy)
+- High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 
 
     cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
@@ -1248,8 +1257,8 @@ This callback function is passed a single string parameter containing the error 
 Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points
 Returns true if Location mode is enabled and is set to either:
 
-* Battery saving = network triangulation and Wifi network IDs (low accuracy)
-* High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+- Battery saving = network triangulation and Wifi network IDs (low accuracy)
+- High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 
 
     cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
@@ -1281,7 +1290,7 @@ Returns the current location mode setting for the device.
 - {Function} successCallback -  The callback which will be called when operation is successful.
 This callback function is passed a single string parameter indicating the current location mode
 as a constant in `cordova.plugins.diagnostic.locationMode`.
-    - {Function} errorCallback -  The callback which will be called when operation encounters an error.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
 
 
@@ -1393,7 +1402,7 @@ Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / 
 This callback function is passed a single string parameter which defines the resulting [permission status](#permissionstatus-constants)
 - {Function} errorCallback - function to call on failure to request authorisation.
 This callback function is passed a single string parameter containing the error message.
- - {String} permission - permission to request authorisation for, defined as a [runtime permission constant](#dangerous-runtime-permissions).
+- {String} permission - permission to request authorisation for, defined as a [runtime permission constant](#dangerous-runtime-permissions).
 
 #### Example usage
 
@@ -1628,7 +1637,7 @@ This callback function is passed a single string parameter containing the error 
 
 ### getCameraRollAuthorizationStatus()
 
- Returns the authorization status for the application to use the Camera Roll in Photos app.
+Returns the authorization status for the application to use the Camera Roll in Photos app.
 
     cordova.plugins.diagnostic.getCameraRollAuthorizationStatus(successCallback, errorCallback);
 
@@ -1659,8 +1668,10 @@ This callback function is passed a single string parameter containing the error 
 
 ### requestCameraRollAuthorization()
 
- Requests camera roll authorization for the application.
- Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+Requests camera roll authorization for the application.
+Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
+When calling this function, the message contained in the `NSPhotoLibraryUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
     cordova.plugins.diagnostic.requestCameraRollAuthorization(successCallback, errorCallback);
 
@@ -1778,7 +1789,7 @@ This callback function is passed a single string parameter containing the error 
 
 ### getRemindersAuthorizationStatus()
 
- Returns the reminders authorization status for the application.
+Returns the reminders authorization status for the application.
 
     cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);
 
@@ -1803,8 +1814,9 @@ This callback function is passed a single string parameter containing the error 
 ### requestRemindersAuthorization()
 
 Requests reminders authorization for the application.
-
-- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+When calling this function, the message contained in the `NSRemindersUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
     cordova.plugins.diagnostic.requestRemindersAuthorization(successCallback, errorCallback);
 
@@ -1872,10 +1884,10 @@ This callback function is passed a single string parameter containing the error 
 ### requestBluetoothAuthorization()
 
 Requests Bluetooth authorization for the application.
+When calling this function, the message contained in the `NSBluetoothPeripheralUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
-Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
-
-    `cordova.plugins.diagnostic.requestBluetoothAuthorization(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.requestBluetoothAuthorization(successCallback, errorCallback);
 
 #### Parameters
 
@@ -1949,7 +1961,7 @@ it is not possible to re-invoke the dialog if the user denied permission in the 
 in this case, you will have to instruct the user how to change motion authorization manually via the Settings app.
 
 When calling this function, the message contained in the `NSMotionUsageDescription` .plist key is displayed to the user;
-this plugin provides a default message, but you should override this with your specific reason for requesting access.
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
 If the device doesn't support motion detection, the error callback will be invoked.
 
@@ -2089,16 +2101,14 @@ You can add these permissions by manually editing the package.windows10.appxmani
 
 ## iOS
 
-### iOS location permission messages
+### iOS usage description messages
 
-When location permission is requested on iOS 8+, a message is displayed to the user indicating the reason for the request. These messages are stored in the `{project}-Info.plist` file under the keys `NSLocationAlwaysUsageDescription` and `NSLocationWhenInUseUsageDescription`, which are displayed when requesting to use location **always** or **when in use**, respectively.
+When requesting permission to use device functionality on iOS 8+, a message is displayed to the user indicating the reason for the request.
+These messages are stored in the `{project}-Info.plist` file under `NS*UsageDescription` keys.
 
-Upon installing this plugin into your project, it will add the following default messages to your plist:
-
-- NSLocationAlwaysUsageDescription: "This app requires constant access to your location in order to track your position, even when the screen is off."
-- NSLocationWhenInUseUsageDescription: "This app will now only track your location when the screen is on and the app is displayed."
-
-To override these defaults, you can either edit the messages directly in the plist file, or to persist the changes between platform updates, use my [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin to add overrides directly from the config xml:
+Upon installing this plugin into your project, it will add the following default messages to your plist.
+To override these defaults, you can either edit the messages directly in the plist file, or to persist the changes between platform updates, use the [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin to add overrides directly from the config.xml.
+For example:
 
 `config.xml`
 
