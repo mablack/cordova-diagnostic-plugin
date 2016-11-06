@@ -12,6 +12,7 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreLocation/CoreLocation.h>
+#import <CoreMotion/CoreMotion.h>
 #import <EventKit/EventKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Photos/Photos.h>
@@ -30,6 +31,8 @@
 
     @property (nonatomic, retain) CBCentralManager* bluetoothManager;
     @property (strong, nonatomic) CLLocationManager* locationManager;
+    @property (strong, nonatomic) CMMotionActivityManager* motionManager;
+    @property (strong, nonatomic) NSOperationQueue* motionActivityQueue;
     @property (nonatomic, retain) NSString* locationRequestCallbackId;
     @property (nonatomic) EKEventStore *eventStore;
 
@@ -75,4 +78,9 @@
 - (void) requestRemindersAuthorization: (CDVInvokedUrlCommand*)command;
 
 - (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command;
+
+- (void) isMotionAvailable: (CDVInvokedUrlCommand*)command;
+- (void) isMotionRequestOutcomeAvailable: (CDVInvokedUrlCommand*)command;
+- (void) requestAndCheckMotionAuthorization: (CDVInvokedUrlCommand*)command;
+
 @end

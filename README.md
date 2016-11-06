@@ -83,6 +83,10 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestRemindersAuthorization()](#requestremindersauthorization)
     - [isBackgroundRefreshAuthorized()](#isbackgroundrefreshauthorized)
     - [getBackgroundRefreshStatus()](#getbackgroundrefreshstatus)
+    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
+    - [isMotionAvailable()](#ismotionavailable)
+    - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
+    - [requestAndCheckMotionAuthorization()](#requestandcheckmotionauthorization)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
@@ -1884,6 +1888,91 @@ This callback function is passed a single string parameter containing the error 
 
     cordova.plugins.diagnostic.requestBluetoothAuthorization(function(){
         console.log("Bluetooth authorization was requested."));
+    }, function(error){
+        console.error(error);
+    });
+
+### isMotionAvailable()
+
+Checks if motion tracking is available on the current device.
+
+    cordova.plugins.diagnostic.isMotionAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if motion tracking is available on the current device.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isMotionAvailable(function(available){
+        console.log("Motion tracking is " + (available ? "available" : "not available") + " on this device");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isMotionRequestOutcomeAvailable()
+
+Checks if it's possible to determine the outcome of a motion authorization request on the current device.
+There's no direct way to determine if authorization was granted or denied, so the Pedometer API must be used to indirectly determine this:
+therefore, if the device supports motion tracking but not Pedometer Event Tracking, the outcome of requesting motion detection cannot be determined.
+
+    cordova.plugins.diagnostic.isMotionRequestOutcomeAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if it's possible to determine the outcome of a motion authorization request on the current device.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isMotionRequestOutcomeAvailable(function(available){
+        console.log("Motion tracking authorization request outcome is " + (available ? "available" : "not available") + " on this device");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### requestAndCheckMotionAuthorization()
+
+Requests and checks motion authorization for the application:
+there is no way to independently request only or check only, so both must be done in one operation.
+
+The native dialog asking user's consent can only be invoked once after the app is installed by calling this function.
+Once the user has either allowed or denied access, this function will only return the current authorization status:
+it is not possible to re-invoke the dialog if the user denied permission in the native dialog -
+in this case, you will have to instruct the user how to change motion authorization manually via the Settings app.
+
+When calling this function, the message contained in the `NSMotionUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access.
+
+If the device doesn't support motion detection, the error callback will be invoked.
+
+There's no direct way to determine if authorization was granted or denied, so the Pedometer API must be used to indirectly determine this:
+therefore, if the device supports motion tracking but not Pedometer Event Tracking, the outcome of requesting motion detection cannot be determined.
+
+    cordova.plugins.diagnostic.requestAndCheckMotionAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single string parameter indicating the result:
+    - `cordova.plugins.diagnostic.permissionStatus.GRANTED` - user granted motion authorization.
+    - `cordova.plugins.diagnostic.permissionStatus.DENIED` - user denied motion authorization.
+    - `cordova.plugins.diagnostic.permissionStatus.RESTRICTED` - user cannot grant motion authorization.
+    - `cordova.plugins.diagnostic.permissionStatus.NOT_DETERMINED` - device does not support Pedometer Event Tracking, so authorization outcome cannot be determined.
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestAndCheckMotionAuthorization(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Motion authorization allowed");
+        }
     }, function(error){
         console.error(error);
     });
