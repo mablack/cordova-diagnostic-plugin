@@ -94,7 +94,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [Supported Windows versions](#supported-windows-versions)
     - [Windows 10 Mobile permissions](#windows-10-mobile-permissions)
   - [iOS](#ios)
-    - [iOS location permission messages](#ios-location-permission-messages)
+    - [iOS usage description messages](#ios-usage-description-messages)
 - [Example project](#example-project)
   - [Screenshots](#screenshots)
     - [Android](#android-1)
