@@ -144,6 +144,20 @@ See the [release notes page ](https://github.com/dpa99c/cordova-diagnostic-plugi
 
 ### Building for Android
 
+In order to avoid build problems with Android, please make sure you have the latest versions of the following Android SDK components installed:
+
+- Android SDK Tools
+- Android SDK Platform-tools
+- Android SDK Build-tools
+- Target SDK Platform - e.g. Android 6.0 (API 23)
+- Android Support Repository
+- Android Support Library
+- Google Repository
+
+Also make sure you have the latest release of the `cordova-android` platform installed. You can check if the Android platform in your Cordova project is up-to-date using `cordova platform check android` and if it's not, update it using `cordova platform rm android && cordova platform add android@latest`.
+
+#### Building for Android runtime permissions
+
 In order to support Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html), this plugin must depend on libraries only present in API 23+, so you __must build using Android SDK Platform v23 or above__. To do this you must have [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above installed in your project. You can check the currently installed platform versions with the following command:
 
     cordova platform ls
@@ -159,7 +173,7 @@ You __must__ also make sure your build environment has the following Android lib
 
 #### Building for API 22 or lower
 
-For users who wish to build against API 22 or below, there is a branch of the plugin repo which contains all the functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against legacy API versions (22 and below).
+For users who wish to build against API 22 or below, there is a branch of the plugin repo which contains most of the plugin functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against legacy API versions (22 and below).
 
 The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](https://www.npmjs.com/package/cordova.plugins.diagnostic.api-22), so you'll need to use this plugin ID when adding it:
 
