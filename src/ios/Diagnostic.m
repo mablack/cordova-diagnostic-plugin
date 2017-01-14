@@ -740,31 +740,38 @@ ABAddressBookRef _addressBook;
     @try {
         if([self isMotionAvailable]){
             [self.motionManager startActivityUpdatesToQueue:self.motionActivityQueue withHandler:^(CMMotionActivity *activity) {
-                [self.motionManager stopActivityUpdates];
-                if([self isMotionRequestOutcomeAvailable]){
-                    CMPedometer* cmPedometer = [[CMPedometer alloc] init];
-                    [cmPedometer queryPedometerDataFromDate:[NSDate date]
-                         toDate:[NSDate date]
-                    withHandler:^(CMPedometerData* data, NSError *error) {
-                        NSString* status;
-                        if (error != nil && error.code == CMErrorMotionActivityNotAuthorized) {
-                            status = @"denied";
-                        }else if (error != nil && (
-                                                   error.code == CMErrorMotionActivityNotEntitled
-                                                   || error.code == CMErrorMotionActivityNotAvailable
-                                                   )) {
-                            status = @"restricted";
-                        }else{
-                            status = @"authorized";
-                        }
-                        
-                        NSLog(@"Motion access is %@", status);
-                        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
-                        
-                    }];
-                }else{
-                    NSLog(@"Pedometer tracking not available on this device - cannot determine motion authorization status");
-                    [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"not_determined"] :command];
+                @try {
+                    [self.motionManager stopActivityUpdates];
+                    if([self isMotionRequestOutcomeAvailable]){
+                        CMPedometer* cmPedometer = [[CMPedometer alloc] init];
+                        [cmPedometer queryPedometerDataFromDate:[NSDate date]
+                             toDate:[NSDate date]
+                        withHandler:^(CMPedometerData* data, NSError *error) {
+                            @try {
+                                NSString* status;
+                                if (error != nil && error.code == CMErrorMotionActivityNotAuthorized) {
+                                    status = @"denied";
+                                }else if (error != nil && (
+                                                           error.code == CMErrorMotionActivityNotEntitled
+                                                           || error.code == CMErrorMotionActivityNotAvailable
+                                                           )) {
+                                    status = @"restricted";
+                                }else{
+                                    status = @"authorized";
+                                }
+                                
+                                NSLog(@"Motion access is %@", status);
+                                [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+                            }@catch (NSException *exception) {
+                                [self handlePluginException:exception :command];
+                            }
+                        }];
+                    }else{
+                        NSLog(@"Pedometer tracking not available on this device - cannot determine motion authorization status");
+                        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"not_determined"] :command];
+                    }
+                }@catch (NSException *exception) {
+                    [self handlePluginException:exception :command];
                 }
             }];
         }else{
@@ -774,8 +781,7 @@ ABAddressBookRef _addressBook;
         }
         
 
-    }
-    @catch (NSException *exception) {
+    }@catch (NSException *exception) {
         [self handlePluginException:exception :command];
     }
 }
@@ -823,7 +829,7 @@ ABAddressBookRef _addressBook;
 
 - (BOOL) isMotionRequestOutcomeAvailable
 {
-    return [CMPedometer isPedometerEventTrackingAvailable];
+    return [CMPedometer respondsToSelector:@selector(isPedometerEventTrackingAvailable)] && [CMPedometer isPedometerEventTrackingAvailable];
 }
 
 
