@@ -1726,6 +1726,7 @@ For example, on a Samsung Galaxy S4 running Android 7.1.1:
 
  Whereas this method returns:
 
+
     [{
         "path": "/storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
         "filePath": "file:///storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
