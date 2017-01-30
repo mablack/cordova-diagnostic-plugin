@@ -1,4 +1,4 @@
-// Type definitions for cordova.plugins.diagnostic v3.3.x
+// Type definitions for cordova.plugins.diagnostic v3.4.x
 // Project: https://github.com/dpa99c/cordova-diagnostic-plugin
 // Definitions by: Dave Alden <https://github.com/dpa99c/>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -563,6 +563,50 @@ interface Diagnostic {
      */
     hasBluetoothLEPeripheralSupport?: (
         successCallback: (supported: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Checks if the application is authorized to use external storage.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isExternalStorageAuthorized?: (
+        successCallback: (authorized: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Returns the authorisation status for runtime permission to use the external storage.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getExternalStorageAuthorizationStatus?: (
+        successCallback: (status: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Requests authorisation for runtime permission to use the external storage.
+     * @param successCallback
+     * @param errorCallback
+     */
+    requestExternalStorageAuthorization?: (
+        successCallback: (status: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Returns details of external SD card(s): absolute path, is writable, free space
+     * @param successCallback
+     * @param errorCallback
+     */
+    getExternalSdCardDetails?: (
+        successCallback: (status: any) => void,
         errorCallback: (error: string) => void
     ) => void;
 

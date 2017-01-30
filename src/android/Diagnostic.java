@@ -21,9 +21,13 @@ package cordova.plugins;
 /*
  * Imports
  */
+import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -48,6 +52,9 @@ import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StatFs;
+import android.text.TextUtils;
 import android.util.Log;
 
 import android.content.Context;
@@ -58,6 +65,7 @@ import android.net.wifi.WifiManager;
 
 import android.support.v4.app.ActivityCompat;
 import java.lang.SecurityException;
+import java.util.Set;
 
 /**
  * Diagnostic plugin implementation for Android
@@ -132,6 +140,7 @@ public class Diagnostic extends CordovaPlugin{
 
     private static String gpsLocationPermission = "ACCESS_FINE_LOCATION";
     private static String networkLocationPermission = "ACCESS_COARSE_LOCATION";
+    private static String externalStoragePermission = "READ_EXTERNAL_STORAGE";
 
     /**
      * Either user denied permission and checked "never ask again"
@@ -170,6 +179,8 @@ public class Diagnostic extends CordovaPlugin{
     private static final String LOCATION_MODE_OFF = "location_off";
     private static final String LOCATION_MODE_UNKNOWN = "unknown";
 
+    private static final Integer GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST = 1000;
+
     /*************
      * Variables *
      *************/
@@ -206,7 +217,7 @@ public class Diagnostic extends CordovaPlugin{
      * @param webView The CordovaWebView Cordova is running in.
      */
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-		Log.d(TAG, "initialize()");
+        Log.d(TAG, "initialize()");
         instance = this;
 
         locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -300,6 +311,8 @@ public class Diagnostic extends CordovaPlugin{
                 this.requestRuntimePermission(args);
             } else if(action.equals("requestRuntimePermissions")) {
                 this.requestRuntimePermissions(args);
+            } else if(action.equals("getExternalSdCardDetails")) {
+                this.getExternalSdCardDetails();
             }else {
                 handleError("Invalid action");
                 return false;
@@ -525,6 +538,16 @@ public class Diagnostic extends CordovaPlugin{
         permissions.put(permission);
         _requestRuntimePermissions(permissions, requestId);
     }
+
+    public void getExternalSdCardDetails() throws Exception{
+        String permission = permissionsMap.get(externalStoragePermission);
+        if (hasPermission(permission)) {
+            _getExternalSdCardDetails();
+        } else {
+            requestRuntimePermission(permission, GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
+        }
+    }
+
 
     /************
      * Internals
@@ -775,6 +798,90 @@ public class Diagnostic extends CordovaPlugin{
         });
     }
 
+    protected void _getExternalSdCardDetails() throws JSONException {
+        // All Secondary SD-CARDs (all exclude primary) separated by ":"
+        String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
+        String[] storageDirectories = getStorageDirectories(rawSecondaryStoragesStr);
+
+        JSONArray details = new JSONArray();
+        for(int i=0; i<storageDirectories.length; i++) {
+            String directory = storageDirectories[i];
+            File f = new File(directory);
+            JSONObject detail = new JSONObject();
+            if(f.canRead()){
+                detail.put("path", directory);
+                detail.put("filePath", "file://"+directory);
+                detail.put("canWrite", f.canWrite());
+                detail.put("freeSpace", getFreeSpaceInBytes(directory));
+                if(directory.contains("Android")){
+                    detail.put("type", "application");
+                }else{
+                    detail.put("type", "root");
+                }
+                details.put(detail);
+            }
+        }
+        currentContext.success(details);
+    }
+
+    /**
+     * Given a path return the number of free bytes in the filesystem containing the path.
+     *
+     * @param path to the file system
+     * @return free space in bytes
+     */
+    private long getFreeSpaceInBytes(String path) {
+        try {
+            StatFs stat = new StatFs(path);
+            long blockSize = stat.getBlockSize();
+            long availableBlocks = stat.getAvailableBlocks();
+            return availableBlocks * blockSize;
+        } catch (IllegalArgumentException e) {
+            // The path was invalid. Just return 0 free bytes.
+            return 0;
+        }
+    }
+
+
+    /**
+     * Returns all available external SD-Cards in the system.
+     *
+     * @return paths to all available external SD-Cards in the system.
+     */
+    private String[] getStorageDirectories(String rawSecondaryStoragesStr) {
+        String [] storageDirectories;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            List<String> results = new ArrayList<String>();
+            File[] externalDirs = this.cordova.getActivity().getApplicationContext().getExternalFilesDirs(null);
+            for (File file : externalDirs) {
+                if (isExternal(file, rawSecondaryStoragesStr)) {
+                    results.add(file.getPath());
+                    results.add(file.getPath().split("/Android")[0]);
+                }
+            }
+            storageDirectories = results.toArray(new String[0]);
+        }else{
+            final Set<String> rv = new HashSet<String>();
+            if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
+                final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
+                Collections.addAll(rv, rawSecondaryStorages);
+            }
+            storageDirectories = rv.toArray(new String[rv.size()]);
+        }
+        return storageDirectories;
+    }
+
+    private boolean isExternal(File file, String rawSecondaryStoragesStr){
+        boolean result;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            result = Environment.isExternalStorageRemovable(file);
+        }else{
+            result = rawSecondaryStoragesStr != null && rawSecondaryStoragesStr.contains(file.getPath());
+        }
+        return result;
+    }
+
     /************
      * Overrides
      ***********/
@@ -791,7 +898,6 @@ public class Diagnostic extends CordovaPlugin{
     public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
         String sRequestId = String.valueOf(requestCode);
         Log.v(TAG, "Received result for permissions request id=" + sRequestId);
-        boolean returnStatuses = true;
         try {
 
             CallbackContext context = getContextById(sRequestId);
@@ -820,7 +926,9 @@ public class Diagnostic extends CordovaPlugin{
                 clearRequest(requestCode);
             }
 
-            if(returnStatuses){
+            if(requestCode == GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST){
+                _getExternalSdCardDetails();
+            }else{
                 context.success(statuses);
             }
         }catch(Exception e ) {
@@ -862,10 +970,10 @@ public class Diagnostic extends CordovaPlugin{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-			if(instance != null){ // if app is running
-				Log.v(TAG, "onReceiveLocationProviderChange");
-            	instance.notifyLocationStateChange();
-			}
+            if(instance != null){ // if app is running
+                Log.v(TAG, "onReceiveLocationProviderChange");
+                instance.notifyLocationStateChange();
+            }
         }
 
     }

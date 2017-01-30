@@ -1709,6 +1709,67 @@ This callback function is passed a single string parameter containing the error 
         console.error(error);
     });
 
+### getExternalSdCardDetails()
+
+Returns details of external SD card(s): absolute path, is writable, free space.
+
+The intention of this method is to return the location and details of *removable* _external_ SD cards.
+This differs from the "external directories" returned by [cordova-plugin-file](https://github.com/apache/cordova-plugin-file) which return mount points relating to non-removable (internal) storage.
+
+For example, on a Samsung Galaxy S4 running Android 7.1.1:
+
+ - `cordova.file.externalRootDirectory` returns `file:///storage/emulated/0/`
+ - `cordova.file.externalApplicationStorageDirectory` returns `file:///storage/emulated/0/Android/data/cordova.plugins.diagnostic.example/`
+
+ which are on non-removable internal storage.
+
+ Whereas this method returns:
+
+    [{
+        "path": "/storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
+        "filePath": "file:///storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
+        "canWrite": true,
+        "freeSpace": 16254009344,
+        "type": "application"
+    }, {
+        "path": "/storage/4975-1401",
+        "filePath": "file:///storage/4975-1401",
+        "canWrite": false,
+        "freeSpace": 16254009344,
+        "type": "root"
+    }]
+
+ which are on external removable storage.
+
+- Requires permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
+
+    `cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  function to call on successful request for external SD card details.
+This callback function is passed a single argument which is an array consisting of an entry for each external storage location found.
+Each array entry is an object with the following keys:
+    - {String} path - absolute path to the storage location
+    - {String} filePath - absolute path prefixed with file protocol for use with cordova-plugin-file
+    - {Boolean} canWrite - true if the location is writable
+    - {Integer} freeSpace - number of bytes of free space on the device on which the storage locaiton is mounted.
+    - {String} type - indicates the type of storage location: either "application" if the path is an Android application sandbox path or "root" if the path is the device root.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getExternalSdCardDetails(function(details){
+        details.forEach(function(detail){
+            if(detail.canWrite && details.freeSpace > 100000){
+                cordova.file.externalSdCardDirectory = detail.filePath;
+                // Then: write file to external SD card
+            }
+        });
+    }, function(error){
+        console.error(error);
+    });
 
 ## iOS only
 
