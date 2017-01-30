@@ -74,6 +74,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
     - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
     - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
+    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
   - [iOS only](#ios-only)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
