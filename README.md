@@ -75,6 +75,11 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
     - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
     - [getExternalSdCardDetails()](#getexternalsdcarddetails)
+    - [switchToWirelessSettings()](#switchtowirelesssettings)
+    - [switchToNFCSettings()](#switchtonfcsettings)
+    - [isNFCPresent()](#isnfcpresent)
+    - [isNFCEnabled()](#isnfcenabled)
+    - [isNFCAvailable()](#isnfcavailable)
   - [iOS only](#ios-only)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
@@ -1772,6 +1777,92 @@ This callback function is passed a single string parameter containing the error 
         });
     }, function(error){
         console.error(error);
+    });
+
+### switchToWirelessSettings()
+
+Switches to the wireless settings page in the Settings app.
+Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
+
+    cordova.plugins.diagnostic.switchToWirelessSettings();
+
+### switchToNFCSettings()
+
+Displays NFC settings to allow user to enable NFC.
+
+On some versions of Android, this may open the same page as `switchToWirelessSettings()` if the NFC switch is on the Wireless settings page.
+
+    cordova.plugins.diagnostic.switchToNFCSettings();
+
+### isNFCPresent()
+
+Checks if NFC hardware is present on device.
+
+    cordova.plugins.diagnostic.isNFCPresent(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if NFC is present
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNFCPresent(function(present){
+        console.log("NFC hardware is " + (present ? "present" : "absent"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+### isNFCEnabled()
+
+Checks if the device setting for NFC is switched on.
+
+Note: this operation **does not** require NFC permission in the manifest.
+
+    cordova.plugins.diagnostic.isNFCAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if NFC is switched on.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNFCEnabled(function(enabled){
+        console.log("NFC is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isNFCAvailable()
+
+Checks if NFC is available to the app.
+Returns true if the device has NFC capabilities AND if NFC setting is switched on.
+
+Note: this operation **does not** require NFC permission in the manifest.
+
+    cordova.plugins.diagnostic.isNFCAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if NFC is available.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNFCAvailable(function(available){
+        console.log("NFC is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
     });
 
 ## iOS only

@@ -652,6 +652,29 @@ var Diagnostic = (function(){
     };
 
     /**
+     * Switches to the wireless settings page in the Settings app.
+     * Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
+     */
+    Diagnostic.switchToWirelessSettings = function() {
+        return cordova.exec(null,
+            null,
+            'Diagnostic',
+            'switchToWirelessSettings',
+            []);
+    };
+
+    /**
+     * Switches to the nfc settings page in the Settings app
+     */
+    Diagnostic.switchToNFCSettings = function() {
+        return cordova.exec(null,
+            null,
+            'Diagnostic',
+            'switchToNFCSettings',
+            []);
+    };
+
+    /**
      * Enables/disables WiFi on the device.
      *
      * @param {Function} successCallback - function to call on successful setting of WiFi state
@@ -798,7 +821,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single argument which is an array consisting of an entry for each external storage location found.
      * Each array entry is an object with the following keys:
      * - {String} path - absolute path to the storage location
-	 * - {String} filePath - absolute path prefixed with file protocol for use with cordova-plugin-file
+     * - {String} filePath - absolute path prefixed with file protocol for use with cordova-plugin-file
      * - {Boolean} canWrite - true if the location is writable
      * - {Integer} freeSpace - number of bytes of free space on the device on which the storage locaiton is mounted.
      * - {String} type - indicates the type of storage location: either "application" if the path is an Android application sandbox path or "root" if the path is the device root.
@@ -1127,6 +1150,55 @@ var Diagnostic = (function(){
         Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_CALENDAR);
     };
 
+    /**
+     * Checks if NFC hardware is present on device.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if NFC is present
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isNFCPresent = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isNFCPresent',
+            []);
+    };
+
+    /**
+     * Checks if the device setting for NFC is switched on.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if NFC is switched on.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isNFCEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isNFCEnabled',
+            []);
+    };
+
+    /**
+     * Checks if NFC is available to the app.
+     * Returns true if the device has NFC capabilities and if so that NFC is switched on.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if NFC is available.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isNFCAvailable = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isNFCAvailable',
+            []);
+    };
+
 
     /**************
      * Constructor
@@ -1135,5 +1207,3 @@ var Diagnostic = (function(){
 
     return Diagnostic;
 });
-
-module.exports = new Diagnostic();

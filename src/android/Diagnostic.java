@@ -51,6 +51,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -194,6 +196,8 @@ public class Diagnostic extends CordovaPlugin{
 
     public static LocationManager locationManager;
 
+    public static NfcManager nfcManager;
+
     /**
      * Current Cordova callback context (on this thread)
      */
@@ -223,6 +227,7 @@ public class Diagnostic extends CordovaPlugin{
         instance = this;
 
         locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        nfcManager = (NfcManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.NFC_SERVICE);
         super.initialize(cordova, webView);
     }
 
@@ -265,6 +270,12 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success();
             } else if (action.equals("switchToWifiSettings")){
                 switchToWifiSettings();
+                callbackContext.success();
+            } else if (action.equals("switchToWirelessSettings")){
+                switchToWirelessSettings();
+                callbackContext.success();
+            } else if (action.equals("switchToNFCSettings")){
+                switchToNFCSettings();
                 callbackContext.success();
             } else if(action.equals("isLocationAvailable")) {
                 callbackContext.success(isGpsLocationAvailable() || isNetworkLocationAvailable() ? 1 : 0);
@@ -315,7 +326,13 @@ public class Diagnostic extends CordovaPlugin{
                 this.requestRuntimePermissions(args);
             } else if(action.equals("getExternalSdCardDetails")) {
                 this.getExternalSdCardDetails();
-            }else {
+            } else if(action.equals("isNFCPresent")) {
+                callbackContext.success(isNFCPresent() ? 1 : 0);
+            } else if(action.equals("isNFCEnabled")) {
+                callbackContext.success(isNFCEnabled() ? 1 : 0);
+            } else if(action.equals("isNFCAvailable")) {
+                callbackContext.success(isNFCAvailable() ? 1 : 0);
+            } else {
                 handleError("Invalid action");
                 return false;
             }
@@ -462,6 +479,20 @@ public class Diagnostic extends CordovaPlugin{
         cordova.getActivity().startActivity(settingsIntent);
     }
 
+    public void switchToWirelessSettings() {
+        Log.d(TAG, "Switch to wireless Settings");
+        Intent settingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+        cordova.getActivity().startActivity(settingsIntent);
+    }
+    public void switchToNFCSettings() {
+        Log.d(TAG, "Switch to NFC Settings");
+        Intent settingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+        if (android.os.Build.VERSION.SDK_INT >= 16) {
+            settingsIntent = new Intent(android.provider.Settings.ACTION_NFC_SETTINGS);
+        }
+        cordova.getActivity().startActivity(settingsIntent);
+    }
+
     public void setWifiState(boolean enable) {
         WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getSystemService(Context.WIFI_SERVICE);
         if (enable && !wifiManager.isWifiEnabled()) {
@@ -548,6 +579,33 @@ public class Diagnostic extends CordovaPlugin{
         } else {
             requestRuntimePermission(permission, GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
         }
+    }
+
+    public boolean isNFCPresent() {
+        boolean result = false;
+        try {
+            NfcAdapter adapter = nfcManager.getDefaultAdapter();
+            result = adapter != null;
+        }catch(Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+        return result;
+    }
+
+    public boolean isNFCEnabled() {
+        boolean result = false;
+        try {
+            NfcAdapter adapter = nfcManager.getDefaultAdapter();
+            result = adapter != null && adapter.isEnabled();
+        }catch(Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+        return result;
+    }
+
+    public boolean isNFCAvailable() {
+        boolean result = isNFCPresent() && isNFCEnabled();
+        return result;
     }
 
 
