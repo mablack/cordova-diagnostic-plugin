@@ -71,6 +71,9 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [hasBluetoothSupport()](#hasbluetoothsupport)
     - [hasBluetoothLESupport()](#hasbluetoothlesupport)
     - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
+    - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
+    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
+    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
   - [iOS only](#ios-only)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
@@ -1627,6 +1630,85 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     });
+
+### isExternalStorageAuthorized()
+
+Checks if the application is authorized to use external storage.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+- This checks for `READ_EXTERNAL_STORAGE` `CAMERA` run-time permission.
+
+    `cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if external storage is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isExternalStorageAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to the external storage");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getExternalStorageAuthorizationStatus()
+
+Returns the external storage authorization status for the application.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This checks for `READ_EXTERNAL_STORAGE` run-time permission.
+
+    `cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("External storage use is authorized");
+        }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### requestExternalStorageAuthorization()
+
+Requests external storage authorization for the application.
+
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This requests permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
+
+    `cordova.plugins.diagnostic.requestExternalStorageAuthorization(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter indicating whether access to the external storage was granted or denied:
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(status){
+        console.log("Authorization request for external storage use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+    }, function(error){
+        console.error(error);
+    });
+
 
 ## iOS only
 
