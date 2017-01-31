@@ -29,7 +29,8 @@ var Diagnostic = (function(){
     // Placeholder listeners
     Diagnostic._onBluetoothStateChange =
         Diagnostic._onLocationStateChange =
-            Diagnostic._onPermissionRequestComplete = function(){};
+            Diagnostic._onNFCStateChange =
+                Diagnostic._onPermissionRequestComplete = function(){};
 
 
     /**
@@ -109,6 +110,14 @@ var Diagnostic = (function(){
         "POWERED_ON": "powered_on",
         "POWERING_OFF": "powering_off",
         "POWERING_ON": "powering_on"
+    };
+
+    Diagnostic.NFCState = {
+        "UNKNOWN": "unknown",
+        "POWERED_OFF": "powered_off",
+        "POWERING_ON": "powering_on",
+        "POWERED_ON": "powered_on",
+        "POWERING_OFF": "powering_off"
     };
 
 
@@ -1150,6 +1159,10 @@ var Diagnostic = (function(){
         Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_CALENDAR);
     };
 
+    /*************
+     * NFC
+     *************/
+
     /**
      * Checks if NFC hardware is present on device.
      *
@@ -1197,6 +1210,17 @@ var Diagnostic = (function(){
             'Diagnostic',
             'isNFCAvailable',
             []);
+    };
+
+    /**
+     * Registers a function to be called when a change in NFC state occurs.
+     * Pass in a falsey value to de-register the currently registered function.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the NFC state changes.
+     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.NFCState`.
+     */
+    Diagnostic.registerNFCStateChangeHandler = function(successCallback) {
+        Diagnostic._onNFCStateChange = successCallback || function(){};
     };
 
 

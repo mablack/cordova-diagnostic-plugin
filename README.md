@@ -80,6 +80,8 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isNFCPresent()](#isnfcpresent)
     - [isNFCEnabled()](#isnfcenabled)
     - [isNFCAvailable()](#isnfcavailable)
+    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+    - [NFCState constants](#nfcstate-constants)
   - [iOS only](#ios-only)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
@@ -1123,6 +1125,8 @@ This callback function is passed a single string parameter containing the error 
 Registers a function to be called when a change in Bluetooth state occurs.
 Pass in a falsey value to de-register the currently registered function.
 
+This is triggered when Bluetooth state changes so is useful for detecting changes made in quick settings which would not result in pause/resume events being fired.
+
     cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(successCallback);
 
 #### Parameters
@@ -1143,6 +1147,8 @@ This callback function is passed a single string parameter which indicates the B
 Registers a function to be called when a change in Location state occurs.
 Pass in a falsey value to de-register the currently registered function.
 
+This is triggered when Location state changes so is useful for detecting changes made in quick settings which would not result in pause/resume events being fired.
+
 On Android, this occurs when the Location Mode is changed.
 
 On iOS, this occurs when location authorization status is changed.
@@ -1154,7 +1160,7 @@ or by the user changing the Location authorization state specifically for your a
 
 #### Parameters
 
-- {Function} successCallback - function call when a change in Bluetooth state occurs.
+- {Function} successCallback - function call when a change in location state occurs.
 On Android, the function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.locationMode`.
 On iOS, the function is passed a single string parameter indicating the new location authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
 
@@ -1862,6 +1868,64 @@ This callback function is passed a single string parameter containing the error 
     cordova.plugins.diagnostic.isNFCAvailable(function(available){
         console.log("NFC is " + (available ? "available" : "not available"));
     }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### registerNFCStateChangeHandler()
+
+Registers a function to be called when a change in NFC state occurs.
+Pass in a falsey value to de-register the currently registered function.
+
+This is triggered when NFC state changes so is useful for detecting changes made in quick settings which would not result in pause/resume events being fired.
+
+    cordova.plugins.diagnostic.registerNFCStateChangeHandler(successCallback);
+
+#### Parameters
+
+- {Function} successCallback - function call when a change in NFC state occurs.
+The function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.NFCState`.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.registerNFCStateChangeHandler(function(state){
+        console.log("NFC state changed to: " + state);
+    });
+
+### NFCState constants
+
+Defines constants for the various NFC power states.
+
+    cordova.plugins.diagnostic.NFCState
+
+#### Values
+
+- `UNKNOWN` - Bluetooth hardware state is unknown or unavailable
+- `POWERED_OFF` - Bluetooth hardware is switched off
+- `POWERED_ON` - Bluetooth hardware is switched on and available for use
+- `POWERING_OFF`- Bluetooth hardware is currently switching off
+- `POWERING_ON`- Bluetooth hardware is currently switching on
+
+#### Example
+
+    cordova.plugins.diagnostic.registerNFCStateChangeHandler(function(state){
+        switch(state){
+            case cordova.plugins.diagnostic.NFCState.UNKNOWN:
+                console.log("NFC state is unknown");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERED_OFF:
+                console.log("NFC is powered off");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERED_ON:
+                console.log("NFC is powered on");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERING_OFF:
+                console.log("NFC is powering off");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERING_ON:
+                console.log("NFC is powering on);
+                break;
+        }
+    },function(error){
         console.error("The following error occurred: "+error);
     });
 

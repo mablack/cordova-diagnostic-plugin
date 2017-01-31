@@ -71,6 +71,10 @@ import android.support.v4.app.ActivityCompat;
 import java.lang.SecurityException;
 import java.util.Set;
 
+import static android.nfc.NfcAdapter.EXTRA_ADAPTER_STATE;
+import static android.nfc.NfcAdapter.STATE_OFF;
+import static android.nfc.NfcAdapter.STATE_ON;
+
 /**
  * Diagnostic plugin implementation for Android
  */
@@ -185,6 +189,18 @@ public class Diagnostic extends CordovaPlugin{
 
     private static final Integer GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST = 1000;
 
+    public static final int NFC_STATE_VALUE_UNKNOWN = 0;
+    public static final int NFC_STATE_VALUE_OFF = 1;
+    public static final int NFC_STATE_VALUE_TURNING_ON = 2;
+    public static final int NFC_STATE_VALUE_ON = 3;
+    public static final int NFC_STATE_VALUE_TURNING_OFF = 4;
+
+    public static final String NFC_STATE_UNKNOWN = "unknown";
+    public static final String NFC_STATE_OFF = "powered_off";
+    public static final String NFC_STATE_TURNING_ON = "powering_on";
+    public static final String NFC_STATE_ON = "powered_on";
+    public static final String NFC_STATE_TURNING_OFF = "powering_off";
+
     /*************
      * Variables *
      *************/
@@ -205,6 +221,7 @@ public class Diagnostic extends CordovaPlugin{
 
     private boolean bluetoothListenerInitialized = false;
     private String currentLocationMode = null;
+    private String currentNFCState = NFC_STATE_UNKNOWN;
 
     /*************
      * Public API
@@ -228,6 +245,7 @@ public class Diagnostic extends CordovaPlugin{
 
         locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
         nfcManager = (NfcManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.NFC_SERVICE);
+        currentNFCState = isNFCAvailable() ? NFC_STATE_ON : NFC_STATE_OFF;
         super.initialize(cordova, webView);
     }
 
@@ -237,7 +255,7 @@ public class Diagnostic extends CordovaPlugin{
     public void onDestroy() {
         try {
             if (bluetoothListenerInitialized) {
-                this.cordova.getActivity().unregisterReceiver(mReceiver);
+                this.cordova.getActivity().unregisterReceiver(blueoothStateChangeReceiver);
             }
         }catch(Exception e){
             Log.w(TAG, "Unable to unregister Bluetooth receiver: " + e.getMessage());
@@ -608,6 +626,18 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
+    public void notifyNFCStateChange(String state){
+        try {
+            if(state != currentNFCState){
+                Log.d(TAG, "NFC state changed to: " + state);
+                executeGlobalJavascript("_onNFCStateChange(\"" + state +"\");");
+                currentNFCState = state;
+            }
+        }catch(Exception e){
+            Log.e(TAG, "Error retrieving current NFC state on state change: "+e.toString());
+        }
+    }
+
 
     /************
      * Internals
@@ -687,7 +717,7 @@ public class Diagnostic extends CordovaPlugin{
 
     private void initializeBluetoothListener(){
         if(!bluetoothListenerInitialized){
-            this.cordova.getActivity().registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+            this.cordova.getActivity().registerReceiver(blueoothStateChangeReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
             bluetoothListenerInitialized = true;
         }
     }
@@ -1034,7 +1064,7 @@ public class Diagnostic extends CordovaPlugin{
         }
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver blueoothStateChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
@@ -1071,6 +1101,36 @@ public class Diagnostic extends CordovaPlugin{
             if(instance != null){ // if app is running
                 Log.v(TAG, "onReceiveLocationProviderChange");
                 instance.notifyLocationStateChange();
+            }
+        }
+
+    }
+
+    public static class NFCStateChangedReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final int stateValue = intent.getIntExtra(EXTRA_ADAPTER_STATE, -1);
+            if(instance != null){ // if app is running
+                String state;
+                switch(stateValue){
+                    case NFC_STATE_VALUE_OFF:
+                        state = NFC_STATE_OFF;
+                        break;
+                    case NFC_STATE_VALUE_TURNING_ON:
+                        state = NFC_STATE_TURNING_ON;
+                        break;
+                    case NFC_STATE_VALUE_ON:
+                        state = NFC_STATE_ON;
+                        break;
+                    case NFC_STATE_VALUE_TURNING_OFF:
+                        state = NFC_STATE_TURNING_OFF;
+                        break;
+                    default:
+                        state = NFC_STATE_UNKNOWN;
+                }
+                Log.v(TAG, "onReceiveNFCStateChange: "+state);
+                instance.notifyNFCStateChange(state);
             }
         }
 
