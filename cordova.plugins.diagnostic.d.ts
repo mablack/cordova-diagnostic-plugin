@@ -3,6 +3,7 @@
 // Definitions by: Dave Alden <https://github.com/dpa99c/>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+/// <reference types="cordova" />
 
 /**
  * Checks whether device hardware features are enabled or available to the app, e.g. camera, GPS, wifi
