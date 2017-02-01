@@ -611,6 +611,49 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * ANDROID ONLY
+     * Checks if NFC hardware is present on device.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isNFCPresent?: (
+        successCallback: (present: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Checks if the device setting for NFC is switched on.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isNFCEnabled?: (
+        successCallback: (present: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     *  Checks if NFC is available to the app.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isNFCAvailable?: (
+        successCallback: (present: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Registers a function to be called when a change in NFC state occurs.
+     * Pass in a falsey value to de-register the currently registered function.
+     * @param successCallback
+     */
+    registerNFCStateChangeHandler?: (
+        successCallback: (state: string) => void
+    ) => void;
+
+    /**
      * iOS ONLY
      * Checks if the application is authorized to use the Camera Roll in Photos app.
      * @param successCallback
