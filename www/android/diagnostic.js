@@ -1231,3 +1231,4 @@ var Diagnostic = (function(){
 
     return Diagnostic;
 });
+module.exports = new Diagnostic();
