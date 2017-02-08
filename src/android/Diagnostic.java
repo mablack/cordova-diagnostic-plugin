@@ -460,11 +460,14 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public boolean hasBluetoothLEPeripheralSupport() {
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        boolean result = mBluetoothAdapter != null && mBluetoothAdapter.isMultipleAdvertisementSupported();
-        return result;
+        if (Build.VERSION.SDK_INT >=21){
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            boolean result = mBluetoothAdapter != null && mBluetoothAdapter.isMultipleAdvertisementSupported();
+            return result;
+        }
+        return false;
     }
-
+       
     public void switchToAppSettings() {
         Log.d(TAG, "Switch to App Settings");
         Intent appIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
