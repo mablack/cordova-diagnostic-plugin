@@ -20,6 +20,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
   - [Android, iOS and Windows 10 Mobile](#android-ios-and-windows-10-mobile)
     - [isLocationAvailable()](#islocationavailable)
     - [isWifiAvailable()](#iswifiavailable)
+    - [isWifiEnabled()](#iswifienabled)
     - [isCameraAvailable()](#iscameraavailable)
     - [isBluetoothAvailable()](#isbluetoothavailable)
   - [Android and Windows 10 Mobile only](#android-and-windows-10-mobile-only)
@@ -27,7 +28,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
     - [switchToWifiSettings()](#switchtowifisettings)
-    - [isWifiEnabled()](#iswifienabled)
     - [setWifiState()](#setwifistate)
     - [setBluetoothState()](#setbluetoothstate)
   - [Android and iOS](#android-and-ios)
@@ -283,6 +283,29 @@ This callback function is passed a single string parameter containing the error 
         console.error("The following error occurred: "+error);
     });
 
+### isWifiEnabled()
+
+On iOS this returns true if the WiFi setting is set to enabled (regardless of whether it's connected to a network).
+On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
+On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
+
+    cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is true if the device setting is enabled.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
+        console.log("WiFi is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 
 ### isCameraAvailable()
 
@@ -361,29 +384,6 @@ Displays WiFi settings to allow user to enable WiFi.
 
     cordova.plugins.diagnostic.switchToWifiSettings();
 
-### isWifiEnabled()
-
-Returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
-
-On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
-
-    cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-This callback function is passed a single boolean parameter which is true if the device setting is enabled.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-This callback function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
-        console.log("WiFi is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 ### setWifiState()
 

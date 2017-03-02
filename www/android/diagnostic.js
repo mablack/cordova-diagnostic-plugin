@@ -633,11 +633,11 @@ var Diagnostic = (function(){
      ************/
 
     /**
-     * Checks if Wifi is connected/enabled.
+     * Checks if Wifi is enabled.
      * On Android this returns true if the WiFi setting is set to enabled.
      *
      * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if device is connected by WiFi.
+     * This callback function is passed a single boolean parameter which is TRUE if WiFi is enabled.
      * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
      *  This callback function is passed a single string parameter containing the error message.
      */

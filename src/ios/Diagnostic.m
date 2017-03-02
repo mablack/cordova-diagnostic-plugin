@@ -223,6 +223,34 @@ ABAddressBookRef _addressBook;
     }
 }
 
+- (void) isWifiEnabled: (CDVInvokedUrlCommand*)command
+{
+    @try {
+        [self sendPluginResultBool:[self isWifiEnabled] :command];
+    }
+    @catch (NSException *exception) {
+        [self handlePluginException:exception :command];
+    }
+}
+
+- (BOOL) isWifiEnabled {
+
+    NSCountedSet * cset = [NSCountedSet new];
+
+    struct ifaddrs *interfaces;
+
+    if( ! getifaddrs(&interfaces) ) {
+        for( struct ifaddrs *interface = interfaces; interface; interface = interface->ifa_next) {
+            if ( (interface->ifa_flags & IFF_UP) == IFF_UP ) {
+                [cset addObject:[NSString stringWithUTF8String:interface->ifa_name]];
+            }
+        }
+    }
+
+    return [cset countForObject:@"awdl0"] > 1 ? YES : NO;
+}
+
+
 #pragma mark - Bluetooth
 
 - (void) isBluetoothAvailable: (CDVInvokedUrlCommand*)command
