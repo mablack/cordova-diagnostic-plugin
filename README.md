@@ -123,9 +123,11 @@ This Cordova/Phonegap plugin for iOS, Android and Windows 10 Mobile is used to m
 
 The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
 
+<!-- DONATE -->
+<div>[![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZRD3W47HQ3EMJ)</div>
 I dedicate a considerable amount of my free time to developing and maintaining this Cordova plugin, along with my other Open Source software.
 To help ensure this plugin is kept updated for new versions of Android and iOS and bugfixes are implemented quickly, please donate a couple of dollars (or a little more if you can stretch) as this will help me to afford to dedicate time to its maintenance. Please consider donating if you're using this plugin in an app that makes you money, if you're being paid to make the app, if you're asking for new features or priority bug fixes.
-[![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZRD3W47HQ3EMJ)
+<!-- END DONATE -->
 
 
 ## Important notes
