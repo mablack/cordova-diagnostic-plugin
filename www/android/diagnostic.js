@@ -240,6 +240,14 @@ var Diagnostic = (function(){
         }
     }
 
+    function numberOfKeys(obj){
+        var count = 0;
+        for(var k in obj){
+            count++;
+        }
+        return count;
+    }
+
 
     /**********************
      *
@@ -706,19 +714,32 @@ var Diagnostic = (function(){
     /**
      * Checks if camera is usable: both present and authorised for use.
      *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * @param {Object} params - (optional) parameters:
+     *  - {Function} successCallback -  The callback which will be called when the operation is successful.
      * This callback function is passed a single boolean parameter which is TRUE if camera is present and authorized for use.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  - {Function} errorCallback -  The callback which will be called when the operation encounters an error.
      *  This callback function is passed a single string parameter containing the error message.
+     *  - {Boolean} externalStorage - (Android only) If true, checks permission for READ_EXTERNAL_STORAGE in addition to CAMERA run-time permission.
+     *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
-    Diagnostic.isCameraAvailable = function(successCallback, errorCallback) {
+    Diagnostic.isCameraAvailable = function(params) {
+        params = params || {};
+        if (typeof arguments[0]  === "function") {
+            console.warn('The API signature "cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.isCameraAvailable(params)". See documentation for details.');
+            params = {
+                successCallback: arguments[0],
+                errorCallback: arguments[1]
+            };
+        }
+
+        params.successCallback = params.successCallback || function(){};
         Diagnostic.isCameraPresent(function(isPresent){
             if(isPresent){
-                Diagnostic.isCameraAuthorized(successCallback, errorCallback);
+                Diagnostic.isCameraAuthorized(params);
             }else{
-                successCallback(!!isPresent);
+                params.successCallback(!!isPresent);
             }
-        },errorCallback);
+        },params.errorCallback);
     };
 
     /**
@@ -740,49 +761,97 @@ var Diagnostic = (function(){
     /**
      * Requests authorisation for runtime permissions to use the camera.
      * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
-     * @param {Function} successCallback - function to call on successful request for runtime permissions.
+     * @param {Object} params - (optional) parameters:
+     *  - {Function} successCallback - function to call on successful request for runtime permissions.
      * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
-     * @param {Function} errorCallback - function to call on failure to request authorisation.
+     *  - {Function} errorCallback - function to call on failure to request authorisation.
+     *  - {Boolean} externalStorage - (Android only) If true, requests permission for READ_EXTERNAL_STORAGE in addition to CAMERA run-time permission.
+     *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
-    Diagnostic.requestCameraAuthorization = function(successCallback, errorCallback){
-        function onSuccess(statuses){
-            successCallback(combineCameraStatuses(statuses));
+    Diagnostic.requestCameraAuthorization = function(params){
+        params = params || {};
+        if (typeof arguments[0]  === "function") {
+            console.warn('The API signature "cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.requestCameraAuthorization(params)". See documentation for details.');
+            params = {
+                successCallback: arguments[0],
+                errorCallback: arguments[1]
+            };
         }
-        Diagnostic.requestRuntimePermissions(onSuccess, errorCallback, [
-            Diagnostic.permission.CAMERA,
-            Diagnostic.permission.READ_EXTERNAL_STORAGE
-        ]);
+
+        var permissions = [Diagnostic.permission.CAMERA];
+        if(params.externalStorage !== false){
+            permissions.push(Diagnostic.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        params.successCallback = params.successCallback || function(){};
+        var onSuccess = function(statuses){
+            params.successCallback(numberOfKeys(statuses) > 1 ? combineCameraStatuses(statuses): statuses[Diagnostic.permission.CAMERA]);
+        };
+        Diagnostic.requestRuntimePermissions(onSuccess, params.errorCallback, permissions);
     };
 
     /**
      * Returns the authorisation status for runtime permissions to use the camera.
      * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
-     * @param {Function} successCallback - function to call on successful request for runtime permissions status.
+     * @param {Object} params - (optional) parameters:
+     *  - {Function} successCallback - function to call on successful request for runtime permissions status.
      * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
-     * @param {Function} errorCallback - function to call on failure to request authorisation status.
+     *  - {Function} errorCallback - function to call on failure to request authorisation status.
+     *  - {Boolean} externalStorage - (Android only) If true, checks permission for READ_EXTERNAL_STORAGE in addition to CAMERA run-time permission.
+     *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
-    Diagnostic.getCameraAuthorizationStatus = function(successCallback, errorCallback){
-        function onSuccess(statuses){
-            successCallback(combineCameraStatuses(statuses));
+    Diagnostic.getCameraAuthorizationStatus = function(params){
+        params = params || {};
+        if (typeof arguments[0]  === "function") {
+            console.warn('The API signature "cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.getCameraAuthorizationStatus(params)". See documentation for details.');
+            params = {
+                successCallback: arguments[0],
+                errorCallback: arguments[1]
+            };
         }
-        Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
-            Diagnostic.permission.CAMERA,
-            Diagnostic.permission.READ_EXTERNAL_STORAGE
-        ]);
+
+        var permissions = [Diagnostic.permission.CAMERA];
+        if(params.externalStorage !== false){
+            permissions.push(Diagnostic.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        params.successCallback = params.successCallback || function(){};
+        var onSuccess = function(statuses){
+            params.successCallback(numberOfKeys(statuses) > 1 ? combineCameraStatuses(statuses): statuses[Diagnostic.permission.CAMERA]);
+        };
+        Diagnostic.getPermissionsAuthorizationStatus(onSuccess, params.errorCallback, permissions);
     };
 
     /**
      * Checks if the application is authorized to use the camera.
      * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
-     * @param {Function} successCallback - function to call on successful request for runtime permissions status.
+     * @param {Object} params - (optional) parameters:
+     *  - {Function} successCallback - function to call on successful request for runtime permissions status.
      * This callback function is passed a single boolean parameter which is TRUE if the app currently has runtime authorisation to use location.
-     * @param {Function} errorCallback - function to call on failure to request authorisation status.
+     *  - {Function} errorCallback - function to call on failure to request authorisation status.
+     *  - {Boolean} externalStorage - (Android only) If true, checks permission for READ_EXTERNAL_STORAGE in addition to CAMERA run-time permission.
+     *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
-    Diagnostic.isCameraAuthorized = function(successCallback, errorCallback){
-        function onSuccess(status){
-            successCallback(status == Diagnostic.permissionStatus.GRANTED);
+    Diagnostic.isCameraAuthorized = function(params){
+        params = params || {};
+        if (typeof arguments[0]  === "function") {
+            console.warn('The API signature "cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.isCameraAuthorized(params)". See documentation for details.');
+            params = {
+                successCallback: arguments[0],
+                errorCallback: arguments[1]
+            };
         }
-        Diagnostic.getCameraAuthorizationStatus(onSuccess, errorCallback);
+
+        params.successCallback = params.successCallback || function(){};
+        var onSuccess = function(status){
+            params.successCallback(status == Diagnostic.permissionStatus.GRANTED);
+        };
+
+        Diagnostic.getCameraAuthorizationStatus({
+            successCallback: onSuccess,
+            errorCallback: params.errorCallback,
+            externalStorage: params.externalStorage
+        });
     };
 
     /**********************

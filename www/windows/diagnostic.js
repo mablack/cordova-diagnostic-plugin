@@ -56,14 +56,24 @@ Diagnostic.prototype.isBluetoothAvailable = function (successCallback, errorCall
 /**
  * Checks if camera exists.
  *
- * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
+ * @param {Object} params - (optional) parameters:
+ * 	- {Function} successCallback -  The callback which will be called when diagnostic is successful.
  * This callback function is passed a single boolean parameter with the diagnostic result.
- * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ * 	- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
  *  This callback function is passed a single string parameter containing the error message.
  */
-Diagnostic.prototype.isCameraAvailable = function (successCallback, errorCallback) {
-    return cordova.exec(successCallback,
-		errorCallback,
+Diagnostic.prototype.isCameraAvailable = function (params) {
+    params = params || {};
+    if (typeof arguments[0]  === "function") {
+        console.warn('The API signature "cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.isCameraAvailable(params)". See documentation for details.');
+        params = {
+            successCallback: arguments[0],
+            errorCallback: arguments[1]
+        };
+    }
+
+    return cordova.exec(params.successCallback,
+        params.errorCallback,
 		'Diagnostic',
 		'isCameraAvailable',
 		[]);
