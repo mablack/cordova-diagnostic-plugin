@@ -1,4 +1,4 @@
-// Type definitions for cordova.plugins.diagnostic v3.4.x
+// Type definitions for cordova.plugins.diagnostic v3.6.x
 // Project: https://github.com/dpa99c/cordova-diagnostic-plugin
 // Definitions by: Dave Alden <https://github.com/dpa99c/>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -63,7 +63,6 @@ interface Diagnostic {
      */
     NFCState?: any;
 
-
     /**
      * Checks if app is able to access device location.
      * @param successCallback
@@ -90,12 +89,14 @@ interface Diagnostic {
      * Checks if camera is available.
      * On Android & iOS this returns true if the device has a camera AND the application is authorized to use it.
      * On Windows 10 Mobile this returns true if the device has a rear-facing camera.
-     * @param successCallback
+     * @param successCallbackOrParams
      * @param errorCallback
+     * @param externalStorageOrParams
      */
     isCameraAvailable: (
-        successCallback: (available: boolean) => void,
-        errorCallback: (error: string) => void
+        successCallbackOrParams?: (available: boolean) => void|{},
+        errorCallback?: (error: string) => void,
+        externalStorageOrParams?: boolean|{}
     ) => void;
 
     /**
@@ -235,10 +236,12 @@ interface Diagnostic {
      * Checks if the application is authorized to use the camera.
      * @param successCallback
      * @param errorCallback
+     * @param externalStorageOrParams
      */
     isCameraAuthorized?: (
-        successCallback: (authorized: boolean) => void,
-        errorCallback: (error: string) => void
+        successCallbackOrParams?: (authorized: boolean) => void|{},
+        errorCallback?: (error: string) => void,
+        externalStorageOrParams?: boolean|{}
     ) => void;
 
     /**
@@ -246,10 +249,12 @@ interface Diagnostic {
      * Returns the camera authorization status for the application.
      * @param successCallback
      * @param errorCallback
+     * @param externalStorageOrParams
      */
     getCameraAuthorizationStatus?: (
-        successCallback: (status: string) => void,
-        errorCallback: (error: string) => void
+        successCallbackOrParams?: (status: string) => void|{},
+        errorCallback?: (error: string) => void,
+        externalStorageOrParams?: boolean|{}
     ) => void;
 
     /**
@@ -257,10 +262,12 @@ interface Diagnostic {
      * Requests camera authorization for the application.
      * @param successCallback
      * @param errorCallback
+     * @param externalStorageOrParams
      */
     requestCameraAuthorization?: (
-        successCallback: (status: string) => void,
-        errorCallback: (error: string) => void
+        successCallbackOrParams?: (status: string) => void|{},
+        errorCallback?: (error: string) => void,
+        externalStorageOrParams?: boolean|{}
     ) => void;
 
     /**
