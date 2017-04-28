@@ -16,6 +16,17 @@ var Diagnostic = (function(){
         }
     }
 
+    function mapFromLegacyCameraApi(params) {
+        params = params || {};
+        if (typeof arguments[0]  === "function") {
+            params = (arguments.length > 2 && typeof arguments[2]  === "object") ? arguments[2] : {};
+            params.successCallback = arguments[0];
+            if(arguments.length > 1 && typeof arguments[1]  === "function") {
+                params.errorCallback = arguments[1];
+            }
+        }
+        return params;
+    }
 
 
     /********************
@@ -212,14 +223,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraAvailable = function(params) {
-        params = params || {};
-        if (typeof arguments[0]  === "function") {
-            console.warn('The API signature "cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.isCameraAvailable(params)". See documentation for details.');
-            params = {
-                successCallback: arguments[0],
-                errorCallback: arguments[1]
-            };
-        }
+        params = mapFromLegacyCameraApi.apply(this, arguments);
 
         params.successCallback = params.successCallback || function(){};
         return cordova.exec(ensureBoolean(params.successCallback),
@@ -256,14 +260,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraAuthorized = function(params) {
-        params = params || {};
-        if (typeof arguments[0]  === "function") {
-            console.warn('The API signature "cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.isCameraAuthorized(params)". See documentation for details.');
-            params = {
-                successCallback: arguments[0],
-                errorCallback: arguments[1]
-            };
-        }
+        params = mapFromLegacyCameraApi.apply(this, arguments);
 
         return cordova.exec(ensureBoolean(params.successCallback),
             params.errorCallback,
@@ -282,14 +279,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getCameraAuthorizationStatus = function(params) {
-        params = params || {};
-        if (typeof arguments[0]  === "function") {
-            console.warn('The API signature "cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.getCameraAuthorizationStatus(params)". See documentation for details.');
-            params = {
-                successCallback: arguments[0],
-                errorCallback: arguments[1]
-            };
-        }
+        params = mapFromLegacyCameraApi.apply(this, arguments);
 
         return cordova.exec(params.successCallback,
             params.errorCallback,
@@ -310,14 +300,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestCameraAuthorization = function(params){
-        params = params || {};
-        if (typeof arguments[0]  === "function") {
-            console.warn('The API signature "cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.requestCameraAuthorization(params)". See documentation for details.');
-            params = {
-                successCallback: arguments[0],
-                errorCallback: arguments[1]
-            };
-        }
+        params = mapFromLegacyCameraApi.apply(this, arguments);
 
         params.successCallback = params.successCallback || function(){};
         return cordova.exec(function(isGranted){

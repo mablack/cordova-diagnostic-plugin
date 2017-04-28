@@ -319,11 +319,17 @@ This callback function is passed a single string parameter containing the error 
 Checks if camera is available.
 
 Notes:
-- The call signature `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback)` was deprecated in `cordova.plugins.diagnostic@3.5.0`. While it is still currently supported, using this signature will result in a warning in the JS console.
 - On Android & iOS this returns true if the device has a camera AND the application is authorized to use it.
 - On Windows 10 Mobile this returns true if the device has a **rear-facing** camera.
 
+Notes for Android:
+- On Android by default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
+- The call signature `cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
+
+
     cordova.plugins.diagnostic.isCameraAvailable(params);
+    cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, params)
+    cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, externalStorage)
 
 #### Parameters
 - {Object} params - (optional) parameters:
@@ -331,6 +337,8 @@ Notes:
 This callback function is passed a single boolean parameter which is TRUE if camera is present and authorized for use.
     - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 This callback function is passed a single string parameter containing the error message.
+    - {Boolean} externalStorage - (Android only) If true, checks permission for `READ_EXTERNAL_STORAGE` in addition to `CAMERA` run-time permission.
+Defaults to true.
 
 
 #### Example usage
@@ -341,8 +349,27 @@ This callback function is passed a single string parameter containing the error 
         },
         errorCallback: function(error){
             console.error("The following error occurred: "+error);
-        }
+        },
+        externalStorage: false
     });
+    
+    cordova.plugins.diagnostic.isCameraAvailable(
+        function(available){
+            console.log("Camera is " + (available ? "available" : "not available"));
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, {
+            externalStorage: false
+        }
+    );
+    
+    cordova.plugins.diagnostic.isCameraAvailable(
+        function(available){
+            console.log("Camera is " + (available ? "available" : "not available"));
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, false
+    );
 
 ### isBluetoothAvailable()
 
@@ -741,14 +768,15 @@ This callback function is passed a single string parameter containing the error 
 
 Checks if the application is authorized to use the camera.
 
-Notes:
-- The call signature `cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback)` was deprecated in `cordova.plugins.diagnostic@3.5.0`. While it is still currently supported, using this signature will result in a warning in the JS console.
-
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 - By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
+- The call signature `cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
-    `cordova.plugins.diagnostic.isCameraAuthorized(params);`
+
+    cordova.plugins.diagnostic.isCameraAuthorized(params);
+    cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, params)
+    cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, externalStorage)
 
 #### Parameters
 - {Object} params - (optional) parameters:
@@ -767,21 +795,41 @@ Defaults to true.
         },
         errorCallback: function(error){
             console.error("The following error occurred: "+error);
-        }
+        }, 
+        externalStorage: false
     });
+    
+    cordova.plugins.diagnostic.isCameraAuthorized(
+        function(authorized){
+            console.log("App is " + (authorized ? "authorized" : "denied") + " access to the camera");
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, {
+            externalStorage: false
+        }
+    );
+    
+    cordova.plugins.diagnostic.isCameraAuthorized(
+        function(authorized){
+            console.log("App is " + (authorized ? "authorized" : "denied") + " access to the camera");
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, false
+    );    
 
 ### getCameraAuthorizationStatus()
 
 Returns the camera authorization status for the application.
 
-Notes:
-- The call signature `cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback)` was deprecated in `cordova.plugins.diagnostic@3.5.0`. While it is still currently supported, using this signature will result in a warning in the JS console.
-
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 - By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
+- The call signature `cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
-    `cordova.plugins.diagnostic.getCameraAuthorizationStatus(params);`
+
+    cordova.plugins.diagnostic.getCameraAuthorizationStatus(params);
+    cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, params)
+    cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, externalStorage)
 
 #### Parameters
 - {Object} params - (optional) parameters:
@@ -803,15 +851,36 @@ Defaults to true.
         },
         errorCallback: function(error){
             console.error("The following error occurred: "+error);
-        }
+        },
+        externalStorage: false
     });
+    
+    cordova.plugins.diagnostic.getCameraAuthorizationStatus(
+        function(status){
+            if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+                console.log("Camera use is authorized");
+            }
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, {
+            externalStorage: false
+        }
+    );
+    
+    cordova.plugins.diagnostic.getCameraAuthorizationStatus(
+        function(status){
+            if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+                console.log("Camera use is authorized");
+            }
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, false
+    );   
 
 ### requestCameraAuthorization()
 
 Requests camera authorization for the application.
 
-Notes:
-- The call signature `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback)` was deprecated in `cordova.plugins.diagnostic@3.5.0`. While it is still currently supported, using this signature will result in a warning in the JS console.
 
 Notes for iOS:
 - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
@@ -822,8 +891,12 @@ Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - By default this requests run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 - Requested run-time permissions which must be added to `AndroidManifest.xml` - see [Android camera permissions](#android-camera-permissions).
+- The call signature `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
-    `cordova.plugins.diagnostic.requestCameraAuthorization(params);`
+    
+    cordova.plugins.diagnostic.requestCameraAuthorization(params);
+    cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, params)
+    cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, externalStorage)
 
 #### Parameters
 
@@ -844,8 +917,27 @@ This callback function is passed a single string parameter containing the error 
         },
         errorCallback: function(error){
             console.error(error);
-        }
+        },
+        externalStorage: false
     });
+    
+    cordova.plugins.diagnostic.requestCameraAuthorization(
+        function(status){
+            console.log("Authorization request for camera use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, {
+            externalStorage: false
+        }
+    );
+    
+    cordova.plugins.diagnostic.requestCameraAuthorization(
+        function(status){
+            console.log("Authorization request for camera use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        }, false
+    );   
 
 ### isMicrophoneAuthorized()
 

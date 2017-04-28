@@ -5,6 +5,18 @@
 **/
 var Diagnostic = function () { };
 
+function mapFromLegacyCameraApi(params) {
+    params = params || {};
+    if (typeof arguments[0]  === "function") {
+        params = (arguments.length > 2 && typeof arguments[2]  === "object") ? arguments[2] : {};
+        params.successCallback = arguments[0];
+        if(arguments.length > 1 && typeof arguments[1]  === "function") {
+            params.errorCallback = arguments[1];
+        }
+    }
+    return params;
+}
+
 /**
  * Checks if location is enabled.
  *
@@ -63,14 +75,7 @@ Diagnostic.prototype.isBluetoothAvailable = function (successCallback, errorCall
  *  This callback function is passed a single string parameter containing the error message.
  */
 Diagnostic.prototype.isCameraAvailable = function (params) {
-    params = params || {};
-    if (typeof arguments[0]  === "function") {
-        console.warn('The API signature "cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback)" is deprecated in favour of "cordova.plugins.diagnostic.isCameraAvailable(params)". See documentation for details.');
-        params = {
-            successCallback: arguments[0],
-            errorCallback: arguments[1]
-        };
-    }
+    params = mapFromLegacyCameraApi.apply(this, arguments);
 
     return cordova.exec(params.successCallback,
         params.errorCallback,
