@@ -1,4 +1,7 @@
 # CHANGELOG
+**v3.6.0**
+* Undeprecate legacy camera API and support multiple call signatures for camera API methods for the benefit of ionic-native wrapper.
+
 **v3.5.0**
 * Enable option to request/check only CAMERA permission on Android when using camera methods. Fixes #178.
 
