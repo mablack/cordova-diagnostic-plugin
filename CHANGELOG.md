@@ -1,4 +1,7 @@
 # CHANGELOG
+**v3.6.1**
+Fix bug in mapping of legacy camera API function signatures.
+
 **v3.6.0**
 * Undeprecate legacy camera API and support multiple call signatures for camera API methods for the benefit of ionic-native wrapper.
 
