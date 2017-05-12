@@ -5,14 +5,16 @@
 **/
 var Diagnostic = function () { };
 
-function mapFromLegacyCameraApi(params) {
-    params = params || {};
+function mapFromLegacyCameraApi() {
+    var params;
     if (typeof arguments[0]  === "function") {
         params = (arguments.length > 2 && typeof arguments[2]  === "object") ? arguments[2] : {};
         params.successCallback = arguments[0];
         if(arguments.length > 1 && typeof arguments[1]  === "function") {
             params.errorCallback = arguments[1];
         }
+    }else { // if (typeof arguments[0]  === "object")
+        params = arguments[0];
     }
     return params;
 }
