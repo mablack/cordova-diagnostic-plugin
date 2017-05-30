@@ -35,6 +35,7 @@
     @property (strong, nonatomic) NSOperationQueue* motionActivityQueue;
     @property (nonatomic, retain) NSString* locationRequestCallbackId;
     @property (nonatomic) EKEventStore *eventStore;
+    @property (nonatomic, retain) NSString* currentLocationAuthorizationStatus;
 
 - (void) isLocationAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;

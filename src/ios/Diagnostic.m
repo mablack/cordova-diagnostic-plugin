@@ -27,6 +27,7 @@ ABAddressBookRef _addressBook;
     [super pluginInitialize];
     
     self.locationRequestCallbackId = nil;
+    self.currentLocationAuthorizationStatus = nil;
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     
@@ -889,6 +890,15 @@ ABAddressBookRef _addressBook;
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
+    BOOL statusChanged = false;
+    if(self.currentLocationAuthorizationStatus != nil && ![status isEqual: self.currentLocationAuthorizationStatus]){
+        statusChanged = true;
+    }
+    self.currentLocationAuthorizationStatus = status;
+    
+    if(!statusChanged) return;
+    
+    
     NSLog(@"%@",[NSString stringWithFormat:@"Location authorization status changed to: %@", status]);
     
     if(self.locationRequestCallbackId != nil){
