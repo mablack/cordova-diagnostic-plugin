@@ -1,4 +1,7 @@
 # CHANGELOG
+**v3.6.3**
+Fix iOS bug causing location state change handlers to erroneously trigger early. Fixes #185 for iOS.
+
 **v3.6.2**
 Fix bug in mapping of legacy camera API function signatures for iOS and Windows.
 
