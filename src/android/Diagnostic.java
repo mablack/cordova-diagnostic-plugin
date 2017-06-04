@@ -947,6 +947,9 @@ public class Diagnostic extends CordovaPlugin{
             File[] externalDirs = this.cordova.getActivity().getApplicationContext().getExternalFilesDirs(null);
 
             for (File file : externalDirs) {
+                if(file == null){
+                    continue;
+                }
                 String applicationPath = file.getPath();
                 String rootPath = applicationPath.split("/Android")[0];
 
