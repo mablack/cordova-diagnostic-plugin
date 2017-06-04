@@ -256,6 +256,9 @@ var Diagnostic = (function(){
             if(arguments.length > 1 && typeof arguments[1]  === "function") {
                 params.errorCallback = arguments[1];
             }
+            if(arguments.length > 2 && arguments[2]  === false) {
+                params.externalStorage = arguments[2];
+            }
         }else { // if (typeof arguments[0]  === "object")
             params = arguments[0];
         }
