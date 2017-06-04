@@ -1,4 +1,7 @@
 # CHANGELOG
+**v3.6.4**
+Fix Android bug with legacy API signatures for Camera functions, where 3rd argument (`externalStorage`) is `false`.
+
 **v3.6.3**
 Fix iOS bug causing location state change handlers to erroneously trigger early. Fixes #185 for iOS.
 
