@@ -1,4 +1,7 @@
 # CHANGELOG
+**v3.6.5**
+Pin Android Compat and Support library deps to v25.+ to prevent unwanted v26 alpha/beta versions from being pulled in.
+
 **v3.6.4**
 Fix Android bug with legacy API signatures for Camera functions, where 3rd argument (`externalStorage`) is `false`.
 
