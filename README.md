@@ -177,6 +177,17 @@ Also make sure you have the latest release of the `cordova-android` platform ins
 Phonegap Build uses should use the latest available CLI version ([listed here](https://build.phonegap.com/current-support)) by specifying using the `phonegap-version` tag in your `config.xml`, for example:
 
     <preference name="phonegap-version" value="cli-6.4.0" />
+    
+#### Gradle version collisions
+
+If your build fails with an error such as this:
+
+    Attribute meta-data#android.support.VERSION@value value=(26.0.0-alpha1) from [com.android.support:support-v4:26.0.0-alpha1] AndroidManifest.xml:27:9-38
+    is also present at [com.android.support:appcompat-v7:25.3.1] AndroidManifest.xml:27:9-31 value=(25.3.1).
+    
+Then it's likely that the build failure is due to a collision caused by another plugin requesting a different version of the Android Support Library (see [#212](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/212), [#211](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/211), [#205](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/205), etc.).
+
+The easy fix is to install [cordova-android-support-gradle-release](https://github.com/dpa99c/cordova-android-support-gradle-release) into your project to align the versions
 
 #### Building for Android runtime permissions
 
