@@ -334,6 +334,34 @@ ABAddressBookRef _addressBook;
     }
 }
 
+- (void) switchToLocationSettings: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    @try {
+        if (UIApplicationOpenSettingsURLString != nil){
+            NSURL *url;
+            
+#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_8_0
+            url = [NSURL URLWithString: @"prefs:root=LOCATION_SERVICES"];
+#else
+            url = [NSURL URLWithString: @"App-Prefs:root=Privacy&path=LOCATION"];
+#endif
+
+            if (![[UIApplication sharedApplication] canOpenURL:url]) {
+                NSLog(@"cannot open phone settings, check the URL schema for iOS11");
+            }
+            [[UIApplication sharedApplication] openURL:url];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        }else{
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not supported below iOS 8"];
+        }
+    }
+    @catch (NSException *exception) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 #pragma mark - Audio
 - (void) isMicrophoneAuthorized: (CDVInvokedUrlCommand*)command
 {

@@ -23,8 +23,8 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isWifiEnabled()](#iswifienabled)
     - [isCameraAvailable()](#iscameraavailable)
     - [isBluetoothAvailable()](#isbluetoothavailable)
-  - [Android and Windows 10 Mobile only](#android-and-windows-10-mobile-only)
     - [switchToLocationSettings()](#switchtolocationsettings)
+  - [Android and Windows 10 Mobile only](#android-and-windows-10-mobile-only)
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
     - [switchToWifiSettings()](#switchtowifisettings)
@@ -407,8 +407,6 @@ This callback function is passed a single string parameter containing the error 
         console.error("The following error occurred: "+error);
     });
 
-## Android and Windows 10 Mobile only
-
 ### switchToLocationSettings()
 
 Displays the device location settings to allow user to enable location services/change location mode.
@@ -416,6 +414,8 @@ Displays the device location settings to allow user to enable location services/
     cordova.plugins.diagnostic.switchToLocationSettings();
 
 Note: On Android, you may want to consider using the [Request Location Accuracy Plugin for Android](https://github.com/dpa99c/cordova-plugin-request-location-accuracy) to request the desired location accuracy without needing the user to manually do this on the Location Settings page.
+
+## Android and Windows 10 Mobile only
 
 ### switchToMobileDataSettings()
 
