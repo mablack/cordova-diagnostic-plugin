@@ -348,10 +348,11 @@ ABAddressBookRef _addressBook;
 #endif
 
             if (![[UIApplication sharedApplication] canOpenURL:url]) {
-                NSLog(@"cannot open phone settings, check the URL schema for iOS11");
+                pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Cannot open phone settings, check the URL schema for iOS 11"];
+            }else{
+				[[UIApplication sharedApplication] openURL:url];
+            	pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             }
-            [[UIApplication sharedApplication] openURL:url];
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         }else{
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not supported below iOS 8"];
         }
