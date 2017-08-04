@@ -1,4 +1,7 @@
 # CHANGELOG
+**v3.6.6**
+Adds `switchToLocationSettings()` for iOS. 
+
 **v3.6.5**
 Pin Android Compat and Support library deps to v25.+ to prevent unwanted v26 alpha/beta versions from being pulled in.
 
