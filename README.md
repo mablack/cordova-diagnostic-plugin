@@ -39,6 +39,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestLocationAuthorization()](#requestlocationauthorization)
     - [isCameraPresent()](#iscamerapresent)
     - [isCameraAuthorized()](#iscameraauthorized)
+    - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
     - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
     - [requestCameraAuthorization()](#requestcameraauthorization)
     - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
@@ -86,7 +87,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
-    - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
     - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
     - [getRemoteNotificationTypes()](#getremotenotificationtypes)
     - [isRemindersAuthorized()](#isremindersauthorized)
@@ -826,8 +826,30 @@ Defaults to true.
         }, function(error){
             console.error("The following error occurred: "+error);
         }, false
-    );    
+    );
 
+### isRemoteNotificationsEnabled()
+
+Checks if remote (push) notifications are enabled.
+
+On iOS 8+, returns true if app is registered for remote notifications **AND** "Allow Notifications" switch is ON **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts").
+
+On iOS <=7, returns true if app is registered for remote notifications **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications).
+
+    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if remote (push) notifications are enabled.
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(function(enabled){
+        console.log("Remote notifications are " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
 ### getCameraAuthorizationStatus()
 
 Returns the camera authorization status for the application.
@@ -2152,29 +2174,6 @@ This callback function is passed a single string parameter containing the error 
         console.error(error);
     });
 
-
-### isRemoteNotificationsEnabled()
-
-Checks if remote (push) notifications are enabled.
-
-On iOS 8+, returns true if app is registered for remote notifications **AND** "Allow Notifications" switch is ON **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts").
-
-On iOS <=7, returns true if app is registered for remote notifications **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications).
-
-    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(successCallback, errorCallback);
-
-#### Parameters
-- {Function} successCallback - The callback which will be called when operation is successful.
-This callback function is passed a single boolean parameter which is TRUE if remote (push) notifications are enabled.
-- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(function(enabled){
-        console.log("Remote notifications are " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 ### isRegisteredForRemoteNotifications()
 

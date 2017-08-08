@@ -1270,6 +1270,23 @@ var Diagnostic = (function(){
     };
 
     /**
+     * Checks if remote notifications is available to the app.
+     * Returns true if remote notifications are switched on.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if remote notifications is available.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isRemoteNotificationsEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isRemoteNotificationsEnabled',
+            []);
+    };
+
+    /**
      * Registers a function to be called when a change in NFC state occurs.
      * Pass in a falsey value to de-register the currently registered function.
      *
