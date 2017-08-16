@@ -692,7 +692,7 @@ This callback function is passed a single string parameter containing the error 
 - Calling this on iOS 7 or below will have no effect, as location permissions are are implicitly granted.
 - On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
 - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
-- When calling this function, the messages contained in the  `NSLocationAlwaysUsageDescription` and `NSLocationWhenInUseUsageDescription` .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
+- When calling this function, the messages contained in the `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) / `NSLocationAlwaysUsageDescription` (iOS 10 and below)  .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
 this plugin provides default messages, but you should override them with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise them.
 
  Notes for Android:
