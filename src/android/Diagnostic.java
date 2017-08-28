@@ -68,6 +68,8 @@ import android.provider.Settings;
 import android.net.wifi.WifiManager;
 
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationManagerCompat;
+
 import java.lang.SecurityException;
 import java.util.Set;
 
@@ -350,6 +352,8 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isNFCEnabled() ? 1 : 0);
             } else if(action.equals("isNFCAvailable")) {
                 callbackContext.success(isNFCAvailable() ? 1 : 0);
+            } else if(action.equals("isRemoteNotificationsEnabled")) {
+                callbackContext.success(isRemoteNotificationsEnabled() ? 1 : 0);
             } else {
                 handleError("Invalid action");
                 return false;
@@ -639,6 +643,12 @@ public class Diagnostic extends CordovaPlugin{
         }catch(Exception e){
             Log.e(TAG, "Error retrieving current NFC state on state change: "+e.toString());
         }
+    }
+
+    public boolean isRemoteNotificationsEnabled() {
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this.cordova.getActivity().getApplicationContext());
+        boolean result = notificationManagerCompat.areNotificationsEnabled();
+        return result;
     }
 
 
