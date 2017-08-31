@@ -2513,7 +2513,16 @@ The plugin defines the [full list of dangersous permissions available in API 23]
 
 ##### Runtime permission groups
 
-Each runtime permission belongs to a permission group. Requesting a permission also requests authorisation for all other permissions in that group. If other permissions in the group are not defined in the manifest, they will default to DENIED_ALWAYS status. Otherwise, if user grants permission, all other permissions in the group will be granted; if user denies permission, all other permissions in the group will be denied.
+- Each runtime permission belongs to a permission group. 
+- In Android 6 & 7:
+    - Requesting a permission also requests authorisation for all other permissions in that group. 
+    - If other permissions in the group are not defined in the manifest, they will default to DENIED_ALWAYS status. 
+    - Otherwise, if user grants permission, all other permissions in the group will be granted
+    - if user denies permission, all other permissions in the group will be denied.
+- In Android 8+:
+   - Requesting a permission only grants that permission, not (as previously) all other permissions in that group.
+   - However, once the user grants a permission to the app, all subsequent requests for permissions in that permission group are automatically granted.
+   - See [Android 8.0 developer notes](https://developer.android.com/about/versions/oreo/android-8.0-changes.html#rmp) for more.
 
 Permissions are grouped as follows:
 
