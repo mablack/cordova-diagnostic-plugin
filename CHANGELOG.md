@@ -1,4 +1,8 @@
 # CHANGELOG
+**v3.6.7**
+* Adds `isRemoteNotificationsEnabled()` for Android (in addition to iOS).
+* Adds `getRemoteNotificationsAuthorizationStatus()` for iOS 10+.
+
 **v3.6.6**
 Adds `switchToLocationSettings()` for iOS. 
 

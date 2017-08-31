@@ -89,6 +89,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
     - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
     - [getRemoteNotificationTypes()](#getremotenotificationtypes)
+    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
     - [isRemindersAuthorized()](#isremindersauthorized)
     - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
     - [requestRemindersAuthorization()](#requestremindersauthorization)
@@ -2221,6 +2222,39 @@ This callback function is passed a single object parameter where the key is the 
     cordova.plugins.diagnostic.getRemoteNotificationTypes(function(types){
         for(var type in types){
             console.log(type + " is " + (types[type] ? "enabled" : "disabled"));
+        }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+### getRemoteNotificationsAuthorizationStatus()
+
+Returns the authorization status for the application to use Remote Notifications.
+
+**Note: Works on iOS 10+ only ** (iOS 9 and below will invoke the error callback).
+
+    cordova.plugins.diagnostic.getRemoteNotificationsAuthorizationStatus(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getRemoteNotificationsAuthorizationStatus(function(status){
+        switch(status){
+            case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
+                console.log("Permission not yet requested");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+                console.log("Permission denied");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
+                console.log("Permission granted");
+                break;
         }
     }, function(error){
         console.error("The following error occurred: "+error);
