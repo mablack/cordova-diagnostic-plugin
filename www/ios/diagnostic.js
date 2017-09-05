@@ -612,6 +612,29 @@ var Diagnostic = (function(){
             []);
     };
 
+    /**
+     * Returns the remote notifications authorization status for the application.
+     * Works on iOS 10+ (iOS 9 and below will invoke the error callback).
+     *
+     * @param {Object} params - (optional) parameters:
+     *  - {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+     * Possible values are:
+     * `cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED`
+     * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
+     *  - {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getRemoteNotificationsAuthorizationStatus = function(successCallback, errorCallback) {
+
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getRemoteNotificationsAuthorizationStatus',
+            []);
+    };
+
     /*************
      * Contacts
      *************/

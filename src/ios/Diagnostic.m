@@ -560,6 +560,37 @@ ABAddressBookRef _addressBook;
     }
 }
 
+- (void) getRemoteNotificationsAuthorizationStatus: (CDVInvokedUrlCommand*)command
+{
+    @try {
+        if(NSClassFromString(@"UNUserNotificationCenter")) {
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+            // iOS 10+
+            UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+            [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                NSString* status = @"unknown";
+                UNAuthorizationStatus authStatus = settings.authorizationStatus;
+                if(authStatus == UNAuthorizationStatusDenied){
+                    status = @"denied";
+                }else if(authStatus == UNAuthorizationStatusNotDetermined){
+                    status = @"not_determined";
+                }else if(authStatus == UNAuthorizationStatusAuthorized){
+                    status = @"authorized";
+                }
+                NSLog(@"%@",[NSString stringWithFormat:@"Remote notifications authorization status is: %@", status]);
+                [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+            }];
+#endif
+        } else{
+            // iOS <= 9
+            [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"getRemoteNotificationsAuthorizationStatus() is not supported below iOS 10"]:command];
+        }
+    }
+    @catch (NSException *exception) {
+        [self handlePluginException:exception:command];
+    }
+}
+
 #pragma mark - Address Book (Contacts)
 
 - (void) getAddressBookAuthorizationStatus: (CDVInvokedUrlCommand*)command

@@ -703,7 +703,7 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * iOS ONLY
+     * ANDROID and iOS ONLY
      * Checks if remote (push) notifications are enabled.
      * @param successCallback
      * @param errorCallback
@@ -732,6 +732,17 @@ interface Diagnostic {
      */
     getRemoteNotificationTypes?: (
         successCallback: (types: any) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * iOS ONLY
+     * Returns the remote notifications authorization status for the application.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getRemoteNotificationsAuthorizationStatus?: (
+        successCallback: (status: string) => void,
         errorCallback: (error: string) => void
     ) => void;
 
