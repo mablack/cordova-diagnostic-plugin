@@ -714,6 +714,17 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * ANDROID ONLY
+     * Checks if ADB mode is enabled.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isADBModeEnabled?: (
+        successCallback: (enabled: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * iOS ONLY
      * Indicates if the app is registered for remote (push) notifications on the device.
      * @param successCallback
