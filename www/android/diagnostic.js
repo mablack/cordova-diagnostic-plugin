@@ -1286,6 +1286,15 @@ var Diagnostic = (function(){
             []);
     };
 
+
+    Diagnostic.isADBModeEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isADBModeEnabled',
+            []);
+    };
+
     /**
      * Registers a function to be called when a change in NFC state occurs.
      * Pass in a falsey value to de-register the currently registered function.
