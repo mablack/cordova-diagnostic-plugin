@@ -181,6 +181,8 @@ Phonegap Build uses should use the latest available CLI version ([listed here](h
     
 #### Gradle version collisions
 
+This plugin uses the Android Support Library and [pins the major version](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/plugin.xml#L101) to align with [the target SDK version of the `cordova-android` platform](https://github.com/apache/cordova-android/blob/master/framework/project.properties#L13) in its [latest release to npm](https://www.npmjs.com/package/cordova-android).
+
 If your build fails with an error such as this:
 
     Attribute meta-data#android.support.VERSION@value value=(26.0.0-alpha1) from [com.android.support:support-v4:26.0.0-alpha1] AndroidManifest.xml:27:9-38
@@ -188,7 +190,16 @@ If your build fails with an error such as this:
     
 Then it's likely that the build failure is due to a collision caused by another plugin requesting a different version of the Android Support Library (see [#212](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/212), [#211](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/211), [#205](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/205), etc.).
 
-The easy fix is to install [cordova-android-support-gradle-release](https://github.com/dpa99c/cordova-android-support-gradle-release) into your project to align the versions
+
+Depending what other plugins you have installed in your project, you may need to specify a different version of the Support Library than that specified by this plugin to make your build succeed. 
+
+If building locally, one way to do this is to install [cordova-android-support-gradle-release](https://github.com/dpa99c/cordova-android-support-gradle-release) into your project.
+This attempts to override the Android Support Library version specified by other plugins (including this plugin) with a specified version. For example:
+
+    cordova plugin add cordova-android-support-gradle-release --variable ANDROID_SUPPORT_VERSION=25.+
+
+
+Note: `cordova-android-support-gradle-release` will not work in Phonegap Build (or other cloud-build environments) that do not support Cordova Hook Scripts.
 
 #### Building for Android runtime permissions
 
