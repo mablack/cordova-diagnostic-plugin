@@ -657,6 +657,9 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
+    /**
+     * get device ADB mode info
+     */
     public int getADBMode(){
         int mode;
         Context context = this.cordova.getActivity().getApplicationContext();
@@ -668,6 +671,10 @@ public class Diagnostic extends CordovaPlugin{
         return mode;
     }
 
+    /**
+     * checks if ADB mode is on
+     * especially for debugger mode check
+     */
     public boolean isADBModeEnabled(){
         boolean result = false;
         try {
@@ -679,6 +686,10 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
+    /**
+     * checks if device is rooted
+     * refer to: https://stackoverflow.com/questions/1101380
+     */
     public boolean isDeviceRooted(){
         // from build info 
         String buildTags = android.os.Build.TAGS;
