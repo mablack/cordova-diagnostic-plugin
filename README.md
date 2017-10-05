@@ -81,6 +81,8 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isNFCPresent()](#isnfcpresent)
     - [isNFCEnabled()](#isnfcenabled)
     - [isNFCAvailable()](#isnfcavailable)
+    - [isADBModeEnabled()](#isadbmodeenabled)
+    - [isDeviceRooted()](#isdevicerooted)
     - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
     - [NFCState constants](#nfcstate-constants)
   - [iOS only](#ios-only)
@@ -2033,6 +2035,52 @@ This callback function is passed a single string parameter containing the error 
 
     cordova.plugins.diagnostic.isNFCAvailable(function(available){
         console.log("NFC is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isADBModeEnabled()
+
+Checks if the device setting for ADB(debug) is switched on.
+Returns true if ADB(debug) setting is switched on.
+
+    cordova.plugins.diagnostic.isADBModeEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if ADB mode(debug mode) is switched on.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isADBModeEnabled(function(enabled){
+        console.log("ADB mode(debug mode) is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isDeviceRooted()
+
+Checks if the device is rooted.
+Returns true if the device is rooted.
+
+    cordova.plugins.diagnostic.isDeviceRooted(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which is TRUE if the device is rooted.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isDeviceRooted(function(rooted){
+        console.log("device is " + (rooted ? "rooted" : "not rooted"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });

@@ -1287,11 +1287,11 @@ var Diagnostic = (function(){
     };
 
     /**
-     * Checks if ADB mode(debugger mode) is switched on.
+     * Checks if ADB mode(debug mode) is switched on.
      * Returns true if ADB mode is switched on.
      *
      * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if ADB mode is switched on.
+     * This callback function is passed a single boolean parameter which is TRUE if ADB mode(debug mode) is switched on.
      * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
      *  This callback function is passed a single string parameter containing the error message.
      */
@@ -1304,11 +1304,11 @@ var Diagnostic = (function(){
     };
 
     /**
-     * Checks if device is rooted.
-     * Returns true if device is rooted.
+     * Checks if the device is rooted.
+     * Returns true if the device is rooted.
      *
      * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE device is rooted.
+     * This callback function is passed a single boolean parameter which is TRUE if the device is rooted.
      * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
      *  This callback function is passed a single string parameter containing the error message.
      */

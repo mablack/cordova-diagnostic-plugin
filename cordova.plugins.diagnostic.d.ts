@@ -715,7 +715,7 @@ interface Diagnostic {
 
     /**
      * ANDROID ONLY
-     * Checks if ADB mode is enabled.
+     * Checks if ADB mode(debug mode) is enabled.
      * @param successCallback
      * @param errorCallback
      */

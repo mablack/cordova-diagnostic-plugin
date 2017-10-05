@@ -673,7 +673,7 @@ public class Diagnostic extends CordovaPlugin{
 
     /**
      * checks if ADB mode is on
-     * especially for debugger mode check
+     * especially for debug mode check
      */
     public boolean isADBModeEnabled(){
         boolean result = false;
