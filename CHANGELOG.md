@@ -1,4 +1,9 @@
 # CHANGELOG
+**v3.7.0**
+* Adds `isADBmodeEnabled()` and `isDeviceRooted()` for Android (thanks to [wangjian2672](https://github.com/wangjian2672))
+* Adds `isDataRoamingEnabled()` for Android (thanks to [dukhanov](https://github.com/dukhanov))
+* Calls `isRegisteredForRemoteNotifications` on background thread for iOS 11. Fixes #238.
+
 **v3.6.7**
 * Adds `isRemoteNotificationsEnabled()` for Android (in addition to iOS).
 * Adds `getRemoteNotificationsAuthorizationStatus()` for iOS 10+.
