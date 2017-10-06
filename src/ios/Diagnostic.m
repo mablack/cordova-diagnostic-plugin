@@ -467,9 +467,10 @@ ABAddressBookRef _addressBook;
 - (void) isRemoteNotificationsEnabledResult: (BOOL) userSettingEnabled : (CDVInvokedUrlCommand*)command
 {
     // iOS 8+
-    BOOL remoteNotificationsEnabled = [UIApplication sharedApplication].isRegisteredForRemoteNotifications;
-    BOOL isEnabled = remoteNotificationsEnabled && userSettingEnabled;
-    [self sendPluginResultBool:isEnabled:command];
+    [self _isRegisteredForRemoteNotifications:^(BOOL remoteNotificationsEnabled) {
+        BOOL isEnabled = remoteNotificationsEnabled && userSettingEnabled;
+        [self sendPluginResultBool:isEnabled:command];
+    }];
 }
 
 - (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command
@@ -539,21 +540,23 @@ ABAddressBookRef _addressBook;
 
 - (void) isRegisteredForRemoteNotifications: (CDVInvokedUrlCommand*)command
 {
-    BOOL registered;
     @try {
         if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
             // iOS8+
 #if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
-            registered = [UIApplication sharedApplication].isRegisteredForRemoteNotifications;
+            [self _isRegisteredForRemoteNotifications:^(BOOL registered) {
+                [self sendPluginResultBool:registered :command];
+            }];
+            
 #endif
         } else {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
             // iOS7 and below
             UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-            registered = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+            BOOL registered; = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+            [self sendPluginResultBool:registered :command];
 #endif
         }
-        [self sendPluginResultBool:registered :command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -910,6 +913,15 @@ ABAddressBookRef _addressBook;
 /********************************/
 #pragma mark - utility functions
 /********************************/
+
+- (void) _isRegisteredForRemoteNotifications:(void (^)(BOOL result))completeBlock {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL registered = [UIApplication sharedApplication].isRegisteredForRemoteNotifications;
+        if( completeBlock ){
+            completeBlock(registered);
+        }
+    });
+};
 
 - (BOOL) isMotionAvailable
 {
