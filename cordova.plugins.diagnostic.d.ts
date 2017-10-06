@@ -726,6 +726,28 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * ANDROID ONLY
+     * Checks if ADB mode(debug mode) is enabled.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isADBModeEnabled?: (
+        successCallback: (enabled: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Checks if device is rooted.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isDeviceRooted?: (
+        successCallback: (enabled: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * iOS ONLY
      * Indicates if the app is registered for remote (push) notifications on the device.
      * @param successCallback
