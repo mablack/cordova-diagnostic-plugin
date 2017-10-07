@@ -3,6 +3,12 @@
 * Adds `isADBmodeEnabled()` and `isDeviceRooted()` for Android (thanks to [wangjian2672](https://github.com/wangjian2672))
 * Adds `isDataRoamingEnabled()` for Android (thanks to [dukhanov](https://github.com/dukhanov))
 * Calls `isRegisteredForRemoteNotifications` on background thread for iOS 11. Fixes #238.
+* Rewrites Motion Tracking authorization for iOS to fix bugs and edge cases (see #197).
+    * Splits `requestAndCheckMotionAuthorization()` into `requestMotionAuthorization()` and `getMotionAuthorizationStatus()`.
+        * `getMotionAuthorizationStatus()` returns the current authorization status only and does not request permission if it has not already been requested.
+        * `requestMotionAuthorization()` should now only be called once when `motionStatus` is `NOT_REQUESTED`. Calling more than once will invoke the error callback. 
+    * Adds `cordova.plugins.diagnostic.motionStatus` constants to full describe authorization states.
+    * Deprecates `requestAndCheckMotionAuthorization()`. Calling this will invoke `requestMotionAuthorization()` but also generate a console warning.
 
 **v3.6.7**
 * Adds `isRemoteNotificationsEnabled()` for Android (in addition to iOS).

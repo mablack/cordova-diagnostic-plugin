@@ -870,11 +870,22 @@ interface Diagnostic {
 
     /**
      * iOS ONLY
-     * Requests and checks motion authorization for the application.
+     * Requests motion authorization for the application.
      * @param successCallback
      * @param errorCallback
      */
-    requestAndCheckMotionAuthorization?: (
+    requestMotionAuthorization?: (
+        successCallback: (status: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * iOS ONLY
+     * Checks motion authorization status for the application.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getMotionAuthorizationStatus?: (
         successCallback: (status: string) => void,
         errorCallback: (error: string) => void
     ) => void;

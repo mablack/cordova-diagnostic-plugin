@@ -84,6 +84,7 @@
 
 - (void) isMotionAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isMotionRequestOutcomeAvailable: (CDVInvokedUrlCommand*)command;
-- (void) requestAndCheckMotionAuthorization: (CDVInvokedUrlCommand*)command;
+- (void) getMotionAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) requestMotionAuthorization: (CDVInvokedUrlCommand*)command;
 
 @end

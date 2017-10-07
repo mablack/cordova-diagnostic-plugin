@@ -101,7 +101,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
     - [isMotionAvailable()](#ismotionavailable)
     - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
-    - [requestAndCheckMotionAuthorization()](#requestandcheckmotionauthorization)
+    - [requestMotionAuthorization()](#requestandcheckmotionauthorization)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
@@ -2473,9 +2473,39 @@ This callback function is passed a single string parameter containing the error 
         console.error(error);
     });
 
+### motionStatus constants
+
+Constants for reporting the various states of Motion Tracking on iOS devices.
+
+    cordova.plugins.diagnostic.motionStatus
+
+The following permission states are defined:
+
+- `NOT_REQUESTED` - App has not yet requested this permission.
+App can request permission and user will be prompted to allow/deny.
+- `GRANTED` - User granted access to this permission.
+- `DENIED` - User denied access to this permission.
+App can never ask for permission again.
+The only way around this is to instruct the user to manually change the permission in the Settings app.
+- `RESTRICTED` - Permission is unavailable and user cannot enable it.
+For example, when parental controls are in effect for the current user.
+- `NOT_AVAILABLE` - device does not support Motion Tracking.
+Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
+- `NOT_DETERMINED` - authorization outcome cannot be determined because device does not support Pedometer Event Tracking.
+Pedometer Event Tracking is only available on iPhones with an M7 co-processor (or above): that is iPhone 5s (or above). No iPads yet support it.
+- `UNKNOWN` - motion tracking authorization is in an unknown state.
+
+
+#### Example
+
+    if(status === cordova.plugins.diagnostic.motionStatus.NOT_REQUESTED){
+        cordova.plugins.diagnostic.requestMotionAuthorization(successCallback, errorCallback);
+    }
+
 ### isMotionAvailable()
 
 Checks if motion tracking is available on the current device.
+Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
 
     cordova.plugins.diagnostic.isMotionAvailable(successCallback, errorCallback);
 
@@ -2500,6 +2530,7 @@ This callback function is passed a single string parameter containing the error 
 Checks if it's possible to determine the outcome of a motion authorization request on the current device.
 There's no direct way to determine if authorization was granted or denied, so the Pedometer API must be used to indirectly determine this:
 therefore, if the device supports motion tracking but not Pedometer Event Tracking, the outcome of requesting motion detection cannot be determined.
+Pedometer Event Tracking is only available on iPhones with an M7 co-processor (or above): that is iPhone 5s (or above). No iPads yet support it.
 
     cordova.plugins.diagnostic.isMotionRequestOutcomeAvailable(successCallback, errorCallback);
 
@@ -2519,38 +2550,71 @@ This callback function is passed a single string parameter containing the error 
         console.error("The following error occurred: "+error);
     });
 
-### requestAndCheckMotionAuthorization()
+### requestMotionAuthorization()
 
-Requests and checks motion authorization for the application:
-there is no way to independently request only or check only, so both must be done in one operation.
+Requests motion tracking authorization for the application.
 
 The native dialog asking user's consent can only be invoked once after the app is installed by calling this function.
-Once the user has either allowed or denied access, this function will only return the current authorization status:
-it is not possible to re-invoke the dialog if the user denied permission in the native dialog -
-in this case, you will have to instruct the user how to change motion authorization manually via the Settings app.
+Once the user has either allowed or denied access, calling this function again will result in an error.
+It is not possible to re-invoke the dialog if the user denied permission in the native dialog,
+so in this case you will have to instruct the user how to change motion authorization manually via the Settings app.
 
 When calling this function, the message contained in the `NSMotionUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
-If the device doesn't support motion detection, the error callback will be invoked.
-
 There's no direct way to determine if authorization was granted or denied, so the Pedometer API must be used to indirectly determine this:
 therefore, if the device supports motion tracking but not Pedometer Event Tracking, the outcome of requesting motion detection cannot be determined.
 
-    cordova.plugins.diagnostic.requestAndCheckMotionAuthorization(successCallback, errorCallback);
+    cordova.plugins.diagnostic.requestMotionAuthorization(successCallback, errorCallback);
 
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 This callback function is passed a single string parameter indicating the result:
-    - `cordova.plugins.diagnostic.permissionStatus.GRANTED` - user granted motion authorization.
-    - `cordova.plugins.diagnostic.permissionStatus.DENIED` - user denied motion authorization.
-    - `cordova.plugins.diagnostic.permissionStatus.RESTRICTED` - user cannot grant motion authorization.
-    - `cordova.plugins.diagnostic.permissionStatus.NOT_DETERMINED` - device does not support Pedometer Event Tracking, so authorization outcome cannot be determined.
+   - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
+   - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+   - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
+   - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
+   Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
+   - `cordova.plugins.diagnostic.motionStatus.NOT_DETERMINED` - authorization outcome cannot be determined because device does not support Pedometer Event Tracking.
+   Pedometer Event Tracking is only available on iPhones with an M7 co-processor (or above): that is iPhone 5s (or above). No iPads yet support it.
+   - `cordova.plugins.diagnostic.motionStatus.UNKNOWN` - motion tracking authorization is in an unknown state.
 - {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
 
 #### Example usage
 
-    cordova.plugins.diagnostic.requestAndCheckMotionAuthorization(function(status){
+    cordova.plugins.diagnostic.requestMotionAuthorization(function(status){
+        if(status === cordova.plugins.motionStatus.permissionStatus.GRANTED){
+            console.log("Motion tracking authorized");
+        }
+    }, function(error){
+        console.error(error);
+    });
+
+### getMotionAuthorizationStatus()
+
+Checks motion authorization status for the application.
+There's no direct way to determine if authorization was granted or denied, so the Pedometer API is used to indirectly determine this.
+
+
+    cordova.plugins.diagnostic.getMotionAuthorizationStatus(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+This callback function is passed a single string parameter indicating the result:
+   - `cordova.plugins.diagnostic.motionStatus.NOT_REQUESTED` - App has not yet requested this permission.
+   - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
+   - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+   - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
+   - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
+   Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
+   - `cordova.plugins.diagnostic.motionStatus.NOT_DETERMINED` - authorization outcome cannot be determined because device does not support Pedometer Event Tracking.
+   Pedometer Event Tracking is only available on iPhones with an M7 co-processor (or above): that is iPhone 5s (or above). No iPads yet support it.
+   - `cordova.plugins.diagnostic.motionStatus.UNKNOWN` - motion tracking authorization is in an unknown state.
+- {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getMotionAuthorizationStatus(function(status){
         if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
             console.log("Motion authorization allowed");
         }
