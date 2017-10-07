@@ -462,6 +462,18 @@ interface Diagnostic {
 
     /**
      * ANDROID ONLY
+     * Checks if the device data roaming setting is enabled.
+     * Returns true if data roaming is enabled.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isDataRoamingEnabled?: (
+        successCallback: (enabled: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
      * Returns the current location mode setting for the device.
      * @param successCallback
      * @param errorCallback
@@ -714,6 +726,28 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * ANDROID ONLY
+     * Checks if ADB mode(debug mode) is enabled.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isADBModeEnabled?: (
+        successCallback: (enabled: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Checks if device is rooted.
+     * @param successCallback
+     * @param errorCallback
+     */
+    isDeviceRooted?: (
+        successCallback: (enabled: boolean) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * iOS ONLY
      * Indicates if the app is registered for remote (push) notifications on the device.
      * @param successCallback
@@ -836,11 +870,22 @@ interface Diagnostic {
 
     /**
      * iOS ONLY
-     * Requests and checks motion authorization for the application.
+     * Requests motion authorization for the application.
      * @param successCallback
      * @param errorCallback
      */
-    requestAndCheckMotionAuthorization?: (
+    requestMotionAuthorization?: (
+        successCallback: (status: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * iOS ONLY
+     * Checks motion authorization status for the application.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getMotionAuthorizationStatus?: (
         successCallback: (status: string) => void,
         errorCallback: (error: string) => void
     ) => void;

@@ -566,6 +566,23 @@ var Diagnostic = (function(){
     };
 
     /**
+     * Checks if the device data roaming setting is enabled.
+     * Returns true if data roaming is enabled.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if data roaming is enabled.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isDataRoamingEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isDataRoamingEnabled',
+            []);
+    };
+
+    /**
      * Returns the current location mode setting for the device.
      *
      * @param {Function} successCallback -  The callback which will be called when the operation is successful.
@@ -1283,6 +1300,40 @@ var Diagnostic = (function(){
             errorCallback,
             'Diagnostic',
             'isRemoteNotificationsEnabled',
+            []);
+    };
+
+    /**
+     * Checks if ADB mode(debug mode) is switched on.
+     * Returns true if ADB mode is switched on.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if ADB mode(debug mode) is switched on.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isADBModeEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isADBModeEnabled',
+            []);
+    };
+
+    /**
+     * Checks if the device is rooted.
+     * Returns true if the device is rooted.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if the device is rooted.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isDeviceRooted = function(successCallback, errorCallback) {
+        return cordova.exec(ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isDeviceRooted',
             []);
     };
 

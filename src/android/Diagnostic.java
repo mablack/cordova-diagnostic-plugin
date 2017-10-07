@@ -21,8 +21,10 @@ package cordova.plugins;
 /*
  * Imports
  */
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +47,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
@@ -311,13 +314,15 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isNetworkLocationEnabled() ? 1 : 0);
             } else if(action.equals("getLocationMode")) {
                 callbackContext.success(getLocationModeName());
+            } else if(action.equals("isDataRoamingEnabled")) {
+                callbackContext.success(isDataRoamingEnabled() ? 1 : 0);
             } else if(action.equals("isWifiAvailable")) {
                 callbackContext.success(isWifiAvailable() ? 1 : 0);
             } else if(action.equals("isCameraPresent")) {
                 callbackContext.success(isCameraPresent() ? 1 : 0);
             } else if(action.equals("isBluetoothAvailable")) {
                 callbackContext.success(isBluetoothAvailable() ? 1 : 0);
-            }else if(action.equals("isBluetoothEnabled")) {
+            } else if(action.equals("isBluetoothEnabled")) {
                 callbackContext.success(isBluetoothEnabled() ? 1 : 0);
             } else if(action.equals("hasBluetoothSupport")) {
                 callbackContext.success(hasBluetoothSupport() ? 1 : 0);
@@ -354,6 +359,10 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isNFCAvailable() ? 1 : 0);
             } else if(action.equals("isRemoteNotificationsEnabled")) {
                 callbackContext.success(isRemoteNotificationsEnabled() ? 1 : 0);
+            } else if(action.equals("isADBModeEnabled")) {
+                callbackContext.success(isADBModeEnabled() ? 1 : 0);
+            } else if(action.equals("isDeviceRooted")) {
+                callbackContext.success(isDeviceRooted() ? 1 : 0);
             } else {
                 handleError("Invalid action");
                 return false;
@@ -426,6 +435,11 @@ public class Diagnostic extends CordovaPlugin{
         }catch(Exception e){
             Log.e(TAG, "Error retrieving current location mode on location state change: "+e.toString());
         }
+    }
+
+    public boolean isDataRoamingEnabled() throws Exception {
+        boolean result = Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
+        return result;
     }
 
     public boolean isWifiAvailable() {
@@ -649,6 +663,76 @@ public class Diagnostic extends CordovaPlugin{
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this.cordova.getActivity().getApplicationContext());
         boolean result = notificationManagerCompat.areNotificationsEnabled();
         return result;
+    }
+
+    /**
+     * get device ADB mode info
+     */
+    public int getADBMode(){
+        int mode;
+        Context context = this.cordova.getActivity().getApplicationContext();
+        if (Build.VERSION.SDK_INT >= 17){ // Jelly_Bean_MR1 and above
+            mode = Settings.Global.getInt(context.getContentResolver(), Settings.Global.ADB_ENABLED, 0);
+        } else { // Pre-Jelly_Bean_MR1
+            mode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ADB_ENABLED, 0);
+        }
+        return mode;
+    }
+
+    /**
+     * checks if ADB mode is on
+     * especially for debug mode check
+     */
+    public boolean isADBModeEnabled(){
+        boolean result = false;
+        try {
+            result = getADBMode() == 1;
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+        Log.d(TAG, "ADB mode enabled: " + result);
+        return result;
+    }
+
+    /**
+     * checks if device is rooted
+     * refer to: https://stackoverflow.com/questions/1101380
+     */
+    public boolean isDeviceRooted(){
+        // from build info 
+        String buildTags = android.os.Build.TAGS;
+        if (buildTags != null && buildTags.contains("test-keys")) {
+            return true;
+        }
+
+        // from binary exists
+        try {
+            String[] paths = { "/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", 
+                    "/data/local/bin/su", "/system/sd/xbin/su", "/system/bin/failsafe/su", "/data/local/su" };
+            for (String path : paths) {
+                if (new File(path).exists()) {
+                    return true;
+                }
+            } 
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        // from command authority
+        Process process = null;
+        try {
+            process = Runtime.getRuntime().exec(new String[] { "/system/xbin/which", "su" });
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            if (in.readLine() != null) {
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        } finally {
+            if (process != null) process.destroy();
+        }
+
+        return false;
     }
 
 
