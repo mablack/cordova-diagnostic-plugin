@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova.plugins.diagnostic"
-    version="3.7.0">
+    version="3.7.1">
 
     <name>Diagnostic</name>
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
@@ -26,12 +26,12 @@
         <!-- Default usage descriptions: override as necessary in .plist -->
         
         <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
-		    <string>This app requires access to your location when the screen is on and the app is displayed.</string>
+            <string>This app requires access to your location when the screen is on and the app is displayed.</string>
         </config-file>
         
         <!-- iOS >=11 -->
         <config-file target="*-Info.plist" parent="NSLocationAlwaysAndWhenInUseUsageDescription">
-		    <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
+            <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
         </config-file>
         
         <!-- iOS <=10 -->

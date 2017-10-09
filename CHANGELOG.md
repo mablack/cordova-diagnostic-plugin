@@ -1,4 +1,8 @@
 # CHANGELOG
+
+**v3.7.1**
+* Set Android Support Library version to v26.+. Fixes #240 - again!
+
 **v3.7.0**
 * Adds `isADBmodeEnabled()` and `isDeviceRooted()` for Android (thanks to [wangjian2672](https://github.com/wangjian2672))
 * Adds `isDataRoamingEnabled()` for Android (thanks to [dukhanov](https://github.com/dukhanov))
