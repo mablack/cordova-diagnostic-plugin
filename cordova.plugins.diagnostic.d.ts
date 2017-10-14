@@ -35,6 +35,13 @@ interface Diagnostic {
 
     /**
      * iOS ONLY
+     * Constants for requesting and reporting the various motion states.
+     * @type {Object}
+     */
+    motionStatus?: any;
+
+    /**
+     * iOS ONLY
      * Location authorization mode
      * @type {Object}
      */
