@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**v3.7.2**
+
+* Fix Android build errors due to stricter checks on WifiManager reference. Fixes #251.
+
 **v3.7.1**
 * Set Android Support Library version to v26.+. Fixes #240 - again!
 
