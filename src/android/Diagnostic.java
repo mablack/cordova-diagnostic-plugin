@@ -438,12 +438,17 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public boolean isDataRoamingEnabled() throws Exception {
-        boolean result = Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
+        boolean result;
+        if (Build.VERSION.SDK_INT < 17) {
+            result = Settings.System.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
+        }else{
+            result = Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
+        }
         return result;
     }
 
     public boolean isWifiAvailable() {
-        WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         boolean result = wifiManager.isWifiEnabled();
         return result;
     }
@@ -485,7 +490,7 @@ public class Diagnostic extends CordovaPlugin{
         }
         return false;
     }
-       
+
     public void switchToAppSettings() {
         Log.d(TAG, "Switch to App Settings");
         Intent appIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -533,7 +538,7 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public void setWifiState(boolean enable) {
-        WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (enable && !wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
         } else if (!enable && wifiManager.isWifiEnabled()) {
@@ -699,7 +704,7 @@ public class Diagnostic extends CordovaPlugin{
      * refer to: https://stackoverflow.com/questions/1101380
      */
     public boolean isDeviceRooted(){
-        // from build info 
+        // from build info
         String buildTags = android.os.Build.TAGS;
         if (buildTags != null && buildTags.contains("test-keys")) {
             return true;
@@ -707,13 +712,13 @@ public class Diagnostic extends CordovaPlugin{
 
         // from binary exists
         try {
-            String[] paths = { "/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", 
+            String[] paths = { "/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su",
                     "/data/local/bin/su", "/system/sd/xbin/su", "/system/bin/failsafe/su", "/data/local/su" };
             for (String path : paths) {
                 if (new File(path).exists()) {
                     return true;
                 }
-            } 
+            }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
