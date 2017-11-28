@@ -2777,7 +2777,9 @@ For example:
 
 # Example project
 
-An example project illustrating use of this plugin can be found here: [https://github.com/dpa99c/cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example)
+Example project using simple HTML/CSS/JS (no frameworks): [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example)
+
+Example project using Ionic Framework: [cordova-diagnostic-plugin-ionic-example](https://github.com/dpa99c/cordova-diagnostic-plugin-ionic-example)
 
 Phonegap Build users who want to validate the plugin in that environment can try building: [https://github.com/dpa99c/cordova-diagnostic-plugin-phonegap-build-example](https://github.com/dpa99c/cordova-diagnostic-plugin-phonegap-build-example)
 
