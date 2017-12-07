@@ -2649,11 +2649,14 @@ You can add these permissions either by manually editing the AndroidManifest.xml
 
     <platform name="android">
         <plugin name="cordova-custom-config" version="*"/>
-        <config-file target="AndroidManifest.xml" parent="/*">
+        <custom-config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-        </config-file>
+        </custom-config-file>
     </platform>
+    
+Note: If you're using Phonegap Build (or some other Cloud build system), `cordova-custom-config` won't work because it relies on hook scripts.
+For Phonegap Build you can use [`<config-file>` blocks](http://docs.phonegap.com/phonegap-build/configuring/config-file-element/) so long as you use `cli-6.5.0` or below (support for `<config-file>` blocks was dropped in `cli-7.0.1`).
 
 #### Android runtime permissions
 
@@ -2767,12 +2770,12 @@ For example:
 
     <platform name="ios">
         <plugin name="cordova-custom-config" version="*"/>
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+        <custom-config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
             <string>My custom message for always using location.</string>
-        </config-file>
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+        </custom-config-file>
+        <custom-config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
             <string>My custom message for using location when in use.</string>
-        </config-file>
+        </custom-config-file>
     </platform>
 
 # Example project
