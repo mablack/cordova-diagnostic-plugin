@@ -1,7 +1,9 @@
 # CHANGELOG
 
-**v3.7.2**
+**v3.7.3**
+* Revert "add switchToLocationSettings to iOS" (PR [#223](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/223) / commit 74e1d97939a3f7d3d14424761100d4506b55afa6). Resolves #262.
 
+**v3.7.2**
 * Fix Android build errors due to stricter checks on WifiManager reference. Fixes #251.
 
 **v3.7.1**
