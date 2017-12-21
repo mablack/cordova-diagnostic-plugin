@@ -1,19 +1,19 @@
 # CHANGELOG
 
 **v3.7.3**
-* Revert "add switchToLocationSettings to iOS" (PR [#223](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/223) / commit 74e1d97939a3f7d3d14424761100d4506b55afa6). Resolves #262.
+* Revert "add switchToLocationSettings to iOS" (PR [#223](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/223) / commit 74e1d97939a3f7d3d14424761100d4506b55afa6). Resolves [#262](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/262).
 
 **v3.7.2**
-* Fix Android build errors due to stricter checks on WifiManager reference. Fixes #251.
+* Fix Android build errors due to stricter checks on WifiManager reference. Fixes [#251](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/251).
 
 **v3.7.1**
-* Set Android Support Library version to v26.+. Fixes #240 - again!
+* Set Android Support Library version to v26.+. Fixes [#240](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/240) - again!
 
 **v3.7.0**
 * Adds `isADBmodeEnabled()` and `isDeviceRooted()` for Android (thanks to [wangjian2672](https://github.com/wangjian2672))
 * Adds `isDataRoamingEnabled()` for Android (thanks to [dukhanov](https://github.com/dukhanov))
-* Calls `isRegisteredForRemoteNotifications` on background thread for iOS 11. Fixes #238.
-* Rewrites Motion Tracking authorization for iOS to fix bugs and edge cases (see #197).
+* Calls `isRegisteredForRemoteNotifications` on background thread for iOS 11. Fixes [#238](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/238).
+* Rewrites Motion Tracking authorization for iOS to fix bugs and edge cases (see [#197](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/197)).
     * Splits `requestAndCheckMotionAuthorization()` into `requestMotionAuthorization()` and `getMotionAuthorizationStatus()`.
         * `getMotionAuthorizationStatus()` returns the current authorization status only and does not request permission if it has not already been requested.
         * `requestMotionAuthorization()` should now only be called once when `motionStatus` is `NOT_REQUESTED`. Calling more than once will invoke the error callback. 
@@ -34,7 +34,7 @@ Pin Android Compat and Support library deps to v25.+ to prevent unwanted v26 alp
 Fix Android bug with legacy API signatures for Camera functions, where 3rd argument (`externalStorage`) is `false`.
 
 **v3.6.3**
-Fix iOS bug causing location state change handlers to erroneously trigger early. Fixes #185 for iOS.
+Fix iOS bug causing location state change handlers to erroneously trigger early. Fixes [#185](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/185) for iOS.
 
 **v3.6.2**
 Fix bug in mapping of legacy camera API function signatures for iOS and Windows.
@@ -46,7 +46,7 @@ Fix bug in mapping of legacy camera API function signatures for Android.
 * Undeprecate legacy camera API and support multiple call signatures for camera API methods for the benefit of ionic-native wrapper.
 
 **v3.5.0**
-* Enable option to request/check only CAMERA permission on Android when using camera methods. Fixes #178.
+* Enable option to request/check only CAMERA permission on Android when using camera methods. Fixes [#178](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/178).
 
 **v3.4.2**
 * Check Android SDK version for attempting to check for Bluetooth LE Peripheral support
@@ -54,11 +54,11 @@ Fix bug in mapping of legacy camera API function signatures for Android.
 
 
 **v3.4.1**
-* Add missing export. Fixes #173
+* Add missing export. Fixes [#173](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/173)
 * Add missing NFC state constant and cordova reference to typings
 
 **v3.4.0**
-* Add notes for Phonegap Build regarding setting latest CLI version and PGB example project. Clarifies #168.
+* Add notes for Phonegap Build regarding setting latest CLI version and PGB example project. Clarifies [#168](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/168).
 * customize to add api for requestExternalStorage permission for android
 * Standardize and document Android external storage permissions convenience methods.
 * Support for Android external SD card details
@@ -86,20 +86,20 @@ Fix bug in mapping of legacy camera API function signatures for Android.
 * Document how to handle outcome of requesting Bluetooth authorization
 
 **v3.2.2**
-* Fix switchToSettings for iOS 9. Resolves #127.
-* Fix isRemoteNotificationsEnabled() and isRemoteNotificationsEnabled() for iOS 9. Resolves #129.
+* Fix switchToSettings for iOS 9. Resolves [#127](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/127).
+* Fix isRemoteNotificationsEnabled() and isRemoteNotificationsEnabled() for iOS 9. Resolves [#129](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/129).
 
 **v3.2.1**
 * Conditionally include UserNotifications framework only for iOS 10+ to prevent errors in older versions.
 * Move imports to Diagnostic.h
 * Use conditional compiler comments to wrap iOS 10-specific code to prevent compiler errors on XCode 7
-* Add note on v3.2 build requirements. Resolves #124.
-* Fix erroneous early invocation of requestLocationAuthorization callback on iOS. Fixes #123.
+* Add note on v3.2 build requirements. Resolves [#124](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/124).
+* Fix erroneous early invocation of requestLocationAuthorization callback on iOS. Fixes [#123](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/123).
 
 **v3.2.0**
 * Add missing usage description for reminders (required by iOS 10).
 * Add UserNotifications framework to enable diagnostics of remote (push) notifications on iOS 10.
-* Rework remote notifications diagnostics to use new UserNotifications framework in iOS 10+. Fixes #121.
+* Rework remote notifications diagnostics to use new UserNotifications framework in iOS 10+. Fixes [#121](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/121).
 * Rework sending of plugin results to factorise out common code.
 * Add iOS-version conditionality to fix deprecation warnings in iOS 10.
 
@@ -107,29 +107,29 @@ Fix bug in mapping of legacy camera API function signatures for Android.
 * Adds NSContactsUsageDescription (iOS10)
 
 **v3.1.6**
-* Add new iOS usage description keys, as now required by iOS 10 to prevent build rejection on submission to App Store. Fixes #116.
+* Add new iOS usage description keys, as now required by iOS 10 to prevent build rejection on submission to App Store. Fixes [#116](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/116).
 
 **v3.1.5**
 * Bug fix: getMicrophoneAuthorizationStatus() returns "granted" but the Diagnostic.permissionStatus.GRANTED constant is "authorized"
 
 **v3.1.4**
-* Add missing reference to Contacts framework for iOS. Resolves #106.
-* Add missing initialisation of contacts store (introduce by pull request #98). Fixes #113.
+* Add missing reference to Contacts framework for iOS. Resolves [#106](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/106).
+* Add missing initialisation of contacts store (introduce by pull request [#98](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/98)). Fixes [#113](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/113).
 * Enable de-registering of existing handler functions by passing an falsey value.
-* Prevent multiple runtime permission requests on Android using a semaphore. Resolves #99. 
+* Prevent multiple runtime permission requests on Android using a semaphore. Resolves [#99](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/99). 
 * Add functions to listen for completion of runtime permission requests and to indicate if a permission request is in progress.
 
 **v3.1.3**
 * Fixed iOS Warnings for deprecations
 
 **v3.1.2**
-* Unpin major version of Android support library to enable latest SDK version to be used. Resolves #105.
+* Unpin major version of Android support library to enable latest SDK version to be used. Resolves [#105](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/105).
 
 
 **v3.1.1**
-* Return current (rather than cached) state of Bluetooth adapter on Android. Fixes #97.
-* Add empty locationAuthorizationMode object to Android implementation. Resolves #90.
-* Add support for checking iOS background refresh authorization status. Resolves #95
+* Return current (rather than cached) state of Bluetooth adapter on Android. Fixes [#97](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/97).
+* Add empty locationAuthorizationMode object to Android implementation. Resolves [#90](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/90).
+* Add support for checking iOS background refresh authorization status. Resolves [#95](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/95)
 
 **v3.1.0**
 
@@ -194,19 +194,19 @@ iOS:
 
 **v2.3.13**
 
-- Fix erroneous reference to invalidPermissions. Fixes #42.
+- Fix erroneous reference to invalidPermissions. Fixes [#42](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/42).
 - Document deprecation of registerLocationAuthorizationStatusChangeHandler()
 
 **v2.3.12**
 
-- Simplify the handling of user response to location authorization request on iOS. Fixes #35.
+- Simplify the handling of user response to location authorization request on iOS. Fixes [#35](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/35).
 
 **v2.3.11**
 
 - Callback to JS in WebView-agnostic way from iOS native
 - Change so only one location permission type is needed more location to be authorized on Android
-- Robustify check for UIApplicationOpenSettingsURLString. Fixes #34.
-- Update docs regarding requestLocationAuthorization on iOS vs Android. Improves #35 but doesn't entirely fix it.
+- Robustify check for UIApplicationOpenSettingsURLString. Fixes [#34](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/34).
+- Update docs regarding requestLocationAuthorization on iOS vs Android. Improves [#35](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/35) but doesn't entirely fix it.
 - Fixed requestCameraAuthorization returning DENIED_ALWAYS when access is granted on Android
 
 **v2.3.10**
@@ -215,7 +215,7 @@ iOS:
 
 **v2.3.9**
 
-- Ensure plugin methods return boolean true/false (not integer 0/1). Fixes #28.
+- Ensure plugin methods return boolean true/false (not integer 0/1). Fixes [#28](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/28).
 
 **v2.3.0**
 
