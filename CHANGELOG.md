@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v3.8.0**
+TODO
+
 **v3.7.3**
 * Revert "add switchToLocationSettings to iOS" (PR [#223](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/223) / commit 74e1d97939a3f7d3d14424761100d4506b55afa6). Resolves [#262](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/262).
 
