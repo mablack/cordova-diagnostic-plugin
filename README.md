@@ -33,6 +33,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
   - [Android and iOS](#android-and-ios)
     - [permissionStatus constants](#permissionstatus-constants)
     - [bluetoothState constants](#bluetoothstate-constants)
+    - [enableDebug()](#enabledebug)
     - [isLocationEnabled()](#islocationenabled)
     - [isLocationAuthorized()](#islocationauthorized)
     - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
@@ -586,6 +587,26 @@ Defines constants for the various Bluetooth hardware states
         }
     }, function(error){
         console.error(error);
+    });
+    
+### enableDebug()
+
+Enables debug mode, which logs native debug messages to the native and JS consoles.
+- For Android, log messages will appear in the native logcat output and in the JS console if Chrome Developer Tools is connected to the app Webview.
+- For Android, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
+- Debug mode is initially disabled on plugin initialisation.
+
+
+    cordova.plugins.diagnostic.enableDebug(successCallback);
+    
+#### Parameters
+
+- {Function} successCallback - The callback which will be called when debug has been enabled.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.enableDebug(function(){
+        console.log("Debug is enabled"));
     });
 
 ### isLocationEnabled()

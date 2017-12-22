@@ -91,6 +91,20 @@ var Diagnostic = (function(){
      ***********/
 
     /**
+     * Enables debug mode, which logs native debug messages to the native and JS consoles.
+     * Debug mode is initially disabled on plugin initialisation.
+     *
+     * @param {Function} successCallback - The callback which will be called when enabling debug is successful.
+     */
+    Diagnostic.enableDebug = function(successCallback) {
+        return cordova.exec(successCallback,
+            null,
+            'Diagnostic',
+            'enableDebug',
+            []);
+    };
+
+    /**
      * Switch to settings app. Opens settings page for this app.
      *
      * @param {Function} successCallback - The callback which will be called when switch to settings is successful.

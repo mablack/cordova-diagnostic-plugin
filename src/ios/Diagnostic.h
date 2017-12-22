@@ -37,6 +37,8 @@
     @property (nonatomic) EKEventStore *eventStore;
     @property (nonatomic, retain) NSString* currentLocationAuthorizationStatus;
 
+- (void) enableDebug: (CDVInvokedUrlCommand*)command;
+
 - (void) isLocationAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isLocationAuthorized: (CDVInvokedUrlCommand*)command;

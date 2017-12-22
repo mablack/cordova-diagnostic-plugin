@@ -180,6 +180,15 @@ interface Diagnostic {
 
     /**
      * ANDROID and iOS ONLY
+     * Enables debug mode, which logs native plugin debug messages to the native and JS consoles.
+     * Debug mode is initially disabled on plugin initialisation.
+     */
+    enableDebug?: (
+        successCallback: () => void
+    ) => void;
+
+    /**
+     * ANDROID and iOS ONLY
      * Returns true if the device setting for location is on. 
      * On Android this returns true if Location Mode is switched on. 
      * On iOS this returns true if Location Services is switched on.
