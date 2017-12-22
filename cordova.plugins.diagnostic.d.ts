@@ -430,6 +430,22 @@ interface Diagnostic {
 
     /**
      * ANDROID ONLY
+     * Restarts the application.
+     * By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
+     * However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
+     * This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
+     *
+     * Note: There is no successCallback() since if the operation is successful, the application will restart immediately before any success callback can be applied.
+     * @param {(error: string) => void} errorCallback
+     * @param {boolean} cold
+     */
+    restart?: (
+        errorCallback: (error: string) => void,
+        cold: boolean
+    ) => void;
+
+    /**
+     * ANDROID ONLY
      * Checks if high-accuracy locations are available to the app from GPS hardware.
      * Returns true if Location mode is enabled and is set to "Device only" or "High accuracy" AND if the app is authorised to use location.
      * @param successCallback

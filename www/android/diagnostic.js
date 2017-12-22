@@ -1301,6 +1301,21 @@ var Diagnostic = (function(){
     };
 
     /**
+     * Registers a function to be called when a change in NFC state occurs.
+     * Pass in a falsey value to de-register the currently registered function.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the NFC state changes.
+     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.NFCState`.
+     */
+    Diagnostic.registerNFCStateChangeHandler = function(successCallback) {
+        Diagnostic._onNFCStateChange = successCallback || function(){};
+    };
+
+    /**********************
+     * Remote Notifications
+     **********************/
+
+    /**
      * Checks if remote notifications is available to the app.
      * Returns true if remote notifications are switched on.
      *
@@ -1316,6 +1331,11 @@ var Diagnostic = (function(){
             'isRemoteNotificationsEnabled',
             []);
     };
+
+
+    /**********************
+     * System Utilities
+     **********************/
 
     /**
      * Checks if ADB mode(debug mode) is switched on.
@@ -1352,14 +1372,26 @@ var Diagnostic = (function(){
     };
 
     /**
-     * Registers a function to be called when a change in NFC state occurs.
-     * Pass in a falsey value to de-register the currently registered function.
+     * Restarts the application.
+     * By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
+     * However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
+     * This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
      *
-     * @param {Function} successCallback -  The callback which will be called when the NFC state changes.
-     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.NFCState`.
+     * Note: There is no successCallback() since if the operation is successful, the application will restart immediately before any success callback can be applied.
+     *
+     * @param {Function} successCallback - function to call on successful retrieval of status.
+     * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
+     * @param {Function} errorCallback - function to call on failure to retrieve authorisation status.
+     * This callback function is passed a single string parameter containing the error message.
+     * @param {Boolean} cold - if true the application will be cold restarted. Defaults to false.
      */
-    Diagnostic.registerNFCStateChangeHandler = function(successCallback) {
-        Diagnostic._onNFCStateChange = successCallback || function(){};
+    Diagnostic.restart = function(errorCallback, cold){
+        return cordova.exec(
+            null,
+            errorCallback,
+            'Diagnostic',
+            'restart',
+            [cold]);
     };
 
 

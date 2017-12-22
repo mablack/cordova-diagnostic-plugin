@@ -85,6 +85,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isNFCAvailable()](#isnfcavailable)
     - [isADBModeEnabled()](#isadbmodeenabled)
     - [isDeviceRooted()](#isdevicerooted)
+    - [restart()](#restart)
     - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
     - [NFCState constants](#nfcstate-constants)
   - [iOS only](#ios-only)
@@ -2142,6 +2143,38 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     });
+    
+### restart()
+
+Restarts the application.
+By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
+
+However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
+This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
+
+Note: There is no `successCallback()` since if the operation is successful, the application will restart immediately before any success callback can be applied.
+
+    cordova.plugins.diagnostic.restart(errorCallback, cold);
+
+#### Parameters
+
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+- {Boolean} cold - if true the application will be cold restarted. Defaults to false.
+
+
+#### Example usage
+
+    var onError = function(error){
+        console.error("The following error occurred: "+error);
+    }
+    
+    // Warm restart
+    cordova.plugins.diagnostic.restart(onError, false);
+        
+    // Cold restart
+    cordova.plugins.diagnostic.restart(onError, true);
+    
 ### registerNFCStateChangeHandler()
 
 Registers a function to be called when a change in NFC state occurs.
