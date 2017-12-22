@@ -71,6 +71,13 @@ interface Diagnostic {
     NFCState?: any;
 
     /**
+     * ANDROID ONLY
+     * Constants for the various CPU architectures.
+     * @type {Object}
+     */
+    cpuArchitecture?: any;
+
+    /**
      * Checks if app is able to access device location.
      * @param successCallback
      * @param errorCallback
@@ -442,6 +449,17 @@ interface Diagnostic {
     restart?: (
         errorCallback: (error: string) => void,
         cold: boolean
+    ) => void;
+
+    /**
+     * ANDROID and iOS ONLY
+     * Returns CPU architecture of the current device.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getArchitecture?: (
+        successCallback: (state: string) => void,
+        errorCallback: (error: string) => void
     ) => void;
 
     /**

@@ -209,6 +209,15 @@ public class Diagnostic extends CordovaPlugin{
     public static final String NFC_STATE_ON = "powered_on";
     public static final String NFC_STATE_TURNING_OFF = "powering_off";
 
+    public static final String CPU_ARCH_UNKNOWN = "unknown";
+    public static final String CPU_ARCH_ARMv6 = "ARMv6";
+    public static final String CPU_ARCH_ARMv7 = "ARMv7";
+    public static final String CPU_ARCH_ARMv8 = "ARMv8";
+    public static final String CPU_ARCH_X86 = "X86";
+    public static final String CPU_ARCH_X86_64 = "X86_64";
+    public static final String CPU_ARCH_MIPS = "MIPS";
+    public static final String CPU_ARCH_MIPS_64 = "MIPS_64";
+
     /*************
      * Variables *
      *************/
@@ -374,6 +383,8 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isDeviceRooted() ? 1 : 0);
             } else if(action.equals("restart")) {
                 this.restart(args);
+            } else if(action.equals("getArchitecture")) {
+                callbackContext.success(getCPUArchitecture());
             } else {
                 handleError("Invalid action");
                 return false;
@@ -1235,6 +1246,44 @@ public class Diagnostic extends CordovaPlugin{
         } catch (Exception ex) {
             handleError(baseError+ ex.getMessage());
         }
+    }
+
+    private String getCPUArchitecture(){
+        String arch = CPU_ARCH_UNKNOWN;
+
+        String abi = null;
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            abi = Build.CPU_ABI;
+        } else {
+            abi = Build.SUPPORTED_ABIS[0];
+        }
+
+        switch(abi){
+            case "armeabi":
+                arch = CPU_ARCH_ARMv6;
+                break;
+            case "armeabi-v7a":
+                arch = CPU_ARCH_ARMv7;
+                break;
+            case "arm64-v8a":
+                arch = CPU_ARCH_ARMv8;
+                break;
+            case "x86":
+                arch = CPU_ARCH_X86;
+                break;
+            case "x86_64":
+                arch = CPU_ARCH_X86_64;
+                break;
+            case "mips":
+                arch = CPU_ARCH_MIPS;
+                break;
+            case "mips64":
+                arch = CPU_ARCH_MIPS_64;
+                break;
+        }
+
+        return arch;
     }
 
     /************

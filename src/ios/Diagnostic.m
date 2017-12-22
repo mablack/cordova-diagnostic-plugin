@@ -24,6 +24,13 @@
 
 NSString*const LOG_TAG = @"Diagnostic[native]";
 
+NSString*const CPU_ARCH_UNKNOWN = @"unknown";
+NSString*const CPU_ARCH_ARMv6 = @"ARMv6";
+NSString*const CPU_ARCH_ARMv7 = @"ARMv7";
+NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
+NSString*const CPU_ARCH_X86 = @"X86";
+NSString*const CPU_ARCH_X86_64 = @"X86_64";
+
 BOOL debugEnabled = false;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
@@ -873,6 +880,47 @@ ABAddressBookRef _addressBook;
     }
 }
 
+// https://stackoverflow.com/a/38441011/777265
+- (void) getArchitecture: (CDVInvokedUrlCommand*)command {
+    @try {
+        NSString* cpuArch = CPU_ARCH_UNKNOWN;
+
+        size_t size;
+        cpu_type_t type;
+        cpu_subtype_t subtype;
+        size = sizeof(type);
+        sysctlbyname("hw.cputype", &type, &size, NULL, 0);
+
+        size = sizeof(subtype);
+        sysctlbyname("hw.cpusubtype", &subtype, &size, NULL, 0);
+
+        // values for cputype and cpusubtype defined in mach/machine.h
+        if (type == CPU_TYPE_X86_64) {
+          cpuArch = CPU_ARCH_X86_64;
+        } else if (type == CPU_TYPE_X86) {
+          cpuArch = CPU_ARCH_X86;
+        } else if (type == CPU_TYPE_ARM64) {
+            cpuArch = CPU_ARCH_ARMv8;
+        } else if (type == CPU_TYPE_ARM) {
+          switch(subtype){
+              case CPU_SUBTYPE_ARM_V6:
+                  cpuArch = CPU_ARCH_ARMv6;
+                  break;
+              case CPU_SUBTYPE_ARM_V7:
+                  cpuArch = CPU_ARCH_ARMv7;
+                  break;
+              case CPU_SUBTYPE_ARM_V8:
+                  cpuArch = CPU_ARCH_ARMv8;
+                  break;
+          }
+        }
+        [self logDebug:[NSString stringWithFormat:@"Current CPU architecture: %@", cpuArch]];
+        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:cpuArch] :command];
+  }@catch (NSException *exception) {
+      [self handlePluginException:exception :command];
+  }
+}
+
 
 /********************************/
 #pragma mark - Send results
@@ -1132,6 +1180,7 @@ ABAddressBookRef _addressBook;
     }
 }
 #endif
+
 
 - (NSString*)getBluetoothState{
     NSString* state;

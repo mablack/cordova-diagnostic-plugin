@@ -3,6 +3,7 @@
 **v3.8.0**
 * Add `enableDebug()` to Android and iOS which outputs native plugin debug messages to native and JS consoles.
 * Add `restart()` to Android which warm/cold restarts the app.
+* Add `getArchitecture()` to Android and iOS to return the CPU architecture of the current device.
 
 **v3.7.3**
 * Revert "add switchToLocationSettings to iOS" (PR [#223](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/223) / commit 74e1d97939a3f7d3d14424761100d4506b55afa6). Resolves [#262](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/262).

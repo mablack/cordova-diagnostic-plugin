@@ -33,7 +33,9 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
   - [Android and iOS](#android-and-ios)
     - [permissionStatus constants](#permissionstatus-constants)
     - [bluetoothState constants](#bluetoothstate-constants)
+    - [cpuArchitecture constants](#cpuarchitecture-constants)
     - [enableDebug()](#enabledebug)
+    - [getArchitecture()](#getarchitecture)
     - [isLocationEnabled()](#islocationenabled)
     - [isLocationAuthorized()](#islocationauthorized)
     - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
@@ -590,6 +592,36 @@ Defines constants for the various Bluetooth hardware states
         console.error(error);
     });
     
+### cpuArchitecture constants
+
+Defines constants for the various CPU architectures of the current hardware returned by [getArchitecture()](#getarchitecture).
+
+        cordova.plugins.diagnostic.cpuArchitecture
+
+#### Android
+
+- `UNKNOWN` - Unknown CPU architecture
+- `ARMv6` - ARM v6 or below (32 bit)
+- `ARMv7` - ARM v7 (32 bit)
+- `ARMv8` - ARM v8 (64 bit)
+- `X86` - Intel x86 (32 bit)
+- `X86_64` - Intel x86 (64 bit)
+- `MIPS` - MIPS (32 bit)
+- `MIPS_64` - MIPS (64 bit)
+
+#### iOS
+
+- `UNKNOWN` - Unknown CPU architecture
+- `ARMv6` - ARM v6 or below (32 bit)
+- `ARMv7` - ARM v7 (32 bit)
+- `ARMv8` - ARM v8 (64 bit)
+- `X86` - Intel x86 (32 bit)
+- `X86_64` - Intel x86 (64 bit)
+
+#### Example usage
+
+See [getArchitecture()](#getarchitecture).
+    
 ### enableDebug()
 
 Enables debug mode, which logs native debug messages to the native and JS consoles.
@@ -608,6 +640,30 @@ Enables debug mode, which logs native debug messages to the native and JS consol
 
     cordova.plugins.diagnostic.enableDebug(function(){
         console.log("Debug is enabled"));
+    });
+    
+### getArchitecture()
+
+Returns the CPU architecture of the current device.
+
+    cordova.plugins.diagnostic.getArchitecture(successCallback, errorCallback);
+    
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which indicates the location authorization status as a [cpuArchitecture constant](#cpuarchitecture-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getArchitecture(function(arch){
+        if(arch === cordova.plugins.diagnostic.cpuArchitecture.X86
+        || arch === cordova.plugins.diagnostic.cpuArchitecture.X86_64){
+            console.log("Intel inside");
+        }
+    }, function(error){
+        console.error(error);
     });
 
 ### isLocationEnabled()

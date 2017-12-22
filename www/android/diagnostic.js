@@ -119,6 +119,17 @@ var Diagnostic = (function(){
         "POWERED_ON": "powered_on",
         "POWERING_OFF": "powering_off"
     };
+    
+    Diagnostic.cpuArchitecture = {
+        UNKNOWN: "unknown",
+        ARMv6: "ARMv6",
+        ARMv7: "ARMv7",
+        ARMv8: "ARMv8",
+        X86: "X86",
+        X86_64: "X86_64",
+        MIPS: "MIPS",
+        MIPS_64: "MIPS_64"
+    };
 
 
     /********************
@@ -1392,6 +1403,22 @@ var Diagnostic = (function(){
             'Diagnostic',
             'restart',
             [cold]);
+    };
+
+    /**
+     * Returns CPU architecture of the current device.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.cpuArchitecture`.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getArchitecture = function(successCallback, errorCallback) {
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getArchitecture',
+            []);
     };
 
 
