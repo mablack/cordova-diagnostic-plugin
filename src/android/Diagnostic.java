@@ -1258,30 +1258,15 @@ public class Diagnostic extends CordovaPlugin{
         } else {
             abi = Build.SUPPORTED_ABIS[0];
         }
-
-        switch(abi){
-            case "armeabi":
-                arch = CPU_ARCH_ARMv6;
-                break;
-            case "armeabi-v7a":
-                arch = CPU_ARCH_ARMv7;
-                break;
-            case "arm64-v8a":
-                arch = CPU_ARCH_ARMv8;
-                break;
-            case "x86":
-                arch = CPU_ARCH_X86;
-                break;
-            case "x86_64":
-                arch = CPU_ARCH_X86_64;
-                break;
-            case "mips":
-                arch = CPU_ARCH_MIPS;
-                break;
-            case "mips64":
-                arch = CPU_ARCH_MIPS_64;
-                break;
-        }
+           
+           
+        if(abi == "armeabi") { arch = CPU_ARCH_ARMv6; }
+        else if(abi == "armeabi-v7a") { arch = CPU_ARCH_ARMv7; }
+        else if(abi == "arm64-v8a") { arch = CPU_ARCH_ARMv8; }
+        else if(abi == "x86") { arch = CPU_ARCH_X86; }
+        else if(abi == "x86_64") { arch = CPU_ARCH_X86_64; }
+        else if(abi == "mips") { arch = CPU_ARCH_MIPS; }
+        else if(abi == "mips64") { arch = CPU_ARCH_MIPS_64; }
 
         return arch;
     }
