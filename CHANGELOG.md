@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v3.8.1**
+* Use `if else` instead of `switch` on CPU arch strings for backward-compatibility to Java 6. [PR #263](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/263). Fixes [#264](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/264). 
+
 **v3.8.0**
 * Add `enableDebug()` to Android and iOS which outputs native plugin debug messages to native and JS consoles.
 * Add `restart()` to Android which warm/cold restarts the app.
