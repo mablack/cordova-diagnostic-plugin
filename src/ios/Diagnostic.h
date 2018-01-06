@@ -66,6 +66,8 @@
 - (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command;
 - (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command;
 - (void) isRegisteredForRemoteNotifications: (CDVInvokedUrlCommand*)command;
+- (void) getRemoteNotificationsAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) requestRemoteNotificationsAuthorization: (CDVInvokedUrlCommand*)command;
 
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 

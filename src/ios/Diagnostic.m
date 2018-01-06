@@ -24,14 +24,25 @@
 
 NSString*const LOG_TAG = @"Diagnostic[native]";
 
-NSString*const CPU_ARCH_UNKNOWN = @"unknown";
+NSString*const UNKNOWN = @"unknown";
+
 NSString*const CPU_ARCH_ARMv6 = @"ARMv6";
 NSString*const CPU_ARCH_ARMv7 = @"ARMv7";
 NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
 NSString*const CPU_ARCH_X86 = @"X86";
 NSString*const CPU_ARCH_X86_64 = @"X86_64";
 
+NSString*const AUTHORIZATION_NOT_DETERMINED = @"not_determined";
+NSString*const AUTHORIZATION_DENIED = @"denied";
+NSString*const AUTHORIZATION_GRANTED = @"authorized";
+
+NSString*const REMOTE_NOTIFICATIONS_ALERT = @"alert";
+NSString*const REMOTE_NOTIFICATIONS_SOUND = @"sound";
+NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
+
+
 BOOL debugEnabled = false;
+float osVersion;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
 ABAddressBookRef _addressBook;
@@ -39,6 +50,8 @@ ABAddressBookRef _addressBook;
 - (void)pluginInitialize {
     
     [super pluginInitialize];
+    
+    osVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
     
     self.locationRequestCallbackId = nil;
     self.currentLocationAuthorizationStatus = nil;
@@ -103,7 +116,7 @@ ABAddressBookRef _addressBook;
     @try {
         NSString* status = [self getLocationAuthorizationStatusAsString:[CLLocationManager authorizationStatus]];
         [self logDebug:[NSString stringWithFormat:@"Location authorization status is: %@", status]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -173,14 +186,14 @@ ABAddressBookRef _addressBook;
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         
         if(authStatus == AVAuthorizationStatusDenied || authStatus == AVAuthorizationStatusRestricted){
-            status = @"denied";
+            status = AUTHORIZATION_DENIED;
         }else if(authStatus == AVAuthorizationStatusNotDetermined){
-            status = @"not_determined";
+            status = AUTHORIZATION_NOT_DETERMINED;
         }else if(authStatus == AVAuthorizationStatusAuthorized){
-            status = @"authorized";
+            status = AUTHORIZATION_GRANTED;
         }
         [self logDebug:[NSString stringWithFormat:@"Camera authorization status is: %@", status]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -202,7 +215,7 @@ ABAddressBookRef _addressBook;
 - (void) isCameraRollAuthorized: (CDVInvokedUrlCommand*)command
 {
     @try {
-        [self sendPluginResultBool:[[self getCameraRollAuthorizationStatus]  isEqual: @"authorized"] :command];
+        [self sendPluginResultBool:[[self getCameraRollAuthorizationStatus]  isEqual: AUTHORIZATION_GRANTED] :command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -214,7 +227,7 @@ ABAddressBookRef _addressBook;
     @try {
         NSString* status = [self getCameraRollAuthorizationStatus];
         [self logDebug:[NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -226,7 +239,7 @@ ABAddressBookRef _addressBook;
     @try {
         [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus authStatus) {
             NSString* status = [self getCameraRollAuthorizationStatusAsString:authStatus];
-            [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+            [self sendPluginResultString:status:command];
         }];
     }
     @catch (NSException *exception) {
@@ -297,7 +310,7 @@ ABAddressBookRef _addressBook;
     @try {
         NSString* state = [self getBluetoothState];
         [self logDebug:[NSString stringWithFormat:@"Bluetooth state is: %@", state]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:state] :command];
+        [self sendPluginResultString:state:command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -347,7 +360,7 @@ ABAddressBookRef _addressBook;
                 [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] :command];
             }
         }else{
-            [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not supported below iOS 8"]:command];
+            [self sendPluginError:@"Not supported below iOS 8":command];
         }
     }
     @catch (NSException *exception) {
@@ -371,7 +384,7 @@ ABAddressBookRef _addressBook;
         }
         [self sendPluginResultBool:recordPermission == AVAudioSessionRecordPermissionGranted :command];
 #else
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only supported on iOS 8 and higher"]:command];
+        [self sendPluginError:@"Only supported on iOS 8 and higher":command];
 #endif
     }
     @catch (NSException *exception) {
@@ -387,20 +400,20 @@ ABAddressBookRef _addressBook;
         AVAudioSessionRecordPermission recordPermission = [AVAudioSession sharedInstance].recordPermission;
         switch(recordPermission){
             case AVAudioSessionRecordPermissionDenied:
-                status = @"denied";
+                status = AUTHORIZATION_DENIED;
                 break;
             case AVAudioSessionRecordPermissionGranted:
-                status = @"authorized";
+                status = AUTHORIZATION_GRANTED;
                 break;
             case AVAudioSessionRecordPermissionUndetermined:
-                status = @"not_determined";
+                status = AUTHORIZATION_NOT_DETERMINED;
                 break;
         }
         
         [self logDebug:[NSString stringWithFormat:@"Microphone authorization status is: %@", status]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
 #else
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Only supported on iOS 8 and higher"]:command];
+        [self sendPluginError:@"Only supported on iOS 8 and higher":command];
 #endif
     }
     @catch (NSException *exception) {
@@ -512,21 +525,21 @@ ABAddressBookRef _addressBook;
     // iOS 8+
     NSMutableDictionary* types = [[NSMutableDictionary alloc]init];
     if(alertsEnabled) {
-        [types setValue:@"1" forKey:@"alert"];
+        [types setValue:@"1" forKey:REMOTE_NOTIFICATIONS_ALERT];
     } else {
-        [types setValue:@"0" forKey:@"alert"];
+        [types setValue:@"0" forKey:REMOTE_NOTIFICATIONS_ALERT];
     }
     if(badgesEnabled) {
-        [types setValue:@"1" forKey:@"badge"];
+        [types setValue:@"1" forKey:REMOTE_NOTIFICATIONS_BADGE];
     } else {
-        [types setValue:@"0" forKey:@"badge"];
+        [types setValue:@"0" forKey:REMOTE_NOTIFICATIONS_BADGE];
     }
     if(soundsEnabled) {
-        [types setValue:@"1" forKey:@"sound"];
+        [types setValue:@"1" forKey:REMOTE_NOTIFICATIONS_SOUND];
     } else {;
-        [types setValue:@"0" forKey:@"sound"];
+        [types setValue:@"0" forKey:REMOTE_NOTIFICATIONS_SOUND];
     }
-    [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[self objectToJsonString:types]] :command];
+    [self sendPluginResultString:[self objectToJsonString:types]:command];
 }
 
 
@@ -563,22 +576,117 @@ ABAddressBookRef _addressBook;
             // iOS 10+
             UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
             [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                NSString* status = @"unknown";
+                NSString* status = UNKNOWN;
                 UNAuthorizationStatus authStatus = settings.authorizationStatus;
                 if(authStatus == UNAuthorizationStatusDenied){
-                    status = @"denied";
+                    status = AUTHORIZATION_DENIED;
                 }else if(authStatus == UNAuthorizationStatusNotDetermined){
-                    status = @"not_determined";
+                    status = AUTHORIZATION_NOT_DETERMINED;
                 }else if(authStatus == UNAuthorizationStatusAuthorized){
-                    status = @"authorized";
+                    status = AUTHORIZATION_GRANTED;
                 }
                 [self logDebug:[NSString stringWithFormat:@"Remote notifications authorization status is: %@", status]];
-                [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+                [self sendPluginResultString:status:command];
             }];
 #endif
         } else{
             // iOS <= 9
-            [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"getRemoteNotificationsAuthorizationStatus() is not supported below iOS 10"]:command];
+            [self sendPluginError:@"getRemoteNotificationsAuthorizationStatus() is not supported below iOS 10":command];
+        }
+    }
+    @catch (NSException *exception) {
+        [self handlePluginException:exception:command];
+    }
+}
+
+- (void) requestRemoteNotificationsAuthorization: (CDVInvokedUrlCommand*)command
+{
+    @try {
+        NSString* s_options = [command.arguments objectAtIndex:0];
+        if([self isNull:s_options]){
+            NSArray* a_options = [NSArray arrayWithObjects:REMOTE_NOTIFICATIONS_ALERT, REMOTE_NOTIFICATIONS_SOUND, REMOTE_NOTIFICATIONS_BADGE, nil];
+            s_options = [self arrayToJsonString:a_options];
+        }
+        NSDictionary* d_options = [self jsonStringToDictionary:s_options];
+        
+        if(NSClassFromString(@"UNUserNotificationCenter")) {
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+            // iOS 10+
+            BOOL omitRegistration = [[command argumentAtIndex:1] boolValue];
+            UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+            
+            [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                UNAuthorizationStatus authStatus = settings.authorizationStatus;
+                if(authStatus == UNAuthorizationStatusNotDetermined){
+                    UNAuthorizationOptions options = 0;
+                    for(id key in d_options){
+                        NSString* s_key = (NSString*) key;
+                        if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
+                            options = options + UNAuthorizationOptionAlert;
+                        }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_SOUND]){
+                            options = options + UNAuthorizationOptionSound;
+                        }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_BADGE]){
+                            options = options + UNAuthorizationOptionBadge;
+                        }
+                    }
+                    
+                    [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                        if(error != nil){
+                            [self sendPluginError:[NSString stringWithFormat:@"Error when requesting remote notifications authorization: %@", error] :command];
+                        }else if (granted) {
+                            [self logDebug:@"Remote notifications authorization granted"];
+                            if(!omitRegistration){
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [[UIApplication sharedApplication] registerForRemoteNotifications];
+                                    [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
+                                });
+                            }else{
+                                [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
+                            }
+                        }else{
+                            [self sendPluginError:@"Remote notifications authorization was denied" :command];
+                        }
+                    }];
+                }else if(authStatus == UNAuthorizationStatusAuthorized){
+                    [self logDebug:@"Remote notifications already authorized"];
+                    if(!omitRegistration){
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[UIApplication sharedApplication] registerForRemoteNotifications];
+                            [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
+                        });
+                    }else{
+                        [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
+                    }
+                    [self sendPluginResultString:@"already_authorized":command];
+                }else if(authStatus == UNAuthorizationStatusDenied){
+                    [self sendPluginError:@"Remote notifications authorization is denied" :command];
+                }
+            }];
+#endif
+        } else if(NSClassFromString(@"UIUserNotificationSettings")){
+#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
+            // iOS 8 & 9
+            UIUserNotificationType types = 0;
+            for(id key in d_options){
+                NSString* s_key = (NSString*) key;
+                if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
+                    types = types + UIUserNotificationTypeAlert;
+                }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_SOUND]){
+                    types = types + UIUserNotificationTypeSound;
+                }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_BADGE]){
+                    types = types + UIUserNotificationTypeBadge;
+                }
+            }
+            UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+                [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
+            });
+#endif
+        } else{
+            // iOS < 8
+            [self sendPluginError:@"requestRemoteNotificationsAuthorization() is not supported below iOS 8" :command];
         }
     }
     @catch (NSException *exception) {
@@ -596,26 +704,27 @@ ABAddressBookRef _addressBook;
 #if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
         CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
         if(authStatus == CNAuthorizationStatusDenied || authStatus == CNAuthorizationStatusRestricted){
-            status = @"denied";
+            status = AUTHORIZATION_DENIED;
         }else if(authStatus == CNAuthorizationStatusNotDetermined){
-            status = @"not_determined";
+            status = AUTHORIZATION_NOT_DETERMINED;
         }else if(authStatus == CNAuthorizationStatusAuthorized){
-            status = @"authorized";
+            status = AUTHORIZATION_GRANTED;
         }
 #else
         ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
         if(authStatus == kABAuthorizationStatusDenied || authStatus == kABAuthorizationStatusRestricted){
-            status = @"denied";
+            status = AUTHORIZATION_DENIED;
         }else if(authStatus == kABAuthorizationStatusNotDetermined){
-            status = @"not_determined";
+            status = AUTHORIZATION_NOT_DETERMINED;
         }else if(authStatus == kABAuthorizationStatusAuthorized){
-            status = @"authorized";
+            status = AUTHORIZATION_GRANTED;
         }
         
 #endif
         
         [self logDebug:[NSString stringWithFormat:@"Address book authorization status is: %@", status]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
+        
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -675,14 +784,14 @@ ABAddressBookRef _addressBook;
         EKAuthorizationStatus authStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
         
         if(authStatus == EKAuthorizationStatusDenied || authStatus == EKAuthorizationStatusRestricted){
-            status = @"denied";
+            status = AUTHORIZATION_DENIED;
         }else if(authStatus == EKAuthorizationStatusNotDetermined){
-            status = @"not_determined";
+            status = AUTHORIZATION_NOT_DETERMINED;
         }else if(authStatus == EKAuthorizationStatusAuthorized){
-            status = @"authorized";
+            status = AUTHORIZATION_GRANTED;
         }
         [self logDebug:[NSString stringWithFormat:@"Calendar event authorization status is: %@", status]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -728,14 +837,14 @@ ABAddressBookRef _addressBook;
         EKAuthorizationStatus authStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeReminder];
         
         if(authStatus == EKAuthorizationStatusDenied || authStatus == EKAuthorizationStatusRestricted){
-            status = @"denied";
+            status = AUTHORIZATION_DENIED;
         }else if(authStatus == EKAuthorizationStatusNotDetermined){
-            status = @"not_determined";
+            status = AUTHORIZATION_NOT_DETERMINED;
         }else if(authStatus == EKAuthorizationStatusAuthorized){
-            status = @"authorized";
+            status = AUTHORIZATION_GRANTED;
         }
         [self logDebug:[NSString stringWithFormat:@"Reminders authorization status is: %@", status]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -778,16 +887,16 @@ ABAddressBookRef _addressBook;
         NSString* status;
         
         if ([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusAvailable) {
-            status = @"authorized";
+            status = AUTHORIZATION_GRANTED;
             [self logDebug:@"Background updates are available for the app."];
         }else if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied){
-            status = @"denied";
+            status = AUTHORIZATION_DENIED;
             [self logDebug:@"The user explicitly disabled background behavior for this app or for the whole system."];
         }else if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusRestricted){
             status = @"restricted";
             [self logDebug:@"Background updates are unavailable and the user cannot enable them again. For example, this status can occur when parental controls are in effect for the current user."];
         }
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
+        [self sendPluginResultString:status:command];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -822,7 +931,7 @@ ABAddressBookRef _addressBook;
 {
     if([self getSetting:@"motion_permission_requested"] == nil){
         // Permission not yet requested
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"not_requested"] :command];
+        [self sendPluginResultString:@"not_requested":command];
     }else{
         // Permission has been requested so determine the outcome
         [self _requestMotionAuthorization:command];
@@ -831,7 +940,7 @@ ABAddressBookRef _addressBook;
 
 - (void) requestMotionAuthorization: (CDVInvokedUrlCommand*)command{
     if([self getSetting:@"motion_permission_requested"] != nil){
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"requestMotionAuthorization() has already been called and can only be called once after app installation"]:command];
+        [self sendPluginError:@"requestMotionAuthorization() has already been called and can only be called once after app installation":command];
     }else{
         [self _requestMotionAuthorization:command];
     }
@@ -845,35 +954,35 @@ ABAddressBookRef _addressBook;
                 [self.cmPedometer queryPedometerDataFromDate:[NSDate date]
                                                       toDate:[NSDate date]
                                                  withHandler:^(CMPedometerData* data, NSError *error) {
-                                                     @try {
-                                                         [self setSetting:@"motion_permission_requested" forValue:(id)kCFBooleanTrue];
-                                                         NSString* status = @"unknown";
-                                                         if (error != nil) {
-                                                             if (error.code == CMErrorMotionActivityNotAuthorized) {
-                                                                 status = @"denied";
-                                                             }else if (error.code == CMErrorMotionActivityNotEntitled) {
-                                                                 status = @"restricted";
-                                                             }else if (error.code == CMErrorMotionActivityNotAvailable) {
-                                                                 // Motion request outcome cannot be determined on this device
-                                                                 status = @"not_determined";
-                                                             }
-                                                         }
-                                                         else{
-                                                             status = @"authorized";
-                                                         }
-                                                         
-                                                         [self logDebug:[NSString stringWithFormat:@"Motion tracking authorization status is %@", status]];
-                                                         [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:status] :command];
-                                                     }@catch (NSException *exception) {
-                                                         [self handlePluginException:exception :command];
-                                                     }
+                 @try {
+                     [self setSetting:@"motion_permission_requested" forValue:(id)kCFBooleanTrue];
+                     NSString* status = UNKNOWN;
+                     if (error != nil) {
+                         if (error.code == CMErrorMotionActivityNotAuthorized) {
+                             status = AUTHORIZATION_DENIED;
+                         }else if (error.code == CMErrorMotionActivityNotEntitled) {
+                             status = @"restricted";
+                         }else if (error.code == CMErrorMotionActivityNotAvailable) {
+                             // Motion request outcome cannot be determined on this device
+                             status = AUTHORIZATION_NOT_DETERMINED;
+                         }
+                     }
+                     else{
+                         status = AUTHORIZATION_GRANTED;
+                     }
+                     
+                     [self logDebug:[NSString stringWithFormat:@"Motion tracking authorization status is %@", status]];
+                     [self sendPluginResultString:status:command];
+                 }@catch (NSException *exception) {
+                     [self handlePluginException:exception :command];
+                 }
                                                  }];
             }@catch (NSException *exception) {
                 [self handlePluginException:exception :command];
             }
         }else{
             // Activity tracking not available on this device
-            [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"not_available"] :command];
+            [self sendPluginResultString:@"not_available":command];
         }
     }@catch (NSException *exception) {
         [self handlePluginException:exception :command];
@@ -883,7 +992,7 @@ ABAddressBookRef _addressBook;
 // https://stackoverflow.com/a/38441011/777265
 - (void) getArchitecture: (CDVInvokedUrlCommand*)command {
     @try {
-        NSString* cpuArch = CPU_ARCH_UNKNOWN;
+        NSString* cpuArch = UNKNOWN;
 
         size_t size;
         cpu_type_t type;
@@ -915,7 +1024,7 @@ ABAddressBookRef _addressBook;
           }
         }
         [self logDebug:[NSString stringWithFormat:@"Current CPU architecture: %@", cpuArch]];
-        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:cpuArch] :command];
+        [self sendPluginResultString:cpuArch:command];
   }@catch (NSException *exception) {
       [self handlePluginException:exception :command];
   }
@@ -939,6 +1048,19 @@ ABAddressBookRef _addressBook;
     } else {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
     }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) sendPluginResultString: (NSString*)result :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) sendPluginError: (NSString*) errorMessage :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
+    [self logError:errorMessage];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -1013,11 +1135,11 @@ ABAddressBookRef _addressBook;
 {
     NSString* status;
     if(authStatus == kCLAuthorizationStatusDenied || authStatus == kCLAuthorizationStatusRestricted){
-        status = @"denied";
+        status = AUTHORIZATION_DENIED;
     }else if(authStatus == kCLAuthorizationStatusNotDetermined){
-        status = @"not_determined";
+        status = AUTHORIZATION_NOT_DETERMINED;
     }else if(authStatus == kCLAuthorizationStatusAuthorizedAlways){
-        status = @"authorized";
+        status = AUTHORIZATION_GRANTED;
     }else if(authStatus == kCLAuthorizationStatusAuthorizedWhenInUse){
         status = @"authorized_when_in_use";
     }
@@ -1028,7 +1150,7 @@ ABAddressBookRef _addressBook;
 {
     CLAuthorizationStatus authStatus = [CLLocationManager authorizationStatus];
     NSString* status = [self getLocationAuthorizationStatusAsString:authStatus];
-    if([status  isEqual: @"authorized"] || [status  isEqual: @"authorized_when_in_use"]) {
+    if([status  isEqual: AUTHORIZATION_GRANTED] || [status  isEqual: @"authorized_when_in_use"]) {
         return true;
     } else {
         return false;
@@ -1093,11 +1215,11 @@ ABAddressBookRef _addressBook;
 {
     NSString* status;
     if(authStatus == PHAuthorizationStatusDenied || authStatus == PHAuthorizationStatusRestricted){
-        status = @"denied";
+        status = AUTHORIZATION_DENIED;
     }else if(authStatus == PHAuthorizationStatusNotDetermined ){
-        status = @"not_determined";
+        status = AUTHORIZATION_NOT_DETERMINED;
     }else if(authStatus == PHAuthorizationStatusAuthorized){
-        status = @"authorized";
+        status = AUTHORIZATION_GRANTED;
     }
     return status;
 }
@@ -1144,6 +1266,26 @@ ABAddressBookRef _addressBook;
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:inputObject options:NSJSONWritingPrettyPrinted error:&error];
     NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     return jsonString;
+}
+
+- (NSArray*) jsonStringToArray:(NSString*)jsonStr
+{
+    NSError* error = nil;
+    NSArray* array = [NSJSONSerialization JSONObjectWithData:[jsonStr dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
+    if (error != nil){
+        array = nil;
+    }
+    return array;
+}
+
+- (NSDictionary*) jsonStringToDictionary:(NSString*)jsonStr
+{
+    return (NSDictionary*) [self jsonStringToArray:jsonStr];
+}
+
+- (bool)isNull: (NSString*)str
+{
+    return str == nil || str == (id)[NSNull null] || str.length == 0 || [str isEqual: @"<null>"];
 }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
@@ -1234,7 +1376,7 @@ ABAddressBookRef _addressBook;
             description = @"Bluetooth is currently powered on and available to use.";
             break;
         default:
-            state = @"unknown";
+            state = UNKNOWN;
             description = @"State unknown, update imminent.";
             break;
     }

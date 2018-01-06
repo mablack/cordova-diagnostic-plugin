@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**v3.9.0**
+* Add `requestRemoteNotificationsAuthorization()` for iOS. Resolves [#269](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/269).
+* Add `remoteNotificationType` constants for iOS to enumerate the various notification types when checking with `getRemoteNotificationsAuthorizationStatus()` or requesting with `requestRemoteNotificationsAuthorization()`.
+* Minor refactor/code cleanup of native iOS implementation.
+
 **v3.8.1**
 * Use `if else` instead of `switch` on CPU arch strings for backward-compatibility to Java 6. [PR #263](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/263). Fixes [#264](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/264). 
 

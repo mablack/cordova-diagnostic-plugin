@@ -78,6 +78,13 @@ interface Diagnostic {
     cpuArchitecture?: any;
 
     /**
+     * iOS ONLY
+     * Constants for requesting/reporting the various types of remote notification permission types on iOS devices.
+     * @type {Object}
+     */
+    remoteNotificationType?: any;
+
+    /**
      * Checks if app is able to access device location.
      * @param successCallback
      * @param errorCallback
@@ -826,8 +833,23 @@ interface Diagnostic {
      * @param errorCallback
      */
     getRemoteNotificationsAuthorizationStatus?: (
-        successCallback: (status: string) => void,
-        errorCallback: (error: string) => void
+        successCallbackOrParams?: (status: string) => void|{},
+        errorCallback?: (error: string) => void
+    ) => void;
+
+    /**
+     * iOS ONLY
+     * Requests remote notifications authorization for the application.
+     * @param successCallback
+     * @param errorCallback
+     * @param types
+     * @param omitRegistration
+     */
+    requestRemoteNotificationsAuthorization?: (
+        successCallbackOrParams?: (status: string) => void|{},
+        errorCallback?: (error: string) => void,
+        types?: string[],
+        omitRegistration?: boolean
     ) => void;
 
     /**

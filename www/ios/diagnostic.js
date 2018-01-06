@@ -85,6 +85,12 @@ var Diagnostic = (function(){
         X86_64: "X86_64"
     };
 
+    Diagnostic.remoteNotificationType = {
+        ALERT: "alert",
+        SOUND: "sound",
+        BADGE: "badge"
+    };
+
     // Placeholder listeners
     Diagnostic._onBluetoothStateChange =
         Diagnostic._onLocationStateChange = function(){};
@@ -592,10 +598,10 @@ var Diagnostic = (function(){
      * Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be returned as disabled.
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
-     * This callback function is passed a single object parameter where the key is the notification type and the value is a boolean indicating whether it's enabled:
-     * "alert" => alert style is not set to "None" (i.e. "Banners" or "Alerts");
-     * "badge" => "Badge App Icon" switch is ON;
-     * "sound" => "Sounds"/"Alert Sound" switch is ON.
+     * This callback function is passed a single object parameter where the key is the notification type as a constant in `cordova.plugins.diagnostic.remoteNotificationType` and the value is a boolean indicating whether it's enabled:
+     * cordova.plugins.diagnostic.remoteNotificationType.ALERT => alert style is not set to "None" (i.e. "Banners" or "Alerts").
+     * cordova.plugins.diagnostic.remoteNotificationType.BADGE => "Badge App Icon" switch is ON.
+     * cordova.plugins.diagnostic.remoteNotificationType.SOUND => "Sounds"/"Alert Sound" switch is ON.
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      */
@@ -647,13 +653,66 @@ var Diagnostic = (function(){
      *  - {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      */
-    Diagnostic.getRemoteNotificationsAuthorizationStatus = function(successCallback, errorCallback) {
+    Diagnostic.getRemoteNotificationsAuthorizationStatus = function() {
+        var params;
+        if (typeof arguments[0]  === "function") {
+            params = {};
+            params.successCallback = arguments[0];
+            if(typeof arguments[1]  === "function") {
+                params.errorCallback = arguments[1];
+            }
+        }else{
+            params = arguments[0];
+        }
 
-        return cordova.exec(successCallback,
-            errorCallback,
+        return cordova.exec(
+            params.successCallback,
+            params.errorCallback,
             'Diagnostic',
             'getRemoteNotificationsAuthorizationStatus',
             []);
+    };
+
+    /**
+     * Requests remote notifications authorization for the application.
+     * Works on iOS 8+ (iOS 8 and below will invoke the error callback).
+     *
+     * @param {Object} params - (optional) parameters:
+     *  - {Function} successCallback - The callback which will be called when operation is successful.
+     *  - {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     * @param {Array} types - list of notifications to register for as constants in `cordova.plugins.diagnostic.remoteNotificationType`.
+     * If not specified, defaults to all notification types.
+     * @param {Boolean} omitRegistration - If true, registration for remote notifications will not be carried out once remote notifications authorization is granted.
+     * Defaults to false (registration will automatically take place once authorization is granted).
+     * iOS 10+ only: on iOS 8 & 9 authorization and registration are implicitly inseparable so both will be carried out.
+     */
+    Diagnostic.requestRemoteNotificationsAuthorization = function() {
+        var params;
+        if (typeof arguments[0]  === "function") {
+            params = {};
+            params.successCallback = arguments[0];
+            if(typeof arguments[1]  === "function") {
+                params.errorCallback = arguments[1];
+            }
+            if(typeof arguments[2]  !== "undefined") {
+                params.types = arguments[2];
+            }
+            if(typeof arguments[3]  !== "undefined") {
+                params.omitRegistration = arguments[3];
+            }
+        }else{
+            params = arguments[0];
+        }
+
+        params.types = params.types && params.types.length ? JSON.stringify(params.types) : null;
+
+        return cordova.exec(
+            params.successCallback,
+            params.errorCallback,
+            'Diagnostic',
+            'requestRemoteNotificationsAuthorization',
+            [params.types, params.omitRegistration ? 1 : 0]);
     };
 
     /*************
