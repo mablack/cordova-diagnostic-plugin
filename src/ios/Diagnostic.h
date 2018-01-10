@@ -30,6 +30,24 @@
 #import <sys/types.h>
 #import <sys/sysctl.h>
 
+static NSString*const LOG_TAG = @"Diagnostic[native]";
+
+static NSString*const UNKNOWN = @"unknown";
+
+static NSString*const CPU_ARCH_ARMv6 = @"ARMv6";
+static NSString*const CPU_ARCH_ARMv7 = @"ARMv7";
+static NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
+static NSString*const CPU_ARCH_X86 = @"X86";
+static NSString*const CPU_ARCH_X86_64 = @"X86_64";
+
+static NSString*const AUTHORIZATION_NOT_DETERMINED = @"not_determined";
+static NSString*const AUTHORIZATION_DENIED = @"denied";
+static NSString*const AUTHORIZATION_GRANTED = @"authorized";
+
+static NSString*const REMOTE_NOTIFICATIONS_ALERT = @"alert";
+static NSString*const REMOTE_NOTIFICATIONS_SOUND = @"sound";
+static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
+
 @interface Diagnostic : CDVPlugin <CBCentralManagerDelegate, CLLocationManagerDelegate>
 
     @property (nonatomic, retain) CBCentralManager* bluetoothManager;

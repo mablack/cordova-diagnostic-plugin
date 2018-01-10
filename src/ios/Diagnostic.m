@@ -22,23 +22,7 @@
 
 @implementation Diagnostic
 
-NSString*const LOG_TAG = @"Diagnostic[native]";
 
-NSString*const UNKNOWN = @"unknown";
-
-NSString*const CPU_ARCH_ARMv6 = @"ARMv6";
-NSString*const CPU_ARCH_ARMv7 = @"ARMv7";
-NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
-NSString*const CPU_ARCH_X86 = @"X86";
-NSString*const CPU_ARCH_X86_64 = @"X86_64";
-
-NSString*const AUTHORIZATION_NOT_DETERMINED = @"not_determined";
-NSString*const AUTHORIZATION_DENIED = @"denied";
-NSString*const AUTHORIZATION_GRANTED = @"authorized";
-
-NSString*const REMOTE_NOTIFICATIONS_ALERT = @"alert";
-NSString*const REMOTE_NOTIFICATIONS_SOUND = @"sound";
-NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 
 
 BOOL debugEnabled = false;
