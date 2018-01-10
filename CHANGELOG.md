@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v3.9.1**
+* Declare Objective-C constants as static. Fixes [#270](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/270).
+
 **v3.9.0**
 * Add `requestRemoteNotificationsAuthorization()` for iOS. Resolves [#269](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/269).
 * Add `remoteNotificationType` constants for iOS to enumerate the various notification types when checking with `getRemoteNotificationsAuthorizationStatus()` or requesting with `requestRemoteNotificationsAuthorization()`.
