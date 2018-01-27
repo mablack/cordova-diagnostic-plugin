@@ -1,4 +1,9 @@
 # CHANGELOG
+**v3.9.2**
+* Run iOS plugin initialisation on-load (rather than on-demand) to avoid race conditions when querying async native managers such as Bluetooth. Fixes [#271](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/271).
+* Run all iOS native plugin commands on a background thread (other than those which call methods on `[UIApplication sharedApplication]` so must explicitly run on the main thread) to prevent THREAD WARNING messages in the console.
+Fixes [#272](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/272).
+
 
 **v3.9.1**
 * Declare Objective-C constants as static. Fixes [#270](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/270).
