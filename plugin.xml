@@ -15,7 +15,6 @@
     <repo>https://github.com/dpa99c/cordova-diagnostic-plugin.git</repo>
     <issue>https://github.com/dpa99c/cordova-diagnostic-plugin/issues</issue>
 
-    <!-- ios -->
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic">
@@ -23,23 +22,23 @@
                 <param name="onload" value="true" />
             </feature>
         </config-file>
-        
-        <!-- Default usage descriptions: override as necessary in .plist -->
-        
-        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
-            <string>This app requires access to your location when the screen is on and the app is displayed.</string>
-        </config-file>
-        
-        <!-- iOS >=11 -->
-        <config-file target="*-Info.plist" parent="NSLocationAlwaysAndWhenInUseUsageDescription">
-            <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
-        </config-file>
-        
-        <!-- iOS <=10 -->
-        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
-            <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
-        </config-file>
-        
+
+        <js-module src="www/ios/diagnostic.js" name="Diagnostic">
+            <merges target="cordova.plugins.diagnostic" />
+        </js-module>
+
+        <header-file src="src/ios/Diagnostic.h" />
+        <source-file src="src/ios/Diagnostic.m" />
+
+        <framework src="CoreBluetooth.framework" />
+        <framework src="CoreMotion.framework" />
+        <framework src="AVFoundation.framework" />
+        <framework src="Photos.framework" />
+        <framework src="AddressBook.framework" />
+        <framework src="EventKit.framework" />
+        <framework src="Contacts.framework" />
+        <framework src="UserNotifications.framework" />
+
         <config-file target="*-Info.plist" parent="NSCalendarsUsageDescription">
             <string>This app requires calendar access to function properly.</string>
         </config-file>
@@ -65,32 +64,46 @@
         </config-file>
 
         <config-file target="*-Info.plist" parent="NSContactsUsageDescription">
-          <string>This app requires contacts access to function properly.</string>
+            <string>This app requires contacts access to function properly.</string>
         </config-file>
 
         <config-file target="*-Info.plist" parent="NSRemindersUsageDescription">
             <string>This app requires reminders access to function properly.</string>
         </config-file>
 
-        <js-module src="www/ios/diagnostic.js" name="Diagnostic">
-            <clobbers target="cordova.plugins.diagnostic" />
+
+        <!--BEGIN_MODULE LOCATION-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Location">
+                <param name="ios-package" value="Diagnostic_Location" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module src="www/ios/diagnostic.location.js" name="Diagnostic_Location">
+            <merges target="cordova.plugins.diagnostic.location" />
         </js-module>
 
-        <header-file src="src/ios/Diagnostic.h" />
-        <source-file src="src/ios/Diagnostic.m" />
+        <header-file src="src/ios/Diagnostic_Location.h" />
+        <source-file src="src/ios/Diagnostic_Location.m" />
 
         <framework src="CoreLocation.framework" />
-        <framework src="CoreBluetooth.framework" />
-        <framework src="CoreMotion.framework" />
-        <framework src="AVFoundation.framework" />
-        <framework src="Photos.framework" />
-        <framework src="AddressBook.framework" />
-        <framework src="EventKit.framework" />
-        <framework src="Contacts.framework" />
-        <framework src="UserNotifications.framework" />
+
+        <config-file target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription" comment="Default usage descriptions: override as necessary in .plist">
+            <string>This app requires access to your location when the screen is on and the app is displayed.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysAndWhenInUseUsageDescription" comment="iOS >=11">
+            <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription" comment="iOS <=10">
+            <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
+        </config-file>
+        <!--END_MODULE LOCATION-->
+
     </platform>
 
-    <!-- android -->
     <platform name="android">
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic" >
@@ -99,30 +112,49 @@
             </feature>
         </config-file>
 
+        <js-module name="Diagnostic" src="www/android/diagnostic.js">
+            <merges target="cordova.plugins.diagnostic" />
+        </js-module>
+
+        <source-file src="src/android/Diagnostic.java" target-dir="src/cordova/plugins" />
+
         <framework src="com.android.support:support-v4:26.+" />
         <framework src="com.android.support:appcompat-v7:26.+" />
 
-        <js-module src="www/android/diagnostic.js" name="Diagnostic">
-            <clobbers target="cordova.plugins.diagnostic" />
-        </js-module>
-        <source-file src="src/android/Diagnostic.java" target-dir="src/cordova/plugins" />
-
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <receiver
-                    android:name="cordova.plugins.Diagnostic$LocationProviderChangedReceiver">
-                <intent-filter>
-                    <action android:name="android.location.PROVIDERS_CHANGED" />
-                </intent-filter>
-            </receiver>
             <receiver android:name="cordova.plugins.Diagnostic$NFCStateChangedReceiver">
                 <intent-filter>
                     <action android:name="android.nfc.action.ADAPTER_STATE_CHANGED" />
                 </intent-filter>
             </receiver>
         </config-file>
+
+        <!--BEGIN_MODULE LOCATION-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Location" >
+                <param name="android-package" value="cordova.plugins.Diagnostic_Location"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module name="Diagnostic_Location" src="www/android/diagnostic.location.js">
+            <merges target="cordova.plugins.diagnostic.location" />
+        </js-module>
+
+        <source-file src="src/android/Diagnostic_Location.java" target-dir="src/cordova/plugins" />
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <receiver
+                    android:name="cordova.plugins.Diagnostic_Location$LocationProviderChangedReceiver">
+                <intent-filter>
+                    <action android:name="android.location.PROVIDERS_CHANGED" />
+                </intent-filter>
+            </receiver>
+        </config-file>
+        <!--END_MODULE LOCATION-->
+
     </platform>
 
-    <!-- windows -->
     <platform name="windows">
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic" >

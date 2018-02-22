@@ -33,5 +33,13 @@
         "bluetooth",
         "settings"
     ],
-    "types": "./cordova.plugins.diagnostic.d.ts"
+    "types": "./cordova.plugins.diagnostic.d.ts",
+    "dependencies": {
+        "colors": "^1.1.2",
+        "elementtree": "^0.1.6",
+        "minimist": "1.2.0"
+    },
+    "scripts": {
+        "postinstall": "node ./scripts/apply-modules.js"
+    }
 }
