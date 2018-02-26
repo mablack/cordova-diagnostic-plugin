@@ -1,6 +1,6 @@
 /*
  *  Diagnostic.h
- *  Plugin diagnostic
+ *  Diagnostic Plugin - Core Module
  *
  *  Copyright (c) 2015 Working Edge Ltd.
  *  Copyright (c) 2012 AVANTIC ESTUDIO DE INGENIEROS
@@ -11,7 +11,6 @@
 #import <WebKit/WebKit.h>
 
 #import <CoreBluetooth/CoreBluetooth.h>
-#import <CoreLocation/CoreLocation.h>
 #import <CoreMotion/CoreMotion.h>
 #import <EventKit/EventKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -30,41 +29,40 @@
 #import <sys/types.h>
 #import <sys/sysctl.h>
 
-static NSString*const LOG_TAG = @"Diagnostic[native]";
+// Public constants
+extern NSString*const UNKNOWN;
 
-static NSString*const UNKNOWN = @"unknown";
+extern NSString*const AUTHORIZATION_NOT_DETERMINED;
+extern NSString*const AUTHORIZATION_DENIED;
+extern NSString*const AUTHORIZATION_GRANTED;
 
-static NSString*const CPU_ARCH_ARMv6 = @"ARMv6";
-static NSString*const CPU_ARCH_ARMv7 = @"ARMv7";
-static NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
-static NSString*const CPU_ARCH_X86 = @"X86";
-static NSString*const CPU_ARCH_X86_64 = @"X86_64";
-
-static NSString*const AUTHORIZATION_NOT_DETERMINED = @"not_determined";
-static NSString*const AUTHORIZATION_DENIED = @"denied";
-static NSString*const AUTHORIZATION_GRANTED = @"authorized";
-
-static NSString*const REMOTE_NOTIFICATIONS_ALERT = @"alert";
-static NSString*const REMOTE_NOTIFICATIONS_SOUND = @"sound";
-static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
-
-@interface Diagnostic : CDVPlugin <CBCentralManagerDelegate, CLLocationManagerDelegate>
+@interface Diagnostic : CDVPlugin <CBCentralManagerDelegate>
 
     @property (nonatomic, retain) CBCentralManager* bluetoothManager;
-    @property (strong, nonatomic) CLLocationManager* locationManager;
     @property (strong, nonatomic) CMMotionActivityManager* motionManager;
     @property (strong, nonatomic) NSOperationQueue* motionActivityQueue;
-    @property (nonatomic, retain) NSString* locationRequestCallbackId;
     @property (nonatomic) EKEventStore *eventStore;
-    @property (nonatomic, retain) NSString* currentLocationAuthorizationStatus;
+
++ (id) getInstance;
+- (void) sendPluginResult: (CDVPluginResult*)result :(CDVInvokedUrlCommand*)command;
+- (void) sendPluginResultBool: (BOOL)result :(CDVInvokedUrlCommand*)command;
+- (void) sendPluginResultString: (NSString*)result :(CDVInvokedUrlCommand*)command;
+- (void) sendPluginError: (NSString*) errorMessage :(CDVInvokedUrlCommand*)command;
+- (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command;
+- (void)executeGlobalJavascript: (NSString*)jsString;
+- (NSString*) arrayToJsonString:(NSArray*)inputArray;
+- (NSString*) objectToJsonString:(NSDictionary*)inputObject;
+- (NSArray*) jsonStringToArray:(NSString*)jsonStr;
+- (NSDictionary*) jsonStringToDictionary:(NSString*)jsonStr;
+- (bool)isNull: (NSString*)str;
+
+- (void)logDebug: (NSString*)msg;
+- (void)logError: (NSString*)msg;
+- (NSString*)escapeDoubleQuotes: (NSString*)str;
+- (void) setSetting: (NSString*)key forValue:(id)value;
+- (id) getSetting: (NSString*) key;
 
 - (void) enableDebug: (CDVInvokedUrlCommand*)command;
-
-- (void) isLocationAvailable: (CDVInvokedUrlCommand*)command;
-- (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
-- (void) isLocationAuthorized: (CDVInvokedUrlCommand*)command;
-- (void) getLocationAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-- (void) requestLocationAuthorization: (CDVInvokedUrlCommand*)command;
 
 - (void) isCameraAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isCameraPresent: (CDVInvokedUrlCommand*)command;

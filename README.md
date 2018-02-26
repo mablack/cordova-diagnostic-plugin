@@ -237,16 +237,11 @@ The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](h
 
 # Installation
 
-## Using the Cordova/Phonegap CLI
+## Using the Cordova/Phonegap/Ionic CLI
 
     $ cordova plugin add cordova.plugins.diagnostic
     $ phonegap plugin add cordova.plugins.diagnostic
-
-**NOTE**: Make sure your Cordova CLI version is 5.0.0+ (check with `cordova -v`). Cordova 4.x and below uses the now deprecated [Cordova Plugin Registry](http://plugins.cordova.io) as its plugin repository, so using a version of Cordova 4.x or below will result in installing an [old version](http://plugins.cordova.io/#/package/cordova.plugins.diagnostic) of this plugin.
-
-## Using Cordova Plugman
-
-    $ plugman install --plugin=cordova.plugins.diagnostic --platform=<platform> --project=<project_path> --plugins_dir=plugins
+    $ ionic cordova plugin add cordova.plugins.diagnostic
 
 For example, to install for the Android platform
 
@@ -256,6 +251,26 @@ For example, to install for the Android platform
 Add the following xml to your config.xml to use the latest version of this plugin from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
 
     <plugin name="cordova.plugins.diagnostic" source="npm" />
+    
+## Specifying modules
+Since `cordova.plugins.diagnostic@4` the plugin is split into optional functional modules. 
+The reason for this is so you can choose to install only those parts of the plugin you'll use and therefore not install redundant code/components/frameworks.
+
+By default, all the modules will be add your project when you install the plugin.
+
+You can specify which modules are installed by add a `<preference>` to your `config.xml` which specifies the modules you wish add as a space-separated list.
+
+The preference takes the form:
+
+    <preference name="cordova.plugins.diagnostic.modules" value="[list of modules]" />
+    
+For example:
+
+    <preference name="cordova.plugins.diagnostic.modules" value="LOCATION BLUETOOTH WIFI" />
+    
+**IMPORTANT:** It's vital that the preference be added to your `config.xml` **before** you install the plugin, otherwise the preference will not be applied and all modules will be added.
+This is because, due to limitations of the Cordova CLI hooks, this plugin must use the `npm install` process to apply the module preferences and this runs before the Cordova CLI when installing a plugin.
+If you change the modules specified in the preference, you'll need to uninstall then re-install the plugin to your project to apply the changes.    
 
 # Usage
 

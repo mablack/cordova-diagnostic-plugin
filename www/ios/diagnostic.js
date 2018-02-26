@@ -10,12 +10,6 @@ var Diagnostic = (function(){
      * Internal functions
      ********************/
 
-    function ensureBoolean(callback){
-        return function(result){
-            callback(!!result);
-        }
-    }
-
     function mapFromLegacyCameraApi() {
         var params;
         if (typeof arguments[0]  === "function") {
@@ -46,11 +40,6 @@ var Diagnostic = (function(){
         "RESTRICTED": "restricted", // Permission is unavailable and user cannot enable it.  For example, when parental controls are in effect for the current user.
         "GRANTED": "authorized", //  User granted access to this permission
         "GRANTED_WHEN_IN_USE": "authorized_when_in_use" //  User granted access use location permission only when app is in use
-    };
-
-    Diagnostic.locationAuthorizationMode = {
-        "ALWAYS": "always",
-        "WHEN_IN_USE": "when_in_use"
     };
 
     Diagnostic.bluetoothState = {
@@ -91,9 +80,20 @@ var Diagnostic = (function(){
         BADGE: "badge"
     };
 
+    /*****************************
+     *
+     * Protected member functions
+     *
+     ****************************/
+
     // Placeholder listeners
-    Diagnostic._onBluetoothStateChange =
-        Diagnostic._onLocationStateChange = function(){};
+    Diagnostic._onBluetoothStateChange = function(){};
+
+    Diagnostic._ensureBoolean = function (callback){
+        return function(result){
+            callback(!!result);
+        }
+    };
 
     /**********************
      *
@@ -139,7 +139,6 @@ var Diagnostic = (function(){
      * Location *
      ************/
 
-
     /**
      * Checks if location is available for use by the app.
      * On iOS this returns true if both the device setting for Location Services is ON AND the application is authorized to use location.
@@ -151,11 +150,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isLocationAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isLocationAvailable',
-            []);
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.isLocationAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
     };
 
     /**
@@ -168,11 +167,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isLocationEnabled = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isLocationEnabled',
-            []);
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.isLocationEnabled.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
     };
 
 
@@ -185,11 +184,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isLocationAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isLocationAuthorized',
-            []);
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.isLocationAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
     };
 
     /**
@@ -207,11 +206,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getLocationAuthorizationStatus = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getLocationAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.getLocationAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
     };
 
     /**
@@ -231,11 +230,11 @@ var Diagnostic = (function(){
      * If not specified, defaults to `cordova.plugins.diagnostic.locationAuthorizationMode.WHEN_IN_USE`.
      */
     Diagnostic.requestLocationAuthorization = function(successCallback, errorCallback, mode) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'requestLocationAuthorization',
-            [mode && mode === Diagnostic.locationAuthorizationMode.ALWAYS]);
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.requestLocationAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
     };
 
     /**
@@ -250,7 +249,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter indicating the new location authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      */
     Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
-        Diagnostic._onLocationStateChange = successCallback || function(){};
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.registerLocationStateChangeHandler.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
     };
 
     /************
@@ -271,7 +274,7 @@ var Diagnostic = (function(){
         params = mapFromLegacyCameraApi.apply(this, arguments);
 
         params.successCallback = params.successCallback || function(){};
-        return cordova.exec(ensureBoolean(params.successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(params.successCallback),
             params.errorCallback,
             'Diagnostic',
             'isCameraAvailable',
@@ -287,7 +290,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isCameraPresent',
@@ -307,7 +310,7 @@ var Diagnostic = (function(){
     Diagnostic.isCameraAuthorized = function(params) {
         params = mapFromLegacyCameraApi.apply(this, arguments);
 
-        return cordova.exec(ensureBoolean(params.successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(params.successCallback),
             params.errorCallback,
             'Diagnostic',
             'isCameraAuthorized',
@@ -366,7 +369,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraRollAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isCameraRollAuthorized',
@@ -423,7 +426,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isWifiAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isWifiAvailable',
@@ -460,7 +463,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isBluetoothAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isBluetoothAvailable',
@@ -528,7 +531,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isMicrophoneAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isMicrophoneAuthorized',
@@ -586,7 +589,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isRemoteNotificationsEnabled = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isRemoteNotificationsEnabled',
@@ -632,7 +635,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isRegisteredForRemoteNotifications = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isRegisteredForRemoteNotifications',
@@ -728,7 +731,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isContactsAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isAddressBookAuthorized',
@@ -784,7 +787,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCalendarAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isCalendarAuthorized',
@@ -840,7 +843,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isRemindersAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isRemindersAuthorized',
@@ -931,7 +934,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isMotionAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isMotionAvailable',
@@ -950,7 +953,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isMotionRequestOutcomeAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(ensureBoolean(successCallback),
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic',
             'isMotionRequestOutcomeAvailable',
