@@ -26,12 +26,6 @@ var Diagnostic = (function(){
      *
      ********************/
 
-    // Placeholder listeners
-    Diagnostic._onBluetoothStateChange =
-            Diagnostic._onNFCStateChange =
-                Diagnostic._onPermissionRequestComplete = function(){};
-
-
     /**
      * "Dangerous" permissions that need to be requested at run-time (Android 6.0/API 23 and above)
      * See http://developer.android.com/guide/topics/security/permissions.html#perm-groups
@@ -121,6 +115,15 @@ var Diagnostic = (function(){
         MIPS_64: "MIPS_64"
     };
 
+    /*****************************
+     *
+     * Protected member functions
+     *
+     ****************************/
+    // Placeholder listeners
+    Diagnostic._onBluetoothStateChange =
+        Diagnostic._onNFCStateChange =
+            Diagnostic._onPermissionRequestComplete = function(){};
 
     /********************
      *

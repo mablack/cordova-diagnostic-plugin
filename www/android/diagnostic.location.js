@@ -22,17 +22,15 @@ var Diagnostic_Location = (function(){
      *
      ********************/
 
-    // Placeholder listener
-    Diagnostic_Location._onLocationStateChange = function(){};
-
-    Diagnostic_Location.locationMode = {
+    Diagnostic.locationMode = Diagnostic_Location.locationMode = {
         "HIGH_ACCURACY": "high_accuracy",
         "DEVICE_ONLY": "device_only",
         "BATTERY_SAVING": "battery_saving",
         "LOCATION_OFF": "location_off"
     };
 
-    Diagnostic_Location.locationAuthorizationMode = {}; // Empty object to enable easy cross-platform compatibility with iOS
+
+    Diagnostic.locationAuthorizationMode = Diagnostic_Location.locationAuthorizationMode = {}; // Empty object to enable easy cross-platform compatibility with iOS
 
     /********************
      *
@@ -56,6 +54,14 @@ var Diagnostic_Location = (function(){
         }
         return status;
     }
+
+    /*****************************
+     *
+     * Protected member functions
+     *
+     ****************************/
+    // Placeholder listener
+    Diagnostic_Location._onLocationStateChange = function(){};
 
     /**********************
      *

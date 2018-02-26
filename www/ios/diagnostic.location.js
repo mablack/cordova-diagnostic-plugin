@@ -22,20 +22,23 @@ var Diagnostic_Location = (function(){
      *
      ********************/
 
-    Diagnostic_Location.locationAuthorizationMode = {
+    Diagnostic.locationAuthorizationMode = Diagnostic_Location.locationAuthorizationMode = {
         "ALWAYS": "always",
         "WHEN_IN_USE": "when_in_use"
     };
-    Diagnostic.locationAuthorizationMode = Diagnostic_Location.locationAuthorizationMode;
-
-    Diagnostic_Location._onLocationStateChange = function(){};
-
 
     /********************
      *
      * Internal functions
      *
      ********************/
+
+    /*****************************
+     *
+     * Protected member functions
+     *
+     ****************************/
+    Diagnostic_Location._onLocationStateChange = function(){};
 
 
     /**********************
