@@ -156,18 +156,36 @@
     </platform>
 
     <platform name="windows">
+        <preference name="windows-target-version" value="10.0" />
+
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic" >
                 <param name="windows-package" value="cordova.plugins.Diagnostic"/>
             </feature>
-            <preference name="windows-target-version" value="10.0" />
         </config-file>
 
         <js-module src="www/windows/diagnostic.js" name="Diagnostic">
-            <clobbers target="cordova.plugins.diagnostic" />
+            <merges target="cordova.plugins.diagnostic" />
         </js-module>
+
         <js-module src="src/windows/diagnosticProxy.js" name="diagnosticProxy">
             <merges target="" />
         </js-module>
+
+        <!--BEGIN_MODULE LOCATION-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Location" >
+                <param name="windows-package" value="cordova.plugins.Diagnostic_Location"/>
+            </feature>
+        </config-file>
+
+        <js-module src="www/windows/diagnostic.location.js" name="Diagnostic_Location">
+            <merges target="cordova.plugins.diagnostic.location" />
+        </js-module>
+
+        <js-module src="src/windows/diagnosticProxy.location.js" name="diagnosticProxy.location">
+            <merges target="" />
+        </js-module>
+        <!--END_MODULE LOCATION-->
     </platform>
 </plugin>

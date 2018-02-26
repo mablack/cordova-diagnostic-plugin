@@ -19,21 +19,40 @@ function mapFromLegacyCameraApi() {
     return params;
 }
 
+/**********
+ * Location
+ **********/
+
 /**
  * Checks if location is enabled.
  *
- * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
+ * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
  * This callback function is passed a single boolean parameter with the diagnostic result.
  * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
  *  This callback function is passed a single string parameter containing the error message.
  */
 Diagnostic.prototype.isLocationAvailable = function (successCallback, errorCallback) {
-    return cordova.exec(successCallback,
-		errorCallback,
-		'Diagnostic',
-		'isLocationAvailable',
-		[]);
+    if(cordova.plugins.diagnostic.location){
+        cordova.plugins.diagnostic.location.isLocationAvailable.apply(this, arguments);
+    }else{
+        throw "Diagnostic Location module is not installed";
+    }
 };
+
+/**
+ * Switches to the Location page in the Settings app
+ */
+Diagnostic.prototype.switchToLocationSettings = function () {
+    if(cordova.plugins.diagnostic.location){
+        cordova.plugins.diagnostic.location.switchToLocationSettings.apply(this, arguments);
+    }else{
+        throw "Diagnostic Location module is not installed";
+    }
+};
+
+/******
+ * Core
+ ******/
 
 /**
  * Checks if Wifi is enabled.
@@ -86,16 +105,6 @@ Diagnostic.prototype.isCameraAvailable = function (params) {
 		[]);
 };
 
-/**
- * Switches to the Location page in the Settings app
- */
-Diagnostic.prototype.switchToLocationSettings = function () {
-    return cordova.exec(null,
-		null,
-		'Diagnostic',
-		'switchToLocationSettings',
-		[]);
-};
 
 /**
 * Switches to the Mobile Data page in the Settings app
