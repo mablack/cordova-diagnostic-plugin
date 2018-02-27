@@ -21,9 +21,6 @@
 #import <UserNotifications/UserNotifications.h>
 #endif
 
-#import <arpa/inet.h> // For AF_INET, etc.
-#import <ifaddrs.h> // For getifaddrs()
-#import <net/if.h> // For IFF_LOOPBACK
 #import <mach/machine.h>
 #import <sys/types.h>
 #import <sys/sysctl.h>
@@ -69,9 +66,6 @@ extern NSString*const AUTHORIZATION_GRANTED;
 - (void) requestCameraAuthorization: (CDVInvokedUrlCommand*)command;
 - (void) isCameraRollAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-
-- (void) isWifiAvailable: (CDVInvokedUrlCommand*)command;
-- (void) isWifiEnabled: (CDVInvokedUrlCommand*)command;
 
 - (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command;
 - (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command;

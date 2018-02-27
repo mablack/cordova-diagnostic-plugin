@@ -46,9 +46,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
@@ -62,7 +60,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
-import android.net.wifi.WifiManager;
+
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -244,9 +242,6 @@ public class Diagnostic extends CordovaPlugin{
             } else if (action.equals("switchToMobileDataSettings")){
                 switchToMobileDataSettings();
                 callbackContext.success();
-            } else if (action.equals("switchToWifiSettings")){
-                switchToWifiSettings();
-                callbackContext.success();
             } else if (action.equals("switchToWirelessSettings")){
                 switchToWirelessSettings();
                 callbackContext.success();
@@ -255,13 +250,8 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success();
             } else if(action.equals("isDataRoamingEnabled")) {
                 callbackContext.success(isDataRoamingEnabled() ? 1 : 0);
-            } else if(action.equals("isWifiAvailable")) {
-                callbackContext.success(isWifiAvailable() ? 1 : 0);
             } else if(action.equals("isCameraPresent")) {
                 callbackContext.success(isCameraPresent() ? 1 : 0);
-            } else if(action.equals("setWifiState")) {
-                setWifiState(args.getBoolean(0));
-                callbackContext.success();
             } else if(action.equals("getPermissionAuthorizationStatus")) {
                 this.getPermissionAuthorizationStatus(args);
             } else if(action.equals("getPermissionsAuthorizationStatus")) {
@@ -319,19 +309,11 @@ public class Diagnostic extends CordovaPlugin{
         return result;
     }
 
-    public boolean isWifiAvailable() {
-        WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        boolean result = wifiManager.isWifiEnabled();
-        return result;
-    }
-
     public boolean isCameraPresent() {
         PackageManager pm = this.cordova.getActivity().getPackageManager();
         boolean result = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
         return result;
     }
-
-
 
     public void switchToAppSettings() {
         logDebug("Switch to App Settings");
@@ -348,12 +330,6 @@ public class Diagnostic extends CordovaPlugin{
         cordova.getActivity().startActivity(settingsIntent);
     }
 
-    public void switchToWifiSettings() {
-        logDebug("Switch to Wifi Settings");
-        Intent settingsIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-        cordova.getActivity().startActivity(settingsIntent);
-    }
-
     public void switchToWirelessSettings() {
         logDebug("Switch to wireless Settings");
         Intent settingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
@@ -367,17 +343,6 @@ public class Diagnostic extends CordovaPlugin{
         }
         cordova.getActivity().startActivity(settingsIntent);
     }
-
-    public void setWifiState(boolean enable) {
-        WifiManager wifiManager = (WifiManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (enable && !wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-        } else if (!enable && wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(false);
-        }
-    }
-
-
 
     public void getPermissionsAuthorizationStatus(JSONArray args) throws Exception{
         JSONArray permissions = args.getJSONArray(0);

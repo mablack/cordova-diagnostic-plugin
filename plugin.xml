@@ -120,6 +120,21 @@
         </config-file>
         <!--END_MODULE BLUETOOTH-->
 
+        <!--BEGIN_MODULE WIFI-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Wifi">
+                <param name="ios-package" value="Diagnostic_Wifi" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module src="www/ios/diagnostic.wifi.js" name="Diagnostic_Wifi">
+            <merges target="cordova.plugins.diagnostic.wifi" />
+        </js-module>
+
+        <header-file src="src/ios/Diagnostic_Wifi.h" />
+        <source-file src="src/ios/Diagnostic_Wifi.m" />
+        <!--END_MODULE WIFI-->
     </platform>
 
     <platform name="android">
@@ -185,6 +200,21 @@
 
         <source-file src="src/android/Diagnostic_Bluetooth.java" target-dir="src/cordova/plugins" />
         <!--END_MODULE BLUETOOTH-->
+
+        <!--BEGIN_MODULE WIFI-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Wifi" >
+                <param name="android-package" value="cordova.plugins.Diagnostic_Wifi"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module name="Diagnostic_Wifi" src="www/android/diagnostic.wifi.js">
+            <merges target="cordova.plugins.diagnostic.wifi" />
+        </js-module>
+
+        <source-file src="src/android/Diagnostic_Wifi.java" target-dir="src/cordova/plugins" />
+        <!--END_MODULE WIFI-->
     </platform>
 
     <platform name="windows">
@@ -235,5 +265,21 @@
             <merges target="" />
         </js-module>
         <!--END_MODULE BLUETOOTH-->
+
+        <!--BEGIN_MODULE WIFI-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Wifi" >
+                <param name="windows-package" value="cordova.plugins.Diagnostic_Wifi"/>
+            </feature>
+        </config-file>
+
+        <js-module src="www/windows/diagnostic.wifi.js" name="Diagnostic_Wifi">
+            <merges target="cordova.plugins.diagnostic.wifi" />
+        </js-module>
+
+        <js-module src="src/windows/diagnosticProxy.wifi.js" name="diagnosticProxy.wifi">
+            <merges target="" />
+        </js-module>
+        <!--END_MODULE WIFI-->
     </platform>
 </plugin>

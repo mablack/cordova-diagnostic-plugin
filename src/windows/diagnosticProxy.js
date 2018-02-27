@@ -45,15 +45,6 @@ cordova.commandProxy.add("Diagnostic", {
     },
 
     /**
-     * Display the wifi settings page.
-     */
-    // exec(null, null, 'Diagnostic', 'switchToWifiSettings', []);
-    switchToWifiSettings: function () {
-
-        var uri = new Windows.Foundation.Uri("ms-settings-wifi:");
-        Windows.System.Launcher.launchUriAsync(uri);
-    },
-    /**
      * Checks if bluetooth/wifi is enabled.
      *
      * @param {Function} successCallback - The callback which will be called when diagnostic is successful.

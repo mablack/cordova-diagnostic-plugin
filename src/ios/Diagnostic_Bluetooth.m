@@ -90,6 +90,10 @@ static NSString*const LOG_TAG = @"Diagnostic_Bluetooth[native]";
     }];
 }
 
+/********************************/
+#pragma mark - Internals
+/********************************/
+
 - (NSString*)getBluetoothState{
     NSString* state;
     NSString* description;

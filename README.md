@@ -16,12 +16,8 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [Available modules](#available-modules)
 - [Usage](#usage)
   - [Core module](#core-module)
-    - [isWifiAvailable()](#iswifiavailable)
-    - [isWifiEnabled()](#iswifienabled)
     - [isCameraAvailable()](#iscameraavailable)
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
-    - [switchToWifiSettings()](#switchtowifisettings)
-    - [setWifiState()](#setwifistate)
     - [permissionStatus constants](#permissionstatus-constants)
     - [cpuArchitecture constants](#cpuarchitecture-constants)
     - [enableDebug()](#enabledebug)
@@ -106,6 +102,11 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
     - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
+  - [WiFi module](#wifi-module)
+    - [isWifiAvailable()](#iswifiavailable)
+    - [isWifiEnabled()](#iswifienabled)
+    - [setWifiState()](#setwifistate)
+    - [switchToWifiSettings()](#switchtowifisettings)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
@@ -229,6 +230,7 @@ The following optional modules are currently supported by the plugin:
 
 - [LOCATION](#location-module) - Android, iOS, Windows 10
 - [BLUETOOTH](#bluetooth-module) - Android, iOS, Windows 10
+- [WIFI](#wifi-module) - Android, iOS, Windows 10
     
 **IMPORTANT:** It's vital that the preference be added to your `config.xml` **before** you install the plugin, otherwise the preference will not be applied and all modules will be added.
 This is because, due to limitations of the Cordova CLI hooks, this plugin must use the `npm install` process to apply the module preferences and this runs before the Cordova CLI when installing a plugin.
@@ -244,60 +246,6 @@ If a function is called on the core module for an optional module which is not i
 Purpose: Generic and miscellaneous functionality.
 Platforms: Android, iOS and Windows 10 Mobile
 Configuration name: N/A - always installed, regardless of whether the module preference key is present in `config.xml`.
-
-### isWifiAvailable()
-
-Platforms: Android, iOS and Windows 10 Mobile
-
-Checks if Wifi is available.
-On iOS this returns true if the device is connected to a network by WiFi.
-On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiEnabled()`](#iswifienabled)
-
-On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
-
-    cordova.plugins.diagnostic.isWifiAvailable(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if WiFi is available.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isWifiAvailable(function(available){
-        console.log("WiFi is " + (available ? "available" : "not available"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### isWifiEnabled()
-
-Platforms: Android, iOS and Windows 10 Mobile
-
-On iOS this returns true if the WiFi setting is set to enabled (regardless of whether it's connected to a network).
-On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
-On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
-
-    cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is true if the device setting is enabled.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
-        console.log("WiFi is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 ### isCameraAvailable()
 
@@ -366,47 +314,6 @@ Displays mobile settings to allow user to enable mobile data.
 
     cordova.plugins.diagnostic.switchToMobileDataSettings();
 
-### switchToWifiSettings()
-
-Platforms: Android and Windows 10 Mobile
-
-Displays WiFi settings to allow user to enable WiFi.
-
-    cordova.plugins.diagnostic.switchToWifiSettings();
-
-### setWifiState()
-
-Platforms: Android and Windows 10 Mobile
-
-Enables/disables WiFi on the device.
-
-    cordova.plugins.diagnostic.setWifiState(successCallback, errorCallback, state);
-
-Requires the following permissions for Android:
-
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-
-Requires the following capabilities for Windows 10 Mobile:
-
-    <DeviceCapability Name="radios" />
-
-#### Parameters
-
-- {Function} successCallback - function to call on successful setting of WiFi state
-- {Function} errorCallback - function to call on failure to set WiFi state.
-- {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.setWifiState(function(){
-        console.log("Wifi was enabled");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    },
-    true);
-
 ### permissionStatus constants
 
 Platforms: Android and iOS
@@ -449,7 +356,6 @@ Indicates the user has granted access to the permission "when in use" (only when
     if(somePermissionStatus === cordova.plugins.diagnostic.permissionStatus.GRANTED){
         // Do something
     }
-
 
 ### cpuArchitecture constants
 
@@ -2975,6 +2881,107 @@ Platforms: Android and Windows 10 Mobile
 Displays Bluetooth settings to allow user to enable Bluetooth.
 
     cordova.plugins.diagnostic.switchToBluetoothSettings();
+
+## WiFi module
+
+Purpose: WiFi functionality
+Platforms: Android, iOS and Windows 10 Mobile
+Configuration name: `WIFI`
+
+### isWifiAvailable()
+
+Platforms: Android, iOS and Windows 10 Mobile
+
+Checks if Wifi is available.
+On iOS this returns true if the device is connected to a network by WiFi.
+On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiEnabled()`](#iswifienabled)
+
+On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
+
+    cordova.plugins.diagnostic.isWifiAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if WiFi is available.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isWifiAvailable(function(available){
+        console.log("WiFi is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isWifiEnabled()
+
+Platforms: Android, iOS and Windows 10 Mobile
+
+On iOS this returns true if the WiFi setting is set to enabled (regardless of whether it's connected to a network).
+On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
+On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
+
+    cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is true if the device setting is enabled.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
+        console.log("WiFi is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### setWifiState()
+
+Platforms: Android and Windows 10 Mobile
+
+Enables/disables WiFi on the device.
+
+    cordova.plugins.diagnostic.setWifiState(successCallback, errorCallback, state);
+
+Requires the following permissions for Android:
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+Requires the following capabilities for Windows 10 Mobile:
+
+    <DeviceCapability Name="radios" />
+
+#### Parameters
+
+- {Function} successCallback - function to call on successful setting of WiFi state
+- {Function} errorCallback - function to call on failure to set WiFi state.
+- {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.setWifiState(function(){
+        console.log("Wifi was enabled");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    },
+    true);
+
+### switchToWifiSettings()
+
+Platforms: Android and Windows 10 Mobile
+
+Displays WiFi settings to allow user to enable WiFi.
+
+    cordova.plugins.diagnostic.switchToWifiSettings();
 
 # Platform Notes
 

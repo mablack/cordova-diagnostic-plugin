@@ -667,22 +667,38 @@ var Diagnostic = (function(){
      *  This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isWifiAvailable = Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'isWifiAvailable',
-            []);
+        if(cordova.plugins.diagnostic.wifi){
+            cordova.plugins.diagnostic.wifi.isWifiAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Wifi module is not installed";
+        }
     };
 
     /**
      * Switches to the WiFi page in the Settings app
      */
     Diagnostic.switchToWifiSettings = function() {
-        return cordova.exec(null,
-            null,
-            'Diagnostic',
-            'switchToWifiSettings',
-            []);
+        if(cordova.plugins.diagnostic.wifi){
+            cordova.plugins.diagnostic.wifi.switchToWifiSettings.apply(this, arguments);
+        }else{
+            throw "Diagnostic Wifi module is not installed";
+        }
+    };
+
+    /**
+     * Enables/disables WiFi on the device.
+     *
+     * @param {Function} successCallback - function to call on successful setting of WiFi state
+     * @param {Function} errorCallback - function to call on failure to set WiFi state.
+     * This callback function is passed a single string parameter containing the error message.
+     * @param {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
+     */
+    Diagnostic.setWifiState = function(successCallback, errorCallback, state) {
+        if(cordova.plugins.diagnostic.wifi){
+            cordova.plugins.diagnostic.wifi.setWifiState.apply(this, arguments);
+        }else{
+            throw "Diagnostic Wifi module is not installed";
+        }
     };
 
     /**
@@ -706,22 +722,6 @@ var Diagnostic = (function(){
             'Diagnostic',
             'switchToNFCSettings',
             []);
-    };
-
-    /**
-     * Enables/disables WiFi on the device.
-     *
-     * @param {Function} successCallback - function to call on successful setting of WiFi state
-     * @param {Function} errorCallback - function to call on failure to set WiFi state.
-     * This callback function is passed a single string parameter containing the error message.
-     * @param {Boolean} state - WiFi state to set: TRUE for enabled, FALSE for disabled.
-     */
-    Diagnostic.setWifiState = function(successCallback, errorCallback, state) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'setWifiState',
-            [state]);
     };
 
     /************

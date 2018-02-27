@@ -415,11 +415,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isWifiAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isWifiAvailable',
-            []);
+        if(cordova.plugins.diagnostic.wifi){
+            cordova.plugins.diagnostic.wifi.isWifiAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Wifi module is not installed";
+        }
     };
 
     /**
@@ -432,11 +432,11 @@ var Diagnostic = (function(){
      *  This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isWifiEnabled = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'isWifiEnabled',
-            []);
+        if(cordova.plugins.diagnostic.wifi){
+            cordova.plugins.diagnostic.wifi.isWifiEnabled.apply(this, arguments);
+        }else{
+            throw "Diagnostic Wifi module is not installed";
+        }
     };
 
     /***************

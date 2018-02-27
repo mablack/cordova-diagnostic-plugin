@@ -110,6 +110,10 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
     }];
 }
 
+/********************************/
+#pragma mark - Internals
+/********************************/
+
 - (NSString*) getLocationAuthorizationStatusAsString: (CLAuthorizationStatus)authStatus
 {
     NSString* status;
