@@ -1,6 +1,6 @@
 /*
- *  Diagnostic.h
- *  Diagnostic Plugin - Core Module
+ *  Diagnostic_Location.m
+ *  Diagnostic Plugin - Location Module
  *
  *  Copyright (c) 2018 Working Edge Ltd.
  *  Copyright (c) 2012 AVANTIC ESTUDIO DE INGENIEROS
@@ -155,7 +155,7 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
         self.locationRequestCallbackId = nil;
     }
 
-    [diagnostic executeGlobalJavascript:[NSString stringWithFormat:@"cordova.plugins.diagnostic._onLocationStateChange(\"%@\");", status]];
+    [diagnostic executeGlobalJavascript:[NSString stringWithFormat:@"cordova.plugins.diagnostic.location._onLocationStateChange(\"%@\");", status]];
 }
 
 

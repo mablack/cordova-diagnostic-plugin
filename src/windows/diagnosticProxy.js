@@ -7,37 +7,6 @@ cordova.commandProxy.add("Diagnostic", {
 
 
     /**
-     * Checks if bluetooth/wifi is enabled.
-     *
-     * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
-     * This callback function is passed a single boolean parameter with the diagnostic result.
-     * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     * @param {String} radioToCheck - "bluetooth" or "wifi".
-     */
-    // exec(win, fail, 'Diagnostic', 'isRadioEnabled', [bluetooth/wifi]);
-    isRadioEnabled: function (successCallback, errorCallback, radioToCheck) {
-
-        Windows.Devices.Radios.Radio.getRadiosAsync().done(
-            function (radioList) {
-                var radioKind = (radioToCheck == "bluetooth") ? Windows.Devices.Radios.RadioKind.bluetooth : Windows.Devices.Radios.RadioKind.wiFi;
-                var isEnabled = false;
-                for (var i = 0; i < radioList.length; i++) {
-                    if ((radioList[i].kind == radioKind)
-                        && (radioList[i].state == Windows.Devices.Radios.RadioState.on)) {
-                        isEnabled = true;
-                        break;
-                    }
-                }
-                successCallback(isEnabled);
-            },
-            function (error) {
-                errorCallback(error);
-            }
-        );
-    },
-
-    /**
      * Checks if camera is enabled.
      *
      * @param {Function} successCallback - The callback which will be called when diagnostic is successful. 
@@ -84,20 +53,35 @@ cordova.commandProxy.add("Diagnostic", {
         var uri = new Windows.Foundation.Uri("ms-settings-wifi:");
         Windows.System.Launcher.launchUriAsync(uri);
     },
-
     /**
-     * Display the bluetooth settings page.
+     * Checks if bluetooth/wifi is enabled.
+     *
+     * @param {Function} successCallback - The callback which will be called when diagnostic is successful.
+     * This callback function is passed a single boolean parameter with the diagnostic result.
+     * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     * @param {String} radioToCheck - "bluetooth" or "wifi".
      */
-    // exec(null, null, 'Diagnostic', 'switchToBluetoothSettings', []);
-    switchToBluetoothSettings: function () {
+    // exec(win, fail, 'Diagnostic', 'isRadioEnabled', [bluetooth/wifi]);
+    isRadioEnabled: function (successCallback, errorCallback, radioToCheck) {
 
-        // Mike says: According to the docs, "ms-settings-bluetooth:" is the correct URI to use
-        // to take the user directly to the Bluetooth page in the mobile settings app, but as of 10/9/2015
-        // it does not work (we just get back "false" in the success callback). So,
-        // using the desktop settings URI until this gets fixed, which takes the user to the
-        // "which of these settings are you interested in?" page.
-        var uri = new Windows.Foundation.Uri("ms-settings:bluetooth");
-        Windows.System.Launcher.launchUriAsync(uri);
+        Windows.Devices.Radios.Radio.getRadiosAsync().done(
+            function (radioList) {
+                var radioKind = (radioToCheck == "bluetooth") ? Windows.Devices.Radios.RadioKind.bluetooth : Windows.Devices.Radios.RadioKind.wiFi;
+                var isEnabled = false;
+                for (var i = 0; i < radioList.length; i++) {
+                    if ((radioList[i].kind == radioKind)
+                        && (radioList[i].state == Windows.Devices.Radios.RadioState.on)) {
+                        isEnabled = true;
+                        break;
+                    }
+                }
+                successCallback(isEnabled);
+            },
+            function (error) {
+                errorCallback(error);
+            }
+        );
     },
 
     /**

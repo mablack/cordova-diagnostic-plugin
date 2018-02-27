@@ -10,7 +10,6 @@
 #import <Cordova/CDVPlugin.h>
 #import <WebKit/WebKit.h>
 
-#import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreMotion/CoreMotion.h>
 #import <EventKit/EventKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -36,12 +35,11 @@ extern NSString*const AUTHORIZATION_NOT_DETERMINED;
 extern NSString*const AUTHORIZATION_DENIED;
 extern NSString*const AUTHORIZATION_GRANTED;
 
-@interface Diagnostic : CDVPlugin <CBCentralManagerDelegate>
+@interface Diagnostic : CDVPlugin
 
-    @property (nonatomic, retain) CBCentralManager* bluetoothManager;
-    @property (strong, nonatomic) CMMotionActivityManager* motionManager;
-    @property (strong, nonatomic) NSOperationQueue* motionActivityQueue;
-    @property (nonatomic) EKEventStore *eventStore;
+@property (strong, nonatomic) CMMotionActivityManager* motionManager;
+@property (strong, nonatomic) NSOperationQueue* motionActivityQueue;
+@property (nonatomic) EKEventStore *eventStore;
 
 + (id) getInstance;
 - (void) sendPluginResult: (CDVPluginResult*)result :(CDVInvokedUrlCommand*)command;
@@ -74,10 +72,6 @@ extern NSString*const AUTHORIZATION_GRANTED;
 
 - (void) isWifiAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isWifiEnabled: (CDVInvokedUrlCommand*)command;
-
-- (void) isBluetoothAvailable: (CDVInvokedUrlCommand*)command;
-- (void) getBluetoothState: (CDVInvokedUrlCommand*)command;
-- (void) requestBluetoothAuthorization: (CDVInvokedUrlCommand*)command;
 
 - (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command;
 - (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command;

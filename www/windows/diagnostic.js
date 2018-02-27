@@ -66,25 +66,10 @@ Diagnostic.prototype.isWifiAvailable = Diagnostic.isWifiEnabled = function (succ
     return cordova.exec(successCallback,
 		errorCallback,
 		'Diagnostic',
-		'isRadioEnabled',
-		['wifi']);
+		'isWifiEnabled');
 };
 
-/**
- * Checks if Bluetooth is enabled
- *
- * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
- * This callback function is passed a single boolean parameter with the diagnostic result.
- * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
- *  This callback function is passed a single string parameter containing the error message.
- */
-Diagnostic.prototype.isBluetoothAvailable = function (successCallback, errorCallback) {
-    return cordova.exec(successCallback,
-		errorCallback,
-		'Diagnostic',
-		'isRadioEnabled',
-		['bluetooth']);
-};
+
 
 /**
  * Checks if camera exists.
@@ -114,17 +99,6 @@ Diagnostic.prototype.switchToMobileDataSettings = function () {
 		null,
 		'Diagnostic',
 		'switchToMobileDataSettings',
-		[]);
-};
-
-/**
- * Switches to the Bluetooth page in the Settings app
- */
-Diagnostic.prototype.switchToBluetoothSettings = function () {
-    return cordova.exec(null,
-		null,
-		'Diagnostic',
-		'switchToBluetoothSettings',
 		[]);
 };
 
@@ -164,11 +138,39 @@ Diagnostic.prototype.setWifiState = function (successCallback, errorCallback, st
  * @param {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
  */
 Diagnostic.prototype.setBluetoothState = function (successCallback, errorCallback, state) {
-    return cordova.exec(successCallback,
-		errorCallback,
-		'Diagnostic',
-		'setRadioState',
-		['bluetooth', state]);
+    if(cordova.plugins.diagnostic.bluetooth){
+        cordova.plugins.diagnostic.bluetooth.setBluetoothState.apply(this, arguments);
+    }else{
+        throw "Diagnostic Bluetooth module is not installed";
+    }
 };
+
+/**
+ * Checks if Bluetooth is enabled
+ *
+ * @param {Function} successCallback -  The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * @param {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ *  This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.isBluetoothAvailable = function (successCallback, errorCallback) {
+    if(cordova.plugins.diagnostic.bluetooth){
+        cordova.plugins.diagnostic.bluetooth.isBluetoothAvailable.apply(this, arguments);
+    }else{
+        throw "Diagnostic Bluetooth module is not installed";
+    }
+};
+
+/**
+ * Switches to the Bluetooth page in the Settings app
+ */
+Diagnostic.prototype.switchToBluetoothSettings = function () {
+    if(cordova.plugins.diagnostic.bluetooth){
+        cordova.plugins.diagnostic.bluetooth.switchToBluetoothSettings.apply(this, arguments);
+    }else{
+        throw "Diagnostic Bluetooth module is not installed";
+    }
+};
+
 
 module.exports = new Diagnostic();

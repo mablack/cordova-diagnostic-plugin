@@ -55,12 +55,6 @@ public class Diagnostic_Location extends CordovaPlugin{
     private static String gpsLocationPermission = "ACCESS_FINE_LOCATION";
     private static String networkLocationPermission = "ACCESS_COARSE_LOCATION";
 
-    /**
-     * Either user denied permission and checked "never ask again"
-     * Or authorisation has not yet been requested for permission
-     */
-    private static final String STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS = "STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS";
-
 
     private static final String LOCATION_MODE_HIGH_ACCURACY = "high_accuracy";
     private static final String LOCATION_MODE_DEVICE_ONLY = "device_only";
@@ -207,7 +201,7 @@ public class Diagnostic_Location extends CordovaPlugin{
             String newMode = getLocationModeName();
             if(!newMode.equals(currentMode)){
                 diagnostic.logDebug("Location mode change to: " + getLocationModeName());
-                diagnostic.executePluginJavascript("_onLocationStateChange(\"" + getLocationModeName() +"\");");
+                diagnostic.executePluginJavascript("location._onLocationStateChange(\"" + getLocationModeName() +"\");");
             }
         }catch(Exception e){
             diagnostic.logError("Error retrieving current location mode on location state change: "+e.toString());

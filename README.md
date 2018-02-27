@@ -13,19 +13,16 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
   - [Using the Cordova/Phonegap/Ionic CLI](#using-the-cordovaphonegapionic-cli)
   - [PhoneGap Build](#phonegap-build)
   - [Specifying modules](#specifying-modules)
+    - [Available modules](#available-modules)
 - [Usage](#usage)
   - [Core module](#core-module)
     - [isWifiAvailable()](#iswifiavailable)
     - [isWifiEnabled()](#iswifienabled)
     - [isCameraAvailable()](#iscameraavailable)
-    - [isBluetoothAvailable()](#isbluetoothavailable)
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
-    - [switchToBluetoothSettings()](#switchtobluetoothsettings)
     - [switchToWifiSettings()](#switchtowifisettings)
     - [setWifiState()](#setwifistate)
-    - [setBluetoothState()](#setbluetoothstate)
     - [permissionStatus constants](#permissionstatus-constants)
-    - [bluetoothState constants](#bluetoothstate-constants)
     - [cpuArchitecture constants](#cpuarchitecture-constants)
     - [enableDebug()](#enabledebug)
     - [getArchitecture()](#getarchitecture)
@@ -44,8 +41,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
     - [requestCalendarAuthorization()](#requestcalendarauthorization)
     - [switchToSettings()](#switchtosettings)
-    - [getBluetoothState()](#getbluetoothstate)
-    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
     - [isDataRoamingEnabled()](#isdataroamingenabled)
     - [getPermissionAuthorizationStatus()](#getpermissionauthorizationstatus)
     - [getPermissionsAuthorizationStatus()](#getpermissionsauthorizationstatus)
@@ -53,10 +48,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestRuntimePermissions()](#requestruntimepermissions)
     - [isRequestingPermission()](#isrequestingpermission)
     - [registerPermissionRequestCompleteHandler()](#registerpermissionrequestcompletehandler)
-    - [isBluetoothEnabled()](#isbluetoothenabled)
-    - [hasBluetoothSupport()](#hasbluetoothsupport)
-    - [hasBluetoothLESupport()](#hasbluetoothlesupport)
-    - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
     - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
     - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
     - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
@@ -84,26 +75,37 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestRemindersAuthorization()](#requestremindersauthorization)
     - [isBackgroundRefreshAuthorized()](#isbackgroundrefreshauthorized)
     - [getBackgroundRefreshStatus()](#getbackgroundrefreshstatus)
-    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
     - [motionStatus constants](#motionstatus-constants)
     - [isMotionAvailable()](#ismotionavailable)
     - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
     - [requestMotionAuthorization()](#requestmotionauthorization)
     - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
   - [Location module](#location-module)
-    - [isLocationAvailable()](#islocationavailable)
-    - [switchToLocationSettings()](#switchtolocationsettings)
-    - [isLocationEnabled()](#islocationenabled)
-    - [isLocationAuthorized()](#islocationauthorized)
-    - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
-    - [requestLocationAuthorization()](#requestlocationauthorization)
-    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
     - [locationMode constants](#locationmode-constants)
+    - [isLocationAvailable()](#islocationavailable)
+    - [isLocationEnabled()](#islocationenabled)
     - [isGpsLocationAvailable()](#isgpslocationavailable)
     - [isGpsLocationEnabled()](#isgpslocationenabled)
     - [isNetworkLocationAvailable()](#isnetworklocationavailable)
     - [isNetworkLocationEnabled()](#isnetworklocationenabled)
     - [getLocationMode()](#getlocationmode)
+    - [isLocationAuthorized()](#islocationauthorized)
+    - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
+    - [requestLocationAuthorization()](#requestlocationauthorization)
+    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
+    - [switchToLocationSettings()](#switchtolocationsettings)
+  - [Bluetooth module](#bluetooth-module)
+    - [bluetoothState constants](#bluetoothstate-constants)
+    - [isBluetoothAvailable()](#isbluetoothavailable)
+    - [isBluetoothEnabled()](#isbluetoothenabled)
+    - [hasBluetoothSupport()](#hasbluetoothsupport)
+    - [hasBluetoothLESupport()](#hasbluetoothlesupport)
+    - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
+    - [getBluetoothState()](#getbluetoothstate)
+    - [setBluetoothState()](#setbluetoothstate)
+    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
+    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+    - [switchToBluetoothSettings()](#switchtobluetoothsettings)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
@@ -207,6 +209,7 @@ The reason for this is so you can choose to install only those parts of the plug
 By default, all the modules will be added your project when you install the plugin.
 
 You can specify which modules are installed by add a `<preference>` to your `config.xml` which specifies the modules you wish add as a space-separated list.
+Module names should be capitalised.
 
 The preference takes the form:
 
@@ -220,6 +223,13 @@ To install only the core module and no optional modules, leave the preference va
 
     <preference name="cordova.plugins.diagnostic.modules" value="" />
     
+### Available modules
+
+The following optional modules are currently supported by the plugin:
+
+- [LOCATION](#location-module) - Android, iOS, Windows 10
+- [BLUETOOTH](#bluetooth-module) - Android, iOS, Windows 10
+    
 **IMPORTANT:** It's vital that the preference be added to your `config.xml` **before** you install the plugin, otherwise the preference will not be applied and all modules will be added.
 This is because, due to limitations of the Cordova CLI hooks, this plugin must use the `npm install` process to apply the module preferences and this runs before the Cordova CLI when installing a plugin.
 If you change the modules specified in the preference, you'll need to uninstall then re-install the plugin to your project to apply the changes.    
@@ -231,9 +241,9 @@ If a function is called on the core module for an optional module which is not i
 
 ## Core module
 
-This module contains the core plugin functionality and is always installed, regardless of whether the module preference key is present in `config.xml`. 
-
+Purpose: Generic and miscellaneous functionality.
 Platforms: Android, iOS and Windows 10 Mobile
+Configuration name: N/A - always installed, regardless of whether the module preference key is present in `config.xml`.
 
 ### isWifiAvailable()
 
@@ -348,33 +358,6 @@ Defaults to true.
         }, false
     );
 
-### isBluetoothAvailable()
-
-Platforms: Android, iOS and Windows 10 Mobile
-
-Checks if Bluetooth is available to the app.
-Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS and Windows 10 Mobile)
-
-On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
-
-    cordova.plugins.diagnostic.isBluetoothAvailable(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if Bluetooth is available.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isBluetoothAvailable(function(available){
-        console.log("Bluetooth is " + (available ? "available" : "not available"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
 ### switchToMobileDataSettings()
 
 Platforms: Android and Windows 10 Mobile
@@ -382,14 +365,6 @@ Platforms: Android and Windows 10 Mobile
 Displays mobile settings to allow user to enable mobile data.
 
     cordova.plugins.diagnostic.switchToMobileDataSettings();
-
-### switchToBluetoothSettings()
-
-Platforms: Android and Windows 10 Mobile
-
-Displays Bluetooth settings to allow user to enable Bluetooth.
-
-    cordova.plugins.diagnostic.switchToBluetoothSettings();
 
 ### switchToWifiSettings()
 
@@ -432,39 +407,6 @@ Requires the following capabilities for Windows 10 Mobile:
     },
     true);
 
-### setBluetoothState()
-
-Platforms: Android and Windows 10 Mobile
-
-Enables/disables Bluetooth on the device.
-
-    cordova.plugins.diagnostic.setBluetoothState(successCallback, errorCallback, state);
-
-Requires the following permissions on Android:
-
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-
-Requires the following capabilities for Windows 10 Mobile:
-
-    <DeviceCapability Name="radios" />
-
-#### Parameters
-
-- {Function} successCallback - function to call on successful setting of Bluetooth state
-- {Function} errorCallback - function to call on failure to set Bluetooth state.
-- {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.setBluetoothState(function(){
-        console.log("Bluetooth was enabled");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    },
-    true);
-    
 ### permissionStatus constants
 
 Platforms: Android and iOS
@@ -508,41 +450,7 @@ Indicates the user has granted access to the permission "when in use" (only when
         // Do something
     }
 
-### bluetoothState constants
 
-Platforms: Android and iOS
-
-Defines constants for the various Bluetooth hardware states
-
-        cordova.plugins.diagnostic.bluetoothState
-
-#### Android
-
-- `UNKNOWN` - Bluetooth hardware state is unknown or unavailable
-- `POWERED_OFF` - Bluetooth hardware is switched off
-- `POWERED_ON` - Bluetooth hardware is switched on and available for use
-- `POWERING_OFF`- Bluetooth hardware is currently switching off
-- `POWERING_ON`- Bluetooth hardware is currently switching on
-
-#### iOS
-
-- `UNKNOWN` - Bluetooth hardware state is unknown
-- `RESETTING` - Bluetooth hardware state is currently resetting
-- `POWERED_OFF` - Bluetooth hardware is switched off
-- `POWERED_ON` - Bluetooth hardware is switched on and available for use
-- `UNAUTHORIZED`- Bluetooth hardware use is not authorized for the current application
-
-#### Example
-
-    cordova.plugins.diagnostic.getBluetoothState(function(state){
-        if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
-            // Do something with Bluetooth
-        }
-    }, function(error){
-        console.error(error);
-    });
-    
-    
 ### cpuArchitecture constants
 
 Platforms: Android and iOS
@@ -1162,55 +1070,6 @@ On iOS, this opens the app settings page in the Settings app. This works only on
         console.error("The following error occurred: "+error);
     });
 
-### getBluetoothState()
-
-Platforms: Android and iOS
-
-Returns the state of Bluetooth on the device.
-
-    cordova.plugins.diagnostic.getBluetoothState(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter which indicates the Bluetooth state as a constant in [`cordova.plugins.diagnostic.bluetoothState`](#bluetoothstate-constants).
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getBluetoothState(function(state){
-       if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
-           console.log("Bluetooth is able to connect");
-       }
-    }, function(error){
-        console.error(error);
-    });
-
-### registerBluetoothStateChangeHandler()
-
-Platforms: Android and iOS
-
-Registers a function to be called when a change in Bluetooth state occurs.
-Pass in a falsey value to de-register the currently registered function.
-
-This is triggered when Bluetooth state changes so is useful for detecting changes made in quick settings which would not result in pause/resume events being fired.
-
-    cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(successCallback);
-
-#### Parameters
-
-- {Function} successCallback - function call when a change in Bluetooth state occurs.
-The function is passed a single string parameter which indicates the Bluetooth state as a constant in [`cordova.plugins.diagnostic.bluetoothState`](#bluetoothstate-constants).
-
-#### Example usage
-
-    cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(function(state){
-       if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
-           console.log("Bluetooth is able to connect");
-       }
-    });
-    
 ### isDataRoamingEnabled()
 
 Platforms: Android
@@ -1455,102 +1314,6 @@ The function is passed a single object parameter which defines a key/value map, 
         cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(null); // de-register handler
     }
     cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(onPermissionRequestComplete);
-
-### isBluetoothEnabled()
-
-Platforms: Android
-
-Checks if the device setting for Bluetooth is switched on.
-
-On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
-
-    cordova.plugins.diagnostic.isBluetoothAvailable(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if Bluetooth is switched on.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isBluetoothEnabled(function(enabled){
-        console.log("Bluetooth is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### hasBluetoothSupport()
-
-Platforms: Android
-
-Checks if the device has Bluetooth capabilities.
-See http://developer.android.com/guide/topics/connectivity/bluetooth.html.
-
-    cordova.plugins.diagnostic.hasBluetoothLESupport(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when the operation is successful.
-The function is passed a single boolean parameter which is TRUE if device has Bluetooth capabilities.
-- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.hasBluetoothSupport(function(supported){
-        console.log("Bluetooth is " + (supported ? "supported" : "unsupported"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### hasBluetoothLESupport()
-
-Platforms: Android
-
-Checks if the device has Bluetooth Low Energy (LE) capabilities.
-See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
-
-    cordova.plugins.diagnostic.hasBluetoothLESupport(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when the operation is successful.
-The function is passed a single boolean parameter which is TRUE if device has Bluetooth LE capabilities.
-- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.hasBluetoothLESupport(function(supported){
-        console.log("Bluetooth LE is " + (supported ? "supported" : "unsupported"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### hasBluetoothLEPeripheralSupport()
-
-Platforms: Android
-
-Checks if the device supports Bluetooth Low Energy (LE) Peripheral mode.
-See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html#roles.
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when the operation is successful.
-The function is passed a single boolean parameter which is TRUE if device supports Bluetooth LE Peripheral mode.
-- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.hasBluetoothLEPeripheralSupport(function(supported){
-        console.log("Bluetooth LE Peripheral Mode is " + (supported ? "supported" : "unsupported"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 ### isExternalStorageAuthorized()
 
@@ -2310,32 +2073,6 @@ The function is passed a single string parameter containing the error message.
         console.error("The following error occurred: "+error);
     });
 
-### requestBluetoothAuthorization()
-
-Platforms: iOS
-
-Requests Bluetooth authorization for the application.
-- The outcome of the authorization request can be determined by registering a handler using [`registerBluetoothStateChangeHandler()`](#registerbluetoothstatechangehandler).
-- When calling this function, the message contained in the `NSBluetoothPeripheralUsageDescription` .plist key is displayed to the user;
-this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
-
-    cordova.plugins.diagnostic.requestBluetoothAuthorization(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is not passed any parameters.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.requestBluetoothAuthorization(function(){
-        console.log("Bluetooth authorization was requested."));
-    }, function(error){
-        console.error(error);
-    });
-
 ### motionStatus constants
 
 Platforms: iOS
@@ -2497,13 +2234,46 @@ The function is passed a single string parameter indicating the result:
 
 ## Location module
 
-This optional module contains functionality related to device location and GPS.
-It can be installed by specifying `LOCATION` in the module preference list in `config.xml` **before** adding the plugin to the Cordova project, for example:
-
-    <preference name="cordova.plugins.diagnostic.modules" value="LOCATION" />
-    
+Purpose: Location/GPS functionality
 Platforms: Android, iOS and Windows 10 Mobile
+Configuration name: `LOCATION`
 
+### locationMode constants
+
+Platforms: Android
+
+Defines constants for the various location modes on Android.
+
+    cordova.plugins.diagnostic.locationMode
+
+#### Values
+
+- `HIGH_ACCURACY` - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+- `BATTERY_SAVING` - Network triangulation and Wifi network IDs (low accuracy)
+- `DEVICE_ONLY` -  GPS hardware (high accuracy)
+- `LOCATION_OFF` - Location services disabled (no accuracy)
+
+#### Example
+
+    cordova.plugins.diagnostic.getLocationMode(function(locationMode){
+        switch(locationMode){
+            case cordova.plugins.diagnostic.locationMode.HIGH_ACCURACY:
+                console.log("High accuracy");
+                break;
+            case cordova.plugins.diagnostic.locationMode.BATTERY_SAVING:
+                console.log("Battery saving");
+                break;
+            case cordova.plugins.diagnostic.locationMode.DEVICE_ONLY:
+                console.log("Device only");
+                break;
+            case cordova.plugins.diagnostic.locationMode.LOCATION_OFF:
+                console.log("Location off");
+                break;
+        }
+    },function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
 ### isLocationAvailable()
 
 Platforms: Android, iOS and Windows 10 Mobile
@@ -2539,16 +2309,6 @@ The function is passed a single string parameter containing the error message.
         console.error("The following error occurred: "+error);
     });
 
-### switchToLocationSettings()
-
-Platforms: Android and Windows 10 Mobile
-
-Displays the device location settings to allow user to enable location services/change location mode.
-
-    cordova.plugins.diagnostic.switchToLocationSettings();
-
-Note: On Android, you may want to consider using the [Request Location Accuracy Plugin for Android](https://github.com/dpa99c/cordova-plugin-request-location-accuracy) to request the desired location accuracy without needing the user to manually do this on the Location Settings page.
-
 ### isLocationEnabled()
 
 Platforms: Android and iOS
@@ -2572,6 +2332,154 @@ The function is passed a single string parameter containing the error message.
     cordova.plugins.diagnostic.isLocationEnabled(function(enabled){
         console.log("Location setting is " + (enabled ? "enabled" : "disabled"));
     }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+### isGpsLocationAvailable()
+
+Platforms: Android
+
+Checks if high-accuracy locations are available to the app from GPS hardware.
+Returns true if Location mode is enabled and is set to "Device only" or "High accuracy" AND if the app is authorised to use location.
+
+    cordova.plugins.diagnostic.isGpsLocationAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isGpsLocationAvailable(function(available){
+        console.log("GPS location is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isGpsLocationEnabled()
+
+Platforms: Android
+
+Checks if the device location setting is set to return high-accuracy locations from GPS hardware.
+Returns true if Location mode is enabled and is set to either:
+
+- Device only = GPS hardware only (high accuracy)
+- High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+
+
+    cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if device setting is set to return high-accuracy GPS-based location.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
+        console.log("GPS location is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isNetworkLocationAvailable()
+
+Platforms: Android
+
+Checks if low-accuracy locations are available to the app from network triangulation/WiFi access points.
+Returns true if Location mode is enabled and is set to "Battery saving" or "High accuracy"
+AND if the app is authorised to use location.
+
+    cordova.plugins.diagnostic.isNetworkLocationAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNetworkLocationAvailable(function(available){
+        console.log("Network location is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isNetworkLocationEnabled()
+
+Platforms: Android
+
+Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points
+Returns true if Location mode is enabled and is set to either:
+
+- Battery saving = network triangulation and Wifi network IDs (low accuracy)
+- High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+
+
+    cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if device setting is set to return low-accuracy network-based location.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNetworkLocationEnabled(function(enabled){
+        console.log("Network location is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+	
+
+### getLocationMode()
+
+Platforms: Android
+
+Returns the current location mode setting for the device.
+
+    cordova.plugins.diagnostic.getLocationMode(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single string parameter indicating the current location mode
+as a constant in `cordova.plugins.diagnostic.locationMode`.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getLocationMode(function(locationMode){
+        switch(locationMode){
+            case cordova.plugins.diagnostic.locationMode.HIGH_ACCURACY:
+                console.log("High accuracy");
+                break;
+            case cordova.plugins.diagnostic.locationMode.BATTERY_SAVING:
+                console.log("Battery saving");
+                break;
+            case cordova.plugins.diagnostic.locationMode.DEVICE_ONLY:
+                console.log("Device only");
+                break;
+            case cordova.plugins.diagnostic.locationMode.LOCATION_OFF:
+                console.log("Location off");
+                break;
+        }
+    },function(error){
         console.error("The following error occurred: "+error);
     });
 
@@ -2771,190 +2679,302 @@ On iOS, the function is passed a single string parameter indicating the new loca
             console.log("Location is available");
         }
     });
+    
 
-### locationMode constants
+### switchToLocationSettings()
 
-Platforms: Android
+Platforms: Android and Windows 10 Mobile
 
-Defines constants for the various location modes on Android.
+Displays the device location settings to allow user to enable location services/change location mode.
 
-    cordova.plugins.diagnostic.locationMode
+    cordova.plugins.diagnostic.switchToLocationSettings();
 
-#### Values
+Note: On Android, you may want to consider using the [Request Location Accuracy Plugin for Android](https://github.com/dpa99c/cordova-plugin-request-location-accuracy) to request the desired location accuracy without needing the user to manually do this on the Location Settings page.
 
-- `HIGH_ACCURACY` - GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-- `BATTERY_SAVING` - Network triangulation and Wifi network IDs (low accuracy)
-- `DEVICE_ONLY` -  GPS hardware (high accuracy)
-- `LOCATION_OFF` - Location services disabled (no accuracy)
+## Bluetooth module
+
+### bluetoothState constants
+
+Platforms: Android and iOS
+
+Defines constants for the various Bluetooth hardware states
+
+        cordova.plugins.diagnostic.bluetoothState
+
+#### Android
+
+- `UNKNOWN` - Bluetooth hardware state is unknown or unavailable
+- `POWERED_OFF` - Bluetooth hardware is switched off
+- `POWERED_ON` - Bluetooth hardware is switched on and available for use
+- `POWERING_OFF`- Bluetooth hardware is currently switching off
+- `POWERING_ON`- Bluetooth hardware is currently switching on
+
+#### iOS
+
+- `UNKNOWN` - Bluetooth hardware state is unknown
+- `RESETTING` - Bluetooth hardware state is currently resetting
+- `POWERED_OFF` - Bluetooth hardware is switched off
+- `POWERED_ON` - Bluetooth hardware is switched on and available for use
+- `UNAUTHORIZED`- Bluetooth hardware use is not authorized for the current application
 
 #### Example
 
-    cordova.plugins.diagnostic.getLocationMode(function(locationMode){
-        switch(locationMode){
-            case cordova.plugins.diagnostic.locationMode.HIGH_ACCURACY:
-                console.log("High accuracy");
-                break;
-            case cordova.plugins.diagnostic.locationMode.BATTERY_SAVING:
-                console.log("Battery saving");
-                break;
-            case cordova.plugins.diagnostic.locationMode.DEVICE_ONLY:
-                console.log("Device only");
-                break;
-            case cordova.plugins.diagnostic.locationMode.LOCATION_OFF:
-                console.log("Location off");
-                break;
+    cordova.plugins.diagnostic.getBluetoothState(function(state){
+        if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
+            // Do something with Bluetooth
         }
-    },function(error){
-        console.error("The following error occurred: "+error);
+    }, function(error){
+        console.error(error);
     });
+    
+    
+    
+### isBluetoothAvailable()
 
-### isGpsLocationAvailable()
+Platforms: Android, iOS and Windows 10 Mobile
 
-Platforms: Android
+Checks if Bluetooth is available to the app.
+Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS and Windows 10 Mobile)
 
-Checks if high-accuracy locations are available to the app from GPS hardware.
-Returns true if Location mode is enabled and is set to "Device only" or "High accuracy" AND if the app is authorised to use location.
+On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
 
-    cordova.plugins.diagnostic.isGpsLocationAvailable(successCallback, errorCallback);
+    cordova.plugins.diagnostic.isBluetoothAvailable(successCallback, errorCallback);
 
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if high-accuracy GPS-based location is available.
+The function is passed a single boolean parameter which is TRUE if Bluetooth is available.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isGpsLocationAvailable(function(available){
-        console.log("GPS location is " + (available ? "available" : "not available"));
+    cordova.plugins.diagnostic.isBluetoothAvailable(function(available){
+        console.log("Bluetooth is " + (available ? "available" : "not available"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
 
-### isGpsLocationEnabled()
+Purpose: Bluetooth functionality
+Platforms: Android, iOS and Windows 10 Mobile
+Configuration name: `BLUETOOTH`
+
+### isBluetoothEnabled()
 
 Platforms: Android
 
-Checks if the device location setting is set to return high-accuracy locations from GPS hardware.
-Returns true if Location mode is enabled and is set to either:
+Checks if the device setting for Bluetooth is switched on.
 
-- Device only = GPS hardware only (high accuracy)
-- High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
+On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
 
-
-    cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
+    cordova.plugins.diagnostic.isBluetoothAvailable(successCallback, errorCallback);
 
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if device setting is set to return high-accuracy GPS-based location.
+The function is passed a single boolean parameter which is TRUE if Bluetooth is switched on.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
-        console.log("GPS location is " + (enabled ? "enabled" : "disabled"));
+    cordova.plugins.diagnostic.isBluetoothEnabled(function(enabled){
+        console.log("Bluetooth is " + (enabled ? "enabled" : "disabled"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
 
-### isNetworkLocationAvailable()
+### hasBluetoothSupport()
 
 Platforms: Android
 
-Checks if low-accuracy locations are available to the app from network triangulation/WiFi access points.
-Returns true if Location mode is enabled and is set to "Battery saving" or "High accuracy"
-AND if the app is authorised to use location.
+Checks if the device has Bluetooth capabilities.
+See http://developer.android.com/guide/topics/connectivity/bluetooth.html.
 
-    cordova.plugins.diagnostic.isNetworkLocationAvailable(successCallback, errorCallback);
+    cordova.plugins.diagnostic.hasBluetoothLESupport(successCallback, errorCallback);
 
 #### Parameters
 
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if low-accuracy network-based location is available.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+The function is passed a single boolean parameter which is TRUE if device has Bluetooth capabilities.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 The function is passed a single string parameter containing the error message.
-
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isNetworkLocationAvailable(function(available){
-        console.log("Network location is " + (available ? "available" : "not available"));
+    cordova.plugins.diagnostic.hasBluetoothSupport(function(supported){
+        console.log("Bluetooth is " + (supported ? "supported" : "unsupported"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
 
-### isNetworkLocationEnabled()
+### hasBluetoothLESupport()
 
 Platforms: Android
 
-Checks if location mode is set to return low-accuracy locations from network triangulation/WiFi access points
-Returns true if Location mode is enabled and is set to either:
+Checks if the device has Bluetooth Low Energy (LE) capabilities.
+See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html.
 
-- Battery saving = network triangulation and Wifi network IDs (low accuracy)
-- High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
-
-
-    cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
+    cordova.plugins.diagnostic.hasBluetoothLESupport(successCallback, errorCallback);
 
 #### Parameters
 
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if device setting is set to return low-accuracy network-based location.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+The function is passed a single boolean parameter which is TRUE if device has Bluetooth LE capabilities.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
 The function is passed a single string parameter containing the error message.
-
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isNetworkLocationEnabled(function(enabled){
-        console.log("Network location is " + (enabled ? "enabled" : "disabled"));
+    cordova.plugins.diagnostic.hasBluetoothLESupport(function(supported){
+        console.log("Bluetooth LE is " + (supported ? "supported" : "unsupported"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
-	
 
-### getLocationMode()
+### hasBluetoothLEPeripheralSupport()
 
 Platforms: Android
 
-Returns the current location mode setting for the device.
+Checks if the device supports Bluetooth Low Energy (LE) Peripheral mode.
+See http://developer.android.com/guide/topics/connectivity/bluetooth-le.html#roles.
 
-    cordova.plugins.diagnostic.getLocationMode(successCallback, errorCallback);
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+The function is passed a single boolean parameter which is TRUE if device supports Bluetooth LE Peripheral mode.
+- {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.hasBluetoothLEPeripheralSupport(function(supported){
+        console.log("Bluetooth LE Peripheral Mode is " + (supported ? "supported" : "unsupported"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });  
+    
+
+### getBluetoothState()
+
+Platforms: Android and iOS
+
+Returns the state of Bluetooth on the device.
+
+    cordova.plugins.diagnostic.getBluetoothState(successCallback, errorCallback);
 
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter indicating the current location mode
-as a constant in `cordova.plugins.diagnostic.locationMode`.
+The function is passed a single string parameter which indicates the Bluetooth state as a constant in [`cordova.plugins.diagnostic.bluetoothState`](#bluetoothstate-constants).
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getBluetoothState(function(state){
+       if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
+           console.log("Bluetooth is able to connect");
+       }
+    }, function(error){
+        console.error(error);
+    });
+
+### setBluetoothState()
+
+Platforms: Android and Windows 10 Mobile
+
+Enables/disables Bluetooth on the device.
+
+    cordova.plugins.diagnostic.setBluetoothState(successCallback, errorCallback, state);
+
+Requires the following permissions on Android:
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+Requires the following capabilities for Windows 10 Mobile:
+
+    <DeviceCapability Name="radios" />
+
+#### Parameters
+
+- {Function} successCallback - function to call on successful setting of Bluetooth state
+- {Function} errorCallback - function to call on failure to set Bluetooth state.
+- {Boolean} state - Bluetooth state to set: TRUE for enabled, FALSE for disabled.
 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.getLocationMode(function(locationMode){
-        switch(locationMode){
-            case cordova.plugins.diagnostic.locationMode.HIGH_ACCURACY:
-                console.log("High accuracy");
-                break;
-            case cordova.plugins.diagnostic.locationMode.BATTERY_SAVING:
-                console.log("Battery saving");
-                break;
-            case cordova.plugins.diagnostic.locationMode.DEVICE_ONLY:
-                console.log("Device only");
-                break;
-            case cordova.plugins.diagnostic.locationMode.LOCATION_OFF:
-                console.log("Location off");
-                break;
-        }
-    },function(error){
+    cordova.plugins.diagnostic.setBluetoothState(function(){
+        console.log("Bluetooth was enabled");
+    }, function(error){
         console.error("The following error occurred: "+error);
+    },
+    true);
+    
+
+### requestBluetoothAuthorization()
+
+Platforms: iOS
+
+Requests Bluetooth authorization for the application.
+- The outcome of the authorization request can be determined by registering a handler using [`registerBluetoothStateChangeHandler()`](#registerbluetoothstatechangehandler).
+- When calling this function, the message contained in the `NSBluetoothPeripheralUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
+
+    cordova.plugins.diagnostic.requestBluetoothAuthorization(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is not passed any parameters.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestBluetoothAuthorization(function(){
+        console.log("Bluetooth authorization was requested."));
+    }, function(error){
+        console.error(error);
     });
+    
+
+### registerBluetoothStateChangeHandler()
+
+Platforms: Android and iOS
+
+Registers a function to be called when a change in Bluetooth state occurs.
+Pass in a falsey value to de-register the currently registered function.
+
+This is triggered when Bluetooth state changes so is useful for detecting changes made in quick settings which would not result in pause/resume events being fired.
+
+    cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(successCallback);
+
+#### Parameters
+
+- {Function} successCallback - function call when a change in Bluetooth state occurs.
+The function is passed a single string parameter which indicates the Bluetooth state as a constant in [`cordova.plugins.diagnostic.bluetoothState`](#bluetoothstate-constants).
+
+#### Example usage
+
+    cordova.plugins.diagnostic.registerBluetoothStateChangeHandler(function(state){
+       if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
+           console.log("Bluetooth is able to connect");
+       }
+    });
+    
+
+### switchToBluetoothSettings()
+
+Platforms: Android and Windows 10 Mobile
+
+Displays Bluetooth settings to allow user to enable Bluetooth.
+
+    cordova.plugins.diagnostic.switchToBluetoothSettings();
 
 # Platform Notes
 

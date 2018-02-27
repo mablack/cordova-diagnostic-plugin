@@ -42,15 +42,6 @@ var Diagnostic = (function(){
         "GRANTED_WHEN_IN_USE": "authorized_when_in_use" //  User granted access use location permission only when app is in use
     };
 
-    Diagnostic.bluetoothState = {
-        "UNKNOWN": "unknown",
-        "RESETTING": "resetting",
-        "UNSUPPORTED": "unsupported",
-        "UNAUTHORIZED": "unauthorized",
-        "POWERED_OFF": "powered_off",
-        "POWERED_ON": "powered_on"
-    };
-
     /**
      * Status of motion+tracking permission
      * @type {object}
@@ -86,8 +77,6 @@ var Diagnostic = (function(){
      *
      ****************************/
 
-    // Placeholder listeners
-    Diagnostic._onBluetoothStateChange = function(){};
 
     Diagnostic._ensureBoolean = function (callback){
         return function(result){
@@ -463,11 +452,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isBluetoothAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isBluetoothAvailable',
-            []);
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.isBluetoothAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
     };
 
     /**
@@ -479,11 +468,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getBluetoothState = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getBluetoothState',
-            []);
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.getBluetoothState.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
     };
 
 
@@ -497,7 +486,11 @@ var Diagnostic = (function(){
      *  This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.registerBluetoothStateChangeHandler = function(successCallback, errorCallback){
-        Diagnostic._onBluetoothStateChange = successCallback || function(){};
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.registerBluetoothStateChangeHandler.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
     };
 
     /**
@@ -510,12 +503,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestBluetoothAuthorization = function(successCallback, errorCallback) {
-        return cordova.exec(
-            successCallback,
-            errorCallback,
-            'Diagnostic',
-            'requestBluetoothAuthorization',
-            []);
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.requestBluetoothAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
     };
 
     /***************************
