@@ -135,6 +135,22 @@
         <header-file src="src/ios/Diagnostic_Wifi.h" />
         <source-file src="src/ios/Diagnostic_Wifi.m" />
         <!--END_MODULE WIFI-->
+
+        <!--BEGIN_MODULE CAMERA-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Camera">
+                <param name="ios-package" value="Diagnostic_Camera" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module src="www/ios/diagnostic.camera.js" name="Diagnostic_Camera">
+            <merges target="cordova.plugins.diagnostic.camera" />
+        </js-module>
+
+        <header-file src="src/ios/Diagnostic_Camera.h" />
+        <source-file src="src/ios/Diagnostic_Camera.m" />
+        <!--END_MODULE CAMERA-->
     </platform>
 
     <platform name="android">
@@ -215,6 +231,21 @@
 
         <source-file src="src/android/Diagnostic_Wifi.java" target-dir="src/cordova/plugins" />
         <!--END_MODULE WIFI-->
+
+        <!--BEGIN_MODULE CAMERA-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Camera" >
+                <param name="android-package" value="cordova.plugins.Diagnostic_Camera"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module name="Diagnostic_Camera" src="www/android/diagnostic.camera.js">
+            <merges target="cordova.plugins.diagnostic.camera" />
+        </js-module>
+
+        <source-file src="src/android/Diagnostic_Camera.java" target-dir="src/cordova/plugins" />
+        <!--END_MODULE CAMERA-->
     </platform>
 
     <platform name="windows">
@@ -281,5 +312,21 @@
             <merges target="" />
         </js-module>
         <!--END_MODULE WIFI-->
+
+        <!--BEGIN_MODULE CAMERA-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Camera" >
+                <param name="windows-package" value="cordova.plugins.Diagnostic_Camera"/>
+            </feature>
+        </config-file>
+
+        <js-module src="www/windows/diagnostic.camera.js" name="Diagnostic_Camera">
+            <merges target="cordova.plugins.diagnostic.camera" />
+        </js-module>
+
+        <js-module src="src/windows/diagnosticProxy.camera.js" name="diagnosticProxy.camera">
+            <merges target="" />
+        </js-module>
+        <!--END_MODULE CAMERA-->
     </platform>
 </plugin>

@@ -250,8 +250,6 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success();
             } else if(action.equals("isDataRoamingEnabled")) {
                 callbackContext.success(isDataRoamingEnabled() ? 1 : 0);
-            } else if(action.equals("isCameraPresent")) {
-                callbackContext.success(isCameraPresent() ? 1 : 0);
             } else if(action.equals("getPermissionAuthorizationStatus")) {
                 this.getPermissionAuthorizationStatus(args);
             } else if(action.equals("getPermissionsAuthorizationStatus")) {
@@ -306,12 +304,6 @@ public class Diagnostic extends CordovaPlugin{
         }else{
             result = Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
         }
-        return result;
-    }
-
-    public boolean isCameraPresent() {
-        PackageManager pm = this.cordova.getActivity().getPackageManager();
-        boolean result = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
         return result;
     }
 

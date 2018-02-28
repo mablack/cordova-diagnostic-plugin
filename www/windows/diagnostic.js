@@ -5,43 +5,9 @@
 **/
 var Diagnostic = function () { };
 
-function mapFromLegacyCameraApi() {
-    var params;
-    if (typeof arguments[0]  === "function") {
-        params = (arguments.length > 2 && typeof arguments[2]  === "object") ? arguments[2] : {};
-        params.successCallback = arguments[0];
-        if(arguments.length > 1 && typeof arguments[1]  === "function") {
-            params.errorCallback = arguments[1];
-        }
-    }else { // if (typeof arguments[0]  === "object")
-        params = arguments[0];
-    }
-    return params;
-}
-
 /******
  * Core
  ******/
-
-/**
- * Checks if camera exists.
- *
- * @param {Object} params - (optional) parameters:
- * 	- {Function} successCallback -  The callback which will be called when diagnostic is successful.
- * This callback function is passed a single boolean parameter with the diagnostic result.
- * 	- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
- *  This callback function is passed a single string parameter containing the error message.
- */
-Diagnostic.prototype.isCameraAvailable = function (params) {
-    params = mapFromLegacyCameraApi.apply(this, arguments);
-
-    return cordova.exec(params.successCallback,
-        params.errorCallback,
-		'Diagnostic',
-		'isCameraAvailable',
-		[]);
-};
-
 
 /**
 * Switches to the Mobile Data page in the Settings app
@@ -177,5 +143,27 @@ Diagnostic.prototype.isWifiAvailable = Diagnostic.isWifiEnabled = function (succ
         throw "Diagnostic Wifi module is not installed";
     }
 };
+
+/***********
+ * Camera
+ ***********/
+
+/**
+ * Checks if camera exists.
+ *
+ * @param {Object} params - (optional) parameters:
+ * 	- {Function} successCallback -  The callback which will be called when diagnostic is successful.
+ * This callback function is passed a single boolean parameter with the diagnostic result.
+ * 	- {Function} errorCallback -  The callback which will be called when diagnostic encounters an error.
+ *  This callback function is passed a single string parameter containing the error message.
+ */
+Diagnostic.prototype.isCameraAvailable = function (params) {
+    if(cordova.plugins.diagnostic.camera){
+        cordova.plugins.diagnostic.camera.isCameraAvailable.apply(this, arguments);
+    }else{
+        throw "Diagnostic Camera module is not installed";
+    }
+};
+
 
 module.exports = new Diagnostic();

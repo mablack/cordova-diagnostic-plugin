@@ -10,20 +10,6 @@ var Diagnostic = (function(){
      * Internal functions
      ********************/
 
-    function mapFromLegacyCameraApi() {
-        var params;
-        if (typeof arguments[0]  === "function") {
-            params = (arguments.length > 2 && typeof arguments[2]  === "object") ? arguments[2] : {};
-            params.successCallback = arguments[0];
-            if(arguments.length > 1 && typeof arguments[1]  === "function") {
-                params.errorCallback = arguments[1];
-            }
-        }else { // if (typeof arguments[0]  === "object")
-            params = arguments[0];
-        }
-        return params;
-    }
-
 
     /********************
      * Public properties
@@ -260,14 +246,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraAvailable = function(params) {
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        params.successCallback = params.successCallback || function(){};
-        return cordova.exec(Diagnostic._ensureBoolean(params.successCallback),
-            params.errorCallback,
-            'Diagnostic',
-            'isCameraAvailable',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.isCameraAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -279,11 +262,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isCameraPresent',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.isCameraPresent.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
 
@@ -297,13 +280,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraAuthorized = function(params) {
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        return cordova.exec(Diagnostic._ensureBoolean(params.successCallback),
-            params.errorCallback,
-            'Diagnostic',
-            'isCameraAuthorized',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.isCameraAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -316,13 +297,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getCameraAuthorizationStatus = function(params) {
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        return cordova.exec(params.successCallback,
-            params.errorCallback,
-            'Diagnostic',
-            'getCameraAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.getCameraAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -337,16 +316,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestCameraAuthorization = function(params){
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        params.successCallback = params.successCallback || function(){};
-        return cordova.exec(function(isGranted){
-                params.successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
-            },
-            params.errorCallback,
-            'Diagnostic',
-            'requestCameraAuthorization',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.requestCameraAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -358,11 +332,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraRollAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isCameraRollAuthorized',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.isCameraRollAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -374,11 +348,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getCameraRollAuthorizationStatus = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getCameraRollAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.getCameraRollAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -392,13 +366,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestCameraRollAuthorization = function(successCallback, errorCallback) {
-        return cordova.exec(function(status){
-                successCallback(status == "authorized" ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
-            },
-            errorCallback,
-            'Diagnostic',
-            'requestCameraRollAuthorization',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.requestCameraRollAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /************

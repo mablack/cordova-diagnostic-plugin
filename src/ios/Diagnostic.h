@@ -12,10 +12,9 @@
 
 #import <CoreMotion/CoreMotion.h>
 #import <EventKit/EventKit.h>
-#import <AVFoundation/AVFoundation.h>
-#import <Photos/Photos.h>
 #import <AddressBook/AddressBook.h>
 #import <Contacts/Contacts.h>
+#import <AVFoundation/AVFoundation.h> // microphone
 
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 #import <UserNotifications/UserNotifications.h>
@@ -58,14 +57,6 @@ extern NSString*const AUTHORIZATION_GRANTED;
 - (id) getSetting: (NSString*) key;
 
 - (void) enableDebug: (CDVInvokedUrlCommand*)command;
-
-- (void) isCameraAvailable: (CDVInvokedUrlCommand*)command;
-- (void) isCameraPresent: (CDVInvokedUrlCommand*)command;
-- (void) isCameraAuthorized: (CDVInvokedUrlCommand*)command;
-- (void) getCameraAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-- (void) requestCameraAuthorization: (CDVInvokedUrlCommand*)command;
-- (void) isCameraRollAuthorized: (CDVInvokedUrlCommand*)command;
-- (void) getCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command;
 
 - (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command;
 - (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command;

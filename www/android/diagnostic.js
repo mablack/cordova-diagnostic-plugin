@@ -197,48 +197,6 @@ var Diagnostic = (function(){
         }
     }
 
-    function combineCameraStatuses(statuses){
-        var cameraStatus = statuses[Diagnostic.permission.CAMERA],
-            mediaStatus = statuses[Diagnostic.permission.READ_EXTERNAL_STORAGE],
-            status;
-
-        if(cameraStatus == Diagnostic.permissionStatus.DENIED_ALWAYS || mediaStatus == Diagnostic.permissionStatus.DENIED_ALWAYS){
-            status = Diagnostic.permissionStatus.DENIED_ALWAYS;
-        }else if(cameraStatus == Diagnostic.permissionStatus.DENIED || mediaStatus == Diagnostic.permissionStatus.DENIED){
-            status = Diagnostic.permissionStatus.DENIED;
-        }else if(cameraStatus == Diagnostic.permissionStatus.NOT_REQUESTED || mediaStatus == Diagnostic.permissionStatus.NOT_REQUESTED){
-            status = Diagnostic.permissionStatus.NOT_REQUESTED;
-        }else{
-            status = Diagnostic.permissionStatus.GRANTED;
-        }
-        return status;
-    }
-
-    function numberOfKeys(obj){
-        var count = 0;
-        for(var k in obj){
-            count++;
-        }
-        return count;
-    }
-
-    function mapFromLegacyCameraApi() {
-        var params;
-        if (typeof arguments[0]  === "function") {
-            params = (arguments.length > 2 && typeof arguments[2]  === "object") ? arguments[2] : {};
-            params.successCallback = arguments[0];
-            if(arguments.length > 1 && typeof arguments[1]  === "function") {
-                params.errorCallback = arguments[1];
-            }
-            if(arguments.length > 2 && arguments[2]  === false) {
-                params.externalStorage = arguments[2];
-            }
-        }else { // if (typeof arguments[0]  === "object")
-            params = arguments[0];
-        }
-        return params;
-    }
-
     /*****************************
      *
      * Protected member functions
@@ -452,6 +410,130 @@ var Diagnostic = (function(){
     };
 
 
+    /**
+     * Switches to the wireless settings page in the Settings app.
+     * Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
+     */
+    Diagnostic.switchToWirelessSettings = function() {
+        return cordova.exec(null,
+            null,
+            'Diagnostic',
+            'switchToWirelessSettings',
+            []);
+    };
+
+    /**
+     * Switches to the nfc settings page in the Settings app
+     */
+    Diagnostic.switchToNFCSettings = function() {
+        return cordova.exec(null,
+            null,
+            'Diagnostic',
+            'switchToNFCSettings',
+            []);
+    };
+
+    /**
+     * Switches to the Mobile Data page in the Settings app
+     */
+    Diagnostic.switchToMobileDataSettings = function() {
+        return cordova.exec(null,
+            null,
+            'Diagnostic',
+            'switchToMobileDataSettings',
+            []);
+    };
+
+    /**
+     * Checks if ADB mode(debug mode) is switched on.
+     * Returns true if ADB mode is switched on.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if ADB mode(debug mode) is switched on.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isADBModeEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isADBModeEnabled',
+            []);
+    };
+
+    /**
+     * Checks if the device is rooted.
+     * Returns true if the device is rooted.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if the device is rooted.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isDeviceRooted = function(successCallback, errorCallback) {
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isDeviceRooted',
+            []);
+    };
+
+    /**
+     * Restarts the application.
+     * By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
+     * However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
+     * This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
+     *
+     * Note: There is no successCallback() since if the operation is successful, the application will restart immediately before any success callback can be applied.
+     *
+     * @param {Function} successCallback - function to call on successful retrieval of status.
+     * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
+     * @param {Function} errorCallback - function to call on failure to retrieve authorisation status.
+     * This callback function is passed a single string parameter containing the error message.
+     * @param {Boolean} cold - if true the application will be cold restarted. Defaults to false.
+     */
+    Diagnostic.restart = function(errorCallback, cold){
+        return cordova.exec(
+            null,
+            errorCallback,
+            'Diagnostic',
+            'restart',
+            [cold]);
+    };
+
+    /**
+     * Returns CPU architecture of the current device.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.cpuArchitecture`.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getArchitecture = function(successCallback, errorCallback) {
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getArchitecture',
+            []);
+    };
+
+    /**
+     * Checks if the device data roaming setting is enabled.
+     * Returns true if data roaming is enabled.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if data roaming is enabled.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isDataRoamingEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isDataRoamingEnabled',
+            []);
+    };
+
     /************
      * Location *
      ************/
@@ -575,7 +657,7 @@ var Diagnostic = (function(){
      */
     Diagnostic.getLocationMode = function(successCallback, errorCallback) {
         if(cordova.plugins.diagnostic.location){
-            cordova.plugins.diagnostic.location.isNetworkLocationEnabled.apply(this, arguments);
+            cordova.plugins.diagnostic.location.getLocationMode.apply(this, arguments);
         }else{
             throw "Diagnostic Location module is not installed";
         }
@@ -701,29 +783,6 @@ var Diagnostic = (function(){
         }
     };
 
-    /**
-     * Switches to the wireless settings page in the Settings app.
-     * Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
-     */
-    Diagnostic.switchToWirelessSettings = function() {
-        return cordova.exec(null,
-            null,
-            'Diagnostic',
-            'switchToWirelessSettings',
-            []);
-    };
-
-    /**
-     * Switches to the nfc settings page in the Settings app
-     */
-    Diagnostic.switchToNFCSettings = function() {
-        return cordova.exec(null,
-            null,
-            'Diagnostic',
-            'switchToNFCSettings',
-            []);
-    };
-
     /************
      * Camera   *
      ************/
@@ -740,16 +799,11 @@ var Diagnostic = (function(){
      *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
     Diagnostic.isCameraAvailable = function(params) {
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        params.successCallback = params.successCallback || function(){};
-        Diagnostic.isCameraPresent(function(isPresent){
-            if(isPresent){
-                Diagnostic.isCameraAuthorized(params);
-            }else{
-                params.successCallback(!!isPresent);
-            }
-        },params.errorCallback);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.isCameraAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -761,11 +815,11 @@ var Diagnostic = (function(){
      *  This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCameraPresent = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isCameraPresent',
-            []);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.isCameraPresent.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**
@@ -779,18 +833,11 @@ var Diagnostic = (function(){
      *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
     Diagnostic.requestCameraAuthorization = function(params){
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        var permissions = [Diagnostic.permission.CAMERA];
-        if(params.externalStorage !== false){
-            permissions.push(Diagnostic.permission.READ_EXTERNAL_STORAGE);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.requestCameraAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
         }
-
-        params.successCallback = params.successCallback || function(){};
-        var onSuccess = function(statuses){
-            params.successCallback(numberOfKeys(statuses) > 1 ? combineCameraStatuses(statuses): statuses[Diagnostic.permission.CAMERA]);
-        };
-        Diagnostic.requestRuntimePermissions(onSuccess, params.errorCallback, permissions);
     };
 
     /**
@@ -804,18 +851,11 @@ var Diagnostic = (function(){
      *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
     Diagnostic.getCameraAuthorizationStatus = function(params){
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        var permissions = [Diagnostic.permission.CAMERA];
-        if(params.externalStorage !== false){
-            permissions.push(Diagnostic.permission.READ_EXTERNAL_STORAGE);
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.getCameraAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
         }
-
-        params.successCallback = params.successCallback || function(){};
-        var onSuccess = function(statuses){
-            params.successCallback(numberOfKeys(statuses) > 1 ? combineCameraStatuses(statuses): statuses[Diagnostic.permission.CAMERA]);
-        };
-        Diagnostic.getPermissionsAuthorizationStatus(onSuccess, params.errorCallback, permissions);
     };
 
     /**
@@ -829,18 +869,11 @@ var Diagnostic = (function(){
      *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
      */
     Diagnostic.isCameraAuthorized = function(params){
-        params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        params.successCallback = params.successCallback || function(){};
-        var onSuccess = function(status){
-            params.successCallback(status == Diagnostic.permissionStatus.GRANTED);
-        };
-
-        Diagnostic.getCameraAuthorizationStatus({
-            successCallback: onSuccess,
-            errorCallback: params.errorCallback,
-            externalStorage: params.externalStorage
-        });
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.isCameraAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
     };
 
     /**********************
@@ -1070,22 +1103,6 @@ var Diagnostic = (function(){
     };
 
 
-    /*************
-     * Mobile Data
-     *************/
-
-    /**
-     * Switches to the Mobile Data page in the Settings app
-     */
-    Diagnostic.switchToMobileDataSettings = function() {
-        return cordova.exec(null,
-            null,
-            'Diagnostic',
-            'switchToMobileDataSettings',
-            []);
-    };
-
-
     /***************************
      * Microphone / Record Audio
      ***************************/
@@ -1303,99 +1320,6 @@ var Diagnostic = (function(){
     };
 
 
-    /**********************
-     * System Utilities
-     **********************/
-
-    /**
-     * Checks if ADB mode(debug mode) is switched on.
-     * Returns true if ADB mode is switched on.
-     *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if ADB mode(debug mode) is switched on.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.isADBModeEnabled = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isADBModeEnabled',
-            []);
-    };
-
-    /**
-     * Checks if the device is rooted.
-     * Returns true if the device is rooted.
-     *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if the device is rooted.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.isDeviceRooted = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isDeviceRooted',
-            []);
-    };
-
-    /**
-     * Restarts the application.
-     * By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
-     * However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
-     * This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
-     *
-     * Note: There is no successCallback() since if the operation is successful, the application will restart immediately before any success callback can be applied.
-     *
-     * @param {Function} successCallback - function to call on successful retrieval of status.
-     * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
-     * @param {Function} errorCallback - function to call on failure to retrieve authorisation status.
-     * This callback function is passed a single string parameter containing the error message.
-     * @param {Boolean} cold - if true the application will be cold restarted. Defaults to false.
-     */
-    Diagnostic.restart = function(errorCallback, cold){
-        return cordova.exec(
-            null,
-            errorCallback,
-            'Diagnostic',
-            'restart',
-            [cold]);
-    };
-
-    /**
-     * Returns CPU architecture of the current device.
-     *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.cpuArchitecture`.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.getArchitecture = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getArchitecture',
-            []);
-    };
-
-    /**
-     * Checks if the device data roaming setting is enabled.
-     * Returns true if data roaming is enabled.
-     *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if data roaming is enabled.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.isDataRoamingEnabled = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isDataRoamingEnabled',
-            []);
-    };
 
 
     /**************
