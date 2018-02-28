@@ -1137,10 +1137,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isMicrophoneAuthorized = function(successCallback, errorCallback) {
-        function onSuccess(status){
-            successCallback(status == Diagnostic.permissionStatus.GRANTED);
+        if(cordova.plugins.diagnostic.microphone){
+            cordova.plugins.diagnostic.microphone.isMicrophoneAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Microphone module is not installed";
         }
-        Diagnostic.getMicrophoneAuthorizationStatus(onSuccess, errorCallback);
     };
 
     /**
@@ -1153,7 +1154,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getMicrophoneAuthorizationStatus = function(successCallback, errorCallback) {
-        Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.permission.RECORD_AUDIO);
+        if(cordova.plugins.diagnostic.microphone){
+            cordova.plugins.diagnostic.microphone.getMicrophoneAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Microphone module is not installed";
+        }
     };
 
     /**
@@ -1164,7 +1169,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
-        Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.RECORD_AUDIO);
+        if(cordova.plugins.diagnostic.microphone){
+            cordova.plugins.diagnostic.microphone.requestMicrophoneAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Microphone module is not installed";
+        }
     };
 
     /*************

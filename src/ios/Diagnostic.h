@@ -14,7 +14,6 @@
 #import <EventKit/EventKit.h>
 #import <AddressBook/AddressBook.h>
 #import <Contacts/Contacts.h>
-#import <AVFoundation/AVFoundation.h> // microphone
 
 #import <mach/machine.h>
 #import <sys/types.h>
@@ -55,10 +54,6 @@ extern NSString*const AUTHORIZATION_GRANTED;
 - (void) enableDebug: (CDVInvokedUrlCommand*)command;
 
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
-
-- (void) isMicrophoneAuthorized: (CDVInvokedUrlCommand*)command;
-- (void) getMicrophoneAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-- (void) requestMicrophoneAuthorization: (CDVInvokedUrlCommand*)command;
 
 - (void) getAddressBookAuthorizationStatus: (CDVInvokedUrlCommand*)command;
 - (void) isAddressBookAuthorized: (CDVInvokedUrlCommand*)command;

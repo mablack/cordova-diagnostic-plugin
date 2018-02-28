@@ -601,11 +601,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isMicrophoneAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isMicrophoneAuthorized',
-            []);
+        if(cordova.plugins.diagnostic.microphone){
+            cordova.plugins.diagnostic.microphone.isMicrophoneAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Microphone module is not installed";
+        }
     };
 
     /**
@@ -617,11 +617,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getMicrophoneAuthorizationStatus = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getMicrophoneAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.microphone){
+            cordova.plugins.diagnostic.microphone.getMicrophoneAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Microphone module is not installed";
+        }
     };
 
     /**
@@ -635,13 +635,11 @@ var Diagnostic = (function(){
      * This works only on iOS 7+.
      */
     Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
-        return cordova.exec(function(isGranted){
-                successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
-            },
-            errorCallback,
-            'Diagnostic',
-            'requestMicrophoneAuthorization',
-            []);
+        if(cordova.plugins.diagnostic.microphone){
+            cordova.plugins.diagnostic.microphone.requestMicrophoneAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Microphone module is not installed";
+        }
     };
 
 
