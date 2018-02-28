@@ -210,7 +210,7 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
             NSString* s_options = [command.arguments objectAtIndex:0];
             if([diagnostic isNull:s_options]){
                 NSArray* a_options = [NSArray arrayWithObjects:REMOTE_NOTIFICATIONS_ALERT, REMOTE_NOTIFICATIONS_SOUND, REMOTE_NOTIFICATIONS_BADGE, nil];
-                s_options = [self arrayToJsonString:a_options];
+                s_options = [diagnostic arrayToJsonString:a_options];
             }
             NSDictionary* d_options = [diagnostic jsonStringToDictionary:s_options];
 
