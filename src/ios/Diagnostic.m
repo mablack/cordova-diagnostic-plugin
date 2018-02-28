@@ -37,10 +37,6 @@ static NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
 static NSString*const CPU_ARCH_X86 = @"X86";
 static NSString*const CPU_ARCH_X86_64 = @"X86_64";
 
-static NSString*const REMOTE_NOTIFICATIONS_ALERT = @"alert";
-static NSString*const REMOTE_NOTIFICATIONS_SOUND = @"sound";
-static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
-
 static Diagnostic* diagnostic = nil;
 
 BOOL debugEnabled = false;
@@ -50,154 +46,13 @@ float osVersion;
 ABAddressBookRef _addressBook;
 #endif
 
-/*
- * Public API functions
- */
+/********************************/
+#pragma mark - Public static functions
+/********************************/
 + (id) getInstance{
     return diagnostic;
 }
 
-/********************************/
-#pragma mark - Send results
-/********************************/
-
-- (void) sendPluginResult: (CDVPluginResult*)result :(CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-}
-
-- (void) sendPluginResultBool: (BOOL)result :(CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult;
-    if(result) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
-    } else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
-    }
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
-- (void) sendPluginResultString: (NSString*)result :(CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
-- (void) sendPluginError: (NSString*) errorMessage :(CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
-    [self logError:errorMessage];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
-- (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
-    [self logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
-- (void)executeGlobalJavascript: (NSString*)jsString
-{
-    [self.commandDelegate evalJs:jsString];
-}
-
-- (NSString*) arrayToJsonString:(NSArray*)inputArray
-{
-    NSError* error;
-    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:inputArray options:NSJSONWritingPrettyPrinted error:&error];
-    NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    return jsonString;
-}
-
-- (NSString*) objectToJsonString:(NSDictionary*)inputObject
-{
-    NSError* error;
-    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:inputObject options:NSJSONWritingPrettyPrinted error:&error];
-    NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    return jsonString;
-}
-
-- (NSArray*) jsonStringToArray:(NSString*)jsonStr
-{
-    NSError* error = nil;
-    NSArray* array = [NSJSONSerialization JSONObjectWithData:[jsonStr dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
-    if (error != nil){
-        array = nil;
-    }
-    return array;
-}
-
-- (NSDictionary*) jsonStringToDictionary:(NSString*)jsonStr
-{
-    return (NSDictionary*) [self jsonStringToArray:jsonStr];
-}
-
-- (bool)isNull: (NSString*)str
-{
-    return str == nil || str == (id)[NSNull null] || str.length == 0 || [str isEqual: @"<null>"];
-}
-
-
-/********************************/
-#pragma mark - utility functions
-/********************************/
-
-- (void)logDebug: (NSString*)msg
-{
-    if(debugEnabled){
-        NSLog(@"%@: %@", LOG_TAG, msg);
-        NSString* jsString = [NSString stringWithFormat:@"console.log(\"%@: %@\")", LOG_TAG, [self escapeDoubleQuotes:msg]];
-        [self executeGlobalJavascript:jsString];
-    }
-}
-
-- (void)logError: (NSString*)msg
-{
-    NSLog(@"%@ ERROR: %@", LOG_TAG, msg);
-    if(debugEnabled){
-        NSString* jsString = [NSString stringWithFormat:@"console.error(\"%@: %@\")", LOG_TAG, [self escapeDoubleQuotes:msg]];
-        [self executeGlobalJavascript:jsString];
-    }
-}
-
-- (NSString*)escapeDoubleQuotes: (NSString*)str
-{
-    NSString *result =[str stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
-    return result;
-}
-
-- (void) setSetting: (NSString*)key forValue:(id)value
-{
-    
-    [self.settings setObject:value forKey:key];
-    [self.settings synchronize];
-}
-
-- (id) getSetting: (NSString*) key
-{
-    return [self.settings objectForKey:key];
-}
-
-/*
- * Internal functions
- */
-
-
-- (void)pluginInitialize {
-    
-    [super pluginInitialize];
-
-    diagnostic = self;
-    
-    osVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
-    
-    self.contactStore = [[CNContactStore alloc] init];
-    self.motionManager = [[CMMotionActivityManager alloc] init];
-    self.motionActivityQueue = [[NSOperationQueue alloc] init];
-    self.cmPedometer = [[CMPedometer alloc] init];
-    self.settings = [NSUserDefaults standardUserDefaults];
-}
 
 /********************************/
 #pragma mark - Plugin API
@@ -207,8 +62,6 @@ ABAddressBookRef _addressBook;
     debugEnabled = true;
     [self logDebug:@"Debug enabled"];
 }
-
-
 
 #pragma mark -  Settings
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command
@@ -306,276 +159,6 @@ ABAddressBookRef _addressBook;
         }
         @catch (NSException *exception) {
             [self handlePluginException:exception :command];
-        }
-    }];
-}
-
-#pragma mark - Remote (Push) Notifications
-- (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-                // iOS 8+
-                if(NSClassFromString(@"UNUserNotificationCenter")) {
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                    // iOS 10+
-                    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-                    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                        BOOL userSettingEnabled = settings.authorizationStatus == UNAuthorizationStatusAuthorized;
-                        [self isRemoteNotificationsEnabledResult:userSettingEnabled:command];
-                    }];
-#endif
-                } else{
-                    // iOS 8 & 9
-                    UIUserNotificationSettings *userNotificationSettings = [UIApplication sharedApplication].currentUserNotificationSettings;
-                    BOOL userSettingEnabled = userNotificationSettings.types != UIUserNotificationTypeNone;
-                    [self isRemoteNotificationsEnabledResult:userSettingEnabled:command];
-                }
-            } else {
-                // iOS7 and below
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
-                UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-                BOOL isEnabled = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
-                [self sendPluginResultBool:isEnabled:command];
-#endif
-            }
-            
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception:command];
-        }
-    }];
-}
-- (void) isRemoteNotificationsEnabledResult: (BOOL) userSettingEnabled : (CDVInvokedUrlCommand*)command
-{
-    // iOS 8+
-    [self _isRegisteredForRemoteNotifications:^(BOOL remoteNotificationsEnabled) {
-        BOOL isEnabled = remoteNotificationsEnabled && userSettingEnabled;
-        [self sendPluginResultBool:isEnabled:command];
-    }];
-}
-
-- (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-                // iOS 8+
-                if(NSClassFromString(@"UNUserNotificationCenter")) {
-                    // iOS 10+
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-                    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                        BOOL alertsEnabled = settings.alertSetting == UNNotificationSettingEnabled;
-                        BOOL badgesEnabled = settings.badgeSetting == UNNotificationSettingEnabled;
-                        BOOL soundsEnabled = settings.soundSetting == UNNotificationSettingEnabled;
-                        BOOL noneEnabled = !alertsEnabled && !badgesEnabled && !soundsEnabled;
-                        [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
-                    }];
-#endif
-                } else{
-                    // iOS 8 & 9
-                    UIUserNotificationSettings *userNotificationSettings = [UIApplication sharedApplication].currentUserNotificationSettings;
-                    BOOL noneEnabled = userNotificationSettings.types == UIUserNotificationTypeNone;
-                    BOOL alertsEnabled = userNotificationSettings.types & UIUserNotificationTypeAlert;
-                    BOOL badgesEnabled = userNotificationSettings.types & UIUserNotificationTypeBadge;
-                    BOOL soundsEnabled = userNotificationSettings.types & UIUserNotificationTypeSound;
-                    [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
-                }
-            } else {
-                // iOS7 and below
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
-                UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-                BOOL oneEnabled = enabledRemoteNotificationTypes == UIRemoteNotificationTypeNone;
-                BOOL alertsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeAlert;
-                BOOL badgesEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeBadge;
-                BOOL soundsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeSound;
-                [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
-#endif
-            }
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception :command];
-        }
-    }];
-}
-- (void) getRemoteNotificationTypesResult: (CDVInvokedUrlCommand*)command :(BOOL)noneEnabled :(BOOL)alertsEnabled :(BOOL)badgesEnabled :(BOOL)soundsEnabled
-{
-    // iOS 8+
-    NSMutableDictionary* types = [[NSMutableDictionary alloc]init];
-    if(alertsEnabled) {
-        [types setValue:@"1" forKey:REMOTE_NOTIFICATIONS_ALERT];
-    } else {
-        [types setValue:@"0" forKey:REMOTE_NOTIFICATIONS_ALERT];
-    }
-    if(badgesEnabled) {
-        [types setValue:@"1" forKey:REMOTE_NOTIFICATIONS_BADGE];
-    } else {
-        [types setValue:@"0" forKey:REMOTE_NOTIFICATIONS_BADGE];
-    }
-    if(soundsEnabled) {
-        [types setValue:@"1" forKey:REMOTE_NOTIFICATIONS_SOUND];
-    } else {;
-        [types setValue:@"0" forKey:REMOTE_NOTIFICATIONS_SOUND];
-    }
-    [self sendPluginResultString:[self objectToJsonString:types]:command];
-}
-
-
-- (void) isRegisteredForRemoteNotifications: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-                // iOS8+
-#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
-                [self _isRegisteredForRemoteNotifications:^(BOOL registered) {
-                    [self sendPluginResultBool:registered :command];
-                }];
-                
-#endif
-            } else {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
-                // iOS7 and below
-                UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-                BOOL registered; = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
-                [self sendPluginResultBool:registered :command];
-#endif
-            }
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception :command];
-        }
-    }];
-}
-
-- (void) getRemoteNotificationsAuthorizationStatus: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            if(NSClassFromString(@"UNUserNotificationCenter")) {
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                // iOS 10+
-                UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-                [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                    NSString* status = UNKNOWN;
-                    UNAuthorizationStatus authStatus = settings.authorizationStatus;
-                    if(authStatus == UNAuthorizationStatusDenied){
-                        status = AUTHORIZATION_DENIED;
-                    }else if(authStatus == UNAuthorizationStatusNotDetermined){
-                        status = AUTHORIZATION_NOT_DETERMINED;
-                    }else if(authStatus == UNAuthorizationStatusAuthorized){
-                        status = AUTHORIZATION_GRANTED;
-                    }
-                    [self logDebug:[NSString stringWithFormat:@"Remote notifications authorization status is: %@", status]];
-                    [self sendPluginResultString:status:command];
-                }];
-#endif
-            } else{
-                // iOS <= 9
-                [self sendPluginError:@"getRemoteNotificationsAuthorizationStatus() is not supported below iOS 10":command];
-            }
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception:command];
-        }
-    }];
-}
-
-- (void) requestRemoteNotificationsAuthorization: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            NSString* s_options = [command.arguments objectAtIndex:0];
-            if([self isNull:s_options]){
-                NSArray* a_options = [NSArray arrayWithObjects:REMOTE_NOTIFICATIONS_ALERT, REMOTE_NOTIFICATIONS_SOUND, REMOTE_NOTIFICATIONS_BADGE, nil];
-                s_options = [self arrayToJsonString:a_options];
-            }
-            NSDictionary* d_options = [self jsonStringToDictionary:s_options];
-            
-            if(NSClassFromString(@"UNUserNotificationCenter")) {
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                // iOS 10+
-                BOOL omitRegistration = [[command argumentAtIndex:1] boolValue];
-                UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-                
-                [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                    UNAuthorizationStatus authStatus = settings.authorizationStatus;
-                    if(authStatus == UNAuthorizationStatusNotDetermined){
-                        UNAuthorizationOptions options = 0;
-                        for(id key in d_options){
-                            NSString* s_key = (NSString*) key;
-                            if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
-                                options = options + UNAuthorizationOptionAlert;
-                            }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_SOUND]){
-                                options = options + UNAuthorizationOptionSound;
-                            }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_BADGE]){
-                                options = options + UNAuthorizationOptionBadge;
-                            }
-                        }
-                        
-                        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                            if(error != nil){
-                                [self sendPluginError:[NSString stringWithFormat:@"Error when requesting remote notifications authorization: %@", error] :command];
-                            }else if (granted) {
-                                [self logDebug:@"Remote notifications authorization granted"];
-                                if(!omitRegistration){
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        [[UIApplication sharedApplication] registerForRemoteNotifications];
-                                        [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                                    });
-                                }else{
-                                    [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                                }
-                            }else{
-                                [self sendPluginError:@"Remote notifications authorization was denied" :command];
-                            }
-                        }];
-                    }else if(authStatus == UNAuthorizationStatusAuthorized){
-                        [self logDebug:@"Remote notifications already authorized"];
-                        if(!omitRegistration){
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [[UIApplication sharedApplication] registerForRemoteNotifications];
-                                [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                            });
-                        }else{
-                            [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                        }
-                        [self sendPluginResultString:@"already_authorized":command];
-                    }else if(authStatus == UNAuthorizationStatusDenied){
-                        [self sendPluginError:@"Remote notifications authorization is denied" :command];
-                    }
-                }];
-#endif
-            } else if(NSClassFromString(@"UIUserNotificationSettings")){
-#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
-                // iOS 8 & 9
-                UIUserNotificationType types = 0;
-                for(id key in d_options){
-                    NSString* s_key = (NSString*) key;
-                    if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
-                        types = types + UIUserNotificationTypeAlert;
-                    }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_SOUND]){
-                        types = types + UIUserNotificationTypeSound;
-                    }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_BADGE]){
-                        types = types + UIUserNotificationTypeBadge;
-                    }
-                }
-                UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
-                    [self sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                });
-#endif
-            } else{
-                // iOS < 8
-                [self sendPluginError:@"requestRemoteNotificationsAuthorization() is not supported below iOS 8" :command];
-            }
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception:command];
         }
     }];
 }
@@ -909,6 +492,25 @@ ABAddressBookRef _addressBook;
     }
 }
 
+/********************************/
+#pragma mark - Internal functions
+/********************************/
+
+- (void)pluginInitialize {
+
+    [super pluginInitialize];
+
+    diagnostic = self;
+
+    osVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+
+    self.contactStore = [[CNContactStore alloc] init];
+    self.motionManager = [[CMMotionActivityManager alloc] init];
+    self.motionActivityQueue = [[NSOperationQueue alloc] init];
+    self.cmPedometer = [[CMPedometer alloc] init];
+    self.settings = [NSUserDefaults standardUserDefaults];
+}
+
 // https://stackoverflow.com/a/38441011/777265
 - (void) getArchitecture: (CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
@@ -952,17 +554,6 @@ ABAddressBookRef _addressBook;
     }];
 }
 
-
-
-
-- (void) _isRegisteredForRemoteNotifications:(void (^)(BOOL result))completeBlock {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        BOOL registered = [UIApplication sharedApplication].isRegisteredForRemoteNotifications;
-        if( completeBlock ){
-            completeBlock(registered);
-        }
-    });
-};
 
 - (BOOL) isMotionAvailable
 {
@@ -1010,6 +601,127 @@ ABAddressBookRef _addressBook;
 }
 #endif
 
+/********************************/
+#pragma mark - Send results
+/********************************/
+
+- (void) sendPluginResult: (CDVPluginResult*)result :(CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+}
+
+- (void) sendPluginResultBool: (BOOL)result :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult;
+    if(result) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:1];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:0];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) sendPluginResultString: (NSString*)result :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) sendPluginError: (NSString*) errorMessage :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
+    [self logError:errorMessage];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) handlePluginException: (NSException*) exception :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:exception.reason];
+    [self logError:[NSString stringWithFormat:@"EXCEPTION: %@", exception.reason]];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)executeGlobalJavascript: (NSString*)jsString
+{
+    [self.commandDelegate evalJs:jsString];
+}
+
+- (NSString*) arrayToJsonString:(NSArray*)inputArray
+{
+    NSError* error;
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:inputArray options:NSJSONWritingPrettyPrinted error:&error];
+    NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return jsonString;
+}
+
+- (NSString*) objectToJsonString:(NSDictionary*)inputObject
+{
+    NSError* error;
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:inputObject options:NSJSONWritingPrettyPrinted error:&error];
+    NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return jsonString;
+}
+
+- (NSArray*) jsonStringToArray:(NSString*)jsonStr
+{
+    NSError* error = nil;
+    NSArray* array = [NSJSONSerialization JSONObjectWithData:[jsonStr dataUsingEncoding:NSUTF8StringEncoding] options:kNilOptions error:&error];
+    if (error != nil){
+        array = nil;
+    }
+    return array;
+}
+
+- (NSDictionary*) jsonStringToDictionary:(NSString*)jsonStr
+{
+    return (NSDictionary*) [self jsonStringToArray:jsonStr];
+}
+
+- (bool)isNull: (NSString*)str
+{
+    return str == nil || str == (id)[NSNull null] || str.length == 0 || [str isEqual: @"<null>"];
+}
+
+
+/********************************/
+#pragma mark - utility functions
+/********************************/
+
+- (void)logDebug: (NSString*)msg
+{
+    if(debugEnabled){
+        NSLog(@"%@: %@", LOG_TAG, msg);
+        NSString* jsString = [NSString stringWithFormat:@"console.log(\"%@: %@\")", LOG_TAG, [self escapeDoubleQuotes:msg]];
+        [self executeGlobalJavascript:jsString];
+    }
+}
+
+- (void)logError: (NSString*)msg
+{
+    NSLog(@"%@ ERROR: %@", LOG_TAG, msg);
+    if(debugEnabled){
+        NSString* jsString = [NSString stringWithFormat:@"console.error(\"%@: %@\")", LOG_TAG, [self escapeDoubleQuotes:msg]];
+        [self executeGlobalJavascript:jsString];
+    }
+}
+
+- (NSString*)escapeDoubleQuotes: (NSString*)str
+{
+    NSString *result =[str stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
+    return result;
+}
+
+- (void) setSetting: (NSString*)key forValue:(id)value
+{
+
+    [self.settings setObject:value forKey:key];
+    [self.settings synchronize];
+}
+
+- (id) getSetting: (NSString*) key
+{
+    return [self.settings objectForKey:key];
+}
 
 @end
 

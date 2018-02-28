@@ -21,7 +21,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [cpuArchitecture constants](#cpuarchitecture-constants)
     - [enableDebug()](#enabledebug)
     - [getArchitecture()](#getarchitecture)
-    - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
     - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
     - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
     - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
@@ -53,11 +52,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [restart()](#restart)
     - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
     - [NFCState constants](#nfcstate-constants)
-    - [remoteNotificationType constants](#remotenotificationtype-constants)
-    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
-    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
-    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
-    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
     - [isRemindersAuthorized()](#isremindersauthorized)
     - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
     - [requestRemindersAuthorization()](#requestremindersauthorization)
@@ -108,12 +102,19 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+  - [Notifications module](#notifications-module)
+    - [remoteNotificationType constants](#remotenotificationtype-constants)
+    - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
+    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
+    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
+    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
+    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
   - [Windows](#windows)
     - [Supported Windows versions](#supported-windows-versions)
-    - [Windows 10 Mobile permissions](#windows-10-mobile-permissions)
+    - [Windows 10 UWP permissions](#windows-10-uwp-permissions)
   - [iOS](#ios)
     - [iOS usage description messages](#ios-usage-description-messages)
 - [Example project](#example-project)
@@ -129,7 +130,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
 
 # Overview
 
-This Cordova/Phonegap plugin for iOS, Android and Windows 10 Mobile is used to manage device settings such as Location,  Bluetooth and WiFi. It enables management of run-time permissions, device hardware and core OS features.
+This Cordova/Phonegap plugin for iOS, Android and Windows 10 UWP is used to manage device settings such as Location,  Bluetooth and WiFi. It enables management of run-time permissions, device hardware and core OS features.
 
 The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
 
@@ -229,10 +230,11 @@ To install only the core module and no optional modules, leave the preference va
 
 The following optional modules are currently supported by the plugin:
 
-- [LOCATION](#location-module) - Android, iOS, Windows 10
-- [BLUETOOTH](#bluetooth-module) - Android, iOS, Windows 10
-- [WIFI](#wifi-module) - Android, iOS, Windows 10
-- [CAMERA](#camera-module) - Android, iOS, Windows 10
+- [LOCATION](#location-module) - Android, iOS, Windows 10 UWP
+- [BLUETOOTH](#bluetooth-module) - Android, iOS, Windows 10 UWP
+- [WIFI](#wifi-module) - Android, iOS, Windows 10 UWP
+- [CAMERA](#camera-module) - Android, iOS, Windows 10 UWP
+- [NOTIFICATIONS](#notifications-module) - Android, iOS
     
 **IMPORTANT:** It's vital that the preference be added to your `config.xml` **before** you install the plugin, otherwise the preference will not be applied and all modules will be added.
 This is because, due to limitations of the Cordova CLI hooks, this plugin must use the `npm install` process to apply the module preferences and this runs before the Cordova CLI when installing a plugin.
@@ -246,12 +248,12 @@ If a function is called on the core module for an optional module which is not i
 ## Core module
 
 Purpose: Generic and miscellaneous functionality.
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 Configuration name: N/A - always installed, regardless of whether the module preference key is present in `config.xml`.
 
 ### switchToMobileDataSettings()
 
-Platforms: Android and Windows 10 Mobile
+Platforms: Android and Windows 10 UWP
 
 Displays mobile settings to allow user to enable mobile data.
 
@@ -380,32 +382,6 @@ The function is passed a single string parameter containing the error message.
         console.error(error);
     });
     
-
-### isRemoteNotificationsEnabled()
-
-Platforms: Android and iOS
-
-Checks if remote (push) notifications are enabled.
-
-On Android, returns whether notifications for the app are not blocked.
-
-On iOS 8+, returns true if app is registered for remote notifications **AND** "Allow Notifications" switch is ON **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts").
-On iOS <=7, returns true if app is registered for remote notifications **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications).
-
-    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(successCallback, errorCallback);
-
-#### Parameters
-- {Function} successCallback - The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if remote (push) notifications are enabled.
-- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(function(enabled){
-        console.log("Remote notifications are " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
 
 ### isMicrophoneAuthorized()
 
@@ -1353,163 +1329,6 @@ Defines constants for the various NFC power states.
     });
     
 
-### remoteNotificationType constants
-
-Platforms: iOS
-
-Constants for requesting/reporting the various types of remote notification permission types on iOS devices.
-
-    cordova.plugins.diagnostic.remoteNotificationType
-
-The following notification types are defined:
-
-- `ALERT` - Permission to display Alerts or Banners
-- `SOUND` - Permission to play sounds.
-- `BADGE` - Permission to change app icon badge. 
-
-#### Example
-
-    cordova.plugins.diagnostic.getRemoteNotificationTypes(function(types){
-        if(types[cordova.plugins.diagnostic.remoteNotificationType.ALERT]){
-            console.log("Has permission to display alerts");
-        }
-        if(types[cordova.plugins.diagnostic.remoteNotificationType.SOUND]){
-            console.log("Has permission to play sounds");
-        }
-        if(types[cordova.plugins.diagnostic.remoteNotificationType.BADGE]){
-            console.log("Has permission to modify icon badge");
-        }
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### isRegisteredForRemoteNotifications()
-
-Platforms: iOS
-
-Indicates if the app is registered for remote (push) notifications on the device.
-
-On iOS 8+, returns true if the app is registered for remote notifications and received its device token, or false if registration has not occurred, has failed, or has been denied by the user.
-Note that user preferences for notifications in the Settings app will not affect this.
-
-On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRemoteNotificationsEnabled()](#isremotenotificationsenabled).
-
-    cordova.plugins.diagnostic.isRegisteredForRemoteNotifications(successCallback, errorCallback);
-
-#### Parameters
-- {Function} successCallback - The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if the device is registered for remote (push) notifications.
-- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isRegisteredForRemoteNotifications(function(registered){
-        console.log("Device " + (registered ? "is" : "isn't") + " registered for remote notifications");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### getRemoteNotificationTypes()
-
-Platforms: iOS
-
-Indicates the current setting of notification types for the app in the Settings app.
-
-Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be returned as disabled.
-
-    cordova.plugins.diagnostic.getRemoteNotificationTypes(successCallback, errorCallback);
-
-#### Parameters
-- {Function} successCallback - The callback which will be called when operation is successful.
-The function is passed a single object parameter where the key is the notification type as a constant in [`cordova.plugins.diagnostic.remoteNotificationType`](#remotenotificationtype-constants) and the value is a boolean indicating whether it's enabled:
-     * `cordova.plugins.diagnostic.remoteNotificationType.ALERT` => alert style is not set to "None" (i.e. "Banners" or "Alerts").    
-     * `cordova.plugins.diagnostic.remoteNotificationType.BADGE` => "Badge App Icon" switch is ON.
-     * `cordova.plugins.diagnostic.remoteNotificationType.SOUND` => "Sounds"/"Alert Sound" switch is ON.
-- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getRemoteNotificationTypes(function(types){
-        for(var type in types){
-            console.log(type + " is " + (types[type] ? "enabled" : "disabled"));
-        }
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-    
-### getRemoteNotificationsAuthorizationStatus()
-
-Platforms: iOS
-
-Returns the authorization status for the application to use Remote Notifications.
-
-**Note: Works on iOS 10+ only ** (iOS 9 and below will invoke the error callback).
-
-    cordova.plugins.diagnostic.getRemoteNotificationsAuthorizationStatus(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getRemoteNotificationsAuthorizationStatus(function(status){
-        switch(status){
-            case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
-                console.log("Permission not yet requested");
-                break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
-                console.log("Permission denied");
-                break;
-            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
-                console.log("Permission granted");
-                break;
-        }
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-    
-### requestRemoteNotificationsAuthorization()
-
-Platforms: iOS
-
-Requests remote notifications authorization for the application.
-Works on iOS 8+ (iOS 8 and below will invoke the error callback).
-
-    cordova.plugins.diagnostic.requestRemoteNotificationsAuthorization(params);
-
-#### Parameters
-
-- {Object} params - (optional) parameters:
-    - {Function} successCallback - The callback which will be called when operation is successful.
-    - {Function} errorCallback -  The callback which will be called when operation encounters an error.
-        * The function is passed a single string parameter containing the error message.
-    - {Array} types - list of notifications to register for as constants in [`cordova.plugins.diagnostic.remoteNotificationType`](#remotenotificationtype-constants).
-        * If not specified, defaults to all notification types.
-    - {Boolean} omitRegistration - If true, registration for remote notifications will not be carried out once remote notifications authorization is granted.
-        * Defaults to false (registration will automatically take place once authorization is granted).
-        * iOS 10+ only: on iOS 8 & 9 authorization and registration are implicitly inseparable so both will be carried out.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.requestRemoteNotificationsAuthorization({
-        successCallback: function(){
-            console.log("Successfully requested remote notifications authorization");
-        },
-        errorCallback: function(err){
-           console.error("Error requesting remote notifications authorization: " + err);
-        },
-        types: [
-            cordova.plugins.diagnostic.remoteNotificationType.ALERT,
-            cordova.plugins.diagnostic.remoteNotificationType.SOUND,
-            cordova.plugins.diagnostic.remoteNotificationType.BADGE
-        ],
-        omitRegistration: false
-    });
-
 ### isRemindersAuthorized()
 
 Platforms: iOS
@@ -1797,7 +1616,7 @@ The function is passed a single string parameter indicating the result:
 ## Location module
 
 Purpose: Location/GPS functionality
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 Configuration name: `LOCATION`
 
 ### locationMode constants
@@ -1838,13 +1657,13 @@ Defines constants for the various location modes on Android.
     
 ### isLocationAvailable()
 
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 
 Checks if app is able to access device location.
 
     cordova.plugins.diagnostic.isLocationAvailable(successCallback, errorCallback);
 
-On iOS and Windows 10 Mobile this returns true if both the device setting is enabled AND the application is authorized to use location.
+On iOS and Windows 10 UWP this returns true if both the device setting is enabled AND the application is authorized to use location.
 When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
 
 On Android, this returns true if Location mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
@@ -2245,7 +2064,7 @@ On iOS, the function is passed a single string parameter indicating the new loca
 
 ### switchToLocationSettings()
 
-Platforms: Android and Windows 10 Mobile
+Platforms: Android and Windows 10 UWP
 
 Displays the device location settings to allow user to enable location services/change location mode.
 
@@ -2293,10 +2112,10 @@ Defines constants for the various Bluetooth hardware states
     
 ### isBluetoothAvailable()
 
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 
 Checks if Bluetooth is available to the app.
-Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS and Windows 10 Mobile)
+Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS and Windows 10 UWP)
 
 On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
 
@@ -2319,7 +2138,7 @@ The function is passed a single string parameter containing the error message.
     });
 
 Purpose: Bluetooth functionality
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 Configuration name: `BLUETOOTH`
 
 ### isBluetoothEnabled()
@@ -2446,7 +2265,7 @@ The function is passed a single string parameter containing the error message.
 
 ### setBluetoothState()
 
-Platforms: Android and Windows 10 Mobile
+Platforms: Android and Windows 10 UWP
 
 Enables/disables Bluetooth on the device.
 
@@ -2457,7 +2276,7 @@ Requires the following permissions on Android:
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
-Requires the following capabilities for Windows 10 Mobile:
+Requires the following capabilities for Windows 10 UWP:
 
     <DeviceCapability Name="radios" />
 
@@ -2532,7 +2351,7 @@ The function is passed a single string parameter which indicates the Bluetooth s
 
 ### switchToBluetoothSettings()
 
-Platforms: Android and Windows 10 Mobile
+Platforms: Android and Windows 10 UWP
 
 Displays Bluetooth settings to allow user to enable Bluetooth.
 
@@ -2541,16 +2360,16 @@ Displays Bluetooth settings to allow user to enable Bluetooth.
 ## WiFi module
 
 Purpose: WiFi functionality
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 Configuration name: `WIFI`
 
 ### isWifiAvailable()
 
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 
 Checks if Wifi is available.
 On iOS this returns true if the device is connected to a network by WiFi.
-On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiEnabled()`](#iswifienabled)
+On Android and Windows 10 UWP this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiEnabled()`](#iswifienabled)
 
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
@@ -2574,10 +2393,10 @@ The function is passed a single string parameter containing the error message.
 
 ### isWifiEnabled()
 
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 
 On iOS this returns true if the WiFi setting is set to enabled (regardless of whether it's connected to a network).
-On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
+On Android and Windows 10 UWP this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
     cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
@@ -2600,7 +2419,7 @@ The function is passed a single string parameter containing the error message.
 
 ### setWifiState()
 
-Platforms: Android and Windows 10 Mobile
+Platforms: Android and Windows 10 UWP
 
 Enables/disables WiFi on the device.
 
@@ -2611,7 +2430,7 @@ Requires the following permissions for Android:
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
-Requires the following capabilities for Windows 10 Mobile:
+Requires the following capabilities for Windows 10 UWP:
 
     <DeviceCapability Name="radios" />
 
@@ -2633,7 +2452,7 @@ Requires the following capabilities for Windows 10 Mobile:
 
 ### switchToWifiSettings()
 
-Platforms: Android and Windows 10 Mobile
+Platforms: Android and Windows 10 UWP
 
 Displays WiFi settings to allow user to enable WiFi.
 
@@ -2642,7 +2461,7 @@ Displays WiFi settings to allow user to enable WiFi.
 ## Camera module
 
 Purpose: Camera functionality
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 Configuration name: `CAMERA`
 
 ### isCameraPresent()
@@ -2671,13 +2490,13 @@ The function is passed a single string parameter containing the error message.
 
 ### isCameraAvailable()
 
-Platforms: Android, iOS and Windows 10 Mobile
+Platforms: Android, iOS and Windows 10 UWP
 
 Checks if camera is available.
 
 Notes:
 - On Android & iOS this returns true if the device has a camera AND the application is authorized to use it.
-- On Windows 10 Mobile this returns true if the device has a **rear-facing** camera.
+- On Windows 10 UWP this returns true if the device has a **rear-facing** camera.
 
 Notes for Android:
 - On Android by default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
@@ -2993,6 +2812,197 @@ The function is passed a single string parameter containing the error message.
         console.error(error);
     });
 
+## Notifications module
+
+Purpose: Remote notifications functionality
+Platforms: Android, iOS
+Configuration name: `NOTIFICATIONS`
+
+### remoteNotificationType constants
+
+Platforms: iOS
+
+Constants for requesting/reporting the various types of remote notification permission types on iOS devices.
+
+    cordova.plugins.diagnostic.remoteNotificationType
+
+The following notification types are defined:
+
+- `ALERT` - Permission to display Alerts or Banners
+- `SOUND` - Permission to play sounds.
+- `BADGE` - Permission to change app icon badge. 
+
+#### Example
+
+    cordova.plugins.diagnostic.getRemoteNotificationTypes(function(types){
+        if(types[cordova.plugins.diagnostic.remoteNotificationType.ALERT]){
+            console.log("Has permission to display alerts");
+        }
+        if(types[cordova.plugins.diagnostic.remoteNotificationType.SOUND]){
+            console.log("Has permission to play sounds");
+        }
+        if(types[cordova.plugins.diagnostic.remoteNotificationType.BADGE]){
+            console.log("Has permission to modify icon badge");
+        }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isRemoteNotificationsEnabled()
+
+Platforms: Android and iOS
+
+Checks if remote (push) notifications are enabled.
+
+On Android, returns whether notifications for the app are not blocked.
+
+On iOS 8+, returns true if app is registered for remote notifications **AND** "Allow Notifications" switch is ON **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts").
+On iOS <=7, returns true if app is registered for remote notifications **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications).
+
+    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if remote (push) notifications are enabled.
+- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isRemoteNotificationsEnabled(function(enabled){
+        console.log("Remote notifications are " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isRegisteredForRemoteNotifications()
+
+Platforms: iOS
+
+Indicates if the app is registered for remote (push) notifications on the device.
+
+On iOS 8+, returns true if the app is registered for remote notifications and received its device token, or false if registration has not occurred, has failed, or has been denied by the user.
+Note that user preferences for notifications in the Settings app will not affect this.
+
+On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRemoteNotificationsEnabled()](#isremotenotificationsenabled).
+
+    cordova.plugins.diagnostic.isRegisteredForRemoteNotifications(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if the device is registered for remote (push) notifications.
+- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isRegisteredForRemoteNotifications(function(registered){
+        console.log("Device " + (registered ? "is" : "isn't") + " registered for remote notifications");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getRemoteNotificationTypes()
+
+Platforms: iOS
+
+Indicates the current setting of notification types for the app in the Settings app.
+
+Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be returned as disabled.
+
+    cordova.plugins.diagnostic.getRemoteNotificationTypes(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+The function is passed a single object parameter where the key is the notification type as a constant in [`cordova.plugins.diagnostic.remoteNotificationType`](#remotenotificationtype-constants) and the value is a boolean indicating whether it's enabled:
+     * `cordova.plugins.diagnostic.remoteNotificationType.ALERT` => alert style is not set to "None" (i.e. "Banners" or "Alerts").    
+     * `cordova.plugins.diagnostic.remoteNotificationType.BADGE` => "Badge App Icon" switch is ON.
+     * `cordova.plugins.diagnostic.remoteNotificationType.SOUND` => "Sounds"/"Alert Sound" switch is ON.
+- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getRemoteNotificationTypes(function(types){
+        for(var type in types){
+            console.log(type + " is " + (types[type] ? "enabled" : "disabled"));
+        }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+
+### getRemoteNotificationsAuthorizationStatus()
+
+Platforms: iOS
+
+Returns the authorization status for the application to use Remote Notifications.
+
+**Note: Works on iOS 10+ only ** (iOS 9 and below will invoke the error callback).
+
+    cordova.plugins.diagnostic.getRemoteNotificationsAuthorizationStatus(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getRemoteNotificationsAuthorizationStatus(function(status){
+        switch(status){
+            case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
+                console.log("Permission not yet requested");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+                console.log("Permission denied");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
+                console.log("Permission granted");
+                break;
+        }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+
+### requestRemoteNotificationsAuthorization()
+
+Platforms: iOS
+
+Requests remote notifications authorization for the application.
+Works on iOS 8+ (iOS 8 and below will invoke the error callback).
+
+    cordova.plugins.diagnostic.requestRemoteNotificationsAuthorization(params);
+
+#### Parameters
+
+- {Object} params - (optional) parameters:
+    - {Function} successCallback - The callback which will be called when operation is successful.
+    - {Function} errorCallback -  The callback which will be called when operation encounters an error.
+        * The function is passed a single string parameter containing the error message.
+    - {Array} types - list of notifications to register for as constants in [`cordova.plugins.diagnostic.remoteNotificationType`](#remotenotificationtype-constants).
+        * If not specified, defaults to all notification types.
+    - {Boolean} omitRegistration - If true, registration for remote notifications will not be carried out once remote notifications authorization is granted.
+        * Defaults to false (registration will automatically take place once authorization is granted).
+        * iOS 10+ only: on iOS 8 & 9 authorization and registration are implicitly inseparable so both will be carried out.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestRemoteNotificationsAuthorization({
+        successCallback: function(){
+            console.log("Successfully requested remote notifications authorization");
+        },
+        errorCallback: function(err){
+           console.error("Error requesting remote notifications authorization: " + err);
+        },
+        types: [
+            cordova.plugins.diagnostic.remoteNotificationType.ALERT,
+            cordova.plugins.diagnostic.remoteNotificationType.SOUND,
+            cordova.plugins.diagnostic.remoteNotificationType.BADGE
+        ],
+        omitRegistration: false
+    });
+
 # Platform Notes
 
 ## Android
@@ -3122,15 +3132,15 @@ The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](h
 
 ### Supported Windows versions
 
-Currently the plugin only supports Windows 10 and Windows 10 Mobile, not Windows Phone 8.0 or 8.1.
+Currently the plugin only supports Windows 10 and Windows 10 UWP, not Windows Phone 8.0 or 8.1.
 
 The reason being that the native functionality required by the plugin's current Windows implementation is only available since Windows 10.
 
 For example, `isLocationAvailable()` [invokes](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/src/windows/diagnosticProxy.js#L19) `Windows.Devices.Geolocation.Geolocator.requestAccessAsync()`. And this was only [introduced in Windows 10](https://msdn.microsoft.com/library/windows/apps/windows.devices.geolocation.geolocator.requestaccessasync.aspx).
 
-Windows Phone 8.x would require a different implementation (even if possible), and I don't plan to add that since the Windows 8.x global marketshare is below 5% and falling, and is also rendered obsolete by Windows 10 Mobile.
+Windows Phone 8.x would require a different implementation (even if possible), and I don't plan to add that since the Windows 8.x global marketshare is below 5% and falling, and is also rendered obsolete by Windows 10 UWP.
 
-### Windows 10 Mobile permissions
+### Windows 10 UWP permissions
 
 Some of functions offered by this plugin require specific permissions to be set in the package.windows10.appxmanifest. Where additional permissions are needed, they are listed alongside the function that requires them.
 

@@ -16,10 +16,6 @@
 #import <Contacts/Contacts.h>
 #import <AVFoundation/AVFoundation.h> // microphone
 
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-#import <UserNotifications/UserNotifications.h>
-#endif
-
 #import <mach/machine.h>
 #import <sys/types.h>
 #import <sys/sysctl.h>
@@ -57,12 +53,6 @@ extern NSString*const AUTHORIZATION_GRANTED;
 - (id) getSetting: (NSString*) key;
 
 - (void) enableDebug: (CDVInvokedUrlCommand*)command;
-
-- (void) isRemoteNotificationsEnabled: (CDVInvokedUrlCommand*)command;
-- (void) getRemoteNotificationTypes: (CDVInvokedUrlCommand*)command;
-- (void) isRegisteredForRemoteNotifications: (CDVInvokedUrlCommand*)command;
-- (void) getRemoteNotificationsAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-- (void) requestRemoteNotificationsAuthorization: (CDVInvokedUrlCommand*)command;
 
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 

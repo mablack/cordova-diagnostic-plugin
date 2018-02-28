@@ -63,7 +63,6 @@ import android.provider.Settings;
 
 
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationManagerCompat;
 
 
 import static android.nfc.NfcAdapter.EXTRA_ADAPTER_STATE;
@@ -266,8 +265,6 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isNFCEnabled() ? 1 : 0);
             } else if(action.equals("isNFCAvailable")) {
                 callbackContext.success(isNFCAvailable() ? 1 : 0);
-            } else if(action.equals("isRemoteNotificationsEnabled")) {
-                callbackContext.success(isRemoteNotificationsEnabled() ? 1 : 0);
             } else if(action.equals("isADBModeEnabled")) {
                 callbackContext.success(isADBModeEnabled() ? 1 : 0);
             } else if(action.equals("isDeviceRooted")) {
@@ -416,12 +413,6 @@ public class Diagnostic extends CordovaPlugin{
         }catch(Exception e){
             logError("Error retrieving current NFC state on state change: "+e.toString());
         }
-    }
-
-    public boolean isRemoteNotificationsEnabled() {
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this.cordova.getActivity().getApplicationContext());
-        boolean result = notificationManagerCompat.areNotificationsEnabled();
-        return result;
     }
 
     /**
