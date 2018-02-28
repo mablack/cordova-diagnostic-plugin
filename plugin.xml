@@ -36,14 +36,9 @@
             <string>This app requires motion detection access to function properly.</string>
         </config-file>
 
-        <framework src="AddressBook.framework" />
+
         <config-file target="*-Info.plist" parent="NSCalendarsUsageDescription">
             <string>This app requires calendar access to function properly.</string>
-        </config-file>
-
-        <framework src="Contacts.framework" />
-        <config-file target="*-Info.plist" parent="NSContactsUsageDescription">
-            <string>This app requires contacts access to function properly.</string>
         </config-file>
 
         <framework src="EventKit.framework" />
@@ -186,6 +181,29 @@
         <header-file src="src/ios/Diagnostic_Microphone.h" />
         <source-file src="src/ios/Diagnostic_Microphone.m" />
         <!--END_MODULE MICROPHONE-->
+
+        <!--BEGIN_MODULE CONTACTS-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Contacts">
+                <param name="ios-package" value="Diagnostic_Contacts" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module src="www/ios/diagnostic.contacts.js" name="Diagnostic_Contacts">
+            <merges target="cordova.plugins.diagnostic.contacts" />
+        </js-module>
+
+        <framework src="Contacts.framework" />
+        <framework src="AddressBook.framework" />
+
+        <config-file target="*-Info.plist" parent="NSContactsUsageDescription">
+            <string>This app requires contacts access to function properly.</string>
+        </config-file>
+
+        <header-file src="src/ios/Diagnostic_Contacts.h" />
+        <source-file src="src/ios/Diagnostic_Contacts.m" />
+        <!--END_MODULE CONTACTS-->
     </platform>
 
     <platform name="android">
@@ -302,6 +320,12 @@
             <merges target="cordova.plugins.diagnostic.microphone" />
         </js-module>
         <!--END_MODULE MICROPHONE-->
+
+        <!--BEGIN_MODULE CONTACTS-->
+        <js-module name="Diagnostic_Contacts" src="www/android/diagnostic.contacts.js">
+            <merges target="cordova.plugins.diagnostic.contacts" />
+        </js-module>
+        <!--END_MODULE CONTACTS-->
     </platform>
 
     <platform name="windows">

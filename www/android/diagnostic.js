@@ -1189,10 +1189,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isContactsAuthorized = function(successCallback, errorCallback) {
-        function onSuccess(status){
-            successCallback(status == Diagnostic.permissionStatus.GRANTED);
+        if(cordova.plugins.diagnostic.contacts){
+            cordova.plugins.diagnostic.contacts.isContactsAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Contacts module is not installed";
         }
-        Diagnostic.getContactsAuthorizationStatus(onSuccess, errorCallback);
     };
 
     /**
@@ -1205,7 +1206,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getContactsAuthorizationStatus = function(successCallback, errorCallback) {
-        Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.permission.READ_CONTACTS);
+        if(cordova.plugins.diagnostic.contacts){
+            cordova.plugins.diagnostic.contacts.getContactsAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Contacts module is not installed";
+        }
     };
 
     /**
@@ -1217,7 +1222,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestContactsAuthorization = function(successCallback, errorCallback) {
-        Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_CONTACTS);
+        if(cordova.plugins.diagnostic.contacts){
+            cordova.plugins.diagnostic.contacts.requestContactsAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Contacts module is not installed";
+        }
     };
 
     /*************

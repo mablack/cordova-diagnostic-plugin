@@ -656,11 +656,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isContactsAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isAddressBookAuthorized',
-            []);
+        if(cordova.plugins.diagnostic.contacts){
+            cordova.plugins.diagnostic.contacts.isContactsAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Contacts module is not installed";
+        }
     };
 
     /**
@@ -672,11 +672,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getContactsAuthorizationStatus = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getAddressBookAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.contacts){
+            cordova.plugins.diagnostic.contacts.getContactsAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Contacts module is not installed";
+        }
     };
 
     /**
@@ -690,13 +690,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestContactsAuthorization = function(successCallback, errorCallback) {
-        return cordova.exec(function(isGranted){
-                successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
-            },
-            errorCallback,
-            'Diagnostic',
-            'requestAddressBookAuthorization',
-            []);
+        if(cordova.plugins.diagnostic.contacts){
+            cordova.plugins.diagnostic.contacts.requestContactsAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Contacts module is not installed";
+        }
     };
 
     /*****************

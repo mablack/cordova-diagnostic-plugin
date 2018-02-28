@@ -10,10 +10,6 @@
 
 @interface Diagnostic()
 
-#if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
-@property (nonatomic, retain) CNContactStore* contactStore;
-#endif
-
 @property (nonatomic, retain) CMPedometer* cmPedometer;
 @property (nonatomic, retain) NSUserDefaults* settings;
 
@@ -31,6 +27,7 @@ NSString*const AUTHORIZATION_GRANTED = @"authorized";
 
 // Internal constants
 static NSString*const LOG_TAG = @"Diagnostic[native]";
+
 static NSString*const CPU_ARCH_ARMv6 = @"ARMv6";
 static NSString*const CPU_ARCH_ARMv7 = @"ARMv7";
 static NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
@@ -41,10 +38,6 @@ static Diagnostic* diagnostic = nil;
 
 BOOL debugEnabled = false;
 float osVersion;
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
-ABAddressBookRef _addressBook;
-#endif
 
 /********************************/
 #pragma mark - Public static functions
@@ -89,92 +82,6 @@ ABAddressBookRef _addressBook;
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];
     }
-}
-
-#pragma mark - Address Book (Contacts)
-
-- (void) getAddressBookAuthorizationStatus: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            NSString* status;
-            
-#if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
-            CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
-            if(authStatus == CNAuthorizationStatusDenied || authStatus == CNAuthorizationStatusRestricted){
-                status = AUTHORIZATION_DENIED;
-            }else if(authStatus == CNAuthorizationStatusNotDetermined){
-                status = AUTHORIZATION_NOT_DETERMINED;
-            }else if(authStatus == CNAuthorizationStatusAuthorized){
-                status = AUTHORIZATION_GRANTED;
-            }
-#else
-            ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
-            if(authStatus == kABAuthorizationStatusDenied || authStatus == kABAuthorizationStatusRestricted){
-                status = AUTHORIZATION_DENIED;
-            }else if(authStatus == kABAuthorizationStatusNotDetermined){
-                status = AUTHORIZATION_NOT_DETERMINED;
-            }else if(authStatus == kABAuthorizationStatusAuthorized){
-                status = AUTHORIZATION_GRANTED;
-            }
-            
-#endif
-            
-            [self logDebug:[NSString stringWithFormat:@"Address book authorization status is: %@", status]];
-            [self sendPluginResultString:status:command];
-            
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception :command];
-        }
-    }];
-}
-
-- (void) isAddressBookAuthorized: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            
-#if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
-            CNAuthorizationStatus authStatus = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
-            [self sendPluginResultBool:authStatus == CNAuthorizationStatusAuthorized :command];
-#else
-            ABAuthorizationStatus authStatus = ABAddressBookGetAuthorizationStatus();
-            [self sendPluginResultBool:authStatus == kABAuthorizationStatusAuthorized :command];
-#endif
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception :command];
-        }
-    }];
-}
-
-- (void) requestAddressBookAuthorization: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
-            ABAddressBookRequestAccessWithCompletion(self.addressBook, ^(bool granted, CFErrorRef error) {
-                [self logDebug:@"Access request to address book: %d", granted];
-                [self sendPluginResultBool:granted :command];
-            });
-            
-#else
-            [self.contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                if(error == nil) {
-                    [self logDebug:[NSString stringWithFormat:@"Access request to address book: %d", granted]];
-                    [self sendPluginResultBool:granted :command];
-                }
-                else {
-                    [self sendPluginResultBool:FALSE :command];
-                }
-            }];
-#endif
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception :command];
-        }
-    }];
 }
 
 #pragma mark - Calendar Events
@@ -432,7 +339,6 @@ ABAddressBookRef _addressBook;
 
     osVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
 
-    self.contactStore = [[CNContactStore alloc] init];
     self.motionManager = [[CMMotionActivityManager alloc] init];
     self.motionActivityQueue = [[NSOperationQueue alloc] init];
     self.cmPedometer = [[CMPedometer alloc] init];
@@ -494,40 +400,6 @@ ABAddressBookRef _addressBook;
 }
 
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_9_0
-- (ABAddressBookRef)addressBook {
-    if (!_addressBook) {
-        ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
-        
-        if (addressBook) {
-            [self setAddressBook:CFAutorelease(addressBook)];
-        }
-    }
-    
-    return _addressBook;
-}
-
-- (void)setAddressBook:(ABAddressBookRef)newAddressBook {
-    if (_addressBook != newAddressBook) {
-        if (_addressBook) {
-            CFRelease(_addressBook);
-        }
-        
-        if (newAddressBook) {
-            CFRetain(newAddressBook);
-        }
-        
-        _addressBook = newAddressBook;
-    }
-}
-
-- (void)dealloc {
-    if (_addressBook) {
-        CFRelease(_addressBook);
-        _addressBook = NULL;
-    }
-}
-#endif
 
 /********************************/
 #pragma mark - Send results
