@@ -23,13 +23,10 @@ package cordova.plugins;
  */
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -46,14 +43,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.net.Uri;
-import android.nfc.NfcAdapter;
-import android.nfc.NfcManager;
 import android.os.Build;
-import android.os.Environment;
-import android.os.StatFs;
-import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
 
 import android.content.Context;
@@ -63,9 +54,6 @@ import android.provider.Settings;
 
 
 import android.support.v4.app.ActivityCompat;
-
-
-import static android.nfc.NfcAdapter.EXTRA_ADAPTER_STATE;
 
 /**
  * Diagnostic plugin implementation for Android
@@ -139,27 +127,11 @@ public class Diagnostic extends CordovaPlugin{
      */
     protected static final String STATUS_DENIED = "DENIED";
 
-    protected static String externalStoragePermission = "READ_EXTERNAL_STORAGE";
-
     /**
      * Either user denied permission and checked "never ask again"
      * Or authorisation has not yet been requested for permission
      */
     protected static final String STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS = "STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS";
-
-    protected static final Integer GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST = 1000;
-
-    public static final int NFC_STATE_VALUE_UNKNOWN = 0;
-    public static final int NFC_STATE_VALUE_OFF = 1;
-    public static final int NFC_STATE_VALUE_TURNING_ON = 2;
-    public static final int NFC_STATE_VALUE_ON = 3;
-    public static final int NFC_STATE_VALUE_TURNING_OFF = 4;
-
-    public static final String NFC_STATE_UNKNOWN = "unknown";
-    public static final String NFC_STATE_OFF = "powered_off";
-    public static final String NFC_STATE_TURNING_ON = "powering_on";
-    public static final String NFC_STATE_ON = "powered_on";
-    public static final String NFC_STATE_TURNING_OFF = "powering_off";
 
     public static final String CPU_ARCH_UNKNOWN = "unknown";
     public static final String CPU_ARCH_ARMv6 = "ARMv6";
@@ -181,14 +153,11 @@ public class Diagnostic extends CordovaPlugin{
 
     boolean debugEnabled = false;
 
-    public static NfcManager nfcManager;
 
     /**
      * Current Cordova callback context (on this thread)
      */
     protected CallbackContext currentContext;
-
-    protected String currentNFCState = NFC_STATE_UNKNOWN;
 
     /*************
      * Public API
@@ -214,8 +183,6 @@ public class Diagnostic extends CordovaPlugin{
         Log.d(TAG, "initialize()");
         instance = this;
 
-        nfcManager = (NfcManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.NFC_SERVICE);
-        currentNFCState = isNFCAvailable() ? NFC_STATE_ON : NFC_STATE_OFF;
         super.initialize(cordova, webView);
     }
 
@@ -244,9 +211,6 @@ public class Diagnostic extends CordovaPlugin{
             } else if (action.equals("switchToWirelessSettings")){
                 switchToWirelessSettings();
                 callbackContext.success();
-            } else if (action.equals("switchToNFCSettings")){
-                switchToNFCSettings();
-                callbackContext.success();
             } else if(action.equals("isDataRoamingEnabled")) {
                 callbackContext.success(isDataRoamingEnabled() ? 1 : 0);
             } else if(action.equals("getPermissionAuthorizationStatus")) {
@@ -257,14 +221,6 @@ public class Diagnostic extends CordovaPlugin{
                 this.requestRuntimePermission(args);
             } else if(action.equals("requestRuntimePermissions")) {
                 this.requestRuntimePermissions(args);
-            } else if(action.equals("getExternalSdCardDetails")) {
-                this.getExternalSdCardDetails();
-            } else if(action.equals("isNFCPresent")) {
-                callbackContext.success(isNFCPresent() ? 1 : 0);
-            } else if(action.equals("isNFCEnabled")) {
-                callbackContext.success(isNFCEnabled() ? 1 : 0);
-            } else if(action.equals("isNFCAvailable")) {
-                callbackContext.success(isNFCAvailable() ? 1 : 0);
             } else if(action.equals("isADBModeEnabled")) {
                 callbackContext.success(isADBModeEnabled() ? 1 : 0);
             } else if(action.equals("isDeviceRooted")) {
@@ -324,14 +280,6 @@ public class Diagnostic extends CordovaPlugin{
         Intent settingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
         cordova.getActivity().startActivity(settingsIntent);
     }
-    public void switchToNFCSettings() {
-        logDebug("Switch to NFC Settings");
-        Intent settingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-        if (android.os.Build.VERSION.SDK_INT >= 16) {
-            settingsIntent = new Intent(android.provider.Settings.ACTION_NFC_SETTINGS);
-        }
-        cordova.getActivity().startActivity(settingsIntent);
-    }
 
     public void getPermissionsAuthorizationStatus(JSONArray args) throws Exception{
         JSONArray permissions = args.getJSONArray(0);
@@ -365,54 +313,6 @@ public class Diagnostic extends CordovaPlugin{
         JSONArray permissions = new JSONArray();
         permissions.put(permission);
         _requestRuntimePermissions(permissions, requestId);
-    }
-
-    public void getExternalSdCardDetails() throws Exception{
-        String permission = permissionsMap.get(externalStoragePermission);
-        if (hasPermission(permission)) {
-            _getExternalSdCardDetails();
-        } else {
-            requestRuntimePermission(permission, GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
-        }
-    }
-
-    public boolean isNFCPresent() {
-        boolean result = false;
-        try {
-            NfcAdapter adapter = nfcManager.getDefaultAdapter();
-            result = adapter != null;
-        }catch(Exception e){
-            logError(e.getMessage());
-        }
-        return result;
-    }
-
-    public boolean isNFCEnabled() {
-        boolean result = false;
-        try {
-            NfcAdapter adapter = nfcManager.getDefaultAdapter();
-            result = adapter != null && adapter.isEnabled();
-        }catch(Exception e){
-            logError(e.getMessage());
-        }
-        return result;
-    }
-
-    public boolean isNFCAvailable() {
-        boolean result = isNFCPresent() && isNFCEnabled();
-        return result;
-    }
-
-    public void notifyNFCStateChange(String state){
-        try {
-            if(state != currentNFCState){
-                logDebug("NFC state changed to: " + state);
-                executePluginJavascript("_onNFCStateChange(\"" + state +"\");");
-                currentNFCState = state;
-            }
-        }catch(Exception e){
-            logError("Error retrieving current NFC state on state change: "+e.toString());
-        }
     }
 
     /**
@@ -523,7 +423,7 @@ public class Diagnostic extends CordovaPlugin{
         escapedString = escapedString.replace("%22", "\\%22");
         return escapedString;
     }
-    
+
     /**
      * Handles an error while executing a plugin API method  in the specified context.
      * Calls the registered Javascript plugin error handler callback.
@@ -735,131 +635,6 @@ public class Diagnostic extends CordovaPlugin{
         executeGlobalJavascript("cordova.plugins.diagnostic." + jsString);
     }
 
-    protected void _getExternalSdCardDetails() throws JSONException {
-        String[] storageDirectories = getStorageDirectories();
-
-        JSONArray details = new JSONArray();
-        for(int i=0; i<storageDirectories.length; i++) {
-            String directory = storageDirectories[i];
-            File f = new File(directory);
-            JSONObject detail = new JSONObject();
-            if(f.canRead()){
-                detail.put("path", directory);
-                detail.put("filePath", "file://"+directory);
-                detail.put("canWrite", f.canWrite());
-                detail.put("freeSpace", getFreeSpaceInBytes(directory));
-                if(directory.contains("Android")){
-                    detail.put("type", "application");
-                }else{
-                    detail.put("type", "root");
-                }
-                details.put(detail);
-            }
-        }
-        currentContext.success(details);
-    }
-
-    /**
-     * Given a path return the number of free bytes in the filesystem containing the path.
-     *
-     * @param path to the file system
-     * @return free space in bytes
-     */
-    protected long getFreeSpaceInBytes(String path) {
-        try {
-            StatFs stat = new StatFs(path);
-            long blockSize = stat.getBlockSize();
-            long availableBlocks = stat.getAvailableBlocks();
-            return availableBlocks * blockSize;
-        } catch (IllegalArgumentException e) {
-            // The path was invalid. Just return 0 free bytes.
-            return 0;
-        }
-    }
-
-
-    /**
-     * Returns all available external SD-Cards in the system.
-     *
-     * @return paths to all available external SD-Cards in the system.
-     */
-    public String[] getStorageDirectories() {
-
-        List<String> results = new ArrayList<String>();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //Method 1 for KitKat & above
-            File[] externalDirs = this.cordova.getActivity().getApplicationContext().getExternalFilesDirs(null);
-
-            for (File file : externalDirs) {
-                if(file == null){
-                    continue;
-                }
-                String applicationPath = file.getPath();
-                String rootPath = applicationPath.split("/Android")[0];
-
-                boolean addPath = false;
-
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    addPath = Environment.isExternalStorageRemovable(file);
-                }
-                else{
-                    addPath = Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(file));
-                }
-
-                if(addPath){
-                    results.add(rootPath);
-                    results.add(applicationPath);
-                }
-            }
-        }
-
-        if(results.isEmpty()) { //Method 2 for all versions
-            // better variation of: http://stackoverflow.com/a/40123073/5002496
-            String output = "";
-            try {
-                final Process process = new ProcessBuilder().command("mount | grep /dev/block/vold")
-                        .redirectErrorStream(true).start();
-                process.waitFor();
-                final InputStream is = process.getInputStream();
-                final byte[] buffer = new byte[1024];
-                while (is.read(buffer) != -1) {
-                    output = output + new String(buffer);
-                }
-                is.close();
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-            if(!output.trim().isEmpty()) {
-                String devicePoints[] = output.split("\n");
-                for(String voldPoint: devicePoints) {
-                    results.add(voldPoint.split(" ")[2]);
-                }
-            }
-        }
-
-        //Below few lines is to remove paths which may not be external memory card, like OTG (feel free to comment them out)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (int i = 0; i < results.size(); i++) {
-                if (!results.get(i).toLowerCase().matches(".*[0-9a-f]{4}[-][0-9a-f]{4}.*")) {
-                    Log.d(TAG, results.get(i) + " might not be extSDcard");
-                    results.remove(i--);
-                }
-            }
-        } else {
-            for (int i = 0; i < results.size(); i++) {
-                if (!results.get(i).toLowerCase().contains("ext") && !results.get(i).toLowerCase().contains("sdcard")) {
-                    Log.d(TAG, results.get(i)+" might not be extSDcard");
-                    results.remove(i--);
-                }
-            }
-        }
-
-        String[] storageDirectories = new String[results.size()];
-        for(int i=0; i<results.size(); ++i) storageDirectories[i] = results.get(i);
-
-        return storageDirectories;
-    }
-
     /**
      * Performs a warm app restart - restarts only Cordova main activity
      */
@@ -875,7 +650,7 @@ public class Diagnostic extends CordovaPlugin{
                 }
             }
         });
-}
+    }
 
     /**
      * Performs a full cold app restart - restarts application
@@ -934,15 +709,23 @@ public class Diagnostic extends CordovaPlugin{
         } else {
             abi = Build.SUPPORTED_ABIS[0];
         }
-           
-           
-        if(abi == "armeabi") { arch = CPU_ARCH_ARMv6; }
-        else if(abi == "armeabi-v7a") { arch = CPU_ARCH_ARMv7; }
-        else if(abi == "arm64-v8a") { arch = CPU_ARCH_ARMv8; }
-        else if(abi == "x86") { arch = CPU_ARCH_X86; }
-        else if(abi == "x86_64") { arch = CPU_ARCH_X86_64; }
-        else if(abi == "mips") { arch = CPU_ARCH_MIPS; }
-        else if(abi == "mips64") { arch = CPU_ARCH_MIPS_64; }
+
+
+        if (abi == "armeabi") {
+            arch = CPU_ARCH_ARMv6;
+        } else if (abi.equals("armeabi-v7a")) {
+            arch = CPU_ARCH_ARMv7;
+        } else if (abi.equals("arm64-v8a")) {
+            arch = CPU_ARCH_ARMv8;
+        } else if (abi.equals("x86")) {
+            arch = CPU_ARCH_X86;
+        } else if (abi.equals("x86_64")) {
+            arch = CPU_ARCH_X86_64;
+        } else if (abi.equals("mips")) {
+            arch = CPU_ARCH_MIPS;
+        } else if (abi.equals("mips64")) {
+            arch = CPU_ARCH_MIPS_64;
+        }
 
         return arch;
     }
@@ -991,8 +774,8 @@ public class Diagnostic extends CordovaPlugin{
                 clearRequest(requestCode);
             }
 
-            if(requestCode == GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST){
-                _getExternalSdCardDetails();
+            if(requestCode == Diagnostic_External_Storage.GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST){
+                Diagnostic_External_Storage.onReceivePermissionResult();
             }else{
                 context.success(statuses);
             }
@@ -1001,34 +784,4 @@ public class Diagnostic extends CordovaPlugin{
         }
     }
 
-
-    public static class NFCStateChangedReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final int stateValue = intent.getIntExtra(EXTRA_ADAPTER_STATE, -1);
-            if(instance != null){ // if app is running
-                String state;
-                switch(stateValue){
-                    case NFC_STATE_VALUE_OFF:
-                        state = NFC_STATE_OFF;
-                        break;
-                    case NFC_STATE_VALUE_TURNING_ON:
-                        state = NFC_STATE_TURNING_ON;
-                        break;
-                    case NFC_STATE_VALUE_ON:
-                        state = NFC_STATE_ON;
-                        break;
-                    case NFC_STATE_VALUE_TURNING_OFF:
-                        state = NFC_STATE_TURNING_OFF;
-                        break;
-                    default:
-                        state = NFC_STATE_UNKNOWN;
-                }
-                Log.v(TAG, "onReceiveNFCStateChange: "+state);
-                instance.notifyNFCStateChange(state);
-            }
-        }
-
-    }
 }

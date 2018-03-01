@@ -16,35 +16,25 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [Available modules](#available-modules)
 - [Usage](#usage)
   - [Core module](#core-module)
+    - [switchToSettings()](#switchtosettings)
+    - [switchToWirelessSettings()](#switchtowirelesssettings)
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
     - [permissionStatus constants](#permissionstatus-constants)
-    - [cpuArchitecture constants](#cpuarchitecture-constants)
-    - [enableDebug()](#enabledebug)
-    - [getArchitecture()](#getarchitecture)
-    - [switchToSettings()](#switchtosettings)
-    - [isDataRoamingEnabled()](#isdataroamingenabled)
     - [getPermissionAuthorizationStatus()](#getpermissionauthorizationstatus)
     - [getPermissionsAuthorizationStatus()](#getpermissionsauthorizationstatus)
     - [requestRuntimePermission()](#requestruntimepermission)
     - [requestRuntimePermissions()](#requestruntimepermissions)
     - [isRequestingPermission()](#isrequestingpermission)
     - [registerPermissionRequestCompleteHandler()](#registerpermissionrequestcompletehandler)
-    - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
-    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
-    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
-    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
-    - [switchToWirelessSettings()](#switchtowirelesssettings)
-    - [switchToNFCSettings()](#switchtonfcsettings)
-    - [isNFCPresent()](#isnfcpresent)
-    - [isNFCEnabled()](#isnfcenabled)
-    - [isNFCAvailable()](#isnfcavailable)
+    - [isDataRoamingEnabled()](#isdataroamingenabled)
     - [isADBModeEnabled()](#isadbmodeenabled)
     - [isDeviceRooted()](#isdevicerooted)
-    - [restart()](#restart)
-    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
-    - [NFCState constants](#nfcstate-constants)
     - [isBackgroundRefreshAuthorized()](#isbackgroundrefreshauthorized)
     - [getBackgroundRefreshStatus()](#getbackgroundrefreshstatus)
+    - [cpuArchitecture constants](#cpuarchitecture-constants)
+    - [getArchitecture()](#getarchitecture)
+    - [restart()](#restart)
+    - [enableDebug()](#enabledebug)
   - [Location module](#location-module)
     - [locationMode constants](#locationmode-constants)
     - [isLocationAvailable()](#islocationavailable)
@@ -114,6 +104,18 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
     - [requestMotionAuthorization()](#requestmotionauthorization)
     - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
+  - [NFC module](#nfc-module)
+    - [NFCState constants](#nfcstate-constants)
+    - [isNFCPresent()](#isnfcpresent)
+    - [isNFCEnabled()](#isnfcenabled)
+    - [isNFCAvailable()](#isnfcavailable)
+    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+    - [switchToNFCSettings()](#switchtonfcsettings)
+  - [External storage module](#external-storage-module)
+    - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
+    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
+    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
+    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
@@ -245,6 +247,8 @@ The following optional modules are currently supported by the plugin:
 - [CALENDAR](#calendar-module) - Android, iOS
 - [REMINDERS](#reminders-module) - iOS
 - [MOTION](#motion-module) - iOS
+- [NFC](#nfc-module) - Android
+- [EXTERNAL_STORAGE](#external-storage-module) - Android
     
 **IMPORTANT:** It's vital that the preference be added to your `config.xml` **before** you install the plugin, otherwise the preference will not be applied and all modules will be added.
 This is because, due to limitations of the Cordova CLI hooks, this plugin must use the `npm install` process to apply the module preferences and this runs before the Cordova CLI when installing a plugin.
@@ -261,6 +265,42 @@ Purpose: Generic and miscellaneous functionality.
 Platforms: Android, iOS and Windows 10 UWP
 Configuration name: N/A - always installed, regardless of whether the module preference key is present in `config.xml`.
 
+### switchToSettings()
+
+Platforms: Android and iOS
+
+Opens settings page for this app.
+
+On Android, this opens the "App Info" page in the Settings app.
+
+On iOS, this opens the app settings page in the Settings app. This works only on iOS 8+ - iOS 7 and below will invoke the errorCallback.
+
+    cordova.plugins.diagnostic.switchToSettings(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback - The callback which will be called when switch to settings is successful.
+- {Function} errorCallback - The callback which will be called when switch to settings encounters an error. The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.switchToSettings(function(){
+        console.log("Successfully switched to Settings app");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+### switchToWirelessSettings()
+
+Platforms: Android
+
+Switches to the wireless settings page in the Settings app.
+Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
+
+    cordova.plugins.diagnostic.switchToWirelessSettings();
+        
+        
 ### switchToMobileDataSettings()
 
 Platforms: Android and Windows 10 UWP
@@ -268,7 +308,7 @@ Platforms: Android and Windows 10 UWP
 Displays mobile settings to allow user to enable mobile data.
 
     cordova.plugins.diagnostic.switchToMobileDataSettings();
-
+    
 ### permissionStatus constants
 
 Platforms: Android and iOS
@@ -312,138 +352,6 @@ Indicates the user has granted access to the permission "when in use" (only when
         // Do something
     }
 
-### cpuArchitecture constants
-
-Platforms: Android and iOS
-
-Defines constants for the various CPU architectures of the current hardware returned by [getArchitecture()](#getarchitecture).
-
-        cordova.plugins.diagnostic.cpuArchitecture
-
-#### Android
-
-- `UNKNOWN` - Unknown CPU architecture
-- `ARMv6` - ARM v6 or below (32 bit)
-- `ARMv7` - ARM v7 (32 bit)
-- `ARMv8` - ARM v8 (64 bit)
-- `X86` - Intel x86 (32 bit)
-- `X86_64` - Intel x86 (64 bit)
-- `MIPS` - MIPS (32 bit)
-- `MIPS_64` - MIPS (64 bit)
-
-#### iOS
-
-- `UNKNOWN` - Unknown CPU architecture
-- `ARMv6` - ARM v6 or below (32 bit)
-- `ARMv7` - ARM v7 (32 bit)
-- `ARMv8` - ARM v8 (64 bit)
-- `X86` - Intel x86 (32 bit)
-- `X86_64` - Intel x86 (64 bit)
-
-#### Example usage
-
-See [getArchitecture()](#getarchitecture).
-    
-### enableDebug()
-
-Platforms: Android and iOS
-
-Enables debug mode, which logs native debug messages to the native and JS consoles.
-- For Android, log messages will appear in the native logcat output and in the JS console if Chrome Developer Tools is connected to the app Webview.
-- For Android, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
-- Debug mode is initially disabled on plugin initialisation.
-
-
-    cordova.plugins.diagnostic.enableDebug(successCallback);
-    
-#### Parameters
-
-- {Function} successCallback - The callback which will be called when debug has been enabled.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.enableDebug(function(){
-        console.log("Debug is enabled"));
-    });
-    
-### getArchitecture()
-
-Platforms: Android and iOS
-
-Returns the CPU architecture of the current device.
-
-    cordova.plugins.diagnostic.getArchitecture(successCallback, errorCallback);
-    
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which indicates the location authorization status as a [cpuArchitecture constant](#cpuarchitecture-constants).
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getArchitecture(function(arch){
-        if(arch === cordova.plugins.diagnostic.cpuArchitecture.X86
-        || arch === cordova.plugins.diagnostic.cpuArchitecture.X86_64){
-            console.log("Intel inside");
-        }
-    }, function(error){
-        console.error(error);
-    });
-    
-
-### switchToSettings()
-
-Platforms: Android and iOS
-
-Opens settings page for this app.
-
-On Android, this opens the "App Info" page in the Settings app.
-
-On iOS, this opens the app settings page in the Settings app. This works only on iOS 8+ - iOS 7 and below will invoke the errorCallback.
-
-    cordova.plugins.diagnostic.switchToSettings(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback - The callback which will be called when switch to settings is successful.
-- {Function} errorCallback - The callback which will be called when switch to settings encounters an error. The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.switchToSettings(function(){
-        console.log("Successfully switched to Settings app");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### isDataRoamingEnabled()
-
-Platforms: Android
-
-Checks if the device data roaming setting is enabled.
-Returns true if data roaming is enabled.
-
-    cordova.plugins.diagnostic.isDataRoamingEnabled(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when the operation is successful.
-The function is passed a single boolean parameter which is TRUE if data roaming is enabled.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isDataRoamingEnabled(function(enabled){
-        console.log("Data roaming is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-    
 ### getPermissionAuthorizationStatus()
 
 Platforms: Android
@@ -560,7 +468,6 @@ The function is passed a single string parameter containing the error message.
         console.error("The following error occurred: "+error);
     }, cordova.plugins.diagnostic.permission.CAMERA);
 
-
 ### requestRuntimePermissions()
 
 Platforms: Android
@@ -664,251 +571,31 @@ The function is passed a single object parameter which defines a key/value map, 
     }
     cordova.plugins.diagnostic.registerPermissionRequestCompleteHandler(onPermissionRequestComplete);
 
-### isExternalStorageAuthorized()
+### isDataRoamingEnabled()
 
 Platforms: Android
 
-Checks if the application is authorized to use external storage.
+Checks if the device data roaming setting is enabled.
+Returns true if data roaming is enabled.
 
-Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
-- This checks for `READ_EXTERNAL_STORAGE` `CAMERA` run-time permission.
-
-    `cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);`
+    cordova.plugins.diagnostic.isDataRoamingEnabled(successCallback, errorCallback);
 
 #### Parameters
 
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if external storage is authorized for use.
+- {Function} successCallback -  The callback which will be called when the operation is successful.
+The function is passed a single boolean parameter which is TRUE if data roaming is enabled.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
 
 
 #### Example usage
 
-    cordova.plugins.diagnostic.isExternalStorageAuthorized(function(authorized){
-        console.log("App is " + (authorized ? "authorized" : "denied") + " access to the external storage");
+    cordova.plugins.diagnostic.isDataRoamingEnabled(function(enabled){
+        console.log("Data roaming is " + (enabled ? "enabled" : "disabled"));
     }, function(error){
         console.error("The following error occurred: "+error);
     });
-
-### getExternalStorageAuthorizationStatus()
-
-Platforms: Android
-
-Returns the external storage authorization status for the application.
-
-Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
-- This checks for `READ_EXTERNAL_STORAGE` run-time permission.
-
-    `cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(successCallback, errorCallback);`
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(function(status){
-        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
-            console.log("External storage use is authorized");
-        }
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### requestExternalStorageAuthorization()
-
-Platforms: Android
-
-Requests external storage authorization for the application.
-
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
-- This requests permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
-
-    `cordova.plugins.diagnostic.requestExternalStorageAuthorization(successCallback, errorCallback);`
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter indicating whether access to the external storage was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(status){
-        console.log("Authorization request for external storage use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
-    }, function(error){
-        console.error(error);
-    });
-
-### getExternalSdCardDetails()
-
-Platforms: Android
-
-Returns details of external SD card(s): absolute path, is writable, free space.
-
-The intention of this method is to return the location and details of *removable* _external_ SD cards.
-This differs from the "external directories" returned by [cordova-plugin-file](https://github.com/apache/cordova-plugin-file) which return mount points relating to non-removable (internal) storage.
-
-For example, on a Samsung Galaxy S4 running Android 7.1.1:
-
- - `cordova.file.externalRootDirectory` returns `file:///storage/emulated/0/`
- - `cordova.file.externalApplicationStorageDirectory` returns `file:///storage/emulated/0/Android/data/cordova.plugins.diagnostic.example/`
-
- which are on non-removable internal storage.
-
- Whereas this method returns:
-
-    ```
-    [{
-        "path": "/storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
-        "filePath": "file:///storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
-        "canWrite": true,
-        "freeSpace": 16254009344,
-        "type": "application"
-    }, {
-        "path": "/storage/4975-1401",
-        "filePath": "file:///storage/4975-1401",
-        "canWrite": false,
-        "freeSpace": 16254009344,
-        "type": "root"
-    }]
-    ```
-
- which are on external removable storage.
-
-- Requires permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
-
-    `cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);`
-
-#### Parameters
-
-- {Function} successCallback -  function to call on successful request for external SD card details.
-The function is passed a single argument which is an array consisting of an entry for each external storage location found.
-Each array entry is an object with the following keys:
-    - {String} path - absolute path to the storage location
-    - {String} filePath - absolute path prefixed with file protocol for use with cordova-plugin-file
-    - {Boolean} canWrite - true if the location is writable
-    - {Integer} freeSpace - number of bytes of free space on the device on which the storage locaiton is mounted.
-    - {String} type - indicates the type of storage location: either "application" if the path is an Android application sandbox path or "root" if the path is the device root.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getExternalSdCardDetails(function(details){
-        details.forEach(function(detail){
-            if(detail.canWrite && details.freeSpace > 100000){
-                cordova.file.externalSdCardDirectory = detail.filePath;
-                // Then: write file to external SD card
-            }
-        });
-    }, function(error){
-        console.error(error);
-    });
-
-### switchToWirelessSettings()
-
-Platforms: Android
-
-Switches to the wireless settings page in the Settings app.
-Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
-
-    cordova.plugins.diagnostic.switchToWirelessSettings();
-
-### switchToNFCSettings()
-
-Platforms: Android
-
-Displays NFC settings to allow user to enable NFC.
-
-On some versions of Android, this may open the same page as `switchToWirelessSettings()` if the NFC switch is on the Wireless settings page.
-
-    cordova.plugins.diagnostic.switchToNFCSettings();
-
-### isNFCPresent()
-
-Platforms: Android
-
-Checks if NFC hardware is present on device.
-
-    cordova.plugins.diagnostic.isNFCPresent(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if NFC is present
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isNFCPresent(function(present){
-        console.log("NFC hardware is " + (present ? "present" : "absent"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-    
-### isNFCEnabled()
-
-Platforms: Android
-
-Checks if the device setting for NFC is switched on.
-
-Note: this operation **does not** require NFC permission in the manifest.
-
-    cordova.plugins.diagnostic.isNFCAvailable(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if NFC is switched on.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isNFCEnabled(function(enabled){
-        console.log("NFC is " + (enabled ? "enabled" : "disabled"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### isNFCAvailable()
-
-Platforms: Android
-
-Checks if NFC is available to the app.
-Returns true if the device has NFC capabilities AND if NFC setting is switched on.
-
-Note: this operation **does not** require NFC permission in the manifest.
-
-    cordova.plugins.diagnostic.isNFCAvailable(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if NFC is available.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isNFCAvailable(function(available){
-        console.log("NFC is " + (available ? "available" : "not available"));
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
+        
 
 ### isADBModeEnabled()
 
@@ -957,101 +644,6 @@ The function is passed a single string parameter containing the error message.
     cordova.plugins.diagnostic.isDeviceRooted(function(rooted){
         console.log("device is " + (rooted ? "rooted" : "not rooted"));
     }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-    
-### restart()
-
-Platforms: Android
-
-Restarts the application.
-By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
-
-However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
-This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
-
-Note: There is no `successCallback()` since if the operation is successful, the application will restart immediately before any success callback can be applied.
-
-    cordova.plugins.diagnostic.restart(errorCallback, cold);
-
-#### Parameters
-
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-- {Boolean} cold - if true the application will be cold restarted. Defaults to false.
-
-
-#### Example usage
-
-    var onError = function(error){
-        console.error("The following error occurred: "+error);
-    }
-    
-    // Warm restart
-    cordova.plugins.diagnostic.restart(onError, false);
-        
-    // Cold restart
-    cordova.plugins.diagnostic.restart(onError, true);
-    
-### registerNFCStateChangeHandler()
-
-Platforms: Android
-
-Registers a function to be called when a change in NFC state occurs.
-Pass in a falsey value to de-register the currently registered function.
-
-This is triggered when NFC state changes so is useful for detecting changes made in quick settings which would not result in pause/resume events being fired.
-
-    cordova.plugins.diagnostic.registerNFCStateChangeHandler(successCallback);
-
-#### Parameters
-
-- {Function} successCallback - function call when a change in NFC state occurs.
-The function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.NFCState`.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.registerNFCStateChangeHandler(function(state){
-        console.log("NFC state changed to: " + state);
-    });
-
-### NFCState constants
-
-Platforms: Android
-
-Defines constants for the various NFC power states.
-
-    cordova.plugins.diagnostic.NFCState
-
-#### Values
-
-- `UNKNOWN` - Bluetooth hardware state is unknown or unavailable
-- `POWERED_OFF` - Bluetooth hardware is switched off
-- `POWERED_ON` - Bluetooth hardware is switched on and available for use
-- `POWERING_OFF`- Bluetooth hardware is currently switching off
-- `POWERING_ON`- Bluetooth hardware is currently switching on
-
-#### Example
-
-    cordova.plugins.diagnostic.registerNFCStateChangeHandler(function(state){
-        switch(state){
-            case cordova.plugins.diagnostic.NFCState.UNKNOWN:
-                console.log("NFC state is unknown");
-                break;
-            case cordova.plugins.diagnostic.NFCState.POWERED_OFF:
-                console.log("NFC is powered off");
-                break;
-            case cordova.plugins.diagnostic.NFCState.POWERED_ON:
-                console.log("NFC is powered on");
-                break;
-            case cordova.plugins.diagnostic.NFCState.POWERING_OFF:
-                console.log("NFC is powering off");
-                break;
-            case cordova.plugins.diagnostic.NFCState.POWERING_ON:
-                console.log("NFC is powering on);
-                break;
-        }
-    },function(error){
         console.error("The following error occurred: "+error);
     });
     
@@ -1105,6 +697,122 @@ The function is passed a single string parameter containing the error message.
         console.error("The following error occurred: "+error);
     });
 
+### cpuArchitecture constants
+
+Platforms: Android and iOS
+
+Defines constants for the various CPU architectures of the current hardware returned by [getArchitecture()](#getarchitecture).
+
+        cordova.plugins.diagnostic.cpuArchitecture
+
+#### Android
+
+- `UNKNOWN` - Unknown CPU architecture
+- `ARMv6` - ARM v6 or below (32 bit)
+- `ARMv7` - ARM v7 (32 bit)
+- `ARMv8` - ARM v8 (64 bit)
+- `X86` - Intel x86 (32 bit)
+- `X86_64` - Intel x86 (64 bit)
+- `MIPS` - MIPS (32 bit)
+- `MIPS_64` - MIPS (64 bit)
+
+#### iOS
+
+- `UNKNOWN` - Unknown CPU architecture
+- `ARMv6` - ARM v6 or below (32 bit)
+- `ARMv7` - ARM v7 (32 bit)
+- `ARMv8` - ARM v8 (64 bit)
+- `X86` - Intel x86 (32 bit)
+- `X86_64` - Intel x86 (64 bit)
+
+#### Example usage
+
+See [getArchitecture()](#getarchitecture).
+    
+
+### getArchitecture()
+
+Platforms: Android and iOS
+
+Returns the CPU architecture of the current device.
+
+    cordova.plugins.diagnostic.getArchitecture(successCallback, errorCallback);
+    
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which indicates the location authorization status as a [cpuArchitecture constant](#cpuarchitecture-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getArchitecture(function(arch){
+        if(arch === cordova.plugins.diagnostic.cpuArchitecture.X86
+        || arch === cordova.plugins.diagnostic.cpuArchitecture.X86_64){
+            console.log("Intel inside");
+        }
+    }, function(error){
+        console.error(error);
+    });
+    
+
+### restart()
+
+Platforms: Android
+
+Restarts the application.
+By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
+
+However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
+This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
+
+Note: There is no `successCallback()` since if the operation is successful, the application will restart immediately before any success callback can be applied.
+
+    cordova.plugins.diagnostic.restart(errorCallback, cold);
+
+#### Parameters
+
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+- {Boolean} cold - if true the application will be cold restarted. Defaults to false.
+
+
+#### Example usage
+
+    var onError = function(error){
+        console.error("The following error occurred: "+error);
+    }
+    
+    // Warm restart
+    cordova.plugins.diagnostic.restart(onError, false);
+        
+    // Cold restart
+    cordova.plugins.diagnostic.restart(onError, true);
+    
+
+### enableDebug()
+
+Platforms: Android and iOS
+
+Enables debug mode, which logs native debug messages to the native and JS consoles.
+- For Android, log messages will appear in the native logcat output and in the JS console if Chrome Developer Tools is connected to the app Webview.
+- For Android, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
+- Debug mode is initially disabled on plugin initialisation.
+
+
+    cordova.plugins.diagnostic.enableDebug(successCallback);
+    
+#### Parameters
+
+- {Function} successCallback - The callback which will be called when debug has been enabled.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.enableDebug(function(){
+        console.log("Debug is enabled"));
+    });
+    
 
 
 ## Location module
@@ -2883,6 +2591,7 @@ The function is passed a single string parameter indicating whether access to ca
         console.error(error);
     });
     
+    
 ## Motion module
 
 Purpose: Motion/fitness tracking permission.
@@ -3048,6 +2757,319 @@ The function is passed a single string parameter indicating the result:
         console.error(error);
     });
 
+## NFC module
+
+Purpose: Near Field Communication functionality.
+Platforms: Android
+Configuration name: `NFC`
+
+### NFCState constants
+
+Platforms: Android
+
+Defines constants for the various NFC power states.
+
+    cordova.plugins.diagnostic.NFCState
+
+#### Values
+
+- `UNKNOWN` - Bluetooth hardware state is unknown or unavailable
+- `POWERED_OFF` - Bluetooth hardware is switched off
+- `POWERED_ON` - Bluetooth hardware is switched on and available for use
+- `POWERING_OFF`- Bluetooth hardware is currently switching off
+- `POWERING_ON`- Bluetooth hardware is currently switching on
+
+#### Example
+
+    cordova.plugins.diagnostic.registerNFCStateChangeHandler(function(state){
+        switch(state){
+            case cordova.plugins.diagnostic.NFCState.UNKNOWN:
+                console.log("NFC state is unknown");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERED_OFF:
+                console.log("NFC is powered off");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERED_ON:
+                console.log("NFC is powered on");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERING_OFF:
+                console.log("NFC is powering off");
+                break;
+            case cordova.plugins.diagnostic.NFCState.POWERING_ON:
+                console.log("NFC is powering on);
+                break;
+        }
+    },function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+    
+
+### isNFCPresent()
+
+Platforms: Android
+
+Checks if NFC hardware is present on device.
+
+    cordova.plugins.diagnostic.isNFCPresent(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if NFC is present
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNFCPresent(function(present){
+        console.log("NFC hardware is " + (present ? "present" : "absent"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+    
+    
+### isNFCEnabled()
+
+Platforms: Android
+
+Checks if the device setting for NFC is switched on.
+
+Note: this operation **does not** require NFC permission in the manifest.
+
+    cordova.plugins.diagnostic.isNFCAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if NFC is switched on.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNFCEnabled(function(enabled){
+        console.log("NFC is " + (enabled ? "enabled" : "disabled"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### isNFCAvailable()
+
+Platforms: Android
+
+Checks if NFC is available to the app.
+Returns true if the device has NFC capabilities AND if NFC setting is switched on.
+
+Note: this operation **does not** require NFC permission in the manifest.
+
+    cordova.plugins.diagnostic.isNFCAvailable(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if NFC is available.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isNFCAvailable(function(available){
+        console.log("NFC is " + (available ? "available" : "not available"));
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### registerNFCStateChangeHandler()
+
+Platforms: Android
+
+Registers a function to be called when a change in NFC state occurs.
+Pass in a falsey value to de-register the currently registered function.
+
+This is triggered when NFC state changes so is useful for detecting changes made in quick settings which would not result in pause/resume events being fired.
+
+    cordova.plugins.diagnostic.registerNFCStateChangeHandler(successCallback);
+
+#### Parameters
+
+- {Function} successCallback - function call when a change in NFC state occurs.
+The function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.NFCState`.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.registerNFCStateChangeHandler(function(state){
+        console.log("NFC state changed to: " + state);
+    });    
+
+### switchToNFCSettings()
+
+Platforms: Android
+
+Displays NFC settings to allow user to enable NFC.
+
+On some versions of Android, this may open the same page as `switchToWirelessSettings()` if the NFC switch is on the Wireless settings page.
+
+    cordova.plugins.diagnostic.switchToNFCSettings();
+
+## External storage module
+
+Purpose: External storage functionality.
+Platforms: Android
+Configuration name: `EXTERNAL_STORAGE`
+
+### isExternalStorageAuthorized()
+
+Platforms: Android
+
+Checks if the application is authorized to use external storage.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+- This checks for `READ_EXTERNAL_STORAGE` `CAMERA` run-time permission.
+
+    `cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if external storage is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isExternalStorageAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to the external storage");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getExternalStorageAuthorizationStatus()
+
+Platforms: Android
+
+Returns the external storage authorization status for the application.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This checks for `READ_EXTERNAL_STORAGE` run-time permission.
+
+    `cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("External storage use is authorized");
+        }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### requestExternalStorageAuthorization()
+
+Platforms: Android
+
+Requests external storage authorization for the application.
+
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This requests permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
+
+    `cordova.plugins.diagnostic.requestExternalStorageAuthorization(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single string parameter indicating whether access to the external storage was granted or denied:
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestExternalStorageAuthorization(function(status){
+        console.log("Authorization request for external storage use was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+    }, function(error){
+        console.error(error);
+    });
+
+### getExternalSdCardDetails()
+
+Platforms: Android
+
+Returns details of external SD card(s): absolute path, is writable, free space.
+
+The intention of this method is to return the location and details of *removable* _external_ SD cards.
+This differs from the "external directories" returned by [cordova-plugin-file](https://github.com/apache/cordova-plugin-file) which return mount points relating to non-removable (internal) storage.
+
+For example, on a Samsung Galaxy S4 running Android 7.1.1:
+
+ - `cordova.file.externalRootDirectory` returns `file:///storage/emulated/0/`
+ - `cordova.file.externalApplicationStorageDirectory` returns `file:///storage/emulated/0/Android/data/cordova.plugins.diagnostic.example/`
+
+ which are on non-removable internal storage.
+
+ Whereas this method returns:
+
+    ```
+    [{
+        "path": "/storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
+        "filePath": "file:///storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
+        "canWrite": true,
+        "freeSpace": 16254009344,
+        "type": "application"
+    }, {
+        "path": "/storage/4975-1401",
+        "filePath": "file:///storage/4975-1401",
+        "canWrite": false,
+        "freeSpace": 16254009344,
+        "type": "root"
+    }]
+    ```
+
+ which are on external removable storage.
+
+- Requires permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
+
+    `cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  function to call on successful request for external SD card details.
+The function is passed a single argument which is an array consisting of an entry for each external storage location found.
+Each array entry is an object with the following keys:
+    - {String} path - absolute path to the storage location
+    - {String} filePath - absolute path prefixed with file protocol for use with cordova-plugin-file
+    - {Boolean} canWrite - true if the location is writable
+    - {Integer} freeSpace - number of bytes of free space on the device on which the storage locaiton is mounted.
+    - {String} type - indicates the type of storage location: either "application" if the path is an Android application sandbox path or "root" if the path is the device root.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getExternalSdCardDetails(function(details){
+        details.forEach(function(detail){
+            if(detail.canWrite && details.freeSpace > 100000){
+                cordova.file.externalSdCardDirectory = detail.filePath;
+                // Then: write file to external SD card
+            }
+        });
+    }, function(error){
+        console.error(error);
+    });
 
 # Platform Notes
 

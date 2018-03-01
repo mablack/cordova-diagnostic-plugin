@@ -272,14 +272,6 @@
         <framework src="com.android.support:support-v4:26.+" />
         <framework src="com.android.support:appcompat-v7:26.+" />
 
-        <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <receiver android:name="cordova.plugins.Diagnostic$NFCStateChangedReceiver">
-                <intent-filter>
-                    <action android:name="android.nfc.action.ADAPTER_STATE_CHANGED" />
-                </intent-filter>
-            </receiver>
-        </config-file>
-
         <!--BEGIN_MODULE LOCATION-->
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic_Location" >
@@ -381,6 +373,44 @@
             <merges target="cordova.plugins.diagnostic.calendar" />
         </js-module>
         <!--END_MODULE CALENDAR-->
+
+        <!--BEGIN_MODULE NFC-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_NFC" >
+                <param name="android-package" value="cordova.plugins.Diagnostic_NFC"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module name="Diagnostic_NFC" src="www/android/diagnostic.nfc.js">
+            <merges target="cordova.plugins.diagnostic.nfc" />
+        </js-module>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <receiver android:name="cordova.plugins.Diagnostic_NFC$NFCStateChangedReceiver">
+                <intent-filter>
+                    <action android:name="android.nfc.action.ADAPTER_STATE_CHANGED" />
+                </intent-filter>
+            </receiver>
+        </config-file>
+
+        <source-file src="src/android/Diagnostic_NFC.java" target-dir="src/cordova/plugins" />
+        <!--END_MODULE NFC-->
+
+        <!--BEGIN_MODULE EXTERNAL_STORAGE-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_External_Storage" >
+                <param name="android-package" value="cordova.plugins.Diagnostic_External_Storage"/>
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module name="Diagnostic_External_Storage" src="www/android/diagnostic.external_storage.js">
+            <merges target="cordova.plugins.diagnostic.external_storage" />
+        </js-module>
+
+        <source-file src="src/android/Diagnostic_External_Storage.java" target-dir="src/cordova/plugins" />
+        <!--END_MODULE EXTERNAL_STORAGE-->
     </platform>
 
     <platform name="windows">

@@ -89,15 +89,6 @@ var Diagnostic = (function(){
     Diagnostic.firstRequestedPermissions;
 
 
-
-    Diagnostic.NFCState = {
-        "UNKNOWN": "unknown",
-        "POWERED_OFF": "powered_off",
-        "POWERING_ON": "powering_on",
-        "POWERED_ON": "powered_on",
-        "POWERING_OFF": "powering_off"
-    };
-    
     Diagnostic.cpuArchitecture = {
         UNKNOWN: "unknown",
         ARMv6: "ARMv6",
@@ -422,16 +413,6 @@ var Diagnostic = (function(){
             []);
     };
 
-    /**
-     * Switches to the nfc settings page in the Settings app
-     */
-    Diagnostic.switchToNFCSettings = function() {
-        return cordova.exec(null,
-            null,
-            'Diagnostic',
-            'switchToNFCSettings',
-            []);
-    };
 
     /**
      * Switches to the Mobile Data page in the Settings app
@@ -887,7 +868,11 @@ var Diagnostic = (function(){
      * @param {Function} errorCallback - function to call on failure to request authorisation.
      */
     Diagnostic.requestExternalStorageAuthorization = function(successCallback, errorCallback){
-        Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_EXTERNAL_STORAGE);
+        if(cordova.plugins.diagnostic.external_storage){
+            cordova.plugins.diagnostic.external_storage.requestExternalStorageAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic External Storage module is not installed";
+        }
     };
 
     /**
@@ -898,7 +883,11 @@ var Diagnostic = (function(){
      * @param {Function} errorCallback - function to call on failure to request authorisation status.
      */
     Diagnostic.getExternalStorageAuthorizationStatus = function(successCallback, errorCallback){
-        Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.permission.READ_EXTERNAL_STORAGE);
+        if(cordova.plugins.diagnostic.external_storage){
+            cordova.plugins.diagnostic.external_storage.getExternalStorageAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic External Storage module is not installed";
+        }
     };
 
     /**
@@ -909,10 +898,11 @@ var Diagnostic = (function(){
      * @param {Function} errorCallback - function to call on failure to request authorisation status.
      */
     Diagnostic.isExternalStorageAuthorized = function(successCallback, errorCallback){
-        function onSuccess(status){
-            successCallback(status == Diagnostic.permissionStatus.GRANTED);
+        if(cordova.plugins.diagnostic.external_storage){
+            cordova.plugins.diagnostic.external_storage.isExternalStorageAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic External Storage module is not installed";
         }
-        Diagnostic.getExternalStorageAuthorizationStatus(onSuccess, errorCallback);
     };
 
     /**
@@ -928,11 +918,11 @@ var Diagnostic = (function(){
      * @param {Function} errorCallback - function to call on failure to request authorisation status.
      */
     Diagnostic.getExternalSdCardDetails = function(successCallback, errorCallback){
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getExternalSdCardDetails',
-            []);
+        if(cordova.plugins.diagnostic.external_storage){
+            cordova.plugins.diagnostic.external_storage.getExternalSdCardDetails.apply(this, arguments);
+        }else{
+            throw "Diagnostic External Storage module is not installed";
+        }
     };
 
 
@@ -1295,11 +1285,11 @@ var Diagnostic = (function(){
      *  This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isNFCPresent = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isNFCPresent',
-            []);
+        if(cordova.plugins.diagnostic.nfc){
+            cordova.plugins.diagnostic.nfc.isNFCPresent.apply(this, arguments);
+        }else{
+            throw "Diagnostic NFC module is not installed";
+        }
     };
 
     /**
@@ -1311,11 +1301,11 @@ var Diagnostic = (function(){
      *  This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isNFCEnabled = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isNFCEnabled',
-            []);
+        if(cordova.plugins.diagnostic.nfc){
+            cordova.plugins.diagnostic.nfc.isNFCEnabled.apply(this, arguments);
+        }else{
+            throw "Diagnostic NFC module is not installed";
+        }
     };
 
     /**
@@ -1328,11 +1318,11 @@ var Diagnostic = (function(){
      *  This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isNFCAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isNFCAvailable',
-            []);
+        if(cordova.plugins.diagnostic.nfc){
+            cordova.plugins.diagnostic.nfc.isNFCAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic NFC module is not installed";
+        }
     };
 
     /**
@@ -1343,11 +1333,24 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.NFCState`.
      */
     Diagnostic.registerNFCStateChangeHandler = function(successCallback) {
-        Diagnostic._onNFCStateChange = successCallback || function(){};
+        if(cordova.plugins.diagnostic.nfc){
+            cordova.plugins.diagnostic.nfc.registerNFCStateChangeHandler.apply(this, arguments);
+        }else{
+            throw "Diagnostic NFC module is not installed";
+        }
     };
 
 
-
+    /**
+     * Switches to the nfc settings page in the Settings app
+     */
+    Diagnostic.switchToNFCSettings = function() {
+        if(cordova.plugins.diagnostic.nfc){
+            cordova.plugins.diagnostic.nfc.switchToNFCSettings.apply(this, arguments);
+        }else{
+            throw "Diagnostic NFC module is not installed";
+        }
+    };
 
 
     /**************
