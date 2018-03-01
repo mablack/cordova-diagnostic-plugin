@@ -22,13 +22,9 @@ package cordova.plugins;
  * Imports
  */
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.provider.Settings;
 import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
 
@@ -77,8 +73,6 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
      * Current Cordova callback context (on this thread)
      */
     protected CallbackContext currentContext;
-
-    public static final Integer GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST = 1000;
 
     protected static String externalStoragePermission = "READ_EXTERNAL_STORAGE";
 
@@ -146,7 +140,7 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
         if (diagnostic.hasPermission(permission)) {
             _getExternalSdCardDetails();
         } else {
-            diagnostic.requestRuntimePermission(permission, Diagnostic_External_Storage.GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
+            diagnostic.requestRuntimePermission(permission, Diagnostic.GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
         }
     }
 

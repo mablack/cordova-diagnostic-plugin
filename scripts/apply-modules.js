@@ -8,7 +8,20 @@ const PLUGIN_NAME = "Diagnostic plugin";
 const PLUGIN_ID = "cordova.plugins.diagnostic";
 const PREFERENCE_NAME = PLUGIN_ID + ".modules";
 
-const MODULES = ["LOCATION"];
+const MODULES = [
+    "LOCATION",
+    "BLUETOOTH",
+    "WIFI",
+    "CAMERA",
+    "NOTIFICATIONS",
+    "MICROPHONE",
+    "CONTACTS",
+    "CALENDAR",
+    "REMINDERS",
+    "MOTION",
+    "NFC",
+    "EXTERNAL_STORAGE"
+];
 
 const COMMENT_START = "<!--";
 const COMMENT_END = "-->";

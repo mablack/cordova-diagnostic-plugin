@@ -225,9 +225,9 @@ The preference takes the form:
 
     <preference name="cordova.plugins.diagnostic.modules" value="[list of modules]" />
     
-For example:
+For example to explicitly include all optional modules:
 
-    <preference name="cordova.plugins.diagnostic.modules" value="LOCATION BLUETOOTH WIFI" />
+    <preference name="cordova.plugins.diagnostic.modules" value="LOCATION BLUETOOTH WIFI CAMERA NOTIFICATIONS MICROPHONE CONTACTS CALENDAR REMINDERS MOTION NFC EXTERNAL_STORAGE" />
     
 To install only the core module and no optional modules, leave the preference value blank:
 
