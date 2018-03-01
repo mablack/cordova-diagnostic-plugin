@@ -3290,7 +3290,7 @@ Phonegap Build users who want to validate the plugin in that environment can try
 
 # Release notes
 
-See the [release notes wiki page](https://github.com/dpa99c/cordova-diagnostic-plugin/wiki/Release-notes)
+See the [CHANGELOG.md](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/CHANGELOG.md)
 
 # Credits
 
