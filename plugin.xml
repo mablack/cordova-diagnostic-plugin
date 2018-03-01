@@ -36,17 +36,6 @@
             <string>This app requires motion detection access to function properly.</string>
         </config-file>
 
-
-        <config-file target="*-Info.plist" parent="NSCalendarsUsageDescription">
-            <string>This app requires calendar access to function properly.</string>
-        </config-file>
-
-        <framework src="EventKit.framework" />
-        <config-file target="*-Info.plist" parent="NSRemindersUsageDescription">
-            <string>This app requires reminders access to function properly.</string>
-        </config-file>
-
-
         <!--BEGIN_MODULE LOCATION-->
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic_Location">
@@ -204,6 +193,50 @@
         <header-file src="src/ios/Diagnostic_Contacts.h" />
         <source-file src="src/ios/Diagnostic_Contacts.m" />
         <!--END_MODULE CONTACTS-->
+
+        <!--BEGIN_MODULE CALENDAR-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Calendar">
+                <param name="ios-package" value="Diagnostic_Calendar" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module src="www/ios/diagnostic.calendar.js" name="Diagnostic_Calendar">
+            <merges target="cordova.plugins.diagnostic.calendar" />
+        </js-module>
+
+        <framework src="EventKit.framework" />
+
+        <config-file target="*-Info.plist" parent="NSCalendarsUsageDescription">
+            <string>This app requires calendar access to function properly.</string>
+        </config-file>
+
+        <header-file src="src/ios/Diagnostic_Calendar.h" />
+        <source-file src="src/ios/Diagnostic_Calendar.m" />
+        <!--END_MODULE CALENDAR-->
+
+        <!--BEGIN_MODULE REMINDERS-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Reminders">
+                <param name="ios-package" value="Diagnostic_Reminders" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module src="www/ios/diagnostic.reminders.js" name="Diagnostic_Reminders">
+            <merges target="cordova.plugins.diagnostic.reminders" />
+        </js-module>
+
+        <framework src="EventKit.framework" />
+
+        <config-file target="*-Info.plist" parent="NSRemindersUsageDescription">
+            <string>This app requires reminders access to function properly.</string>
+        </config-file>
+        
+        <header-file src="src/ios/Diagnostic_Reminders.h" />
+        <source-file src="src/ios/Diagnostic_Reminders.m" />
+        <!--END_MODULE REMINDERS-->
     </platform>
 
     <platform name="android">
@@ -326,6 +359,12 @@
             <merges target="cordova.plugins.diagnostic.contacts" />
         </js-module>
         <!--END_MODULE CONTACTS-->
+
+        <!--BEGIN_MODULE CALENDAR-->
+        <js-module name="Diagnostic_Calendar" src="www/android/diagnostic.calendar.js">
+            <merges target="cordova.plugins.diagnostic.calendar" />
+        </js-module>
+        <!--END_MODULE CALENDAR-->
     </platform>
 
     <platform name="windows">

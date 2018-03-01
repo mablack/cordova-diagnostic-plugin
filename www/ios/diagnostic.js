@@ -710,11 +710,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCalendarAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isCalendarAuthorized',
-            []);
+        if(cordova.plugins.diagnostic.calendar){
+            cordova.plugins.diagnostic.calendar.isCalendarAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Calendar module is not installed";
+        }
     };
 
     /**
@@ -726,11 +726,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getCalendarAuthorizationStatus = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getCalendarAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.calendar){
+            cordova.plugins.diagnostic.calendar.getCalendarAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Calendar module is not installed";
+        }
     };
 
     /**
@@ -744,13 +744,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestCalendarAuthorization = function(successCallback, errorCallback) {
-        return cordova.exec(function(isGranted){
-                successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
-            },
-            errorCallback,
-            'Diagnostic',
-            'requestCalendarAuthorization',
-            []);
+        if(cordova.plugins.diagnostic.calendar){
+            cordova.plugins.diagnostic.calendar.requestCalendarAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Calendar module is not installed";
+        }
     };
 
     /*********************
@@ -766,11 +764,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isRemindersAuthorized = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isRemindersAuthorized',
-            []);
+        if(cordova.plugins.diagnostic.reminders){
+            cordova.plugins.diagnostic.reminders.isRemindersAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Reminders module is not installed";
+        }
     };
 
     /**
@@ -782,11 +780,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getRemindersAuthorizationStatus = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getRemindersAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.reminders){
+            cordova.plugins.diagnostic.reminders.getRemindersAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Reminders module is not installed";
+        }
     };
 
     /**
@@ -800,13 +798,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestRemindersAuthorization = function(successCallback, errorCallback) {
-        return cordova.exec(function(isGranted){
-                successCallback(isGranted ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED);
-            },
-            errorCallback,
-            'Diagnostic',
-            'requestRemindersAuthorization',
-            []);
+        if(cordova.plugins.diagnostic.reminders){
+            cordova.plugins.diagnostic.reminders.requestRemindersAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Reminders module is not installed";
+        }
     };
 
     /*********************

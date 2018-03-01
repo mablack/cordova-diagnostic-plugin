@@ -21,9 +21,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [cpuArchitecture constants](#cpuarchitecture-constants)
     - [enableDebug()](#enabledebug)
     - [getArchitecture()](#getarchitecture)
-    - [isCalendarAuthorized()](#iscalendarauthorized)
-    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
-    - [requestCalendarAuthorization()](#requestcalendarauthorization)
     - [switchToSettings()](#switchtosettings)
     - [isDataRoamingEnabled()](#isdataroamingenabled)
     - [getPermissionAuthorizationStatus()](#getpermissionauthorizationstatus)
@@ -46,9 +43,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [restart()](#restart)
     - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
     - [NFCState constants](#nfcstate-constants)
-    - [isRemindersAuthorized()](#isremindersauthorized)
-    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
-    - [requestRemindersAuthorization()](#requestremindersauthorization)
     - [isBackgroundRefreshAuthorized()](#isbackgroundrefreshauthorized)
     - [getBackgroundRefreshStatus()](#getbackgroundrefreshstatus)
     - [motionStatus constants](#motionstatus-constants)
@@ -111,6 +105,14 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isContactsAuthorized()](#iscontactsauthorized)
     - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
     - [requestContactsAuthorization()](#requestcontactsauthorization)
+  - [Calendar module](#calendar-module)
+    - [isCalendarAuthorized()](#iscalendarauthorized)
+    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
+    - [requestCalendarAuthorization()](#requestcalendarauthorization)
+  - [Reminders module](#reminders-module)
+    - [isRemindersAuthorized()](#isremindersauthorized)
+    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
+    - [requestRemindersAuthorization()](#requestremindersauthorization)
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
@@ -239,6 +241,8 @@ The following optional modules are currently supported by the plugin:
 - [NOTIFICATIONS](#notifications-module) - Android, iOS
 - [MICROPHONE](#microphone-module) - Android, iOS
 - [CONTACTS](#contacts-module) - Android, iOS
+- [CALENDAR](#calendar-module) - Android, iOS
+- [REMINDERS](#reminders-module) - iOS
     
 **IMPORTANT:** It's vital that the preference be added to your `config.xml` **before** you install the plugin, otherwise the preference will not be applied and all modules will be added.
 This is because, due to limitations of the Cordova CLI hooks, this plugin must use the `npm install` process to apply the module preferences and this runs before the Cordova CLI when installing a plugin.
@@ -247,7 +251,7 @@ If you change the modules specified in the preference, you'll need to uninstall 
 # Usage
 
 The core plugin module is exposed via the global `cordova.plugins.diagnostic` object and it aliases all functions and properties of the other optional modules.
-If a function is called on the core module for an optional module which is not installed, a JS error will be thrown.
+If a function is called on the core module for an optional module which is not installed, a JS error will be raised by the core module.
 
 ## Core module
 
@@ -387,104 +391,6 @@ The function is passed a single string parameter containing the error message.
     });
     
 
-
-### isCalendarAuthorized()
-
-Platforms: Android and iOS
-
-Checks if the application is authorized to use the calendar.
-
-Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
-
-Notes for iOS:
-- This relates to Calendar Events (not Calendar Reminders)
-
-    `cordova.plugins.diagnostic.isCalendarAuthorized(successCallback, errorCallback);`
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if calendar is authorized for use.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isCalendarAuthorized(function(authorized){
-        console.log("App is " + (authorized ? "authorized" : "denied") + " access to calendar");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### getCalendarAuthorizationStatus()
-
-Platforms: Android and iOS
-
-Returns the calendar authorization status for the application.
-
-Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
-
-Notes for iOS:
-- This relates to Calendar Events (not Calendar Reminders)
-
-    `cordova.plugins.diagnostic.getCalendarAuthorizationStatus(successCallback, errorCallback);`
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getCalendarAuthorizationStatus(function(status){
-       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
-           console.log("Calendar use is authorized");
-       }
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-
-### requestCalendarAuthorization()
-
-Platforms: Android and iOS
-
-Requests calendar authorization for the application.
-
-Notes for iOS:
-- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
-- When calling this function, the message contained in the `NSCalendarsUsageDescription` .plist key is displayed to the user;
-this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
-- This relates to Calendar Events (not Calendar Reminders)
-
-Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
-- This requests permission for `READ_CALENDAR` run-time permission
-- Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CALENDAR, WRITE_CALENDAR`
-
-    cordova.plugins.diagnostic.requestCalendarAuthorization(successCallback, errorCallback);
-
-#### Parameters
-- {Function} successCallback - The callback which will be called when operation is successful.
-The function is passed a single string parameter indicating whether access to calendar was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
-- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.requestCalendarAuthorization(function(status){
-       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
-           console.log("Calendar use is authorized");
-       }
-    }, function(error){
-        console.error(error);
-    });
-    
 ### switchToSettings()
 
 Platforms: Android and iOS
@@ -1147,82 +1053,6 @@ Defines constants for the various NFC power states.
         console.error("The following error occurred: "+error);
     });
     
-
-### isRemindersAuthorized()
-
-Platforms: iOS
-
-Checks if the application is authorized to use reminders.
-
-    cordova.plugins.diagnostic.isRemindersAuthorized(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if reminders access is authorized for use.
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-
-#### Example usage
-
-    cordova.plugins.diagnostic.isRemindersAuthorized(function(authorized){
-        console.log("App is " + (authorized ? "authorized" : "denied") + " access to reminders");
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### getRemindersAuthorizationStatus()
-
-Platforms: iOS
-
-Returns the reminders authorization status for the application.
-
-    cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);
-
-#### Parameters
-
-- {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
-- {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.getRemindersAuthorizationStatus(function(status){
-        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
-            console.log("Reminders authorization allowed");
-        }
-    }, function(error){
-        console.error("The following error occurred: "+error);
-    });
-
-### requestRemindersAuthorization()
-
-Platforms: iOS
-
-Requests reminders authorization for the application.
-Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
-When calling this function, the message contained in the `NSRemindersUsageDescription` .plist key is displayed to the user;
-this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
-
-    cordova.plugins.diagnostic.requestRemindersAuthorization(successCallback, errorCallback);
-
-#### Parameters
-- {Function} successCallback - The callback which will be called when operation is successful.
-The function is passed a single string parameter indicating whether access to calendar was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
-- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
-
-#### Example usage
-
-    cordova.plugins.diagnostic.requestRemindersAuthorization(function(status){
-        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
-            console.log("Reminders authorization allowed");
-        }
-    }, function(error){
-        console.error(error);
-    });
 
 ### isBackgroundRefreshAuthorized()
 
@@ -3022,6 +2852,191 @@ The function is passed a single string parameter indicating whether access to co
         console.error(error);
     });
     
+
+## Calendar module
+
+Purpose: Calendar events permission.
+Platforms: Android, iOS
+Configuration name: `CALENDAR`
+
+### isCalendarAuthorized()
+
+Platforms: Android and iOS
+
+Checks if the application is authorized to use the calendar.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+
+Notes for iOS:
+- This relates to Calendar Events (not Calendar Reminders)
+
+    `cordova.plugins.diagnostic.isCalendarAuthorized(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if calendar is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isCalendarAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to calendar");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getCalendarAuthorizationStatus()
+
+Platforms: Android and iOS
+
+Returns the calendar authorization status for the application.
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+
+Notes for iOS:
+- This relates to Calendar Events (not Calendar Reminders)
+
+    `cordova.plugins.diagnostic.getCalendarAuthorizationStatus(successCallback, errorCallback);`
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getCalendarAuthorizationStatus(function(status){
+       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+           console.log("Calendar use is authorized");
+       }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### requestCalendarAuthorization()
+
+Platforms: Android and iOS
+
+Requests calendar authorization for the application.
+
+Notes for iOS:
+- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- When calling this function, the message contained in the `NSCalendarsUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
+- This relates to Calendar Events (not Calendar Reminders)
+
+Notes for Android:
+- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This requests permission for `READ_CALENDAR` run-time permission
+- Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CALENDAR, WRITE_CALENDAR`
+
+    cordova.plugins.diagnostic.requestCalendarAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+The function is passed a single string parameter indicating whether access to calendar was granted or denied:
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestCalendarAuthorization(function(status){
+       if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+           console.log("Calendar use is authorized");
+       }
+    }, function(error){
+        console.error(error);
+    });
+    
+
+## Reminders module
+
+Purpose: Calendar reminders permission.
+Platforms: iOS
+Configuration name: `REMINDERS`
+
+### isRemindersAuthorized()
+
+Platforms: iOS
+
+Checks if the application is authorized to use reminders.
+
+    cordova.plugins.diagnostic.isRemindersAuthorized(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if reminders access is authorized for use.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isRemindersAuthorized(function(authorized){
+        console.log("App is " + (authorized ? "authorized" : "denied") + " access to reminders");
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### getRemindersAuthorizationStatus()
+
+Platforms: iOS
+
+Returns the reminders authorization status for the application.
+
+    cordova.plugins.diagnostic.getRemindersAuthorizationStatus(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single string parameter which indicates the authorization status as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getRemindersAuthorizationStatus(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Reminders authorization allowed");
+        }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
+
+### requestRemindersAuthorization()
+
+Platforms: iOS
+
+Requests reminders authorization for the application.
+Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+When calling this function, the message contained in the `NSRemindersUsageDescription` .plist key is displayed to the user;
+this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
+
+    cordova.plugins.diagnostic.requestRemindersAuthorization(successCallback, errorCallback);
+
+#### Parameters
+- {Function} successCallback - The callback which will be called when operation is successful.
+The function is passed a single string parameter indicating whether access to calendar was granted or denied:
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+- {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestRemindersAuthorization(function(status){
+        if(status === cordova.plugins.diagnostic.permissionStatus.GRANTED){
+            console.log("Reminders authorization allowed");
+        }
+    }, function(error){
+        console.error(error);
+    });
 
 # Platform Notes
 

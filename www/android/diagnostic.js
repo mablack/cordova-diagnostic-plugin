@@ -1242,10 +1242,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isCalendarAuthorized = function(successCallback, errorCallback) {
-        function onSuccess(status){
-            successCallback(status == Diagnostic.permissionStatus.GRANTED);
+        if(cordova.plugins.diagnostic.calendar){
+            cordova.plugins.diagnostic.calendar.isCalendarAuthorized.apply(this, arguments);
+        }else{
+            throw "Diagnostic Calendar module is not installed";
         }
-        Diagnostic.getCalendarAuthorizationStatus(onSuccess, errorCallback);
     };
 
     /**
@@ -1258,7 +1259,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getCalendarAuthorizationStatus = function(successCallback, errorCallback) {
-        Diagnostic.getPermissionAuthorizationStatus(successCallback, errorCallback, Diagnostic.permission.READ_CALENDAR);
+        if(cordova.plugins.diagnostic.calendar){
+            cordova.plugins.diagnostic.calendar.getCalendarAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Calendar module is not installed";
+        }
     };
 
     /**
@@ -1270,7 +1275,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestCalendarAuthorization = function(successCallback, errorCallback) {
-        Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.READ_CALENDAR);
+        if(cordova.plugins.diagnostic.calendar){
+            cordova.plugins.diagnostic.calendar.requestCalendarAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Calendar module is not installed";
+        }
     };
 
     /*************

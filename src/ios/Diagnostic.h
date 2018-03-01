@@ -29,7 +29,6 @@ extern NSString*const AUTHORIZATION_GRANTED;
 
 @property (strong, nonatomic) CMMotionActivityManager* motionManager;
 @property (strong, nonatomic) NSOperationQueue* motionActivityQueue;
-@property (nonatomic) EKEventStore *eventStore;
 
 + (id) getInstance;
 - (void) sendPluginResult: (CDVPluginResult*)result :(CDVInvokedUrlCommand*)command;
@@ -54,12 +53,6 @@ extern NSString*const AUTHORIZATION_GRANTED;
 
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 
-- (void) getCalendarAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-- (void) isCalendarAuthorized: (CDVInvokedUrlCommand*)command;
-- (void) requestCalendarAuthorization: (CDVInvokedUrlCommand*)command;
-- (void) getRemindersAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-- (void) isRemindersAuthorized: (CDVInvokedUrlCommand*)command;
-- (void) requestRemindersAuthorization: (CDVInvokedUrlCommand*)command;
 
 - (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command;
 
