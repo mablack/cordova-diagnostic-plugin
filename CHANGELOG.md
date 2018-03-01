@@ -1,8 +1,10 @@
 # CHANGELOG
 
 **v4.0.0**
-* TODO
-* This version reworks the plugin code (both native and JS) into separate functional modules.
+* Major rework of plugin code (both native and JS) into separate modules.
+    * Adds mechanism for including optional modules via config preference.
+    * Resolves [#181](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/181).
+* Removed deprecated iOS method `requestAndCheckMotionAuthorization()`
 
 **v3.9.2**
 * Run iOS plugin initialisation on-load (rather than on-demand) to avoid race conditions when querying async native managers such as Bluetooth. Fixes [#271](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/271).
