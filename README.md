@@ -262,7 +262,9 @@ If a function is called on the core module for an optional module which is not i
 ## Core module
 
 Purpose: Generic and miscellaneous functionality.
+
 Platforms: Android, iOS and Windows 10 UWP
+
 Configuration name: N/A - always installed, regardless of whether the module preference key is present in `config.xml`.
 
 ### switchToSettings()
@@ -300,7 +302,6 @@ Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile ne
 
     cordova.plugins.diagnostic.switchToWirelessSettings();
         
-        
 ### switchToMobileDataSettings()
 
 Platforms: Android and Windows 10 UWP
@@ -308,6 +309,7 @@ Platforms: Android and Windows 10 UWP
 Displays mobile settings to allow user to enable mobile data.
 
     cordova.plugins.diagnostic.switchToMobileDataSettings();
+    
     
 ### permissionStatus constants
 
@@ -818,7 +820,9 @@ Enables debug mode, which logs native debug messages to the native and JS consol
 ## Location module
 
 Purpose: Location/GPS functionality
+
 Platforms: Android, iOS and Windows 10 UWP
+
 Configuration name: `LOCATION`
 
 ### locationMode constants
@@ -1277,7 +1281,9 @@ Note: On Android, you may want to consider using the [Request Location Accuracy 
 ## Bluetooth module
 
 Purpose: Bluetooth functionality to get/set Bluetooth Radio state.
+
 Platforms: Android, iOS and Windows 10 UWP
+
 Configuration name: `BLUETOOTH`
 
 ### bluetoothState constants
@@ -1566,7 +1572,9 @@ Displays Bluetooth settings to allow user to enable Bluetooth.
 ## WiFi module
 
 Purpose: WiFi functionality to get/set Wifi state
+
 Platforms: Android, iOS and Windows 10 UWP
+
 Configuration name: `WIFI`
 
 ### isWifiAvailable()
@@ -1667,7 +1675,9 @@ Displays WiFi settings to allow user to enable WiFi.
 ## Camera module
 
 Purpose: Camera functionality to capture images / record video
+
 Platforms: Android, iOS and Windows 10 UWP
+
 Configuration name: `CAMERA`
 
 ### isCameraPresent()
@@ -2021,7 +2031,9 @@ The function is passed a single string parameter containing the error message.
 ## Notifications module
 
 Purpose: Remote notifications functionality
+
 Platforms: Android, iOS
+
 Configuration name: `NOTIFICATIONS`
 
 ### remoteNotificationType constants
@@ -2212,7 +2224,9 @@ Works on iOS 8+ (iOS 8 and below will invoke the error callback).
 ## Microphone module
 
 Purpose: Microphone permission to record audio.
+
 Platforms: Android, iOS
+
 Configuration name: `MICROPHONE`
 
 ### isMicrophoneAuthorized()
@@ -2313,7 +2327,9 @@ The function is passed a single string parameter indicating whether access to th
 ## Contacts module
 
 Purpose: Contacts permission to read/write address book.
+
 Platforms: Android, iOS
+
 Configuration name: `CONTACTS`
 
 ### isContactsAuthorized()
@@ -2409,7 +2425,9 @@ The function is passed a single string parameter indicating whether access to co
 ## Calendar module
 
 Purpose: Calendar events permission.
+
 Platforms: Android, iOS
+
 Configuration name: `CALENDAR`
 
 ### isCalendarAuthorized()
@@ -2512,7 +2530,9 @@ The function is passed a single string parameter indicating whether access to ca
 ## Reminders module
 
 Purpose: Calendar reminders permission.
+
 Platforms: iOS
+
 Configuration name: `REMINDERS`
 
 ### isRemindersAuthorized()
@@ -2592,10 +2612,13 @@ The function is passed a single string parameter indicating whether access to ca
     });
     
     
+
 ## Motion module
 
 Purpose: Motion/fitness tracking permission.
+
 Platforms: iOS
+
 Configuration name: `MOTION`
 
 ### motionStatus constants
@@ -2760,7 +2783,9 @@ The function is passed a single string parameter indicating the result:
 ## NFC module
 
 Purpose: Near Field Communication functionality.
+
 Platforms: Android
+
 Configuration name: `NFC`
 
 ### NFCState constants
@@ -2918,7 +2943,9 @@ On some versions of Android, this may open the same page as `switchToWirelessSet
 ## External storage module
 
 Purpose: External storage functionality.
+
 Platforms: Android
+
 Configuration name: `EXTERNAL_STORAGE`
 
 ### isExternalStorageAuthorized()
