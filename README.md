@@ -216,16 +216,16 @@ Add the following xml to your config.xml to use the latest version of this plugi
 Since `cordova.plugins.diagnostic@4` the plugin is split into optional functional modules. 
 The reason for this is so you can choose to install only those parts of the plugin you'll use and therefore not install redundant code/components/frameworks.
 
-By default, all the modules will be added your project when you install the plugin.
+By default, all the modules will be added to your project when you install the plugin.
 
-You can specify which modules are installed by add a `<preference>` to your `config.xml` which specifies the modules you wish add as a space-separated list.
+You can specify which modules are installed by adding a `<preference>` to your `config.xml` which specifies the modules you wish to add as a space-separated list.
 Module names should be capitalised.
 
 The preference takes the form:
 
     <preference name="cordova.plugins.diagnostic.modules" value="[list of modules]" />
     
-For example to explicitly include all optional modules:
+For example, to explicitly include all optional modules:
 
     <preference name="cordova.plugins.diagnostic.modules" value="LOCATION BLUETOOTH WIFI CAMERA NOTIFICATIONS MICROPHONE CONTACTS CALENDAR REMINDERS MOTION NFC EXTERNAL_STORAGE" />
     
