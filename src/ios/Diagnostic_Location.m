@@ -15,17 +15,6 @@ Diagnostic* diagnostic;
 // Internal constants
 static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
 
-- (void)pluginInitialize {
-    
-    [super pluginInitialize];
-
-    diagnostic = [Diagnostic getInstance];
-    
-    self.locationRequestCallbackId = nil;
-    self.currentLocationAuthorizationStatus = nil;
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-}
 
 /********************************/
 #pragma mark - Plugin API
@@ -113,6 +102,18 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
 /********************************/
 #pragma mark - Internals
 /********************************/
+
+- (void)pluginInitialize {
+
+    [super pluginInitialize];
+
+    diagnostic = [Diagnostic getInstance];
+
+    self.locationRequestCallbackId = nil;
+    self.currentLocationAuthorizationStatus = nil;
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+}
 
 - (NSString*) getLocationAuthorizationStatusAsString: (CLAuthorizationStatus)authStatus
 {

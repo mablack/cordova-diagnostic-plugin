@@ -21,6 +21,12 @@ var Diagnostic_Notifications = (function(){
      * Public properties
      *
      ********************/
+
+    Diagnostic.remoteNotificationType = Diagnostic_Notifications.remoteNotificationType = {
+        ALERT: "alert",
+        SOUND: "sound",
+        BADGE: "badge"
+    };
     
     /********************
      *

@@ -28,20 +28,6 @@ var Diagnostic = (function(){
         "GRANTED_WHEN_IN_USE": "authorized_when_in_use" //  User granted access use location permission only when app is in use
     };
 
-    /**
-     * Status of motion+tracking permission
-     * @type {object}
-     */
-    Diagnostic.motionStatus = {
-        "UNKNOWN": "unknown", // Status is not known
-        "NOT_REQUESTED": "not_requested", // App has not yet requested this permission
-        "DENIED": "denied", // User denied access to this permission
-        "RESTRICTED": "restricted", // Permission is unavailable and user cannot enable it.  For example, when parental controls are in effect for the current user.
-        "GRANTED": "authorized", //  User granted access to this permission
-        "NOT_AVAILABLE": "not_available", // Motion tracking not available on device
-        "NOT_DETERMINED": "not_determined" // Motion authorization request status outcome cannot be determined on device
-    };
-
     Diagnostic.cpuArchitecture = {
         UNKNOWN: "unknown",
         ARMv6: "ARMv6",
@@ -51,18 +37,11 @@ var Diagnostic = (function(){
         X86_64: "X86_64"
     };
 
-    Diagnostic.remoteNotificationType = {
-        ALERT: "alert",
-        SOUND: "sound",
-        BADGE: "badge"
-    };
-
     /*****************************
      *
      * Protected member functions
      *
      ****************************/
-
 
     Diagnostic._ensureBoolean = function (callback){
         return function(result){
@@ -77,7 +56,7 @@ var Diagnostic = (function(){
      **********************/
 
     /***********
-     * General
+     * Core
      ***********/
 
     /**
@@ -108,6 +87,52 @@ var Diagnostic = (function(){
             'Diagnostic',
             'switchToSettings',
             []);
+    };
+
+    /**
+     * Returns CPU architecture of the current device.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.cpuArchitecture`.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getArchitecture = function(successCallback, errorCallback) {
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getArchitecture',
+            []);
+    };
+
+    /**
+     * Returns the background refresh authorization status for the application.
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getBackgroundRefreshStatus = function(successCallback, errorCallback) {
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getBackgroundRefreshStatus',
+            []);
+    };
+
+    /**
+     * Checks if the application is authorized for background refresh.
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if background refresh is authorized for use.
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isBackgroundRefreshAuthorized = function(successCallback, errorCallback) {
+        Diagnostic.getBackgroundRefreshStatus(function(status){
+            successCallback(status === Diagnostic.permissionStatus.GRANTED);
+        }, errorCallback);
     };
 
     /************
@@ -805,39 +830,6 @@ var Diagnostic = (function(){
         }
     };
 
-    /*********************
-     * Background refresh
-     *********************/
-
-    /**
-     * Returns the background refresh authorization status for the application.
-     *
-     * @param {Function} successCallback - The callback which will be called when operation is successful.
-     * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
-     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
-     * This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.getBackgroundRefreshStatus = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getBackgroundRefreshStatus',
-            []);
-    };
-
-    /**
-     * Checks if the application is authorized for background refresh.
-     *
-     * @param {Function} successCallback - The callback which will be called when operation is successful.
-     * This callback function is passed a single boolean parameter which is TRUE if background refresh is authorized for use.
-     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
-     * This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.isBackgroundRefreshAuthorized = function(successCallback, errorCallback) {
-        Diagnostic.getBackgroundRefreshStatus(function(status){
-            successCallback(status === Diagnostic.permissionStatus.GRANTED);
-        }, errorCallback);
-    };
 
     /*************
      * Motion
@@ -853,11 +845,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isMotionAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isMotionAvailable',
-            []);
+        if(cordova.plugins.diagnostic.motion){
+            cordova.plugins.diagnostic.motion.isMotionAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Motion module is not installed";
+        }
     };
 
     /**
@@ -872,11 +864,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.isMotionRequestOutcomeAvailable = function(successCallback, errorCallback) {
-        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
-            errorCallback,
-            'Diagnostic',
-            'isMotionRequestOutcomeAvailable',
-            []);
+        if(cordova.plugins.diagnostic.motion){
+            cordova.plugins.diagnostic.motion.isMotionRequestOutcomeAvailable.apply(this, arguments);
+        }else{
+            throw "Diagnostic Motion module is not installed";
+        }
     };
 
     /**
@@ -905,18 +897,11 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.requestMotionAuthorization = function(successCallback, errorCallback) {
-        return cordova.exec(
-            successCallback,
-            errorCallback,
-            'Diagnostic',
-            'requestMotionAuthorization',
-            []);
-    };
-
-    //TODO Remove in next major version
-    Diagnostic.requestAndCheckMotionAuthorization = function(successCallback, errorCallback) {
-        console.warn("requestAndCheckMotionAuthorization() is deprecated and will be removed in a future release. Please use requestMotionAuthorization()");
-        Diagnostic.requestMotionAuthorization(successCallback, errorCallback);
+        if(cordova.plugins.diagnostic.motion){
+            cordova.plugins.diagnostic.motion.requestMotionAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Motion module is not installed";
+        }
     };
     
    /**
@@ -940,30 +925,12 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter containing the error message.
      */
     Diagnostic.getMotionAuthorizationStatus = function(successCallback, errorCallback) {
-        return cordova.exec(
-            successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getMotionAuthorizationStatus',
-            []);
+        if(cordova.plugins.diagnostic.motion){
+            cordova.plugins.diagnostic.motion.getMotionAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Motion module is not installed";
+        }
     };
-
-    /**
-     * Returns CPU architecture of the current device.
-     *
-     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
-     * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.cpuArchitecture`.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
-     */
-    Diagnostic.getArchitecture = function(successCallback, errorCallback) {
-        return cordova.exec(successCallback,
-            errorCallback,
-            'Diagnostic',
-            'getArchitecture',
-            []);
-    };
-
 
     return Diagnostic;
 })();

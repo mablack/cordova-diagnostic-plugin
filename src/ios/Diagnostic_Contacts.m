@@ -8,14 +8,6 @@
 
 #import "Diagnostic_Contacts.h"
 
-@interface Diagnostic_Contacts()
-
-#if defined(__IPHONE_9_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
-@property (nonatomic, retain) CNContactStore* contactStore;
-#endif
-
-@end
-
 @implementation Diagnostic_Contacts
 
 Diagnostic* diagnostic;

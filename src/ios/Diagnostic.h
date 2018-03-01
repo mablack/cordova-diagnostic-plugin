@@ -10,10 +10,6 @@
 #import <Cordova/CDVPlugin.h>
 #import <WebKit/WebKit.h>
 
-#import <CoreMotion/CoreMotion.h>
-#import <EventKit/EventKit.h>
-#import <AddressBook/AddressBook.h>
-
 #import <mach/machine.h>
 #import <sys/types.h>
 #import <sys/sysctl.h>
@@ -27,9 +23,17 @@ extern NSString*const AUTHORIZATION_GRANTED;
 
 @interface Diagnostic : CDVPlugin
 
-@property (strong, nonatomic) CMMotionActivityManager* motionManager;
-@property (strong, nonatomic) NSOperationQueue* motionActivityQueue;
+@property (nonatomic) float osVersion;
+@property (nonatomic) BOOL debugEnabled;
+@property (nonatomic, retain) NSUserDefaults* settings;
 
+// Plugin API
+- (void) enableDebug: (CDVInvokedUrlCommand*)command;
+- (void) switchToSettings: (CDVInvokedUrlCommand*)command;
+- (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command;
+- (void) getArchitecture: (CDVInvokedUrlCommand*)command;
+
+// Utilities
 + (id) getInstance;
 - (void) sendPluginResult: (CDVPluginResult*)result :(CDVInvokedUrlCommand*)command;
 - (void) sendPluginResultBool: (BOOL)result :(CDVInvokedUrlCommand*)command;
@@ -42,25 +46,10 @@ extern NSString*const AUTHORIZATION_GRANTED;
 - (NSArray*) jsonStringToArray:(NSString*)jsonStr;
 - (NSDictionary*) jsonStringToDictionary:(NSString*)jsonStr;
 - (bool)isNull: (NSString*)str;
-
 - (void)logDebug: (NSString*)msg;
 - (void)logError: (NSString*)msg;
 - (NSString*)escapeDoubleQuotes: (NSString*)str;
 - (void) setSetting: (NSString*)key forValue:(id)value;
 - (id) getSetting: (NSString*) key;
-
-- (void) enableDebug: (CDVInvokedUrlCommand*)command;
-
-- (void) switchToSettings: (CDVInvokedUrlCommand*)command;
-
-
-- (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command;
-
-- (void) isMotionAvailable: (CDVInvokedUrlCommand*)command;
-- (void) isMotionRequestOutcomeAvailable: (CDVInvokedUrlCommand*)command;
-- (void) getMotionAuthorizationStatus: (CDVInvokedUrlCommand*)command;
-- (void) requestMotionAuthorization: (CDVInvokedUrlCommand*)command;
-
-- (void) getArchitecture: (CDVInvokedUrlCommand*)command;
 
 @end

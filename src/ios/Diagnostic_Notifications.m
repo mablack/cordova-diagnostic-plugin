@@ -8,7 +8,6 @@
 
 #import "Diagnostic_Notifications.h"
 
-
 @implementation Diagnostic_Notifications
 
 Diagnostic* diagnostic;

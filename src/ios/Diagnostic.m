@@ -8,14 +8,6 @@
 
 #import "Diagnostic.h"
 
-@interface Diagnostic()
-
-@property (nonatomic, retain) CMPedometer* cmPedometer;
-@property (nonatomic, retain) NSUserDefaults* settings;
-
-@end
-
-
 @implementation Diagnostic
 
 // Public constants
@@ -36,9 +28,6 @@ static NSString*const CPU_ARCH_X86_64 = @"X86_64";
 
 static Diagnostic* diagnostic = nil;
 
-BOOL debugEnabled = false;
-float osVersion;
-
 /********************************/
 #pragma mark - Public static functions
 /********************************/
@@ -52,7 +41,7 @@ float osVersion;
 /********************************/
 
 -(void)enableDebug:(CDVInvokedUrlCommand*)command{
-    debugEnabled = true;
+    self.debugEnabled = true;
     [self logDebug:@"Debug enabled"];
 }
 
@@ -115,99 +104,7 @@ float osVersion;
         }
     }];
 }
-#pragma mark - Motion methods
 
-- (void) isMotionAvailable:(CDVInvokedUrlCommand *)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            
-            [self sendPluginResultBool:[self isMotionAvailable] :command];
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception :command];
-        }
-    }];
-}
-
-- (void) isMotionRequestOutcomeAvailable:(CDVInvokedUrlCommand *)command
-{
-    [self.commandDelegate runInBackground:^{
-        @try {
-            
-            [self sendPluginResultBool:[self isMotionRequestOutcomeAvailable] :command];
-        }
-        @catch (NSException *exception) {
-            [self handlePluginException:exception :command];
-        }
-    }];
-}
-
-- (void) getMotionAuthorizationStatus: (CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        if([self getSetting:@"motion_permission_requested"] == nil){
-            // Permission not yet requested
-            [self sendPluginResultString:@"not_requested":command];
-        }else{
-            // Permission has been requested so determine the outcome
-            [self _requestMotionAuthorization:command];
-        }
-    }];
-}
-
-- (void) requestMotionAuthorization: (CDVInvokedUrlCommand*)command{
-    [self.commandDelegate runInBackground:^{
-        if([self getSetting:@"motion_permission_requested"] != nil){
-            [self sendPluginError:@"requestMotionAuthorization() has already been called and can only be called once after app installation":command];
-        }else{
-            [self _requestMotionAuthorization:command];
-        }
-    }];
-}
-
-- (void) _requestMotionAuthorization: (CDVInvokedUrlCommand*)command
-{
-    @try {
-        if([self isMotionAvailable]){
-            @try {
-                [self.cmPedometer queryPedometerDataFromDate:[NSDate date]
-                                                      toDate:[NSDate date]
-                                                 withHandler:^(CMPedometerData* data, NSError *error) {
-                                                     @try {
-                                                         [self setSetting:@"motion_permission_requested" forValue:(id)kCFBooleanTrue];
-                                                         NSString* status = UNKNOWN;
-                                                         if (error != nil) {
-                                                             if (error.code == CMErrorMotionActivityNotAuthorized) {
-                                                                 status = AUTHORIZATION_DENIED;
-                                                             }else if (error.code == CMErrorMotionActivityNotEntitled) {
-                                                                 status = @"restricted";
-                                                             }else if (error.code == CMErrorMotionActivityNotAvailable) {
-                                                                 // Motion request outcome cannot be determined on this device
-                                                                 status = AUTHORIZATION_NOT_DETERMINED;
-                                                             }
-                                                         }
-                                                         else{
-                                                             status = AUTHORIZATION_GRANTED;
-                                                         }
-                                                         
-                                                         [self logDebug:[NSString stringWithFormat:@"Motion tracking authorization status is %@", status]];
-                                                         [self sendPluginResultString:status:command];
-                                                     }@catch (NSException *exception) {
-                                                         [self handlePluginException:exception :command];
-                                                     }
-                                                 }];
-            }@catch (NSException *exception) {
-                [self handlePluginException:exception :command];
-            }
-        }else{
-            // Activity tracking not available on this device
-            [self sendPluginResultString:@"not_available":command];
-        }
-    }@catch (NSException *exception) {
-        [self handlePluginException:exception :command];
-    }
-}
 
 /********************************/
 #pragma mark - Internal functions
@@ -219,12 +116,8 @@ float osVersion;
 
     diagnostic = self;
 
-    osVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
-
-    self.motionManager = [[CMMotionActivityManager alloc] init];
-    self.motionActivityQueue = [[NSOperationQueue alloc] init];
-    self.cmPedometer = [[CMPedometer alloc] init];
-    self.settings = [NSUserDefaults standardUserDefaults];
+    self.debugEnabled = false;
+    self.osVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
 }
 
 // https://stackoverflow.com/a/38441011/777265
@@ -269,18 +162,6 @@ float osVersion;
         }
     }];
 }
-
-
-- (BOOL) isMotionAvailable
-{
-    return [CMMotionActivityManager isActivityAvailable];
-}
-
-- (BOOL) isMotionRequestOutcomeAvailable
-{
-    return [CMPedometer respondsToSelector:@selector(isPedometerEventTrackingAvailable)] && [CMPedometer isPedometerEventTrackingAvailable];
-}
-
 
 
 /********************************/
@@ -371,7 +252,7 @@ float osVersion;
 
 - (void)logDebug: (NSString*)msg
 {
-    if(debugEnabled){
+    if(self.debugEnabled){
         NSLog(@"%@: %@", LOG_TAG, msg);
         NSString* jsString = [NSString stringWithFormat:@"console.log(\"%@: %@\")", LOG_TAG, [self escapeDoubleQuotes:msg]];
         [self executeGlobalJavascript:jsString];
@@ -381,7 +262,7 @@ float osVersion;
 - (void)logError: (NSString*)msg
 {
     NSLog(@"%@ ERROR: %@", LOG_TAG, msg);
-    if(debugEnabled){
+    if(self.debugEnabled){
         NSString* jsString = [NSString stringWithFormat:@"console.error(\"%@: %@\")", LOG_TAG, [self escapeDoubleQuotes:msg]];
         [self executeGlobalJavascript:jsString];
     }

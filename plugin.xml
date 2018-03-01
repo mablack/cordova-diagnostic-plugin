@@ -30,12 +30,6 @@
         <header-file src="src/ios/Diagnostic.h" />
         <source-file src="src/ios/Diagnostic.m" />
 
-
-        <framework src="CoreMotion.framework" />
-        <config-file target="*-Info.plist" parent="NSMotionUsageDescription">
-            <string>This app requires motion detection access to function properly.</string>
-        </config-file>
-
         <!--BEGIN_MODULE LOCATION-->
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic_Location">
@@ -237,6 +231,28 @@
         <header-file src="src/ios/Diagnostic_Reminders.h" />
         <source-file src="src/ios/Diagnostic_Reminders.m" />
         <!--END_MODULE REMINDERS-->
+
+        <!--BEGIN_MODULE MOTION-->
+        <config-file target="config.xml" parent="/*">
+            <feature name="Diagnostic_Motion">
+                <param name="ios-package" value="Diagnostic_Motion" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <js-module src="www/ios/diagnostic.motion.js" name="Diagnostic_Motion">
+            <merges target="cordova.plugins.diagnostic.motion" />
+        </js-module>
+
+        <framework src="CoreMotion.framework" />
+
+        <config-file target="*-Info.plist" parent="NSMotionUsageDescription">
+            <string>This app requires motion detection access to function properly.</string>
+        </config-file>
+
+        <header-file src="src/ios/Diagnostic_Motion.h" />
+        <source-file src="src/ios/Diagnostic_Motion.m" />
+        <!--END_MODULE MOTION-->
     </platform>
 
     <platform name="android">
