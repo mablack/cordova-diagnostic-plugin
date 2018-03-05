@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**v4.0.1**
+* Register explicit broadcast receivers for location/Bluetooth/NFC state change listeners at run-time, due to [removal of support for implicit broadcast receivers in Android 8.0 (API 26)](https://developer.android.com/about/versions/oreo/background.html#broadcasts).
+Fixes [#279](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/279).
+
 **v4.0.0**
 * Major rework of plugin code (both native and JS) into separate modules.
     * Adds mechanism for including optional modules via config preference.
