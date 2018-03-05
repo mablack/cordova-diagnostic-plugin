@@ -25,6 +25,7 @@ package cordova.plugins;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -110,10 +111,22 @@ public class Diagnostic_NFC extends CordovaPlugin{
         instance = this;
         diagnostic = Diagnostic.getInstance();
 
-        nfcManager = (NfcManager) this.cordova.getActivity().getApplicationContext().getSystemService(Context.NFC_SERVICE);
+        diagnostic.applicationContext.registerReceiver(NFCStateChangedReceiver, new IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED));
+        nfcManager = (NfcManager) diagnostic.applicationContext.getSystemService(Context.NFC_SERVICE);
         currentNFCState = isNFCAvailable() ? NFC_STATE_ON : NFC_STATE_OFF;
 
         super.initialize(cordova, webView);
+    }
+
+    /**
+     * Called on destroying activity
+     */
+    public void onDestroy() {
+        try {
+            diagnostic.applicationContext.unregisterReceiver(NFCStateChangedReceiver);
+        }catch(Exception e){
+            diagnostic.logWarning("Unable to unregister NFC state change receiver: " + e.getMessage());
+        }
     }
 
 
@@ -190,49 +203,55 @@ public class Diagnostic_NFC extends CordovaPlugin{
         return result;
     }
 
-    public void notifyNFCStateChange(String state){
+    public void notifyNFCStateChange(int stateValue){
+        String newState = getNFCState(stateValue);
         try {
-            if(state != currentNFCState){
-                diagnostic.logDebug("NFC state changed to: " + state);
-                diagnostic.executePluginJavascript("_onNFCStateChange(\"" + state +"\");");
-                currentNFCState = state;
+            if(newState != currentNFCState){
+                diagnostic.logDebug("NFC state changed to: " + newState);
+                diagnostic.executePluginJavascript("nfc._onNFCStateChange(\"" + newState +"\");");
+                currentNFCState = newState;
             }
         }catch(Exception e){
             diagnostic.logError("Error retrieving current NFC state on state change: "+e.toString());
         }
     }
 
+    public String getNFCState(int stateValue){
+
+        String state;
+        switch(stateValue){
+            case NFC_STATE_VALUE_OFF:
+                state = NFC_STATE_OFF;
+                break;
+            case NFC_STATE_VALUE_TURNING_ON:
+                state = NFC_STATE_TURNING_ON;
+                break;
+            case NFC_STATE_VALUE_ON:
+                state = NFC_STATE_ON;
+                break;
+            case NFC_STATE_VALUE_TURNING_OFF:
+                state = NFC_STATE_TURNING_OFF;
+                break;
+            default:
+                state = NFC_STATE_UNKNOWN;
+        }
+        return state;
+    }
+
     /************
      * Overrides
      ***********/
 
-    public static class NFCStateChangedReceiver extends BroadcastReceiver {
-
+    protected final BroadcastReceiver NFCStateChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final int stateValue = intent.getIntExtra(EXTRA_ADAPTER_STATE, -1);
-            if(instance != null){ // if app is running
-                String state;
-                switch(stateValue){
-                    case NFC_STATE_VALUE_OFF:
-                        state = NFC_STATE_OFF;
-                        break;
-                    case NFC_STATE_VALUE_TURNING_ON:
-                        state = NFC_STATE_TURNING_ON;
-                        break;
-                    case NFC_STATE_VALUE_ON:
-                        state = NFC_STATE_ON;
-                        break;
-                    case NFC_STATE_VALUE_TURNING_OFF:
-                        state = NFC_STATE_TURNING_OFF;
-                        break;
-                    default:
-                        state = NFC_STATE_UNKNOWN;
-                }
-                Log.v(TAG, "onReceiveNFCStateChange: "+state);
-                instance.notifyNFCStateChange(state);
+            final String action = intent.getAction();
+            if(instance != null && action.equals(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)){
+
+                Log.v(TAG, "onReceiveNFCStateChange");
+                final int stateValue = intent.getIntExtra(EXTRA_ADAPTER_STATE, -1);
+                instance.notifyNFCStateChange(stateValue);
             }
         }
-
-    }
+    };
 }

@@ -285,15 +285,6 @@
         </js-module>
 
         <source-file src="src/android/Diagnostic_Location.java" target-dir="src/cordova/plugins" />
-
-        <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <receiver
-                    android:name="cordova.plugins.Diagnostic_Location$LocationProviderChangedReceiver">
-                <intent-filter>
-                    <action android:name="android.location.PROVIDERS_CHANGED" />
-                </intent-filter>
-            </receiver>
-        </config-file>
         <!--END_MODULE LOCATION-->
 
         <!--BEGIN_MODULE BLUETOOTH-->
@@ -385,14 +376,6 @@
         <js-module name="Diagnostic_NFC" src="www/android/diagnostic.nfc.js">
             <merges target="cordova.plugins.diagnostic.nfc" />
         </js-module>
-
-        <config-file target="AndroidManifest.xml" parent="/manifest/application">
-            <receiver android:name="cordova.plugins.Diagnostic_NFC$NFCStateChangedReceiver">
-                <intent-filter>
-                    <action android:name="android.nfc.action.ADAPTER_STATE_CHANGED" />
-                </intent-filter>
-            </receiver>
-        </config-file>
 
         <source-file src="src/android/Diagnostic_NFC.java" target-dir="src/cordova/plugins" />
         <!--END_MODULE NFC-->

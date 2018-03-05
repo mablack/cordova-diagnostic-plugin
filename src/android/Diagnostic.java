@@ -162,6 +162,8 @@ public class Diagnostic extends CordovaPlugin{
      */
     protected CallbackContext currentContext;
 
+    protected Context applicationContext;
+
     /*************
      * Public API
      ************/
@@ -185,6 +187,8 @@ public class Diagnostic extends CordovaPlugin{
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         Log.d(TAG, "initialize()");
         instance = this;
+
+        applicationContext = this.cordova.getActivity().getApplicationContext();
 
         super.initialize(cordova, webView);
     }
@@ -323,11 +327,10 @@ public class Diagnostic extends CordovaPlugin{
      */
     public int getADBMode(){
         int mode;
-        Context context = this.cordova.getActivity().getApplicationContext();
         if (Build.VERSION.SDK_INT >= 17){ // Jelly_Bean_MR1 and above
-            mode = Settings.Global.getInt(context.getContentResolver(), Settings.Global.ADB_ENABLED, 0);
+            mode = Settings.Global.getInt(applicationContext.getContentResolver(), Settings.Global.ADB_ENABLED, 0);
         } else { // Pre-Jelly_Bean_MR1
-            mode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ADB_ENABLED, 0);
+            mode = Settings.Secure.getInt(applicationContext.getContentResolver(), Settings.Secure.ADB_ENABLED, 0);
         }
         return mode;
     }
@@ -663,7 +666,7 @@ public class Diagnostic extends CordovaPlugin{
         String baseError = "Unable to cold restart application: ";
         try {
             logInfo("Cold restarting application");
-            Context c = this.cordova.getActivity().getApplicationContext();
+            Context c = applicationContext;
             //check if the context is given
             if (c != null) {
                 //fetch the packagemanager so we can get the default launch activity

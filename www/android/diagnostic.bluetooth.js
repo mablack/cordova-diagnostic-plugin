@@ -123,19 +123,9 @@ var Diagnostic_Bluetooth = (function(){
      *
      * @param {Function} successCallback -  The callback which will be called when the state of Bluetooth hardware changes.
      * This callback function is passed a single string parameter defined as a constant in `cordova.plugins.diagnostic.bluetoothState`.
-     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
-     *  This callback function is passed a single string parameter containing the error message.
      */
-    Diagnostic_Bluetooth.registerBluetoothStateChangeHandler = function(successCallback, errorCallback) {
-        cordova.exec(
-            function(){
-                Diagnostic_Bluetooth._onBluetoothStateChange = successCallback || function(){};
-            },
-            errorCallback,
-            'Diagnostic_Bluetooth',
-            'initializeBluetoothListener',
-            []
-        );
+    Diagnostic_Bluetooth.registerBluetoothStateChangeHandler = function(successCallback) {
+        Diagnostic_Bluetooth._onBluetoothStateChange = successCallback || function(){};
     };
 
 

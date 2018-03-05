@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.Build;
 import android.util.Log;
@@ -102,8 +103,28 @@ public class Diagnostic_Location extends CordovaPlugin{
         Log.d(TAG, "initialize()");
         instance = this;
         diagnostic = Diagnostic.getInstance();
+
+        diagnostic.applicationContext.registerReceiver(locationProviderChangedReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        try {
+            currentLocationMode = getLocationModeName();
+        }catch(Exception e){
+            diagnostic.logWarning("Unable to get initial location mode: " + e.getMessage());
+        }
+
         super.initialize(cordova, webView);
+    }
+
+    /**
+     * Called on destroying activity
+     */
+    public void onDestroy() {
+        try {
+            diagnostic.applicationContext.unregisterReceiver(locationProviderChangedReceiver);
+        }catch(Exception e){
+            diagnostic.logWarning("Unable to unregister Location Provider Change receiver: " + e.getMessage());
+        }
     }
 
     /**
@@ -191,17 +212,16 @@ public class Diagnostic_Location extends CordovaPlugin{
             default:
                 modeName = LOCATION_MODE_UNKNOWN;
         }
-        currentLocationMode = modeName;
         return modeName;
     }
 
     public void notifyLocationStateChange(){
         try {
-            String currentMode = currentLocationMode;
             String newMode = getLocationModeName();
-            if(!newMode.equals(currentMode)){
-                diagnostic.logDebug("Location mode change to: " + getLocationModeName());
-                diagnostic.executePluginJavascript("location._onLocationStateChange(\"" + getLocationModeName() +"\");");
+            if(!newMode.equals(currentLocationMode)){
+                diagnostic.logDebug("Location mode change to: " + newMode);
+                diagnostic.executePluginJavascript("location._onLocationStateChange(\"" + newMode +"\");");
+                currentLocationMode = newMode;
             }
         }catch(Exception e){
             diagnostic.logError("Error retrieving current location mode on location state change: "+e.toString());
@@ -255,14 +275,14 @@ public class Diagnostic_Location extends CordovaPlugin{
      * Overrides
      ***********/
 
-    public static class LocationProviderChangedReceiver extends BroadcastReceiver{
-
+    protected final BroadcastReceiver locationProviderChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(instance != null){ // if app is running
+            final String action = intent.getAction();
+            if(instance != null && action.equals(LocationManager.PROVIDERS_CHANGED_ACTION)){
                 Log.v(TAG, "onReceiveLocationProviderChange");
                 instance.notifyLocationStateChange();
             }
         }
-    }
+    };
 }
