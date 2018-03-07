@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v4.0.2**
+* Add `<uses-permission>` manifest entry for Bluetooth since registering broadcast receiver is now done at runtime. Fixes [#282](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/282)/[#283](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/283).
+
 **v4.0.1**
 * Register explicit broadcast receivers for location/Bluetooth/NFC state change listeners at run-time, due to [removal of support for implicit broadcast receivers in Android 8.0 (API 26)](https://developer.android.com/about/versions/oreo/background.html#broadcasts).
 Fixes [#279](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/279).
