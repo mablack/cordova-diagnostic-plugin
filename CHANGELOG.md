@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v4.0.3**
+* Remove literal angle brackets in comment attributes as they cause XML parse issue in Visual Studio. Fixes [#284](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/284).
+
 **v4.0.2**
 * Add `<uses-permission>` manifest entry for Bluetooth since registering broadcast receiver is now done at runtime. Fixes [#282](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/282)/[#283](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/283).
 
