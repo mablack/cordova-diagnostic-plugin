@@ -177,7 +177,7 @@ var Diagnostic_Notifications = (function(){
             params = arguments[0];
         }
 
-        params.types = params.types && params.types.length ? JSON.stringify(params.types) : null;
+        params.types = params.types && params.types.length ? JSON.stringify(params.types) : JSON.stringify({});
 
         return cordova.exec(
             params.successCallback,
