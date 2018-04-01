@@ -187,8 +187,11 @@ public class Diagnostic extends CordovaPlugin{
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         Log.d(TAG, "initialize()");
         instance = this;
-
-        applicationContext = this.cordova.getActivity().getApplicationContext();
+        try {
+            applicationContext = this.cordova.getActivity().getApplicationContext();
+        }catch(Exception e){
+            logWarning("Unable to retrieve application context: " + e.getMessage());
+        }
 
         super.initialize(cordova, webView);
     }

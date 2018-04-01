@@ -104,8 +104,12 @@ public class Diagnostic_Location extends CordovaPlugin{
         instance = this;
         diagnostic = Diagnostic.getInstance();
 
-        diagnostic.applicationContext.registerReceiver(locationProviderChangedReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-        locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            diagnostic.applicationContext.registerReceiver(locationProviderChangedReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+            locationManager = (LocationManager) this.cordova.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        }catch(Exception e){
+            diagnostic.logWarning("Unable to register Location Provider Change receiver: " + e.getMessage());
+        }
 
         try {
             currentLocationMode = getLocationModeName();
@@ -278,11 +282,15 @@ public class Diagnostic_Location extends CordovaPlugin{
     protected final BroadcastReceiver locationProviderChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+        try {
             final String action = intent.getAction();
             if(instance != null && action.equals(LocationManager.PROVIDERS_CHANGED_ACTION)){
                 Log.v(TAG, "onReceiveLocationProviderChange");
                 instance.notifyLocationStateChange();
             }
+        } catch (Exception e) {
+            diagnostic.logError("Error receiving location provider state change: "+e.toString());
+        }
         }
     };
 }

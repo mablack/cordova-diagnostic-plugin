@@ -111,9 +111,18 @@ public class Diagnostic_NFC extends CordovaPlugin{
         instance = this;
         diagnostic = Diagnostic.getInstance();
 
-        diagnostic.applicationContext.registerReceiver(NFCStateChangedReceiver, new IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED));
-        nfcManager = (NfcManager) diagnostic.applicationContext.getSystemService(Context.NFC_SERVICE);
-        currentNFCState = isNFCAvailable() ? NFC_STATE_ON : NFC_STATE_OFF;
+        try {
+            diagnostic.applicationContext.registerReceiver(NFCStateChangedReceiver, new IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED));
+            nfcManager = (NfcManager) diagnostic.applicationContext.getSystemService(Context.NFC_SERVICE);
+        }catch(Exception e){
+            diagnostic.logWarning("Unable to register NFC state change receiver: " + e.getMessage());
+        }
+
+        try {
+            currentNFCState = isNFCAvailable() ? NFC_STATE_ON : NFC_STATE_OFF;
+        }catch(Exception e){
+            diagnostic.logWarning("Unable to get initial NFC state: " + e.getMessage());
+        }
 
         super.initialize(cordova, webView);
     }
@@ -245,6 +254,7 @@ public class Diagnostic_NFC extends CordovaPlugin{
     protected final BroadcastReceiver NFCStateChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+        try {
             final String action = intent.getAction();
             if(instance != null && action.equals(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)){
 
@@ -252,6 +262,9 @@ public class Diagnostic_NFC extends CordovaPlugin{
                 final int stateValue = intent.getIntExtra(EXTRA_ADAPTER_STATE, -1);
                 instance.notifyNFCStateChange(stateValue);
             }
+        } catch (Exception e) {
+            diagnostic.logError("Error receiving NFC state change: "+e.toString());
+        }
         }
     };
 }
