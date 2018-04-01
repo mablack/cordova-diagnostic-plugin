@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**v4.0.4**
+* Ensure all Android code entry points are handled in try/catch blocks to prevent app crashes by unhandled exceptions.
+* Enable the `types` parameter for `requestRemoteNotificationsAuthorization` to be omitted (rather than requiring empty object). Fixes [#286](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/286).
+
 **v4.0.3**
 * Remove literal angle brackets in comment attributes as they cause XML parse issue in Visual Studio. Fixes [#284](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/284).
 
