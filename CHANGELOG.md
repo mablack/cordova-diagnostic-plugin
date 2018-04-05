@@ -1,7 +1,8 @@
 # CHANGELOG
 
 **v4.0.5**
-* Ensure complete camera module inclusion and default Info.plist strings on iOS
+* Bug fix: ensure complete camera module inclusion and default Info.plist strings on iOS. 
+Merges [#292](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/292). 
 
 **v4.0.4**
 * Ensure all Android code entry points are handled in try/catch blocks to prevent app crashes by unhandled exceptions.
