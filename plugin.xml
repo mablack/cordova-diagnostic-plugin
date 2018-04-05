@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova.plugins.diagnostic"
-    version="4.0.4">
+    version="4.0.5">
 
     <name>Diagnostic</name>
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
@@ -104,22 +104,22 @@
                 <param name="ios-package" value="Diagnostic_Camera" />
                 <param name="onload" value="true" />
             </feature>
-
-            <framework src="Photos.framework" />
-            <framework src="AVFoundation.framework" />
-
-            <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
-                <string>This app requires camera access to function properly.</string>
-            </config-file>
-
-            <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
-                <string>This app requires photo library access to function properly.</string>
-            </config-file>
         </config-file>
 
         <js-module src="www/ios/diagnostic.camera.js" name="Diagnostic_Camera">
             <merges target="cordova.plugins.diagnostic.camera" />
         </js-module>
+
+        <framework src="Photos.framework" />
+        <framework src="AVFoundation.framework" />
+
+        <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+            <string>This app requires camera access to function properly.</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
+            <string>This app requires photo library access to function properly.</string>
+        </config-file>
 
         <header-file src="src/ios/Diagnostic_Camera.h" />
         <source-file src="src/ios/Diagnostic_Camera.m" />
