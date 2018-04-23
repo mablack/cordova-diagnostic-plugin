@@ -401,8 +401,6 @@
     </platform>
 
     <platform name="windows">
-        <preference name="windows-target-version" value="10.0" />
-
         <config-file target="config.xml" parent="/*">
             <feature name="Diagnostic" >
                 <param name="windows-package" value="cordova.plugins.Diagnostic"/>

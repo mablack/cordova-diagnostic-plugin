@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**Unreleased**
+* Remove obselete `windows-target-version` preference which is causing Window platform build failure. Fixes [#295](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/295).
+
 **v4.0.5**
 * Bug fix: ensure complete camera module inclusion and default Info.plist strings on iOS. 
 Merges [#292](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/292). 
