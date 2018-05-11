@@ -1,7 +1,8 @@
 # CHANGELOG
 
-**Unreleased**
+**v4.0.6**
 * Remove obselete `windows-target-version` preference which is causing Window platform build failure. Fixes [#295](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/295).
+* Add missing call to getMotionAuthorizationStatus() in iOS motion module.
 
 **v4.0.5**
 * Bug fix: ensure complete camera module inclusion and default Info.plist strings on iOS. 
