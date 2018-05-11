@@ -126,6 +126,35 @@ var Diagnostic_Motion = (function(){
             []);
     };
 
+    /**
+     * Checks motion authorization status for the application.
+     * There's no direct way to determine if authorization was granted or denied, so the Pedometer API is used to indirectly determine this.
+     * Pedometer Event Tracking is only available on iPhones with an M7 co-processor (or above): that is iPhone 5s (or above). No iPads yet support it.
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single string parameter indicating the result:
+     * - `cordova.plugins.diagnostic.motionStatus.NOT_REQUESTED` - App has not yet requested this permission.
+     * - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
+     * - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+     * - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
+     * - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
+     * Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
+     * - `cordova.plugins.diagnostic.motionStatus.NOT_DETERMINED` - authorization outcome cannot be determined because device does not support Pedometer Event Tracking.
+     * Pedometer Event Tracking is only available on iPhones with an M7 co-processor (or above): that is iPhone 5s (or above). No iPads yet support it.
+     * - `cordova.plugins.diagnostic.motionStatus.UNKNOWN` - motion tracking authorization is in an unknown state.
+     * - {Function} errorCallback - The callback which will be called when an error occurs. This callback function is passed a single string parameter containing the error message.
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic_Motion.getMotionAuthorizationStatus = function(successCallback, errorCallback) {
+        return cordova.exec(
+            successCallback,
+            errorCallback,
+            'Diagnostic_Motion',
+            'getMotionAuthorizationStatus',
+            []);
+    };
+
     return Diagnostic_Motion;
 });
 module.exports = new Diagnostic_Motion();
