@@ -43,6 +43,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -128,10 +129,14 @@ public class Diagnostic extends CordovaPlugin{
     protected static final String STATUS_DENIED = "DENIED";
 
     /**
-     * Either user denied permission and checked "never ask again"
-     * Or authorisation has not yet been requested for permission
+     * User denied permission and checked "never ask again"
      */
-    protected static final String STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS = "STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS";
+    protected static final String STATUS_DENIED_ALWAYS = "DENIED_ALWAYS";
+
+    /**
+     * Authorisation has not yet been requested for permission
+     */
+    protected static final String STATUS_NOT_REQUESTED = "NOT_REQUESTED";
 
     public static final String CPU_ARCH_UNKNOWN = "unknown";
     public static final String CPU_ARCH_ARMv6 = "ARMv6";
@@ -164,6 +169,9 @@ public class Diagnostic extends CordovaPlugin{
 
     protected Context applicationContext;
 
+    protected SharedPreferences sharedPref;
+    protected SharedPreferences.Editor editor;
+
     /*************
      * Public API
      ************/
@@ -187,11 +195,10 @@ public class Diagnostic extends CordovaPlugin{
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         Log.d(TAG, "initialize()");
         instance = this;
-        try {
-            applicationContext = this.cordova.getActivity().getApplicationContext();
-        }catch(Exception e){
-            logWarning("Unable to retrieve application context: " + e.getMessage());
-        }
+
+        applicationContext = this.cordova.getActivity().getApplicationContext();
+        sharedPref = cordova.getActivity().getSharedPreferences(TAG, Activity.MODE_PRIVATE);
+        editor = sharedPref.edit();
 
         super.initialize(cordova, webView);
     }
@@ -490,7 +497,11 @@ public class Diagnostic extends CordovaPlugin{
             }else{
                 boolean showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
                 if(!showRationale){
-                    statuses.put(permission, Diagnostic.STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS);
+                    if(isPermissionRequested(permission)){
+                        statuses.put(permission, Diagnostic.STATUS_DENIED_ALWAYS);
+                    }else{
+                        statuses.put(permission, Diagnostic.STATUS_NOT_REQUESTED);
+                    }
                 }else{
                     statuses.put(permission, Diagnostic.STATUS_DENIED);
                 }
@@ -614,6 +625,9 @@ public class Diagnostic extends CordovaPlugin{
         try {
             java.lang.reflect.Method method = cordova.getClass().getMethod("requestPermissions", org.apache.cordova.CordovaPlugin.class ,int.class, java.lang.String[].class);
             method.invoke(cordova, plugin, requestCode, permissions);
+            for(String permission : permissions){
+                setPermissionRequested(permissionsMap.get(permission));
+            }
         } catch (NoSuchMethodException e) {
             throw new Exception("requestPermissions() method not found in CordovaInterface implementation of Cordova v" + CordovaWebView.CORDOVA_VERSION);
         }
@@ -739,6 +753,18 @@ public class Diagnostic extends CordovaPlugin{
         return arch;
     }
 
+    protected void setPermissionRequested(String permission){
+        editor.putBoolean(permission, true);
+        boolean success = editor.commit();
+        if(!success){
+            handleError("Failed to set permission requested flag for " + permission);
+        }
+    }
+
+    protected boolean isPermissionRequested(String permission){
+        return sharedPref.getBoolean(permission, false);
+    }
+
     /************
      * Overrides
      ***********/
@@ -767,9 +793,13 @@ public class Diagnostic extends CordovaPlugin{
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
                     boolean showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
                     if (!showRationale) {
-                        // EITHER: The app doesn't have a permission and the user has not been asked for the permission before
-                        // OR: user denied WITH "never ask again"
-                        status = Diagnostic.STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS;
+                        if(isPermissionRequested(permission)){
+                            // user denied WITH "never ask again"
+                            status = Diagnostic.STATUS_DENIED_ALWAYS;
+                        }else{
+                            // The app doesn't have permission and the user has not been asked for the permission before
+                            status = Diagnostic.STATUS_NOT_REQUESTED;
+                        }
                     } else {
                         // user denied WITHOUT "never ask again"
                         status = Diagnostic.STATUS_DENIED;

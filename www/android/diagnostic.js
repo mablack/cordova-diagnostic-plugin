@@ -13,10 +13,6 @@ var Diagnostic = (function(){
      *********************/
     var Diagnostic = {};
 
-    var runtimeStoragePrefix = "__diag_rtm_";
-
-    var runtimeGroupsMap;
-
     // Indicates if a runtime permissions request is in progress
     var requestInProgress = false;
 
@@ -86,8 +82,6 @@ var Diagnostic = (function(){
         };
 
 
-    Diagnostic.firstRequestedPermissions;
-
 
     Diagnostic.cpuArchitecture = {
         UNKNOWN: "unknown",
@@ -130,63 +124,7 @@ var Diagnostic = (function(){
         return valid;
     }
 
-    /**
-     * Maintains a locally persisted list of which permissions have been requested in order to resolve the returned status of STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS to either NOT_REQUESTED or DENIED_ALWAYS.
-     * Since requesting a given permission implicitly requests all other permissions in the same group (e.g. requesting READ_CALENDAR will also grant/deny WRITE_CALENDAR),
-     * flag every permission in the groups that were requested.
-     * @param {Array} permissions - list of requested permissions
-     */
-    function updateFirstRequestedPermissions(permissions){
-        var groups = {};
 
-        permissions.forEach(function(permission){
-            groups[runtimeGroupsMap[permission]] = 1;
-        });
-
-
-        for(var group in groups){
-            Diagnostic.permissionGroups[group].forEach(function(permission){
-                if(!Diagnostic.firstRequestedPermissions[permission]){
-                    setPermissionFirstRequested(permission);
-                }
-            });
-        }
-    }
-
-    function setPermissionFirstRequested(permission){
-        localStorage.setItem(runtimeStoragePrefix+permission, 1);
-        getFirstRequestedPermissions();
-    }
-
-    function getFirstRequestedPermissions(){
-        if(!runtimeGroupsMap){
-            buildRuntimeGroupsMap();
-        }
-        Diagnostic.firstRequestedPermissions = {};
-        for(var permission in Diagnostic.permission){
-            if(localStorage.getItem(runtimeStoragePrefix+permission) == 1){
-                Diagnostic.firstRequestedPermissions[permission] = 1;
-            }
-        }
-        return Diagnostic.firstRequestedPermissions;
-    }
-
-    function resolveStatus(permission, status){
-        if(status == "STATUS_NOT_REQUESTED_OR_DENIED_ALWAYS"){
-            status = Diagnostic.firstRequestedPermissions[permission] ? Diagnostic.permissionStatus.DENIED_ALWAYS : Diagnostic.permissionStatus.NOT_REQUESTED;
-        }
-        return status;
-    }
-
-    function buildRuntimeGroupsMap(){
-        runtimeGroupsMap = {};
-        for(var group in Diagnostic.permissionGroups){
-            var permissions = Diagnostic.permissionGroups[group];
-            for(var i=0; i<permissions.length; i++){
-                runtimeGroupsMap[permissions[i]] = group;
-            }
-        }
-    }
 
     /*****************************
      *
@@ -253,12 +191,8 @@ var Diagnostic = (function(){
     Diagnostic.getPermissionAuthorizationStatus = function(successCallback, errorCallback, permission){
         if(!checkForInvalidPermissions(permission, errorCallback)) return;
 
-        function onSuccess(status){
-            successCallback(resolveStatus(permission, status));
-        }
-
         return cordova.exec(
-            onSuccess,
+            successCallback,
             errorCallback,
             'Diagnostic',
             'getPermissionAuthorizationStatus',
@@ -278,15 +212,8 @@ var Diagnostic = (function(){
     Diagnostic.getPermissionsAuthorizationStatus = function(successCallback, errorCallback, permissions){
         if(!checkForInvalidPermissions(permissions, errorCallback)) return;
 
-        function onSuccess(statuses){
-            for(var permission in statuses){
-                statuses[permission] = resolveStatus(permission, statuses[permission]);
-            }
-            successCallback(statuses);
-        }
-
         return cordova.exec(
-            onSuccess,
+            successCallback,
             errorCallback,
             'Diagnostic',
             'getPermissionsAuthorizationStatus',
@@ -313,12 +240,10 @@ var Diagnostic = (function(){
 
         function onSuccess(status){
             requestInProgress = false;
-            var status = resolveStatus(permission, status[permission]);
             successCallback(status);
             var statuses = {};
             statuses[permission] = status;
             Diagnostic._onPermissionRequestComplete(statuses);
-            updateFirstRequestedPermissions([permission]);
         }
 
         function onError(error){
@@ -354,12 +279,8 @@ var Diagnostic = (function(){
 
         function onSuccess(statuses){
             requestInProgress = false;
-            for(var permission in statuses){
-                statuses[permission] = resolveStatus(permission, statuses[permission]);
-            }
             successCallback(statuses);
             Diagnostic._onPermissionRequestComplete(statuses);
-            updateFirstRequestedPermissions(permissions);
         }
 
         function onError(error){
@@ -467,8 +388,6 @@ var Diagnostic = (function(){
      *
      * Note: There is no successCallback() since if the operation is successful, the application will restart immediately before any success callback can be applied.
      *
-     * @param {Function} successCallback - function to call on successful retrieval of status.
-     * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
      * @param {Function} errorCallback - function to call on failure to retrieve authorisation status.
      * This callback function is passed a single string parameter containing the error message.
      * @param {Boolean} cold - if true the application will be cold restarted. Defaults to false.
@@ -1349,12 +1268,6 @@ var Diagnostic = (function(){
             throw "Diagnostic NFC module is not installed";
         }
     };
-
-
-    /**************
-     * Constructor
-     **************/
-    getFirstRequestedPermissions();
 
     return Diagnostic;
 });

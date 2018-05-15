@@ -1,9 +1,9 @@
 Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v/cordova.plugins.diagnostic.svg)](https://www.npmjs.com/package/cordova.plugins.diagnostic) [![Total Downloads](https://img.shields.io/npm/dt/cordova.plugins.diagnostic.svg)](https://npm-stat.com/charts.html?package=cordova.plugins.diagnostic)
 =========================
 
+<!-- doctoc README.md --maxlevel=3 -->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 
 - [Overview](#overview)
   - [Important notes](#important-notes)
@@ -119,6 +119,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
 - [Platform Notes](#platform-notes)
   - [Android](#android)
     - [Android permissions](#android-permissions)
+    - [Android Auto Backup](#android-auto-backup)
   - [Windows](#windows)
     - [Supported Windows versions](#supported-windows-versions)
     - [Windows 10 UWP permissions](#windows-10-uwp-permissions)
@@ -3222,6 +3223,15 @@ The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](h
     cordova plugin add cordova.plugins.diagnostic.api-22
 
 **NOTE**: Phonegap Build now supports API 23, so its users may use the main plugin branch (`cordova.plugins.diagnostic`).
+
+### Android Auto Backup
+
+* Android 6 and above introduces an [Auto Backup](http://androiddoc.qiniudn.com/training/backup/autosyncapi.html) mechanism whereby app data is backed up to the Cloud and restored when the app is re-installed or installed on a different device signed in with the same Google account.
+* By default, Auto Backup will sync **all local app data** including file storage, databases, shared preferences (k/v storage), etc.
+* This plugin uses Android's [SharedPreferences API](https://developer.android.com/reference/android/content/SharedPreferences) in order to track whether a runtime permission has been requested during the current installation.
+* This enables the plugin to determine if a permission's status is `NOT_REQUESTED` vs `DENIED_ALWAYS` since the Android runtime permissions API does not distinguish between these states.
+* So if Auto Backup is enabled for your app, you'll need to exclude the shared preferences used by this plugin, otherwise preferences that were requested during a previous installation will be wrongly determined as `DENIED_ALWAYS` if the shared preferences data is restored from Cloud storage
+* To exclude this plugin's data, add the following rule to your XML backup rules: `<exclude domain="sharedpref" path="Diagnostic.xml"/>`
 
 ## Windows
 
