@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v4.0.7**
+Use native SharedPreferences to track request permissions (instead of HTML5 Local Storage) in order to avoid issues with Android Autobackup. Fixes [#304](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/304).
+
 **v4.0.6**
 * Remove obselete `windows-target-version` preference which is causing Window platform build failure. Fixes [#295](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/295).
 * Add missing call to getMotionAuthorizationStatus() in iOS motion module.
