@@ -76,7 +76,7 @@ var Diagnostic_Microphone = (function(){
      * @param {Function} errorCallback - The callback which will be called when an error occurs.
      * This callback function is passed a single string parameter containing the error message.
      */
-    Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
+    Diagnostic_Microphone.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
         Diagnostic.requestRuntimePermission(successCallback, errorCallback, Diagnostic.permission.RECORD_AUDIO);
     };
 
