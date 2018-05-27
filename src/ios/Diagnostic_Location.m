@@ -10,7 +10,8 @@
 
 @implementation Diagnostic_Location
 
-Diagnostic* diagnostic;
+// Internal reference to Diagnostic singleton instance
+static Diagnostic* diagnostic;
 
 // Internal constants
 static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
