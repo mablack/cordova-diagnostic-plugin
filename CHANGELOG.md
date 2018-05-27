@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**v4.0.8**
+* iOS build fix: Make static the definition of the diagnostic variable which references the Diagnostic singleton instance to prevent it leaking to global scope and causing duplicate symbol build errors. Fixes [#308](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/308).
+* Fix typo which references wrong namespace. See [#306](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/306).
+
 **v4.0.7**
 Use native SharedPreferences to track request permissions (instead of HTML5 Local Storage) in order to avoid issues with Android Autobackup. Fixes [#304](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/304).
 
