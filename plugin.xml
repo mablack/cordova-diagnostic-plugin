@@ -10,7 +10,9 @@
     <license>MIT</license>
     <keywords>ecosystem:cordova,cordova,phonegap,android,ios,windows,diagnostic,wifi,location,gps,camera,bluetooth,settings</keywords>
     <engines>
-        <engine name="cordova" version=">=3.0.0" />
+        <engine name="cordova" version=">=7.1.0"/>
+        <engine name="cordova-android" version=">=6.3.0"/>
+        <engine name="cordova-ios" version=">=4.3.0"/>
     </engines>
     <repo>https://github.com/dpa99c/cordova-diagnostic-plugin.git</repo>
     <issue>https://github.com/dpa99c/cordova-diagnostic-plugin/issues</issue>
