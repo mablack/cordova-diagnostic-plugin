@@ -238,11 +238,9 @@ var Diagnostic = (function(){
             return onError("A runtime permissions request is already in progress");
         }
 
-        function onSuccess(status){
+        function onSuccess(statuses){
             requestInProgress = false;
-            successCallback(status);
-            var statuses = {};
-            statuses[permission] = status;
+            successCallback(statuses[permission]);
             Diagnostic._onPermissionRequestComplete(statuses);
         }
 
