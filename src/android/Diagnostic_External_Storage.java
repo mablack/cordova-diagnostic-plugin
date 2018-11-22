@@ -55,7 +55,7 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
     /**
      * Tag for debug log messages
      */
-    public static final String TAG = "Diagnostic_Wifi";
+    public static final String TAG = "Diagnostic_External_Storage";
 
 
     /*************
