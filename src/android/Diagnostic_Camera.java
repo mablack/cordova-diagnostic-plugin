@@ -23,6 +23,7 @@ package cordova.plugins;
  */
 
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
@@ -117,8 +118,10 @@ public class Diagnostic_Camera extends CordovaPlugin{
     }
 
     public boolean isCameraPresent() {
+        int numberOfCameras = Camera.getNumberOfCameras();
         PackageManager pm = this.cordova.getActivity().getPackageManager();
-        boolean result = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+        final boolean deviceHasCameraFlag = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+        boolean result = (deviceHasCameraFlag && numberOfCameras>0 );
         return result;
     }
 
