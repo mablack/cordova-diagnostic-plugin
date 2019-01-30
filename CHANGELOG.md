@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v4.0.11**
+* Bug fix: On Android, count number of available cameras in order to determine if camera is present (since FEATURE_CAMERA can't be relied upon). Resolves [#339](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/339).
+
 **v4.0.10**
 * Bug fix: return string instead of object to success function after requesting single runtime permission on Android. Fixes [#324](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/324).
 
