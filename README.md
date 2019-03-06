@@ -5,6 +5,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+
 - [Overview](#overview)
   - [Important notes](#important-notes)
     - [Native environment required](#native-environment-required)
@@ -12,6 +13,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
 - [Installation](#installation)
   - [Using the Cordova/Phonegap/Ionic CLI](#using-the-cordovaphonegapionic-cli)
   - [PhoneGap Build](#phonegap-build)
+  - [Android Support Library](#android-support-library)
   - [Specifying modules](#specifying-modules)
     - [Available modules](#available-modules)
 - [Usage](#usage)
@@ -174,45 +176,47 @@ Also make sure you have the latest release of the `cordova-android` platform ins
 Phonegap Build uses should use the latest available CLI version ([listed here](https://build.phonegap.com/current-support)) by specifying using the `phonegap-version` tag in your `config.xml`, for example:
 
     <preference name="phonegap-version" value="cli-6.4.0" />
-    
-#### Gradle version collisions
-
-This plugin uses the Android Support Library and [pins the major version](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/plugin.xml#L101) to align with [the target SDK version of the `cordova-android` platform](https://github.com/apache/cordova-android/blob/master/framework/project.properties#L13) in its [latest release to npm](https://www.npmjs.com/package/cordova-android).
-If your build fails with an error such as this:
-
-    Attribute meta-data#android.support.VERSION@value value=(26.0.0-alpha1) from [com.android.support:support-v4:26.0.0-alpha1] AndroidManifest.xml:27:9-38
-    is also present at [com.android.support:appcompat-v7:25.3.1] AndroidManifest.xml:27:9-31 value=(25.3.1).
-    
-Then it's likely that the build failure is due to a collision caused by another plugin requesting a different version of the Android Support Library (see [#212](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/212), [#211](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/211), [#205](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/205), etc.).
-
-Depending what other plugins you have installed in your project, you may need to specify a different version of the Support Library than that specified by this plugin to make your build succeed. 
-
-If building locally, one way to do this is to install [cordova-android-support-gradle-release](https://github.com/dpa99c/cordova-android-support-gradle-release) into your project.
-This attempts to override the Android Support Library version specified by other plugins (including this plugin) with a specified version. For example:
-
-    cordova plugin add cordova-android-support-gradle-release --variable ANDROID_SUPPORT_VERSION=25.+
-
-
-Note: `cordova-android-support-gradle-release` will not work in Phonegap Build (or other cloud-build environments) that do not support Cordova Hook Scripts.
-
 
 # Installation
 
 ## Using the Cordova/Phonegap/Ionic CLI
 
     $ cordova plugin add cordova.plugins.diagnostic
+    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROID_SUPPORT_VERSION=27.+
     $ phonegap plugin add cordova.plugins.diagnostic
     $ ionic cordova plugin add cordova.plugins.diagnostic
-
-For example, to install for the Android platform
-
-    $ plugman install --plugin=cordova.plugins.diagnostic --platform=android --project=platforms/android --plugins_dir=plugins
 
 ## PhoneGap Build
 Add the following xml to your config.xml to use the latest version of this plugin from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
 
     <plugin name="cordova.plugins.diagnostic" source="npm" />
-    
+
+## Android Support Library
+
+This plugin uses/depends on the [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html).
+By default it pins the [most recent major release version of the library](https://developer.android.com/topic/libraries/support-library/revisions.html) in [its `plugin.xml`](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/plugin.xml) in order to align with [the target SDK version of the latest `cordova-android` platform version](https://github.com/apache/cordova-android/blob/master/framework/project.properties).
+
+However, if your build fails with an error such as this:
+
+    Attribute meta-data#android.support.VERSION@value value=(26.0.0-alpha1) from [com.android.support:support-v4:26.0.0-alpha1] AndroidManifest.xml:27:9-38
+    is also present at [com.android.support:appcompat-v7:25.3.1] AndroidManifest.xml:27:9-31 value=(25.3.1).
+
+Then it's likely that the build failure is due to a collision caused by another plugin requesting a different version of the Android Support Library (see [#212](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/212), [#211](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/211), [#205](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/205), etc.).
+
+Depending what other plugins you have installed in your project, you may need to specify a different version of the Support Library than the default version specified by this plugin to make your build succeed.
+You can override the default version of the Support Library that this plugin specifies using the `ANDROID_SUPPORT_VERSION` variable at plugin installation time, for example:
+
+    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROID_SUPPORT_VERSION=27.+
+
+However, if more than one other plugin in your project specifies a different version of the library and does not enable you to specify the version of the Support Library via a plugin variable in this way, then your build may still fail.
+In which case (if building locally), one way to resolve this is to install [cordova-android-support-gradle-release](https://github.com/dpa99c/cordova-android-support-gradle-release) into your project.
+This attempts to override the Android Support Library version specified by other plugins (including this plugin) with a specified version. For example:
+
+    cordova plugin add cordova-android-support-gradle-release --variable ANDROID_SUPPORT_VERSION=25.+
+
+Note: `cordova-android-support-gradle-release` will not work in Phonegap Build (or other cloud-build environments) that do not support Cordova Hook Scripts.
+
+
 ## Specifying modules
 Since `cordova.plugins.diagnostic@4` the plugin is split into optional functional modules. 
 The reason for this is so you can choose to install only those parts of the plugin you'll use and therefore not install redundant code/components/frameworks.
