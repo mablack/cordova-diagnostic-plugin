@@ -189,7 +189,14 @@ Phonegap Build uses should use the latest available CLI version ([listed here](h
 ## PhoneGap Build
 Add the following xml to your config.xml to use the latest version of this plugin from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
 
-    <plugin name="cordova.plugins.diagnostic" source="npm" />
+    <plugin name="cordova.plugins.diagnostic" />
+
+Or
+
+    <plugin name="cordova.plugins.diagnostic">
+        <param name="ANDROID_SUPPORT_VERSION" value="26.+" />
+    </plugin>
+
 
 ## Android Support Library
 
@@ -1035,7 +1042,7 @@ The function is passed a single string parameter containing the error message.
     }, function(error){
         console.error("The following error occurred: "+error);
     });
-	
+    
 
 ### getLocationMode()
 
