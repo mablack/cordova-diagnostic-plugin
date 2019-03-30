@@ -197,6 +197,7 @@ Or
         <param name="ANDROID_SUPPORT_VERSION" value="26.+" />
     </plugin>
 
+**IMPORTANT:** Because Phonegap Build does not support npm-scripts hooks ([see here](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/347) for details) the module selection mechanism of this plugin will not work on Phonegap Build. I.e. all modules will be included in the build.
 
 ## Android Support Library
 
