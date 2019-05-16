@@ -3084,6 +3084,8 @@ For example, on a Samsung Galaxy S4 running Android 7.1.1:
 - Requires permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
 
     `cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);`
+    
+- Note: this function is intended to find paths of external removable SD cards on which the SD card adapter is directly mounted on the device, such as those in the Samsung Galaxy S range of devices. It explicitly attempts to filter out non-SD card storage paths such as OTG devices since access to these devices on Android 6.+ via the File API requires root access and normal access requires use of the Storage Access Framework.
 
 #### Parameters
 
