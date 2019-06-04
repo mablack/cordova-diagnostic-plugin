@@ -338,12 +338,12 @@ The following permission states are defined for Android:
 
 - `NOT_REQUESTED` - App has not yet requested access to this permission.
 App can request permission and user will be prompted to allow/deny.
-- `GRANTED` - User granted access to this permission, the device is running Android 5.x or below, or the app is built with API 22 or below.
-- `DENIED` - User denied access to this permission (without checking "Never Ask Again" box).
+- `DENIED_ONCE` - User denied access to this permission (without checking "Never Ask Again" box).
 App can request permission again and user will be prompted again to allow/deny again.
 - `DENIED_ALWAYS` - User denied access to this permission and checked "Never Ask Again" box.
 App can never ask for permission again.
-The only way around this is to instruct the user to manually change the permission on the app permissions settings page.
+The only way around this is to instruct the user to manually change the permission on the app permissions page in Settings.
+- `GRANTED` - User granted access to this permission, the device is running Android 5.x or below, or the app is built with API 22 or below.
 
 #### iOS
 
@@ -351,9 +351,9 @@ The following permission states are defined for iOS:
 
 - `NOT_REQUESTED` - App has not yet requested access to this permission.
 App can request permission and user will be prompted to allow/deny.
-- `DENIED` - User denied access to this permission.
+- `DENIED_ALWAYS` - User denied access to this permission.
 App can never ask for permission again.
-The only way around this is to instruct the user to manually change the permission in the Settings app.
+The only way around this is to instruct the user to manually change the permission in Settings.
 - `RESTRICTED` - Permission is unavailable and user cannot enable it.
 For example, when parental controls are in effect for the current user.
 - `GRANTED` - User granted access to this permission.
@@ -393,7 +393,7 @@ The function is passed a single string parameter containing the error message.
             case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                 console.log("Permission to use the camera has not been requested yet");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
                 console.log("Permission denied to use the camera - ask again?");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
@@ -431,7 +431,7 @@ The function is passed a single string parameter containing the error message.
                 case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                     console.log("Permission to use "+permission+" has not been requested yet");
                     break;
-                case cordova.plugins.diagnostic.permissionStatus.DENIED:
+                case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
                     console.log("Permission denied to use "+permission+" - ask again?");
                     break;
                 case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
@@ -472,7 +472,7 @@ The function is passed a single string parameter containing the error message.
             case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                 console.log("Permission to use the camera has not been requested yet");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCe:
                 console.log("Permission denied to use the camera - ask again?");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
@@ -510,7 +510,7 @@ The function is passed a single string parameter containing the error message.
                 case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                     console.log("Permission to use "+permission+" has not been requested yet");
                     break;
-                case cordova.plugins.diagnostic.permissionStatus.DENIED:
+                case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
                     console.log("Permission denied to use "+permission+" - ask again?");
                     break;
                 case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
@@ -574,7 +574,7 @@ The function is passed a single object parameter which defines a key/value map, 
                 case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                     console.log("Permission to use "+permission+" has not been requested yet");
                     break;
-                case cordova.plugins.diagnostic.permissionStatus.DENIED:
+                case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
                     console.log("Permission denied to use "+permission);
                     break;
                 case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
@@ -1138,7 +1138,7 @@ The function is passed a single string parameter containing the error message.
            case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                console.log("Permission not requested");
                break;
-           case cordova.plugins.diagnostic.permissionStatus.DENIED:
+           case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
                console.log("Permission denied");
                break;
            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
@@ -1162,7 +1162,7 @@ The function is passed a single string parameter containing the error message.
             case cordova.plugins.diagnostic.permissionStatus.GRANTED:
                 console.log("Permission granted");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
                 console.log("Permission denied");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
@@ -1210,7 +1210,7 @@ If not specified, defaults to `WHEN_IN_USE`.
             case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                 console.log("Permission not requested");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
                 console.log("Permission denied");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.GRANTED:
@@ -1234,7 +1234,7 @@ If not specified, defaults to `WHEN_IN_USE`.
             case cordova.plugins.diagnostic.permissionStatus.GRANTED:
                 console.log("Permission granted");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
                 console.log("Permission denied");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
@@ -1921,7 +1921,7 @@ Notes for Android:
 - {Object} params - (optional) parameters:
     - {Function} successCallback -  The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating whether access to the camera was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
     - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
     - {Boolean} externalStorage - (Android only) If true, requests permission for `READ_EXTERNAL_STORAGE` in addition to `CAMERA` run-time permission.
@@ -2003,7 +2003,7 @@ The function is passed a single string parameter containing the error message.
             case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                 console.log("Permission not requested");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
                 console.log("Permission denied");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.GRANTED:
@@ -2029,7 +2029,7 @@ this plugin provides a default message, but you should override this with your s
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating the new authorization status:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
 
@@ -2184,7 +2184,7 @@ The function is passed a single string parameter containing the error message.
             case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                 console.log("Permission not yet requested");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED:
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
                 console.log("Permission denied");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.GRANTED:
@@ -2324,7 +2324,7 @@ Notes for Android:
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating whether access to the microphone was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
 - {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
 
 #### Example usage
@@ -2421,7 +2421,7 @@ Notes for Android:
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating whether access to contacts was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
 - {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
 
 #### Example usage
@@ -2526,7 +2526,7 @@ Notes for Android:
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating whether access to calendar was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
 - {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
 
 #### Example usage
@@ -2611,7 +2611,7 @@ this plugin provides a default message, but you should override this with your s
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating whether access to calendar was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
 - {Function} errorCallback - The callback which will be called when an error occurs. The function is passed a single string parameter containing the error message.
 
 #### Example usage
@@ -2647,7 +2647,7 @@ The following permission states are defined:
 - `NOT_REQUESTED` - App has not yet requested this permission.
 App can request permission and user will be prompted to allow/deny.
 - `GRANTED` - User granted access to this permission.
-- `DENIED` - User denied access to this permission.
+- `DENIED_ALWAYS` - User denied access to this permission.
 App can never ask for permission again.
 The only way around this is to instruct the user to manually change the permission in the Settings app.
 - `RESTRICTED` - Permission is unavailable and user cannot enable it.
@@ -2740,7 +2740,7 @@ therefore, if the device supports motion tracking but not Pedometer Event Tracki
 - {Function} successCallback - The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating the result:
    - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
-   - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+   - `cordova.plugins.diagnostic.motionStatus.DENIED_ALWAYS` - user denied authorization.
    - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
    - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
    Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
@@ -2774,7 +2774,7 @@ There's no direct way to determine if authorization was granted or denied, so th
 The function is passed a single string parameter indicating the result:
    - `cordova.plugins.diagnostic.motionStatus.NOT_REQUESTED` - App has not yet requested this permission.
    - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
-   - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+   - `cordova.plugins.diagnostic.motionStatus.DENIED_ALWAYS` - user denied authorization.
    - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
    - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
    Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
@@ -3033,7 +3033,7 @@ Requests external storage authorization for the application.
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
 The function is passed a single string parameter indicating whether access to the external storage was granted or denied:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
 

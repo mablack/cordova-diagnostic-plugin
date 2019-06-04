@@ -106,7 +106,7 @@ var Diagnostic_Location = (function(){
      * This callback function is passed a single string parameter which indicates the location authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * Possible values are:
      * `cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED`
-     * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE`
      * Note that `GRANTED` indicates the app is always granted permission (even when in background).
@@ -129,7 +129,7 @@ var Diagnostic_Location = (function(){
      * @param {Function} successCallback - Invoked in response to the user's choice in the permission dialog.
      * It is passed a single string parameter which defines the resulting authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * Possible values are:
-     * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.

@@ -14,7 +14,7 @@
 NSString*const UNKNOWN = @"unknown";
 
 NSString*const AUTHORIZATION_NOT_DETERMINED = @"not_determined";
-NSString*const AUTHORIZATION_DENIED = @"denied";
+NSString*const AUTHORIZATION_DENIED = @"denied_always";
 NSString*const AUTHORIZATION_GRANTED = @"authorized";
 
 // Internal constants

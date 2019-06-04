@@ -29,7 +29,7 @@ var Diagnostic_Motion = (function(){
     Diagnostic.motionStatus = Diagnostic_Motion.motionStatus = {
         "UNKNOWN": "unknown", // Status is not known
         "NOT_REQUESTED": "not_requested", // App has not yet requested this permission
-        "DENIED": "denied", // User denied access to this permission
+        "DENIED_ALWAYS": "denied_always", // User denied access to this permission
         "RESTRICTED": "restricted", // Permission is unavailable and user cannot enable it.  For example, when parental controls are in effect for the current user.
         "GRANTED": "authorized", //  User granted access to this permission
         "NOT_AVAILABLE": "not_available", // Motion tracking not available on device
@@ -106,7 +106,7 @@ var Diagnostic_Motion = (function(){
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating the result:
      * - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
-     * - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+     * - `cordova.plugins.diagnostic.motionStatus.DENIED_ALWAYS` - user denied authorization.
      * - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
      * - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
      * Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
@@ -135,7 +135,7 @@ var Diagnostic_Motion = (function(){
      * This callback function is passed a single string parameter indicating the result:
      * - `cordova.plugins.diagnostic.motionStatus.NOT_REQUESTED` - App has not yet requested this permission.
      * - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
-     * - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+     * - `cordova.plugins.diagnostic.motionStatus.DENIED_ALWAYS` - user denied authorization.
      * - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
      * - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
      * Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).

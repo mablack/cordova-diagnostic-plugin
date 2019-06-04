@@ -45,8 +45,8 @@ var Diagnostic_Location = (function(){
 
         if(coarseStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || fineStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
             status = Diagnostic.permissionStatus.DENIED_ALWAYS;
-        }else if(coarseStatus === Diagnostic.permissionStatus.DENIED || fineStatus === Diagnostic.permissionStatus.DENIED){
-            status = Diagnostic.permissionStatus.DENIED;
+        }else if(coarseStatus === Diagnostic.permissionStatus.DENIED_ONCE || fineStatus === Diagnostic.permissionStatus.DENIED_ONCE){
+            status = Diagnostic.permissionStatus.DENIED_ONCE;
         }else if(coarseStatus === Diagnostic.permissionStatus.NOT_REQUESTED || fineStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
             status = Diagnostic.permissionStatus.NOT_REQUESTED;
         }else{
