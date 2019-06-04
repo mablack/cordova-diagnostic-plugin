@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v5.0.0**
+* BREAKING CHANGE - Align permission status constants between iOS and Android platforms. Resolves [#230](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/230).
+
 **v4.0.12**
 * Enable default version of Android Support Library to be overridden at plugin installation via ANDROID_SUPPORT_VERSION plugin variable. Resolves [#338](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/338).
 * Bump default Android Support Library version to `28.+` to match `cordova-android@8.0.0`.
