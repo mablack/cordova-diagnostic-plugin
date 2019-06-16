@@ -350,9 +350,10 @@ The only way around this is to instruct the user to manually change the permissi
 Some things to watch out for:
 
  - Clearing local storage will result in this data being lost and will result in NOT_REQUESTED being returned even if the user previously chose to always deny permission.
- - If the relevant <uses-permission> tag is missing from the Android manifest, then the native API will return the NOT_REQUESTED/DENIED_ALWAYS constant value. Since the plugin is unable to make the native permissions request in order to show the native dialog, the plugin will always return NOT_REQUESTED.
+ - If the relevant `<uses-permission>` tag is missing from the Android manifest, then the native API will return the NOT_REQUESTED/DENIED_ALWAYS constant value. Since the plugin is unable to make the native permissions request in order to show the native dialog, the plugin will always return NOT_REQUESTED.
 
-Since Android does not store permission status after uninstall but keeps local storage, you may want to clear local storage automatically on uninstall. You can do it using the [cordova-custom-config plugin](https://github.com/dpa99c/cordova-custom-config), for example: 
+If [Android Autobackup](https://developer.android.com/guide/topics/data/backup.html#Choosing) is enabled (which it is by default ), Android does not backup app permissions after uninstall but does backup HTML5 local storage. This may lead to a permission being reported by the plugin as DENIED_ALWAYS when the actual status is NOT_REQUESTED.
+To avoid this you may want to disable Android Autobackup. You can do this using the [cordova-custom-config plugin](https://github.com/dpa99c/cordova-custom-config), for example: 
 
 ```
 <platform name="android">
