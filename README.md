@@ -345,6 +345,23 @@ App can never ask for permission again.
 The only way around this is to instruct the user to manually change the permission on the app permissions page in Settings.
 - `GRANTED` - User granted access to this permission, the device is running Android 5.x or below, or the app is built with API 22 or below.
 
+⚠ Since it's impossible to distinguish between NOT_REQUESTED and DENIED_ALWAYS using the native Android runtime permissions API (they both return the same constant value), this plugin attempts to distinguish the difference by using HTML5 local storage to keep track of which permissions have been requested since the app was first installed. On requesting a permission for the first time, an entry is put into local storage against the permission name. If the user then selects DENY_ALWAYS, the plugin uses the flag in local storage to distinguish this from NOT_REQUESTED.
+
+Some things to watch out for:
+
+ - Clearing local storage will result in this data being lost and will result in NOT_REQUESTED being returned even if the user previously chose to always deny permission.
+ - If the relevant <uses-permission> tag is missing from the Android manifest, then the native API will return the NOT_REQUESTED/DENIED_ALWAYS constant value. Since the plugin is unable to make the native permissions request in order to show the native dialog, the plugin will always return NOT_REQUESTED.
+
+Since Android does not store permission status after uninstall but keeps local storage, you may want to clear local storage automatically on uninstall. You can do it using the [cordova-custom-config plugin](https://github.com/dpa99c/cordova-custom-config), for example: 
+
+```
+<platform name="android">
+    <plugin name="cordova-custom-config" version="*"/>
+    <custom-preference name="android-manifest/application/@android:allowBackup" value="false" />
+    <custom-preference name="android-manifest/application/@android:fullBackupContent" value="false" />
+</platform>
+```
+
 #### iOS
 
 The following permission states are defined for iOS:
