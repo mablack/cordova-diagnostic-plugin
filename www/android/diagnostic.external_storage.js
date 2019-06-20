@@ -72,7 +72,7 @@ var Diagnostic_External_Storage = (function(){
      */
     Diagnostic_External_Storage.isExternalStorageAuthorized = function(successCallback, errorCallback){
         function onSuccess(status){
-            successCallback(status == Diagnostic.permissionStatus.GRANTED);
+            successCallback(status === Diagnostic.permissionStatus.GRANTED);
         }
         Diagnostic_External_Storage.getExternalStorageAuthorizationStatus(onSuccess, errorCallback);
     };

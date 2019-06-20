@@ -126,7 +126,7 @@ public class Diagnostic extends CordovaPlugin{
     /**
      * User denied permission (without checking "never ask again")
      */
-    protected static final String STATUS_DENIED = "DENIED";
+    protected static final String STATUS_DENIED_ONCE = "DENIED_ONCE";
 
     /**
      * User denied permission and checked "never ask again"
@@ -503,7 +503,7 @@ public class Diagnostic extends CordovaPlugin{
                         statuses.put(permission, Diagnostic.STATUS_NOT_REQUESTED);
                     }
                 }else{
-                    statuses.put(permission, Diagnostic.STATUS_DENIED);
+                    statuses.put(permission, Diagnostic.STATUS_DENIED_ONCE);
                 }
             }
         }
@@ -802,7 +802,7 @@ public class Diagnostic extends CordovaPlugin{
                         }
                     } else {
                         // user denied WITHOUT "never ask again"
-                        status = Diagnostic.STATUS_DENIED;
+                        status = Diagnostic.STATUS_DENIED_ONCE;
                     }
                 } else {
                     // Permission granted

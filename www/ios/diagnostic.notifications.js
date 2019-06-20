@@ -120,7 +120,7 @@ var Diagnostic_Notifications = (function(){
      * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * Possible values are:
      * `cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED`
-     * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
      *  - {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.

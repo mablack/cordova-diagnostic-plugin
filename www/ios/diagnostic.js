@@ -22,7 +22,7 @@ var Diagnostic = (function(){
      */
     Diagnostic.permissionStatus = {
         "NOT_REQUESTED": "not_determined", // App has not yet requested this permission
-        "DENIED": "denied", // User denied access to this permission
+        "DENIED_ALWAYS": "denied_always", // User denied access to this permission
         "RESTRICTED": "restricted", // Permission is unavailable and user cannot enable it.  For example, when parental controls are in effect for the current user.
         "GRANTED": "authorized", //  User granted access to this permission
         "GRANTED_WHEN_IN_USE": "authorized_when_in_use" //  User granted access use location permission only when app is in use
@@ -198,7 +198,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter which indicates the location authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * Possible values are:
      * `cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED`
-     * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE`
      * Note that `GRANTED` indicates the app is always granted permission (even when in background).
@@ -221,7 +221,7 @@ var Diagnostic = (function(){
      * @param {Function} successCallback - Invoked in response to the user's choice in the permission dialog.
      * It is passed a single string parameter which defines the resulting authorisation status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * Possible values are:
-     * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
@@ -336,7 +336,7 @@ var Diagnostic = (function(){
      * @param {Object} params - (optional) parameters:
      * - {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating whether access to the camera was granted or denied:
-     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * - {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      */
@@ -386,7 +386,7 @@ var Diagnostic = (function(){
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating the new authorization status:
-     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      */
@@ -576,7 +576,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * Possible values are:
      * `cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED`
-     * `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED`
      *  - {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
@@ -652,7 +652,7 @@ var Diagnostic = (function(){
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating whether access to the microphone was granted or denied:
-     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback - The callback which will be called when an error occurs.
      * This callback function is passed a single string parameter containing the error message.
      * This works only on iOS 7+.
@@ -708,7 +708,7 @@ var Diagnostic = (function(){
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating whether access to contacts was granted or denied:
-     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      */
@@ -762,7 +762,7 @@ var Diagnostic = (function(){
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating whether access to calendar was granted or denied:
-     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      */
@@ -816,7 +816,7 @@ var Diagnostic = (function(){
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating whether access to reminders was granted or denied:
-     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED`
+     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      */
@@ -883,7 +883,7 @@ var Diagnostic = (function(){
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single string parameter indicating the result:
      * - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
-     * - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+     * - `cordova.plugins.diagnostic.motionStatus.DENIED_ALWAYS` - user denied authorization.
      * - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
      * - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
      * Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
@@ -911,7 +911,7 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter indicating the result:
     * - `cordova.plugins.diagnostic.motionStatus.NOT_REQUESTED` - App has not yet requested this permission.
     * - `cordova.plugins.diagnostic.motionStatus.GRANTED` - user granted motion authorization.
-    * - `cordova.plugins.diagnostic.motionStatus.DENIED` - user denied authorization.
+    * - `cordova.plugins.diagnostic.motionStatus.DENIED_ALWAYS` - user denied authorization.
     * - `cordova.plugins.diagnostic.motionStatus.RESTRICTED` - user cannot grant motion authorization.
     * - `cordova.plugins.diagnostic.motionStatus.NOT_AVAILABLE` - device does not support Motion Tracking.
     * Motion tracking is supported by iOS devices with an M7 co-processor (or above): that is iPhone 5s (or above), iPad Air (or above), iPad Mini 2 (or above).
