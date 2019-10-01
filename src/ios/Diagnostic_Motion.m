@@ -48,7 +48,10 @@ static NSString*const LOG_TAG = @"Diagnostic_Motion[native]";
 - (void) getMotionAuthorizationStatus: (CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
-        if([diagnostic getSetting:@"motion_permission_requested"] == nil){
+        if(![self isMotionAvailable]){
+            // Activity tracking not available on this device
+            [diagnostic sendPluginResultString:@"not_available":command];
+        }else if([diagnostic getSetting:@"motion_permission_requested"] == nil){
             // Permission not yet requested
             [diagnostic sendPluginResultString:@"not_requested":command];
         }else{
