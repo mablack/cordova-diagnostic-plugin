@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: Report a problem
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 <!--
 IMPORTANT: PLEASE READ
 
@@ -11,8 +20,8 @@ Before opening an issue, please do the following:
 - try to reproduce the issue using the example project
 	- or if that's not possible, using an isolated test project that you are able to share
 	- this will eliminate bugs in your code or conflicts with other code as possible causes of the issue
-- Any issue which is suspected of being caused by the Ionic Native wrapper should be reported against Ionic Native (https://github.com/ionic-team/ionic-native/issues)
-	- Ionic Native Typescript wrappers are maintained by the Ionic Team:
+- any issue which is suspected of being caused by the Ionic Native wrapper should be [reported against Ionic Native](https://github.com/ionic-team/ionic-native/issues/new)
+	- Ionic Native Typescript wrappers are maintained by the Ionic Team
 	- To verify an if an issue is caused by this plugin or its Typescript wrapper, please re-test using the vanilla Javascript plugin interface (without the Ionic Native wrapper).
 	- Any issue opened here which is obviously an Ionic Typescript wrapper issue will be closed immediately.
 -->
@@ -55,9 +64,9 @@ Before opening an issue, please do the following:
         
 _Runtime issue_
 - Device details
-    - _e.g. iPhone 7, Samsung Galaxy S8, iPhone X Simulator, Pixel XL Emulator_
+    - _e.g. iPhone X, Samsung Galaxy S8, iPhone X Simulator, Pixel XL Emulator_
 - OS details
-    - _e.g. iOS 11.2, Android 8.1_	
+    - _e.g. iOS 12.2, Android 9.0_	
 	
 _Android build issue:_	
 - Node JS version

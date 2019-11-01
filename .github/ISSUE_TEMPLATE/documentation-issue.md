@@ -1,3 +1,11 @@
+---
+name: Documentation issue
+about: Describe an issue with the documentation
+title: ''
+labels: ''
+assignees: ''
+
+---
 <!--
 WARNING: Failure to follow the issue template guidelines below will result in the issue being immediately closed.
 

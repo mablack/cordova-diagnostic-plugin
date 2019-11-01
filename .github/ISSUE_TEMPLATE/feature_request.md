@@ -1,3 +1,11 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
+
+---
 <!--
 WARNING: Failure to follow the issue template guidelines below will result in the issue being immediately closed.
 
