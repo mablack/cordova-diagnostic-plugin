@@ -82,6 +82,7 @@ static Diagnostic* diagnostic = nil;
         _status = [[UIApplication sharedApplication] backgroundRefreshStatus];
     }@catch (NSException *exception) {
         [self handlePluginException:exception :command];
+        return;
     }
     [self.commandDelegate runInBackground:^{
         @try {
