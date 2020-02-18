@@ -830,7 +830,7 @@ Platforms: Android and iOS
 
 Enables debug mode, which logs native debug messages to the native and JS consoles.
 - For Android, log messages will appear in the native logcat output and in the JS console if Chrome Developer Tools is connected to the app Webview.
-- For Android, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
+- For iOS, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
 - Debug mode is initially disabled on plugin initialisation.
 
 
