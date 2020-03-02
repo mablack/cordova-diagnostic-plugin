@@ -1419,7 +1419,7 @@ Platforms: Android
 Checks if the device has Bluetooth capabilities.
 See http://developer.android.com/guide/topics/connectivity/bluetooth.html.
 
-    cordova.plugins.diagnostic.hasBluetoothLESupport(successCallback, errorCallback);
+    cordova.plugins.diagnostic.hasBluetoothSupport(successCallback, errorCallback);
 
 #### Parameters
 
