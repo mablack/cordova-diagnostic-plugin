@@ -39,6 +39,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [enableDebug()](#enabledebug)
   - [Location module](#location-module)
     - [locationMode constants](#locationmode-constants)
+    - [locationAuthorizationMode constants](#locationauthorizationmode-constants)
     - [isLocationAvailable()](#islocationavailable)
     - [isLocationEnabled()](#islocationenabled)
     - [isGpsLocationAvailable()](#isgpslocationavailable)
@@ -891,7 +892,28 @@ Defines constants for the various location modes on Android.
     },function(error){
         console.error("The following error occurred: "+error);
     });
-    
+
+### locationAuthorizationMode constants
+
+Platforms: iOS
+
+Defines constants for the various location authorization modes on iOS.
+
+    cordova.plugins.diagnostic.locationAuthorizationMode
+
+#### Values
+
+- `ALWAYS` - Requires constant access to location in order to track position, even when the screen is off or the app is in the background.
+- `WHEN_IN_USE` - Requires access to location when the screen is on and the app is displayed.
+
+#### Example
+
+    cordova.plugins.diagnostic.requestLocationAuthorization(function(status){
+        console.log(status);
+    }, function(error){
+        console.error(error);
+    }, cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS);
+
 ### isLocationAvailable()
 
 Platforms: Android, iOS and Windows 10 UWP
