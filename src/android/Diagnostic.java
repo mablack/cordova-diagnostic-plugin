@@ -87,6 +87,8 @@ public class Diagnostic extends CordovaPlugin{
         Diagnostic.addBiDirMapEntry(_permissionsMap, "GET_ACCOUNTS", Manifest.permission.GET_ACCOUNTS);
         Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_FINE_LOCATION", Manifest.permission.ACCESS_FINE_LOCATION);
         Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_COARSE_LOCATION", Manifest.permission.ACCESS_COARSE_LOCATION);
+        // Add as string as Manifest.permission.ACCESS_BACKGROUND_LOCATION not defined in < API 29:
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_BACKGROUND_LOCATION", "android.permission.ACCESS_BACKGROUND_LOCATION");
         Diagnostic.addBiDirMapEntry(_permissionsMap, "RECORD_AUDIO", Manifest.permission.RECORD_AUDIO);
         Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_PHONE_STATE", Manifest.permission.READ_PHONE_STATE);
         Diagnostic.addBiDirMapEntry(_permissionsMap, "CALL_PHONE", Manifest.permission.CALL_PHONE);
@@ -499,6 +501,9 @@ public class Diagnostic extends CordovaPlugin{
                 if(!showRationale){
                     if(isPermissionRequested(permission)){
                         statuses.put(permission, Diagnostic.STATUS_DENIED_ALWAYS);
+                    }else if(Build.VERSION.SDK_INT < 29 && permission.equals("ACCESS_BACKGROUND_LOCATION")){
+                        // This version of Android doesn't support background location permission so assume it's implicitly granted
+                        statuses.put(permission, Diagnostic.STATUS_GRANTED);
                     }else{
                         statuses.put(permission, Diagnostic.STATUS_NOT_REQUESTED);
                     }
@@ -546,8 +551,12 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     protected int storeContextByRequestId(){
+        return storeContextByRequestId(currentContext);
+    }
+
+    protected int storeContextByRequestId(CallbackContext callbackContext){
         String requestId = generateRandomRequestId();
-        callbackContexts.put(requestId, currentContext);
+        callbackContexts.put(requestId, callbackContext);
         permissionStatuses.put(requestId, new JSONObject());
         return Integer.valueOf(requestId);
     }
@@ -796,6 +805,9 @@ public class Diagnostic extends CordovaPlugin{
                         if(isPermissionRequested(permission)){
                             // user denied WITH "never ask again"
                             status = Diagnostic.STATUS_DENIED_ALWAYS;
+                        }else if(Build.VERSION.SDK_INT < 29 && permission.equals("ACCESS_BACKGROUND_LOCATION")){
+                            // This version of Android doesn't support background location permission so assume it's implicitly granted
+                            status = Diagnostic.STATUS_GRANTED;
                         }else{
                             // The app doesn't have permission and the user has not been asked for the permission before
                             status = Diagnostic.STATUS_NOT_REQUESTED;

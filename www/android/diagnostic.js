@@ -37,6 +37,7 @@ var Diagnostic = (function(){
             "GET_ACCOUNTS": "GET_ACCOUNTS",
             "ACCESS_FINE_LOCATION": "ACCESS_FINE_LOCATION",
             "ACCESS_COARSE_LOCATION": "ACCESS_COARSE_LOCATION",
+            "ACCESS_BACKGROUND_LOCATION": "ACCESS_BACKGROUND_LOCATION",
             "RECORD_AUDIO": "RECORD_AUDIO",
             "READ_PHONE_STATE": "READ_PHONE_STATE",
             "CALL_PHONE": "CALL_PHONE",
@@ -65,7 +66,7 @@ var Diagnostic = (function(){
             "CALENDAR": ["READ_CALENDAR", "WRITE_CALENDAR"],
             "CAMERA": ["CAMERA"],
             "CONTACTS": ["READ_CONTACTS", "WRITE_CONTACTS", "GET_ACCOUNTS"],
-            "LOCATION": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+            "LOCATION": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "ACCESS_BACKGROUND_LOCATION"],
             "MICROPHONE": ["RECORD_AUDIO"],
             "PHONE": ["READ_PHONE_STATE", "CALL_PHONE", "ADD_VOICEMAIL", "USE_SIP", "PROCESS_OUTGOING_CALLS", "READ_CALL_LOG", "WRITE_CALL_LOG"],
             "SENSORS": ["BODY_SENSORS"],
@@ -75,13 +76,24 @@ var Diagnostic = (function(){
 
     Diagnostic.runtimePermissionStatus = // deprecated
         Diagnostic.permissionStatus = {
-            "GRANTED": "GRANTED", //  User granted access to this permission, the device is running Android 5.x or below, or the app is built with API 22 or below.
-            "DENIED_ONCE": "DENIED_ONCE", // User denied access to this permission
-            "NOT_REQUESTED": "NOT_REQUESTED", // App has not yet requested access to this permission.
-            "DENIED_ALWAYS": "DENIED_ALWAYS" // User denied access to this permission and checked "Never Ask Again" box.
+            //  Location permission requested and 
+            //      app build SDK/user device is Android >10 and user granted background location ("all the time") permission,
+            //      or app build SDK/user device is Android 6-9 and user granted location permission,
+            //  or non-location permission requested
+            //      and app build SDK/user device is Android >=6 and user granted permission
+            //  or app build SDK/user device is Android <6
+            "GRANTED": "GRANTED",
+            //  Location permission requested 
+            //  and app build SDK/user device is Android >10 
+            //  and user granted background foreground location ("while-in-use") permission
+            "GRANTED_WHEN_IN_USE": "authorized_when_in_use",
+            // User denied access to this permission
+            "DENIED_ONCE": "DENIED_ONCE",
+            // User denied access to this permission and checked "Never Ask Again" box.
+            "DENIED_ALWAYS": "DENIED_ALWAYS",
+            // App has not yet requested access to this permission.
+            "NOT_REQUESTED": "NOT_REQUESTED"
         };
-
-
 
     Diagnostic.cpuArchitecture = {
         UNKNOWN: "unknown",

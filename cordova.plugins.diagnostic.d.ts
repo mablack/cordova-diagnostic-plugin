@@ -25,6 +25,7 @@ interface Diagnostic {
         "GET_ACCOUNTS": "GET_ACCOUNTS";
         "ACCESS_FINE_LOCATION": "ACCESS_FINE_LOCATION";
         "ACCESS_COARSE_LOCATION": "ACCESS_COARSE_LOCATION";
+        "ACCESS_BACKGROUND_LOCATION": "ACCESS_BACKGROUND_LOCATION";
         "RECORD_AUDIO": "RECORD_AUDIO";
         "READ_PHONE_STATE": "READ_PHONE_STATE";
         "CALL_PHONE": "CALL_PHONE";
@@ -72,10 +73,10 @@ interface Diagnostic {
 
         // iOS only
         "RESTRICTED": "restricted";
-        "GRANTED_WHEN_IN_USE": "authorized_when_in_use";
 
         // Both iOS and Android
         "GRANTED": "authorized"|"GRANTED";
+        "GRANTED_WHEN_IN_USE": "authorized_when_in_use";
         "NOT_REQUESTED": "not_determined"|"NOT_REQUESTED";
         "DENIED_ALWAYS": "denied_always"|"DENIED_ALWAYS";
     };
@@ -96,7 +97,7 @@ interface Diagnostic {
     };
 
     /**
-     * iOS ONLY
+     * ANDROID and iOS ONLY
      * Location authorization mode
      * @type {Object}
      */
@@ -340,7 +341,7 @@ interface Diagnostic {
      * Requests location authorization for the application.
      * @param successCallback
      * @param errorCallback
-     * @param mode - (iOS-only / optional) location authorization mode specified as a locationAuthorizationMode constant. If not specified, defaults to WHEN_IN_USE.
+     * @param mode - (optional / iOS & Android >= 10) location authorization mode specified as a locationAuthorizationMode constant. If not specified, defaults to WHEN_IN_USE.
      */
     requestLocationAuthorization?: (
         successCallback: (status: string) => void,

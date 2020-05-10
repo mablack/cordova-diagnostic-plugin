@@ -25,6 +25,7 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -55,6 +56,7 @@ public class Diagnostic_Location extends CordovaPlugin{
 
     private static String gpsLocationPermission = "ACCESS_FINE_LOCATION";
     private static String networkLocationPermission = "ACCESS_COARSE_LOCATION";
+    private static String backgroundLocationPermission = "ACCESS_BACKGROUND_LOCATION";
 
 
     private static final String LOCATION_MODE_HIGH_ACCURACY = "high_accuracy";
@@ -160,6 +162,8 @@ public class Diagnostic_Location extends CordovaPlugin{
                 callbackContext.success(isNetworkLocationEnabled() ? 1 : 0);
             } else if(action.equals("getLocationMode")) {
                 callbackContext.success(getLocationModeName());
+            } else if(action.equals("requestLocationAuthorization")) {
+                requestLocationAuthorization(args, callbackContext);
             }else {
                 diagnostic.handleError("Invalid action");
                 return false;
@@ -236,6 +240,25 @@ public class Diagnostic_Location extends CordovaPlugin{
         diagnostic.logDebug("Switch to Location Settings");
         Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         cordova.getActivity().startActivity(settingsIntent);
+    }
+
+    public void requestLocationAuthorization(JSONArray args, CallbackContext callbackContext) throws Exception{
+        JSONArray permissionsToRequest = new JSONArray();
+        boolean shouldRequestBackground = args.getBoolean(0);
+
+        permissionsToRequest.put(gpsLocationPermission);
+        permissionsToRequest.put(networkLocationPermission);
+
+        if(shouldRequestBackground && Build.VERSION.SDK_INT >= 29 ){
+            permissionsToRequest.put(backgroundLocationPermission);
+        }
+
+        int requestId = Diagnostic.instance.storeContextByRequestId(callbackContext);
+        Diagnostic.instance._requestRuntimePermissions(permissionsToRequest, requestId);
+
+        PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+        result.setKeepCallback(true);
+        callbackContext.sendPluginResult(result);
     }
 
 

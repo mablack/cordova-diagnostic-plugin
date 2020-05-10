@@ -19,119 +19,293 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
 - [Usage](#usage)
   - [Core module](#core-module)
     - [switchToSettings()](#switchtosettings)
+      - [Parameters](#parameters)
+      - [Example usage](#example-usage)
     - [switchToWirelessSettings()](#switchtowirelesssettings)
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
     - [permissionStatus constants](#permissionstatus-constants)
+      - [Android](#android)
+      - [iOS](#ios)
+      - [Example](#example)
     - [getPermissionAuthorizationStatus()](#getpermissionauthorizationstatus)
+      - [Parameters](#parameters-1)
+      - [Example usage](#example-usage-1)
     - [getPermissionsAuthorizationStatus()](#getpermissionsauthorizationstatus)
+      - [Parameters](#parameters-2)
+      - [Example usage](#example-usage-2)
     - [requestRuntimePermission()](#requestruntimepermission)
+      - [Parameters](#parameters-3)
+      - [Example usage](#example-usage-3)
     - [requestRuntimePermissions()](#requestruntimepermissions)
+      - [Parameters](#parameters-4)
+      - [Example usage](#example-usage-4)
     - [isRequestingPermission()](#isrequestingpermission)
+      - [Example usage](#example-usage-5)
     - [registerPermissionRequestCompleteHandler()](#registerpermissionrequestcompletehandler)
+      - [Parameters](#parameters-5)
+      - [Example usage](#example-usage-6)
     - [isDataRoamingEnabled()](#isdataroamingenabled)
+      - [Parameters](#parameters-6)
+      - [Example usage](#example-usage-7)
     - [isADBModeEnabled()](#isadbmodeenabled)
+      - [Parameters](#parameters-7)
+      - [Example usage](#example-usage-8)
     - [isDeviceRooted()](#isdevicerooted)
+      - [Parameters](#parameters-8)
+      - [Example usage](#example-usage-9)
     - [isBackgroundRefreshAuthorized()](#isbackgroundrefreshauthorized)
+      - [Parameters](#parameters-9)
+      - [Example usage](#example-usage-10)
     - [getBackgroundRefreshStatus()](#getbackgroundrefreshstatus)
+      - [Parameters](#parameters-10)
+      - [Example usage](#example-usage-11)
     - [cpuArchitecture constants](#cpuarchitecture-constants)
+      - [Android](#android-1)
+      - [iOS](#ios-1)
+      - [Example usage](#example-usage-12)
     - [getArchitecture()](#getarchitecture)
+      - [Parameters](#parameters-11)
+      - [Example usage](#example-usage-13)
     - [restart()](#restart)
+      - [Parameters](#parameters-12)
+      - [Example usage](#example-usage-14)
     - [enableDebug()](#enabledebug)
+      - [Parameters](#parameters-13)
+      - [Example usage](#example-usage-15)
   - [Location module](#location-module)
     - [locationMode constants](#locationmode-constants)
+      - [Values](#values)
+      - [Example](#example-1)
     - [locationAuthorizationMode constants](#locationauthorizationmode-constants)
+      - [Values](#values-1)
+      - [Example](#example-2)
     - [isLocationAvailable()](#islocationavailable)
+      - [Parameters](#parameters-14)
+      - [Example usage](#example-usage-16)
     - [isLocationEnabled()](#islocationenabled)
+      - [Parameters](#parameters-15)
+      - [Example usage](#example-usage-17)
     - [isGpsLocationAvailable()](#isgpslocationavailable)
+      - [Parameters](#parameters-16)
+      - [Example usage](#example-usage-18)
     - [isGpsLocationEnabled()](#isgpslocationenabled)
+      - [Parameters](#parameters-17)
+      - [Example usage](#example-usage-19)
     - [isNetworkLocationAvailable()](#isnetworklocationavailable)
+      - [Parameters](#parameters-18)
+      - [Example usage](#example-usage-20)
     - [isNetworkLocationEnabled()](#isnetworklocationenabled)
+      - [Parameters](#parameters-19)
+      - [Example usage](#example-usage-21)
     - [getLocationMode()](#getlocationmode)
+      - [Parameters](#parameters-20)
+      - [Example usage](#example-usage-22)
     - [isLocationAuthorized()](#islocationauthorized)
+      - [Parameters](#parameters-21)
+      - [Example usage](#example-usage-23)
     - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
+      - [Parameters](#parameters-22)
+      - [Example iOS usage](#example-ios-usage)
+      - [Example Android usage](#example-android-usage)
     - [requestLocationAuthorization()](#requestlocationauthorization)
+      - [Parameters](#parameters-23)
+      - [Example usage](#example-usage-24)
     - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
+      - [Parameters](#parameters-24)
+      - [Example usage](#example-usage-25)
     - [switchToLocationSettings()](#switchtolocationsettings)
   - [Bluetooth module](#bluetooth-module)
     - [bluetoothState constants](#bluetoothstate-constants)
+      - [Android](#android-2)
+      - [iOS](#ios-2)
+      - [Example](#example-3)
     - [isBluetoothAvailable()](#isbluetoothavailable)
+      - [Parameters](#parameters-25)
+      - [Example usage](#example-usage-26)
     - [isBluetoothEnabled()](#isbluetoothenabled)
+      - [Parameters](#parameters-26)
+      - [Example usage](#example-usage-27)
     - [hasBluetoothSupport()](#hasbluetoothsupport)
+      - [Parameters](#parameters-27)
+      - [Example usage](#example-usage-28)
     - [hasBluetoothLESupport()](#hasbluetoothlesupport)
+      - [Parameters](#parameters-28)
+      - [Example usage](#example-usage-29)
     - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
+      - [Parameters](#parameters-29)
+      - [Example usage](#example-usage-30)
     - [getBluetoothState()](#getbluetoothstate)
+      - [Parameters](#parameters-30)
+      - [Example usage](#example-usage-31)
     - [setBluetoothState()](#setbluetoothstate)
+      - [Parameters](#parameters-31)
+      - [Example usage](#example-usage-32)
     - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
+      - [Parameters](#parameters-32)
+      - [Example usage](#example-usage-33)
     - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+      - [Parameters](#parameters-33)
+      - [Example usage](#example-usage-34)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
   - [WiFi module](#wifi-module)
     - [isWifiAvailable()](#iswifiavailable)
+      - [Parameters](#parameters-34)
+      - [Example usage](#example-usage-35)
     - [isWifiEnabled()](#iswifienabled)
+      - [Parameters](#parameters-35)
+      - [Example usage](#example-usage-36)
     - [setWifiState()](#setwifistate)
+      - [Parameters](#parameters-36)
+      - [Example usage](#example-usage-37)
     - [switchToWifiSettings()](#switchtowifisettings)
   - [Camera module](#camera-module)
     - [isCameraPresent()](#iscamerapresent)
+      - [Parameters](#parameters-37)
+      - [Example usage](#example-usage-38)
     - [isCameraAvailable()](#iscameraavailable)
+      - [Parameters](#parameters-38)
+      - [Example usage](#example-usage-39)
     - [isCameraAuthorized()](#iscameraauthorized)
+      - [Parameters](#parameters-39)
+      - [Example usage](#example-usage-40)
     - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
+      - [Parameters](#parameters-40)
+      - [Example usage](#example-usage-41)
     - [requestCameraAuthorization()](#requestcameraauthorization)
+      - [Parameters](#parameters-41)
+      - [Example usage](#example-usage-42)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
+      - [Parameters](#parameters-42)
+      - [Example usage](#example-usage-43)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
+      - [Parameters](#parameters-43)
+      - [Example usage](#example-usage-44)
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+      - [Parameters](#parameters-44)
+      - [Example usage](#example-usage-45)
   - [Notifications module](#notifications-module)
     - [remoteNotificationType constants](#remotenotificationtype-constants)
+      - [Example](#example-4)
     - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
+      - [Parameters](#parameters-45)
+      - [Example usage](#example-usage-46)
     - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
+      - [Parameters](#parameters-46)
+      - [Example usage](#example-usage-47)
     - [getRemoteNotificationTypes()](#getremotenotificationtypes)
+      - [Parameters](#parameters-47)
+      - [Example usage](#example-usage-48)
     - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
+      - [Parameters](#parameters-48)
+      - [Example usage](#example-usage-49)
     - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
+      - [Parameters](#parameters-49)
+      - [Example usage](#example-usage-50)
   - [Microphone module](#microphone-module)
     - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
+      - [Parameters](#parameters-50)
+      - [Example usage](#example-usage-51)
     - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
+      - [Parameters](#parameters-51)
+      - [Example usage](#example-usage-52)
     - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
+      - [Parameters](#parameters-52)
+      - [Example usage](#example-usage-53)
   - [Contacts module](#contacts-module)
     - [isContactsAuthorized()](#iscontactsauthorized)
+      - [Parameters](#parameters-53)
+      - [Example usage](#example-usage-54)
     - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
+      - [Parameters](#parameters-54)
+      - [Example usage](#example-usage-55)
     - [requestContactsAuthorization()](#requestcontactsauthorization)
+      - [Parameters](#parameters-55)
+      - [Example usage](#example-usage-56)
   - [Calendar module](#calendar-module)
     - [isCalendarAuthorized()](#iscalendarauthorized)
+      - [Parameters](#parameters-56)
+      - [Example usage](#example-usage-57)
     - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
+      - [Parameters](#parameters-57)
+      - [Example usage](#example-usage-58)
     - [requestCalendarAuthorization()](#requestcalendarauthorization)
+      - [Parameters](#parameters-58)
+      - [Example usage](#example-usage-59)
   - [Reminders module](#reminders-module)
     - [isRemindersAuthorized()](#isremindersauthorized)
+      - [Parameters](#parameters-59)
+      - [Example usage](#example-usage-60)
     - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
+      - [Parameters](#parameters-60)
+      - [Example usage](#example-usage-61)
     - [requestRemindersAuthorization()](#requestremindersauthorization)
+      - [Parameters](#parameters-61)
+      - [Example usage](#example-usage-62)
   - [Motion module](#motion-module)
     - [motionStatus constants](#motionstatus-constants)
+      - [Example](#example-5)
     - [isMotionAvailable()](#ismotionavailable)
+      - [Parameters](#parameters-62)
+      - [Example usage](#example-usage-63)
     - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
+      - [Parameters](#parameters-63)
+      - [Example usage](#example-usage-64)
     - [requestMotionAuthorization()](#requestmotionauthorization)
+      - [Parameters](#parameters-64)
+      - [Example usage](#example-usage-65)
     - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
+      - [Parameters](#parameters-65)
+      - [Example usage](#example-usage-66)
   - [NFC module](#nfc-module)
     - [NFCState constants](#nfcstate-constants)
+      - [Values](#values-2)
+      - [Example](#example-6)
     - [isNFCPresent()](#isnfcpresent)
+      - [Parameters](#parameters-66)
+      - [Example usage](#example-usage-67)
     - [isNFCEnabled()](#isnfcenabled)
+      - [Parameters](#parameters-67)
+      - [Example usage](#example-usage-68)
     - [isNFCAvailable()](#isnfcavailable)
+      - [Parameters](#parameters-68)
+      - [Example usage](#example-usage-69)
     - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+      - [Parameters](#parameters-69)
+      - [Example usage](#example-usage-70)
     - [switchToNFCSettings()](#switchtonfcsettings)
   - [External storage module](#external-storage-module)
     - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
+      - [Parameters](#parameters-70)
+      - [Example usage](#example-usage-71)
     - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
+      - [Parameters](#parameters-71)
+      - [Example usage](#example-usage-72)
     - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
+      - [Parameters](#parameters-72)
+      - [Example usage](#example-usage-73)
     - [getExternalSdCardDetails()](#getexternalsdcarddetails)
+      - [Parameters](#parameters-73)
+      - [Example usage](#example-usage-74)
 - [Platform Notes](#platform-notes)
-  - [Android](#android)
+  - [Android](#android-3)
     - [Android permissions](#android-permissions)
+      - [Android runtime permissions](#android-runtime-permissions)
+        - ["Dangerous" runtime permissions](#dangerous-runtime-permissions)
+        - [Runtime permission groups](#runtime-permission-groups)
+        - [Runtime permissions example project](#runtime-permissions-example-project)
+        - [Android Camera permissions](#android-camera-permissions)
+        - [Building for Android runtime permissions](#building-for-android-runtime-permissions)
+        - [Building for API 22 or lower](#building-for-api-22-or-lower)
     - [Android Auto Backup](#android-auto-backup)
   - [Windows](#windows)
     - [Supported Windows versions](#supported-windows-versions)
     - [Windows 10 UWP permissions](#windows-10-uwp-permissions)
-  - [iOS](#ios)
+  - [iOS](#ios-3)
     - [iOS usage description messages](#ios-usage-description-messages)
 - [Example project](#example-project)
   - [Screenshots](#screenshots)
-    - [Android](#android-1)
-    - [iOS](#ios-1)
+    - [Android](#android-4)
+    - [iOS](#ios-4)
 - [Release notes](#release-notes)
 - [Credits](#credits)
 - [License](#license)
@@ -895,9 +1069,9 @@ Defines constants for the various location modes on Android.
 
 ### locationAuthorizationMode constants
 
-Platforms: iOS
+Platforms: Android & iOS
 
-Defines constants for the various location authorization modes on iOS.
+Defines constants for the various location authorization modes on iOS and Android >= 10.
 
     cordova.plugins.diagnostic.locationAuthorizationMode
 
@@ -1199,15 +1373,19 @@ The function is passed a single string parameter containing the error message.
             case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
                 console.log("Permission not requested");
                 break;
-            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
-                console.log("Permission granted");
-                break;
             case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
                 console.log("Permission denied");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
                 console.log("Permission permanently denied");
                 break;
+            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
+               console.log("Permission granted always");
+               break;    
+            case cordova.plugins.diagnostic.permissionStatus.GRANTED_WHEN_IN_USE:
+               console.log("Permission granted only when in use (Android >= 10)");
+               break; 
+           
         }
     }, function(error){
         console.error(error);
@@ -1231,6 +1409,8 @@ this plugin provides default messages, but you should override them with your sp
 
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
+- When the plugin is running in an app built with the Android 10 / API 29 or above (and running on similar device) you can request background location permission by specifying the `mode` argument as `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`. 
+    - If the build SDK/device version is <= Android 9 / API 28, granting location permission implicitly grants background location permission.  
 
     `cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode);`
 
@@ -1240,10 +1420,10 @@ this plugin provides default messages, but you should override them with your sp
 It is passed a single string parameter which defines the [resulting authorisation status](#runtime-permission-statuses).
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
-- {String} mode - (iOS-only / optional) location authorization mode specified as a [locationAuthorizationMode constant](#locationauthorizationmode-constants).
+- {String} mode - (optional / iOS & Android >= 10) location authorization mode specified as a [locationAuthorizationMode constant](#locationauthorizationmode-constants).
 If not specified, defaults to `WHEN_IN_USE`.
 
-#### Example iOS usage
+#### Example usage
 
     cordova.plugins.diagnostic.requestLocationAuthorization(function(status){
         switch(status){
@@ -1263,27 +1443,6 @@ If not specified, defaults to `WHEN_IN_USE`.
     }, function(error){
         console.error(error);
     }, cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS);
-
-#### Example Android usage
-
-    cordova.plugins.diagnostic.requestLocationAuthorization(function(status){
-        switch(status){
-            case cordova.plugins.diagnostic.permissionStatus.NOT_REQUESTED:
-                console.log("Permission not requested");
-                break;
-            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
-                console.log("Permission granted");
-                break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED_ONCE:
-                console.log("Permission denied");
-                break;
-            case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
-                console.log("Permission permanently denied");
-                break;
-        }
-    }, function(error){
-        console.error(error);
-    });
 
 ### registerLocationStateChangeHandler()
 
