@@ -1,5 +1,14 @@
 # CHANGELOG
 
+**v5.0.2**
+* (Android) Add support for background location permission on Android 10 / API 29. Resolves [#398](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/398).
+* (Doc) Add doc about `locationAuthorizationMode` constants
+* (Doc) Fix error in `hasBluetoothSupport()` example
+* (Doc) Fix `enableDebug()` for iOS note
+* (iOS) Add return statement to getBackgroundRefreshStatus following handling of an exception raised when attempting to retrieve status. Resolves [#389](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/389).
+* (iOS): If motion tracking is not available on the device, return "not available" when calling getMotionAuthorizationStatus(). Further resolves [#372](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/372).
+
+
 **v5.0.1**
 * Add types for various statuses constants (thanks to [@fcamblor](https://github.com/fcamblor))
 * (iOS) Add placeholder `NSBluetoothAlwaysUsageDescription` to Bluetooth module. 
