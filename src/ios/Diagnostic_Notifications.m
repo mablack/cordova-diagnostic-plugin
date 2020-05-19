@@ -223,7 +223,7 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
                 [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
                     UNAuthorizationStatus authStatus = settings.authorizationStatus;
                     if(authStatus == UNAuthorizationStatusNotDetermined){
-                        UNAuthorizationOptions options = 0;
+                        UNAuthorizationOptions options = UNAuthorizationOptionNone;
                         for(id key in d_options){
                             NSString* s_key = (NSString*) key;
                             if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
