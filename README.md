@@ -16,6 +16,9 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
   - [Android Support Library](#android-support-library)
   - [Specifying modules](#specifying-modules)
     - [Available modules](#available-modules)
+- [Reporting issues](#reporting-issues)
+  - [Reporting a bug or problem](#reporting-a-bug-or-problem)
+  - [Requesting a new feature](#requesting-a-new-feature)
 - [Usage](#usage)
   - [Core module](#core-module)
     - [switchToSettings()](#switchtosettings)
@@ -441,6 +444,54 @@ The following optional modules are currently supported by the plugin:
 **IMPORTANT:** It's vital that the preference be added to your `config.xml` **before** you install the plugin, otherwise the preference will not be applied and all modules will be added.
 This is because, due to limitations of the Cordova CLI hooks, this plugin must use the `npm install` process to apply the module preferences and this runs before the Cordova CLI when installing a plugin.
 If you change the modules specified in the preference, you'll need to uninstall then re-install the plugin to your project to apply the changes.    
+
+# Reporting issues
+**IMPORTANT:** Please read the following carefully. 
+Failure to follow the issue template guidelines below will result in the issue being immediately closed.
+
+## Reporting a bug or problem
+Before [opening a bug issue](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/new?assignees=&labels=&template=bug_report.md&title=), please do the following:
+- *DO NOT* open issues asking for support in using/integrating the plugin into your project
+    - Only open issues for suspected bugs/issues with the plugin that are generic and will affect other users
+    - I don't have time to offer free technical support: this is free open-source software
+    - Ask for help on StackOverflow, Ionic Forums, etc.
+    - Use the [example project](https://github.com/dpa99c/cordova-diagnostic-plugin-example) as a known working reference
+    - Any issues requesting support will be closed immediately.
+- *DO NOT* open issues related to the  [Ionic Typescript wrapper for this plugin](https://github.com/ionic-team/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts)
+    - This is owned/maintained by [Ionic](https://github.com/ionic-team) and is not part of this plugin
+    - Please raise such issues/PRs against [Ionic Native](https://github.com/ionic-team/ionic-native/) instead.
+	- To verify an if an issue is caused by this plugin or its Typescript wrapper, please re-test using the vanilla Javascript plugin interface (without the Ionic Native wrapper).
+	- Any issue opened here which is obviously an Ionic Typescript wrapper issue will be closed immediately.
+- Read the above documentation thoroughly
+- Check the [CHANGELOG](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/CHANGELOG.md) for any breaking changes that may be causing your issue.
+- Check a similar issue (open or closed) does not already exist against this plugin.
+	- Duplicates or near-duplicates will be closed immediately.
+- When [creating a new issue](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/new/choose)
+    - Choose the "Bug report" template
+    - Fill out the relevant sections of the template and delete irrelevant sections
+    - *WARNING:* Failure to complete the issue template will result in the issue being closed immediately. 
+- Reproduce the issue using the [example project](https://github.com/dpa99c/cordova-diagnostic-plugin-example)
+	- This will eliminate bugs in your code or conflicts with other code as possible causes of the issue
+	- This will also validate your development environment using a known working codebase
+	- If reproducing the issue using the example project is not possible, create an isolated test project that you are able to share
+- Include full verbose console output when reporting build issues
+    - If the full console output is too large to insert directly into the Github issue, then post it on an external site such as [Pastebin](https://pastebin.com/) and link to it from the issue 
+    - Often the details of an error causing a build failure is hidden away when building with the CLI
+        - To get the full detailed console output, append the `--verbose` flag to CLI build commands
+        - e.g. `cordova build ios --verbose`
+    - Failure to include the full console output will result in the issue being closed immediately
+- If the issue relates to the plugin documentation (and not the code), please of a [documentation issue](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/new?assignees=&labels=&template=documentation-issue.md&title=)
+
+## Requesting a new feature
+Before [opening a feature request issue](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/new?assignees=&labels=&template=feature_request.md&title=), please do the following:
+- Check the above documentation to ensure the feature you are requesting doesn't already exist
+- Check the list if open/closed issues to check if there's a reason that feature hasn't been included already
+- Ensure the feature you are requesting is actually possible to implement and generically useful to other users than yourself
+- Where possible, post a link to the documentation related to the feature you are requesting
+- Include other relevant links, e.g.
+    - Stack Overflow post illustrating a solution
+    - Code within another Github repo that illustrates a solution 
+
 
 # Usage
 
