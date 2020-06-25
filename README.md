@@ -2466,7 +2466,8 @@ Works on iOS 8+ (iOS 8 and below will invoke the error callback).
     - {Function} errorCallback -  The callback which will be called when operation encounters an error.
         * The function is passed a single string parameter containing the error message.
     - {Array} types - list of notifications to register for as constants in [`cordova.plugins.diagnostic.remoteNotificationType`](#remotenotificationtype-constants).
-        * If not specified, defaults to all notification types.
+        * On iOS 13+ at least one type must be specified or the result will be permission denied and authorization will not be granted.
+        * On iOS 12 and below if no type is specified, all notification types will be authorized. 
     - {Boolean} omitRegistration - If true, registration for remote notifications will not be carried out once remote notifications authorization is granted.
         * Defaults to false (registration will automatically take place once authorization is granted).
         * iOS 10+ only: on iOS 8 & 9 authorization and registration are implicitly inseparable so both will be carried out.
