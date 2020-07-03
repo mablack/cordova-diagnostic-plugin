@@ -82,6 +82,9 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [locationAuthorizationMode constants](#locationauthorizationmode-constants)
       - [Values](#values-1)
       - [Example](#example-2)
+    - [locationAccuracyAuthorization constants](#locationaccuracyauthorization-constants)
+      - [Values](#values-2)
+      - [Example](#example-3)
     - [isLocationAvailable()](#islocationavailable)
       - [Parameters](#parameters-14)
       - [Example usage](#example-usage-16)
@@ -116,179 +119,188 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
       - [Parameters](#parameters-24)
       - [Example usage](#example-usage-25)
+    - [getLocationAccuracyAuthorization()](#getlocationaccuracyauthorization)
+      - [Parameters](#parameters-25)
+      - [Example usage](#example-usage-26)
+    - [requestTemporaryFullAccuracyAuthorization()](#requesttemporaryfullaccuracyauthorization)
+      - [Parameters](#parameters-26)
+      - [Example usage](#example-usage-27)
+    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler-1)
+      - [Parameters](#parameters-27)
+      - [Example usage](#example-usage-28)
     - [switchToLocationSettings()](#switchtolocationsettings)
   - [Bluetooth module](#bluetooth-module)
     - [bluetoothState constants](#bluetoothstate-constants)
       - [Android](#android-2)
       - [iOS](#ios-2)
-      - [Example](#example-3)
+      - [Example](#example-4)
     - [isBluetoothAvailable()](#isbluetoothavailable)
-      - [Parameters](#parameters-25)
-      - [Example usage](#example-usage-26)
-    - [isBluetoothEnabled()](#isbluetoothenabled)
-      - [Parameters](#parameters-26)
-      - [Example usage](#example-usage-27)
-    - [hasBluetoothSupport()](#hasbluetoothsupport)
-      - [Parameters](#parameters-27)
-      - [Example usage](#example-usage-28)
-    - [hasBluetoothLESupport()](#hasbluetoothlesupport)
       - [Parameters](#parameters-28)
       - [Example usage](#example-usage-29)
-    - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
+    - [isBluetoothEnabled()](#isbluetoothenabled)
       - [Parameters](#parameters-29)
       - [Example usage](#example-usage-30)
-    - [getBluetoothState()](#getbluetoothstate)
+    - [hasBluetoothSupport()](#hasbluetoothsupport)
       - [Parameters](#parameters-30)
       - [Example usage](#example-usage-31)
-    - [setBluetoothState()](#setbluetoothstate)
+    - [hasBluetoothLESupport()](#hasbluetoothlesupport)
       - [Parameters](#parameters-31)
       - [Example usage](#example-usage-32)
-    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
+    - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
       - [Parameters](#parameters-32)
       - [Example usage](#example-usage-33)
-    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+    - [getBluetoothState()](#getbluetoothstate)
       - [Parameters](#parameters-33)
       - [Example usage](#example-usage-34)
+    - [setBluetoothState()](#setbluetoothstate)
+      - [Parameters](#parameters-34)
+      - [Example usage](#example-usage-35)
+    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
+      - [Parameters](#parameters-35)
+      - [Example usage](#example-usage-36)
+    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+      - [Parameters](#parameters-36)
+      - [Example usage](#example-usage-37)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
   - [WiFi module](#wifi-module)
     - [isWifiAvailable()](#iswifiavailable)
-      - [Parameters](#parameters-34)
-      - [Example usage](#example-usage-35)
+      - [Parameters](#parameters-37)
+      - [Example usage](#example-usage-38)
     - [isWifiEnabled()](#iswifienabled)
-      - [Parameters](#parameters-35)
-      - [Example usage](#example-usage-36)
+      - [Parameters](#parameters-38)
+      - [Example usage](#example-usage-39)
     - [setWifiState()](#setwifistate)
-      - [Parameters](#parameters-36)
-      - [Example usage](#example-usage-37)
+      - [Parameters](#parameters-39)
+      - [Example usage](#example-usage-40)
     - [switchToWifiSettings()](#switchtowifisettings)
   - [Camera module](#camera-module)
     - [isCameraPresent()](#iscamerapresent)
-      - [Parameters](#parameters-37)
-      - [Example usage](#example-usage-38)
-    - [isCameraAvailable()](#iscameraavailable)
-      - [Parameters](#parameters-38)
-      - [Example usage](#example-usage-39)
-    - [isCameraAuthorized()](#iscameraauthorized)
-      - [Parameters](#parameters-39)
-      - [Example usage](#example-usage-40)
-    - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
       - [Parameters](#parameters-40)
       - [Example usage](#example-usage-41)
-    - [requestCameraAuthorization()](#requestcameraauthorization)
+    - [isCameraAvailable()](#iscameraavailable)
       - [Parameters](#parameters-41)
       - [Example usage](#example-usage-42)
-    - [isCameraRollAuthorized()](#iscamerarollauthorized)
+    - [isCameraAuthorized()](#iscameraauthorized)
       - [Parameters](#parameters-42)
       - [Example usage](#example-usage-43)
-    - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
+    - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
       - [Parameters](#parameters-43)
       - [Example usage](#example-usage-44)
-    - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+    - [requestCameraAuthorization()](#requestcameraauthorization)
       - [Parameters](#parameters-44)
       - [Example usage](#example-usage-45)
-  - [Notifications module](#notifications-module)
-    - [remoteNotificationType constants](#remotenotificationtype-constants)
-      - [Example](#example-4)
-    - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
+    - [isCameraRollAuthorized()](#iscamerarollauthorized)
       - [Parameters](#parameters-45)
       - [Example usage](#example-usage-46)
-    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
+    - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
       - [Parameters](#parameters-46)
       - [Example usage](#example-usage-47)
-    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
+    - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
       - [Parameters](#parameters-47)
       - [Example usage](#example-usage-48)
-    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
+  - [Notifications module](#notifications-module)
+    - [remoteNotificationType constants](#remotenotificationtype-constants)
+      - [Example](#example-5)
+    - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
       - [Parameters](#parameters-48)
       - [Example usage](#example-usage-49)
-    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
+    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
       - [Parameters](#parameters-49)
       - [Example usage](#example-usage-50)
-  - [Microphone module](#microphone-module)
-    - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
+    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
       - [Parameters](#parameters-50)
       - [Example usage](#example-usage-51)
-    - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
+    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
       - [Parameters](#parameters-51)
       - [Example usage](#example-usage-52)
-    - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
+    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
       - [Parameters](#parameters-52)
       - [Example usage](#example-usage-53)
-  - [Contacts module](#contacts-module)
-    - [isContactsAuthorized()](#iscontactsauthorized)
+  - [Microphone module](#microphone-module)
+    - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
       - [Parameters](#parameters-53)
       - [Example usage](#example-usage-54)
-    - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
+    - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
       - [Parameters](#parameters-54)
       - [Example usage](#example-usage-55)
-    - [requestContactsAuthorization()](#requestcontactsauthorization)
+    - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
       - [Parameters](#parameters-55)
       - [Example usage](#example-usage-56)
-  - [Calendar module](#calendar-module)
-    - [isCalendarAuthorized()](#iscalendarauthorized)
+  - [Contacts module](#contacts-module)
+    - [isContactsAuthorized()](#iscontactsauthorized)
       - [Parameters](#parameters-56)
       - [Example usage](#example-usage-57)
-    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
+    - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
       - [Parameters](#parameters-57)
       - [Example usage](#example-usage-58)
-    - [requestCalendarAuthorization()](#requestcalendarauthorization)
+    - [requestContactsAuthorization()](#requestcontactsauthorization)
       - [Parameters](#parameters-58)
       - [Example usage](#example-usage-59)
-  - [Reminders module](#reminders-module)
-    - [isRemindersAuthorized()](#isremindersauthorized)
+  - [Calendar module](#calendar-module)
+    - [isCalendarAuthorized()](#iscalendarauthorized)
       - [Parameters](#parameters-59)
       - [Example usage](#example-usage-60)
-    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
+    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
       - [Parameters](#parameters-60)
       - [Example usage](#example-usage-61)
-    - [requestRemindersAuthorization()](#requestremindersauthorization)
+    - [requestCalendarAuthorization()](#requestcalendarauthorization)
       - [Parameters](#parameters-61)
       - [Example usage](#example-usage-62)
-  - [Motion module](#motion-module)
-    - [motionStatus constants](#motionstatus-constants)
-      - [Example](#example-5)
-    - [isMotionAvailable()](#ismotionavailable)
+  - [Reminders module](#reminders-module)
+    - [isRemindersAuthorized()](#isremindersauthorized)
       - [Parameters](#parameters-62)
       - [Example usage](#example-usage-63)
-    - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
+    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
       - [Parameters](#parameters-63)
       - [Example usage](#example-usage-64)
-    - [requestMotionAuthorization()](#requestmotionauthorization)
+    - [requestRemindersAuthorization()](#requestremindersauthorization)
       - [Parameters](#parameters-64)
       - [Example usage](#example-usage-65)
-    - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
+  - [Motion module](#motion-module)
+    - [motionStatus constants](#motionstatus-constants)
+      - [Example](#example-6)
+    - [isMotionAvailable()](#ismotionavailable)
       - [Parameters](#parameters-65)
       - [Example usage](#example-usage-66)
-  - [NFC module](#nfc-module)
-    - [NFCState constants](#nfcstate-constants)
-      - [Values](#values-2)
-      - [Example](#example-6)
-    - [isNFCPresent()](#isnfcpresent)
+    - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
       - [Parameters](#parameters-66)
       - [Example usage](#example-usage-67)
-    - [isNFCEnabled()](#isnfcenabled)
+    - [requestMotionAuthorization()](#requestmotionauthorization)
       - [Parameters](#parameters-67)
       - [Example usage](#example-usage-68)
-    - [isNFCAvailable()](#isnfcavailable)
+    - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
       - [Parameters](#parameters-68)
       - [Example usage](#example-usage-69)
-    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+  - [NFC module](#nfc-module)
+    - [NFCState constants](#nfcstate-constants)
+      - [Values](#values-3)
+      - [Example](#example-7)
+    - [isNFCPresent()](#isnfcpresent)
       - [Parameters](#parameters-69)
       - [Example usage](#example-usage-70)
+    - [isNFCEnabled()](#isnfcenabled)
+      - [Parameters](#parameters-70)
+      - [Example usage](#example-usage-71)
+    - [isNFCAvailable()](#isnfcavailable)
+      - [Parameters](#parameters-71)
+      - [Example usage](#example-usage-72)
+    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+      - [Parameters](#parameters-72)
+      - [Example usage](#example-usage-73)
     - [switchToNFCSettings()](#switchtonfcsettings)
   - [External storage module](#external-storage-module)
     - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
-      - [Parameters](#parameters-70)
-      - [Example usage](#example-usage-71)
-    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
-      - [Parameters](#parameters-71)
-      - [Example usage](#example-usage-72)
-    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
-      - [Parameters](#parameters-72)
-      - [Example usage](#example-usage-73)
-    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
       - [Parameters](#parameters-73)
       - [Example usage](#example-usage-74)
+    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
+      - [Parameters](#parameters-74)
+      - [Example usage](#example-usage-75)
+    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
+      - [Parameters](#parameters-75)
+      - [Example usage](#example-usage-76)
+    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
+      - [Parameters](#parameters-76)
+      - [Example usage](#example-usage-77)
 - [Platform Notes](#platform-notes)
   - [Android](#android-3)
     - [Android permissions](#android-permissions)
@@ -1138,6 +1150,30 @@ Defines constants for the various location authorization modes on iOS and Androi
     }, function(error){
         console.error(error);
     }, cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS);
+    
+### locationAccuracyAuthorization constants
+
+Platforms: iOS
+
+- Defines constants for the various location accuracy authorization states on iOS 14+.
+- See [CLAccuracyAuthorization](https://developer.apple.com/documentation/corelocation/claccuracyauthorization).
+
+
+    cordova.plugins.diagnostic.locationAccuracyAuthorization
+
+#### Values
+
+- `FULL` - The user authorized the app to access location data with full accuracy.
+- `REDUCED` - The user authorized the app to access location data with [reduced accuracy](https://developer.apple.com/documentation/corelocation/kcllocationaccuracyreduced) (~1-20 km).
+
+#### Example
+
+    cordova.plugins.diagnostic.locationAccuracyAuthorization(function(accuracy){
+        console.log(accuracy);
+    }, function(error){
+        console.error(error);
+    });
+
 
 ### isLocationAvailable()
 
@@ -1529,7 +1565,125 @@ On iOS, the function is passed a single string parameter indicating the new loca
             console.log("Location is available");
         }
     });
+
+### getLocationAccuracyAuthorization()
+
+Platforms: iOS
+
+Returns the location accuracy authorization for the application on iOS 14+.
+Note: calling on iOS <14 will result in the `errorCallback` being invoked.
+
+    cordova.plugins.diagnostic.getLocationAccuracyAuthorization(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single string parameter which indicates the location accuracy authorization as a [locationAccuracyAuthorization constant](#locationaccuracyauthorization-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getLocationAccuracyAuthorization(function(accuracy){
+       switch(status){
+           case cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL:
+               console.log("Full location accuracy is authorized");
+               break;
+           case cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL:
+               console.log("Reduced location accuracy is authorized");
+               break;
+       }
+    }, function(error){
+        console.error("The following error occurred: "+error);
+    });
     
+### requestTemporaryFullAccuracyAuthorization()
+
+Platforms: iOS
+
+Requests temporary access to full location accuracy for the application on iOS 14+.
+- By default on iOS 14+, when a user grants location permission, the app can only receive reduced accuracy locations.
+- If your app requires full (high-accuracy GPS) locations (e.g. a SatNav app), you need to call this method.
+- You must specify a purpose corresponds to a key in the `NSLocationTemporaryUsageDescriptionDictionary` entry in your app's `*-Info.plist` containing a message explaining the user why your app needs their exact location.
+You'll need to add this entry using a `<config-file>` block in your `config.xml`, e.g.:                              
+
+
+    <platform name="ios">
+      <config-file platform="ios" target="*-Info.plist" parent="NSLocationTemporaryUsageDescriptionDictionary">
+        <dict>
+          <key>navigation</key>
+          <string>This app requires access to your exact location in order to provide SatNav route navigation.</string>
+          <key>emergency</key>
+          <string>This app requires access to your exact location in order to report your location to emergency services.</string>
+        </dict>
+      </config-file>
+    </platform>
+                                  
+                                  
+- Should only be called on iOS 14+ - calling on iOS <14 will invoke the `errorCallback`.
+- Should only be called if location authorization has been granted, otherwise `errorCallback` will be invoked.
+- See [requestTemporaryFullAccuracyAuthorizationWithPurposeKey](https://developer.apple.com/documentation/corelocation/cllocationmanager/3600217-requesttemporaryfullaccuracyauth?language=objc).
+ 
+
+    `cordova.plugins.diagnostic.requestTemporaryFullAccuracyAuthorization(purpose, successCallback, errorCallback);`
+
+#### Parameters
+
+- {String} purpose - (required) corresponds to a key in the `NSLocationTemporaryUsageDescriptionDictionary` entry in your app's `*-Info.plist`
+which contains a message explaining the user why your app needs their exact location.
+This will be presented to the user via permission dialog in which they can either accept or reject the request.
+- {Function} successCallback - (optional) Invoked in response to the user's choice in the permission dialog.
+It is passed a single string parameter which defines the resulting accuracy authorization as a [locationAccuracyAuthorization constant](#locationaccuracyauthorization-constants).
+- errorCallback -  (optional) The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.requestTemporaryFullAccuracyAuthorization("navigation", function(accuracyAuthorization){
+        switch(accuracyAuthorization){
+            case cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL:
+                console.log("Full accuracy authorized");
+                break;
+            case cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED:
+                console.log("Full accuracy denied");
+                break;
+        }
+    }, function(error){
+        console.error(error);
+    });
+
+
+### registerLocationStateChangeHandler()
+
+Platforms: iOS
+
+Registers a function to be called when a change in location accuracy authorization occurs on iOS 14+.
+ * On iOS <14 this will not be called.
+ * This occurs when location accuracy authorization is changed.
+ * This can be triggered either by the user's response to a location accuracy authorization dialog,
+ * or by the user changing the location accuracy authorization specifically for your app in Settings.
+ * Pass in a falsey value to de-register the currently registered function.
+
+
+    cordova.plugins.diagnostic.registerLocationAccuracyAuthorizationChangeHandler(successCallback);
+
+#### Parameters
+
+- {Function} successCallback - function call when a change in location accuracy authorization occurs.
+The function is passed a single string parameter indicating the new location accuracy authorization as a [locationAccuracyAuthorization constant](#locationaccuracyauthorization-constants).
+
+#### Example usage
+
+    cordova.plugins.diagnostic.registerLocationAccuracyAuthorizationChangeHandler(function(accuracyAuthorization){
+        switch(accuracyAuthorization){
+            case cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL:
+                console.log("Accuracy authorization changed to full");
+                break;
+            case cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED:
+                console.log("Accuracy authorization changed to reduced");
+                break;
+        }
+    });    
 
 ### switchToLocationSettings()
 
@@ -3531,19 +3685,17 @@ When requesting permission to use device functionality on iOS 8+, a message is d
 These messages are stored in the `{project}-Info.plist` file under `NS*UsageDescription` keys.
 
 Upon installing this plugin into your project, it will add the following default messages to your plist.
-To override these defaults, you can either edit the messages directly in the plist file, or to persist the changes between platform updates, use the [cordova-custom-config](https://github.com/dpa99c/cordova-custom-config) plugin to add overrides directly from the config.xml.
-For example:
+To override these defaults, you can use `<config-file>` blocks in your `config.xml`:
 
 `config.xml`
 
     <platform name="ios">
-        <plugin name="cordova-custom-config" version="*"/>
-        <custom-config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+        <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
             <string>My custom message for always using location.</string>
-        </custom-config-file>
-        <custom-config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+        </config-file>
+        <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
             <string>My custom message for using location when in use.</string>
-        </custom-config-file>
+        </config-file>
     </platform>
 
 # Example project

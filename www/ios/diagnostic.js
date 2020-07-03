@@ -214,6 +214,25 @@ var Diagnostic = (function(){
     };
 
     /**
+     * Returns the location accuracy authorization for the application.
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single string parameter which indicates the location accuracy authorization as a constant in `cordova.plugins.diagnostic.locationAccuracyAuthorization`.
+     * Possible values are:
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED`
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getLocationAccuracyAuthorization = function(successCallback, errorCallback) {
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.getLocationAccuracyAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
+    };
+
+    /**
      * Requests location authorization for the application.
      * Authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
      * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
@@ -238,6 +257,31 @@ var Diagnostic = (function(){
     };
 
     /**
+     * Requests temporary access to full location accuracy for the application.
+     * By default on iOS 14+, when a user grants location permission, the app can only receive reduced accuracy locations.
+     * If your app requires full (high-accuracy GPS) locations (e.g. a SatNav app), you need to call this method.
+     * Should only be called if location authorization has been granted.
+     *
+     * @param {String} purpose - (required) corresponds to a key in the NSLocationTemporaryUsageDescriptionDictionary entry in your app's `*-Info.plist`
+     * which contains a message explaining the user why your app needs their exact location.
+     * This will be presented to the user via permission dialog in which they can either accept or reject the request.
+     * @param {Function} successCallback - (optional) Invoked in response to the user's choice in the permission dialog.
+     * It is passed a single string parameter which defines the resulting accuracy authorization as a constant in `cordova.plugins.diagnostic.locationAccuracyAuthorization`.
+     * Possible values are:
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED`
+     * @param {Function} errorCallback -  (optional) The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.requestTemporaryFullAccuracyAuthorization = function(purpose, successCallback, errorCallback) {
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.requestTemporaryFullAccuracyAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
+    };
+
+    /**
      * Registers a function to be called when a change in Location state occurs.
      * On iOS, this occurs when location authorization status is changed.
      * This can be triggered either by the user's response to a location permission authorization dialog,
@@ -251,6 +295,24 @@ var Diagnostic = (function(){
     Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
         if(cordova.plugins.diagnostic.location){
             cordova.plugins.diagnostic.location.registerLocationStateChangeHandler.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
+    };
+
+    /**
+     * Registers a function to be called when a change in location accuracy authorization occurs.
+     * This occurs when location accuracy authorization is changed.
+     * This can be triggered either by the user's response to a location accuracy authorization dialog,
+     * or by the user changing the location accuracy authorization specifically for your app in Settings.
+     * Pass in a falsey value to de-register the currently registered function.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the location accuracy authorization changes.
+     * This callback function is passed a single string parameter indicating the new location accuracy authorization as a constant in `cordova.plugins.diagnostic.locationAccuracyAuthorization`.
+     */
+    Diagnostic.registerLocationAccuracyAuthorizationChangeHandler = function(successCallback) {
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.registerLocationAccuracyAuthorizationChangeHandler.apply(this, arguments);
         }else{
             throw "Diagnostic Location module is not installed";
         }

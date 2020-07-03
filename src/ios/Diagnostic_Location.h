@@ -17,12 +17,16 @@
 
 @property (strong, nonatomic) CLLocationManager* locationManager;
 @property (nonatomic, retain) NSString* locationRequestCallbackId;
+@property (nonatomic, retain) NSString* locationAccuracyRequestCallbackId;
 @property (nonatomic, retain) NSString* currentLocationAuthorizationStatus;
+@property (nonatomic, retain) NSString* currentLocationAccuracyAuthorization;
 
 - (void) isLocationAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
 - (void) isLocationAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getLocationAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) getLocationAccuracyAuthorization: (CDVInvokedUrlCommand*)command;
 - (void) requestLocationAuthorization: (CDVInvokedUrlCommand*)command;
+- (void) requestTemporaryFullAccuracyAuthorization: (CDVInvokedUrlCommand*)command;
 
 @end

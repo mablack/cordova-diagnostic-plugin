@@ -106,6 +106,16 @@ interface Diagnostic {
         "WHEN_IN_USE": "when_in_use";
     };
 
+    /**
+     * iOS ONLY
+     * Location accuracy authorization
+     * @type {Object}
+     */
+    locationAccuracyAuthorization: {
+        "FULL": "full";
+        "REDUCED": "reduced";
+    };
+
 
     /**
      * ANDROID ONLY
@@ -349,6 +359,30 @@ interface Diagnostic {
         mode?: string
     ) => void;
 
+    /**
+     * iOS ONLY
+     * Returns the location accuracy authorization for the application.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getLocationAccuracyAuthorization?: (
+        successCallback: (status: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * iOS ONLY
+     * Requests temporary access to full location accuracy for the application on iOS 14+.
+     * @param purpose
+     * @param successCallback
+     * @param errorCallback
+     */
+    requestTemporaryFullAccuracyAuthorization?: (
+        purpose: string,
+        successCallback?: (status: string) => void,
+        errorCallback?: (error: string) => void
+    ) => void;
+
 
     /**
      * ANDROID and iOS ONLY
@@ -538,6 +572,15 @@ interface Diagnostic {
      * @param successCallback
      */
     registerLocationStateChangeHandler?: (
+        successCallback: (state: string) => void
+    ) => void;
+
+    /**
+     * iOS ONLY
+     * Registers a function to be called when a change in location accuracy authorization occurs.
+     * @param successCallback
+     */
+    registerLocationAccuracyAuthorizationChangeHandler?: (
         successCallback: (state: string) => void
     ) => void;
 
