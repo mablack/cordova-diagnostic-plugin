@@ -54,7 +54,7 @@ import android.content.pm.PackageManager;
 import android.provider.Settings;
 
 
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 
 /**
  * Diagnostic plugin implementation for Android
@@ -649,7 +649,7 @@ public class Diagnostic extends CordovaPlugin{
             Boolean bool = (Boolean) method.invoke(null, activity, permission);
             shouldShow = bool.booleanValue();
         } catch (NoSuchMethodException e) {
-            throw new Exception("shouldShowRequestPermissionRationale() method not found in ActivityCompat class. Check you have Android Support Library v23+ installed");
+            throw new Exception("shouldShowRequestPermissionRationale() method not found in ActivityCompat class.");
         }
         return shouldShow;
     }

@@ -8,12 +8,12 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
 
 - [Overview](#overview)
   - [Important notes](#important-notes)
+    - [Minimum supported versions](#minimum-supported-versions)
     - [Native environment required](#native-environment-required)
     - [Building for Android](#building-for-android)
 - [Installation](#installation)
   - [Using the Cordova/Phonegap/Ionic CLI](#using-the-cordovaphonegapionic-cli)
-  - [PhoneGap Build](#phonegap-build)
-  - [Android Support Library](#android-support-library)
+  - [AndroidX Library](#androidx-library)
   - [Specifying modules](#specifying-modules)
     - [Available modules](#available-modules)
 - [Reporting issues](#reporting-issues)
@@ -309,8 +309,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
         - [Runtime permission groups](#runtime-permission-groups)
         - [Runtime permissions example project](#runtime-permissions-example-project)
         - [Android Camera permissions](#android-camera-permissions)
-        - [Building for Android runtime permissions](#building-for-android-runtime-permissions)
-        - [Building for API 22 or lower](#building-for-api-22-or-lower)
     - [Android Auto Backup](#android-auto-backup)
   - [Windows](#windows)
     - [Supported Windows versions](#supported-windows-versions)
@@ -344,6 +342,15 @@ To help ensure this plugin is kept updated, new features are added and bugfixes 
 
 ## Important notes
 
+### Minimum supported versions
+- Cordova CLI: `cordova@9.0.0`
+- Android platform: `cordova-android@9.0.0`
+    - Android version: Android 5.1 (API 22)
+- iOS platform: `cordova-ios@5.0.0`
+    - iOS 10.0
+
+Note: If you need to support older OS versions, please use an older version of this plugin.
+
 ### Native environment required
 
 Note that this plugin is intended for use in a **native** mobile environment.
@@ -356,63 +363,28 @@ In order to avoid build problems with Android, please make sure you have the lat
 - Android SDK Tools
 - Android SDK Platform-tools
 - Android SDK Build-tools
-- Target SDK Platform - e.g. Android 6.0 (API 23)
-- Android Support Repository
-- Android Support Library
+- Target SDK Platform - e.g. Android 10.0 (API 29)
 - Google Repository
 
 Also make sure you have the latest release of the `cordova-android` platform installed. You can check if the Android platform in your Cordova project is up-to-date using `cordova platform check android` and if it's not, update it using `cordova platform rm android && cordova platform add android@latest`.
 
-Phonegap Build uses should use the latest available CLI version ([listed here](https://build.phonegap.com/current-support)) by specifying using the `phonegap-version` tag in your `config.xml`, for example:
-
-    <preference name="phonegap-version" value="cli-6.4.0" />
+Phonegap Build uses should use the latest available CLI version ([listed here](https://build.phonegap.com/current-support)) by specifying using the `phonegap-version` tag in your `config.xml`.
 
 # Installation
 
 ## Using the Cordova/Phonegap/Ionic CLI
 
     $ cordova plugin add cordova.plugins.diagnostic
-    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROID_SUPPORT_VERSION=27.+
+    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROIDX_VERSION=1.0.0
     $ phonegap plugin add cordova.plugins.diagnostic
     $ ionic cordova plugin add cordova.plugins.diagnostic
 
-## PhoneGap Build
-Add the following xml to your config.xml to use the latest version of this plugin from [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic):
+## AndroidX Library
+This plugin uses/depends on the [AndroidX (Jetpack) libraries](https://developer.android.com/jetpack/androidx) (these supersede the [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html) which is no longer used by this plugin since `cordova.plugins.diagnostic@6`).
 
-    <plugin name="cordova.plugins.diagnostic" />
+This plugin pins a default version of the library in [its `plugin.xml`](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/plugin.xml) however you can override this to specify a different version using the `ANDROIDX_VERSION` variable at plugin installation time, for example:
 
-Or
-
-    <plugin name="cordova.plugins.diagnostic">
-        <param name="ANDROID_SUPPORT_VERSION" value="26.+" />
-    </plugin>
-
-**IMPORTANT:** Because Phonegap Build does not support npm-scripts hooks ([see here](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/347) for details) the module selection mechanism of this plugin will not work on Phonegap Build. I.e. all modules will be included in the build.
-
-## Android Support Library
-
-This plugin uses/depends on the [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html).
-By default it pins the [most recent major release version of the library](https://developer.android.com/topic/libraries/support-library/revisions.html) in [its `plugin.xml`](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/plugin.xml) in order to align with [the target SDK version of the latest `cordova-android` platform version](https://github.com/apache/cordova-android/blob/master/framework/project.properties).
-
-However, if your build fails with an error such as this:
-
-    Attribute meta-data#android.support.VERSION@value value=(26.0.0-alpha1) from [com.android.support:support-v4:26.0.0-alpha1] AndroidManifest.xml:27:9-38
-    is also present at [com.android.support:appcompat-v7:25.3.1] AndroidManifest.xml:27:9-31 value=(25.3.1).
-
-Then it's likely that the build failure is due to a collision caused by another plugin requesting a different version of the Android Support Library (see [#212](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/212), [#211](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/211), [#205](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/205), etc.).
-
-Depending what other plugins you have installed in your project, you may need to specify a different version of the Support Library than the default version specified by this plugin to make your build succeed.
-You can override the default version of the Support Library that this plugin specifies using the `ANDROID_SUPPORT_VERSION` variable at plugin installation time, for example:
-
-    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROID_SUPPORT_VERSION=27.+
-
-However, if more than one other plugin in your project specifies a different version of the library and does not enable you to specify the version of the Support Library via a plugin variable in this way, then your build may still fail.
-In which case (if building locally), one way to resolve this is to install [cordova-android-support-gradle-release](https://github.com/dpa99c/cordova-android-support-gradle-release) into your project.
-This attempts to override the Android Support Library version specified by other plugins (including this plugin) with a specified version. For example:
-
-    cordova plugin add cordova-android-support-gradle-release --variable ANDROID_SUPPORT_VERSION=25.+
-
-Note: `cordova-android-support-gradle-release` will not work in Phonegap Build (or other cloud-build environments) that do not support Cordova Hook Scripts.
+    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROIDX_VERSION=1.0.0
 
 
 ## Specifying modules
@@ -3621,31 +3593,6 @@ Note that the Android variant of [`requestCameraAuthorization()`](#requestcamera
 This is because the [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 
 So to use this method in conjunction with the Cordova camera plugin, make sure you are using the most recent `cordova-plugin-camera` release: v2.2.0 or above.
-
-##### Building for Android runtime permissions
-
-In order to support Android 6 (API 23) [runtime permissions](http://developer.android.com/training/permissions/requesting.html), this plugin must depend on libraries only present in API 23+, so you __must build using Android SDK Platform v23 or above__. To do this you must have [Cordova Android platform](https://github.com/apache/cordova-android)@5.0.0 or above installed in your project. You can check the currently installed platform versions with the following command:
-
-    cordova platform ls
-
-__Note:__ Attempting to build with API 22 or below will result in a build error.
-
-
-You __must__ also make sure your build environment has the following Android libraries installed. In a local build environment, you'd install these via the Android SDK Manager:
-
--  Android Support Library - Rev. 23 or above
--  Android Support Repository - Rev. 23 or above
-
-
-##### Building for API 22 or lower
-
-For users who wish to build against API 22 or below, there is a branch of the plugin repo which contains most of the plugin functionality __except Android 6 runtime permissions__. This removes the dependency on API 23 and will allow you to build against legacy API versions (22 and below).
-
-The legacy branch is published to npm as [`cordova.plugins.diagnostic.api-22`](https://www.npmjs.com/package/cordova.plugins.diagnostic.api-22), so you'll need to use this plugin ID when adding it:
-
-    cordova plugin add cordova.plugins.diagnostic.api-22
-
-**NOTE**: Phonegap Build now supports API 23, so its users may use the main plugin branch (`cordova.plugins.diagnostic`).
 
 ### Android Auto Backup
 
