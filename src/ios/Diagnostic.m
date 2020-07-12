@@ -49,24 +49,13 @@ static Diagnostic* diagnostic = nil;
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command
 {
     @try {
-        if (UIApplicationOpenSettingsURLString != nil ){
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString: UIApplicationOpenSettingsURLString] options:@{} completionHandler:^(BOOL success) {
-                    if (success) {
-                        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] :command];
-                    }else{
-                        [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] :command];
-                    }
-                }];
-#endif
-            }else{
-                [[UIApplication sharedApplication] openURL: [NSURL URLWithString: UIApplicationOpenSettingsURLString]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString: UIApplicationOpenSettingsURLString] options:@{} completionHandler:^(BOOL success) {
+            if (success) {
                 [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] :command];
+            }else{
+                [self sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] :command];
             }
-        }else{
-            [self sendPluginError:@"Not supported below iOS 8":command];
-        }
+        }];
     }
     @catch (NSException *exception) {
         [self handlePluginException:exception :command];

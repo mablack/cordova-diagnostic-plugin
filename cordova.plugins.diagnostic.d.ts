@@ -372,7 +372,7 @@ interface Diagnostic {
 
     /**
      * iOS ONLY
-     * Requests temporary access to full location accuracy for the application on iOS 14+.
+     * Requests temporary access to full location accuracy for the application.
      * @param purpose
      * @param successCallback
      * @param errorCallback
@@ -537,7 +537,7 @@ interface Diagnostic {
      * ANDROID and iOS ONLY
      * Opens settings page for this app.
      * On Android, this opens the "App Info" page in the Settings app.
-     * On iOS, this opens the app settings page in the Settings app. This works only on iOS 8+ - iOS 7 and below will invoke the errorCallback.
+     * On iOS, this opens the app settings page in the Settings app.
      */
     switchToSettings?: (
         successCallback: () => void,

@@ -80,11 +80,11 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
             {
                 BOOL always = [[command argumentAtIndex:0] boolValue];
                 if(always){
-                    NSAssert([[[NSBundle mainBundle] infoDictionary] valueForKey:@"NSLocationAlwaysUsageDescription"], @"For iOS 8 and above, your app must have a value for NSLocationAlwaysUsageDescription in its Info.plist");
+                    NSAssert([[[NSBundle mainBundle] infoDictionary] valueForKey:@"NSLocationAlwaysUsageDescription"], @"Your app must have a value for NSLocationAlwaysUsageDescription in its Info.plist");
                     [self.locationManager requestAlwaysAuthorization];
                     [diagnostic logDebug:@"Requesting location authorization: always"];
                 }else{
-                    NSAssert([[[NSBundle mainBundle] infoDictionary] valueForKey:@"NSLocationWhenInUseUsageDescription"], @"For iOS 8 and above, your app must have a value for NSLocationWhenInUseUsageDescription in its Info.plist");
+                    NSAssert([[[NSBundle mainBundle] infoDictionary] valueForKey:@"NSLocationWhenInUseUsageDescription"], @"Your app must have a value for NSLocationWhenInUseUsageDescription in its Info.plist");
                     [self.locationManager requestWhenInUseAuthorization];
                     [diagnostic logDebug:@"Requesting location authorization: when in use"];
                 }

@@ -112,47 +112,27 @@ static NSString*const LOG_TAG = @"Diagnostic_Bluetooth[native]";
     switch(self.bluetoothManager.state)
     {
 
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStateResetting:
-#else
-        case CBCentralManagerStateResetting:
-#endif
             state = @"resetting";
             description =@"The connection with the system service was momentarily lost, update imminent.";
             break;
 
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStateUnsupported:
-#else
-        case CBCentralManagerStateUnsupported:
-#endif
             state = @"unsupported";
             description = @"The platform doesn't support Bluetooth Low Energy.";
             break;
 
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStateUnauthorized:
-#else
-        case CBCentralManagerStateUnauthorized:
-#endif
             state = @"unauthorized";
             description = @"The app is not authorized to use Bluetooth Low Energy.";
             break;
 
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStatePoweredOff:
-#else
-        case CBCentralManagerStatePoweredOff:
-#endif
             state = @"powered_off";
             description = @"Bluetooth is currently powered off.";
             break;
 
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
         case CBManagerStatePoweredOn:
-#else
-        case CBCentralManagerStatePoweredOn:
-#endif
             state = @"powered_on";
             description = @"Bluetooth is currently powered on and available to use.";
             break;

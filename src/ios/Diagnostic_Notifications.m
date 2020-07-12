@@ -35,32 +35,11 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-                // iOS 8+
-                if(NSClassFromString(@"UNUserNotificationCenter")) {
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                    // iOS 10+
-                    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-                    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                        BOOL userSettingEnabled = settings.authorizationStatus == UNAuthorizationStatusAuthorized;
-                        [self isRemoteNotificationsEnabledResult:userSettingEnabled:command];
-                    }];
-#endif
-                } else{
-                    // iOS 8 & 9
-                    UIUserNotificationSettings *userNotificationSettings = [UIApplication sharedApplication].currentUserNotificationSettings;
-                    BOOL userSettingEnabled = userNotificationSettings.types != UIUserNotificationTypeNone;
-                    [self isRemoteNotificationsEnabledResult:userSettingEnabled:command];
-                }
-            } else {
-                // iOS7 and below
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
-                UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-                BOOL isEnabled = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
-                [diagnostic sendPluginResultBool:isEnabled:command];
-#endif
-            }
-
+            UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+            [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                BOOL userSettingEnabled = settings.authorizationStatus == UNAuthorizationStatusAuthorized;
+                [self isRemoteNotificationsEnabledResult:userSettingEnabled:command];
+            }];
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception:command];
@@ -69,7 +48,6 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 }
 - (void) isRemoteNotificationsEnabledResult: (BOOL) userSettingEnabled : (CDVInvokedUrlCommand*)command
 {
-    // iOS 8+
     [self _isRegisteredForRemoteNotifications:^(BOOL remoteNotificationsEnabled) {
         BOOL isEnabled = remoteNotificationsEnabled && userSettingEnabled;
         [diagnostic sendPluginResultBool:isEnabled:command];
@@ -80,40 +58,14 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-                // iOS 8+
-                if(NSClassFromString(@"UNUserNotificationCenter")) {
-                    // iOS 10+
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-                    [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                        BOOL alertsEnabled = settings.alertSetting == UNNotificationSettingEnabled;
-                        BOOL badgesEnabled = settings.badgeSetting == UNNotificationSettingEnabled;
-                        BOOL soundsEnabled = settings.soundSetting == UNNotificationSettingEnabled;
-                        BOOL noneEnabled = !alertsEnabled && !badgesEnabled && !soundsEnabled;
-                        [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
-                    }];
-#endif
-                } else{
-                    // iOS 8 & 9
-                    UIUserNotificationSettings *userNotificationSettings = [UIApplication sharedApplication].currentUserNotificationSettings;
-                    BOOL noneEnabled = userNotificationSettings.types == UIUserNotificationTypeNone;
-                    BOOL alertsEnabled = userNotificationSettings.types & UIUserNotificationTypeAlert;
-                    BOOL badgesEnabled = userNotificationSettings.types & UIUserNotificationTypeBadge;
-                    BOOL soundsEnabled = userNotificationSettings.types & UIUserNotificationTypeSound;
-                    [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
-                }
-            } else {
-                // iOS7 and below
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
-                UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-                BOOL oneEnabled = enabledRemoteNotificationTypes == UIRemoteNotificationTypeNone;
-                BOOL alertsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeAlert;
-                BOOL badgesEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeBadge;
-                BOOL soundsEnabled = enabledRemoteNotificationTypes & UIRemoteNotificationTypeSound;
+            UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+            [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                BOOL alertsEnabled = settings.alertSetting == UNNotificationSettingEnabled;
+                BOOL badgesEnabled = settings.badgeSetting == UNNotificationSettingEnabled;
+                BOOL soundsEnabled = settings.soundSetting == UNNotificationSettingEnabled;
+                BOOL noneEnabled = !alertsEnabled && !badgesEnabled && !soundsEnabled;
                 [self getRemoteNotificationTypesResult:command:noneEnabled:alertsEnabled:badgesEnabled:soundsEnabled];
-#endif
-            }
+            }];
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception :command];
@@ -122,7 +74,6 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 }
 - (void) getRemoteNotificationTypesResult: (CDVInvokedUrlCommand*)command :(BOOL)noneEnabled :(BOOL)alertsEnabled :(BOOL)badgesEnabled :(BOOL)soundsEnabled
 {
-    // iOS 8+
     NSMutableDictionary* types = [[NSMutableDictionary alloc]init];
     if(alertsEnabled) {
         [types setValue:@"1" forKey:REMOTE_NOTIFICATIONS_ALERT];
@@ -147,22 +98,9 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-                // iOS8+
-#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
-                [self _isRegisteredForRemoteNotifications:^(BOOL registered) {
-                    [diagnostic sendPluginResultBool:registered :command];
-                }];
-
-#endif
-            } else {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED <= __IPHONE_7_0
-                // iOS7 and below
-                UIRemoteNotificationType enabledRemoteNotificationTypes = [UIApplication sharedApplication].enabledRemoteNotificationTypes;
-                BOOL registered; = enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone;
+            [self _isRegisteredForRemoteNotifications:^(BOOL registered) {
                 [diagnostic sendPluginResultBool:registered :command];
-#endif
-            }
+            }];
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception :command];
@@ -174,28 +112,20 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            if(NSClassFromString(@"UNUserNotificationCenter")) {
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                // iOS 10+
-                UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-                [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                    NSString* status = UNKNOWN;
-                    UNAuthorizationStatus authStatus = settings.authorizationStatus;
-                    if(authStatus == UNAuthorizationStatusDenied){
-                        status = AUTHORIZATION_DENIED;
-                    }else if(authStatus == UNAuthorizationStatusNotDetermined){
-                        status = AUTHORIZATION_NOT_DETERMINED;
-                    }else if(authStatus == UNAuthorizationStatusAuthorized){
-                        status = AUTHORIZATION_GRANTED;
-                    }
-                    [diagnostic logDebug:[NSString stringWithFormat:@"Remote notifications authorization status is: %@", status]];
-                    [diagnostic sendPluginResultString:status:command];
-                }];
-#endif
-            } else{
-                // iOS <= 9
-                [diagnostic sendPluginError:@"getRemoteNotificationsAuthorizationStatus() is not supported below iOS 10":command];
-            }
+            UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+            [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                NSString* status = UNKNOWN;
+                UNAuthorizationStatus authStatus = settings.authorizationStatus;
+                if(authStatus == UNAuthorizationStatusDenied){
+                    status = AUTHORIZATION_DENIED;
+                }else if(authStatus == UNAuthorizationStatusNotDetermined){
+                    status = AUTHORIZATION_NOT_DETERMINED;
+                }else if(authStatus == UNAuthorizationStatusAuthorized){
+                    status = AUTHORIZATION_GRANTED;
+                }
+                [diagnostic logDebug:[NSString stringWithFormat:@"Remote notifications authorization status is: %@", status]];
+                [diagnostic sendPluginResultString:status:command];
+            }];
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception:command];
@@ -214,85 +144,56 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
             }
             NSDictionary* d_options = [diagnostic jsonStringToDictionary:s_options];
 
-            if(NSClassFromString(@"UNUserNotificationCenter")) {
-#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-                // iOS 10+
-                BOOL omitRegistration = [[command argumentAtIndex:1] boolValue];
-                UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+            BOOL omitRegistration = [[command argumentAtIndex:1] boolValue];
+            UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
 
-                [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-                    UNAuthorizationStatus authStatus = settings.authorizationStatus;
-                    if(authStatus == UNAuthorizationStatusNotDetermined){
-                        UNAuthorizationOptions options = UNAuthorizationOptionNone;
-                        for(id key in d_options){
-                            NSString* s_key = (NSString*) key;
-                            if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
-                                options = options + UNAuthorizationOptionAlert;
-                            }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_SOUND]){
-                                options = options + UNAuthorizationOptionSound;
-                            }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_BADGE]){
-                                options = options + UNAuthorizationOptionBadge;
-                            }
+            [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+                UNAuthorizationStatus authStatus = settings.authorizationStatus;
+                if(authStatus == UNAuthorizationStatusNotDetermined){
+                    UNAuthorizationOptions options = UNAuthorizationOptionNone;
+                    for(id key in d_options){
+                        NSString* s_key = (NSString*) key;
+                        if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
+                            options = options + UNAuthorizationOptionAlert;
+                        }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_SOUND]){
+                            options = options + UNAuthorizationOptionSound;
+                        }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_BADGE]){
+                            options = options + UNAuthorizationOptionBadge;
                         }
+                    }
 
-                        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                            if(error != nil){
-                                [diagnostic sendPluginError:[NSString stringWithFormat:@"Error when requesting remote notifications authorization: %@", error] :command];
-                            }else if (granted) {
-                                [diagnostic logDebug:@"Remote notifications authorization granted"];
-                                if(!omitRegistration){
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        [[UIApplication sharedApplication] registerForRemoteNotifications];
-                                        [diagnostic sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                                    });
-                                }else{
+                    [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                        if(error != nil){
+                            [diagnostic sendPluginError:[NSString stringWithFormat:@"Error when requesting remote notifications authorization: %@", error] :command];
+                        }else if (granted) {
+                            [diagnostic logDebug:@"Remote notifications authorization granted"];
+                            if(!omitRegistration){
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [[UIApplication sharedApplication] registerForRemoteNotifications];
                                     [diagnostic sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                                }
+                                });
                             }else{
-                                [diagnostic sendPluginError:@"Remote notifications authorization was denied" :command];
-                            }
-                        }];
-                    }else if(authStatus == UNAuthorizationStatusAuthorized){
-                        [diagnostic logDebug:@"Remote notifications already authorized"];
-                        if(!omitRegistration){
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [[UIApplication sharedApplication] registerForRemoteNotifications];
                                 [diagnostic sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                            });
+                            }
                         }else{
-                            [diagnostic sendPluginResultString:AUTHORIZATION_GRANTED:command];
+                            [diagnostic sendPluginError:@"Remote notifications authorization was denied" :command];
                         }
-                        [diagnostic sendPluginResultString:@"already_authorized":command];
-                    }else if(authStatus == UNAuthorizationStatusDenied){
-                        [diagnostic sendPluginError:@"Remote notifications authorization is denied" :command];
+                    }];
+                }else if(authStatus == UNAuthorizationStatusAuthorized){
+                    [diagnostic logDebug:@"Remote notifications already authorized"];
+                    if(!omitRegistration){
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [[UIApplication sharedApplication] registerForRemoteNotifications];
+                            [diagnostic sendPluginResultString:AUTHORIZATION_GRANTED:command];
+                        });
+                    }else{
+                        [diagnostic sendPluginResultString:AUTHORIZATION_GRANTED:command];
                     }
-                }];
-#endif
-            } else if(NSClassFromString(@"UIUserNotificationSettings")){
-#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
-                // iOS 8 & 9
-                UIUserNotificationType types = 0;
-                for(id key in d_options){
-                    NSString* s_key = (NSString*) key;
-                    if([s_key isEqualToString:REMOTE_NOTIFICATIONS_ALERT]){
-                        types = types + UIUserNotificationTypeAlert;
-                    }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_SOUND]){
-                        types = types + UIUserNotificationTypeSound;
-                    }else if([s_key isEqualToString:REMOTE_NOTIFICATIONS_BADGE]){
-                        types = types + UIUserNotificationTypeBadge;
-                    }
+                    [diagnostic sendPluginResultString:@"already_authorized":command];
+                }else if(authStatus == UNAuthorizationStatusDenied){
+                    [diagnostic sendPluginError:@"Remote notifications authorization is denied" :command];
                 }
-                UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
-                    [diagnostic sendPluginResultString:AUTHORIZATION_GRANTED:command];
-                });
-#endif
-            } else{
-                // iOS < 8
-                [diagnostic sendPluginError:@"requestRemoteNotificationsAuthorization() is not supported below iOS 8" :command];
-            }
+            }];
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception:command];

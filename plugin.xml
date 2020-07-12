@@ -57,7 +57,7 @@
             <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
         </config-file>
 
-        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription" comment="iOS 10 or below">
+        <config-file target="*-Info.plist" parent="NSLocationAlwaysUsageDescription" comment="iOS 10">
             <string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
         </config-file>
         <!--END_MODULE LOCATION-->

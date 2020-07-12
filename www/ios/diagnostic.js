@@ -79,7 +79,6 @@ var Diagnostic = (function(){
      * @param {Function} successCallback - The callback which will be called when switch to settings is successful.
      * @param {Function} errorCallback - The callback which will be called when switch to settings encounters an error.
      * This callback function is passed a single string parameter containing the error message.
-     * This works only on iOS 8+. iOS 7 and below will invoke the errorCallback.
      */
     Diagnostic.switchToSettings = function(successCallback, errorCallback) {
         return cordova.exec(successCallback,
@@ -573,8 +572,7 @@ var Diagnostic = (function(){
 
     /**
      * Checks if remote (push) notifications are enabled.
-     * On iOS 8+, returns true if app is registered for remote notifications AND "Allow Notifications" switch is ON AND alert style is not set to "None" (i.e. "Banners" or "Alerts").
-     * On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as isRegisteredForRemoteNotifications().
+     * Returns true if app is registered for remote notifications AND "Allow Notifications" switch is ON AND alert style is not set to "None" (i.e. "Banners" or "Alerts").
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single boolean parameter which is TRUE if remote (push) notifications are enabled.
@@ -591,7 +589,7 @@ var Diagnostic = (function(){
 
     /**
      * Indicates the current setting of notification types for the app in the Settings app.
-     * Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be returned as disabled.
+     * Note: if "Allow Notifications" switch is OFF, all types will be returned as disabled.
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single object parameter where the key is the notification type as a constant in `cordova.plugins.diagnostic.remoteNotificationType` and the value is a boolean indicating whether it's enabled:
@@ -611,10 +609,9 @@ var Diagnostic = (function(){
 
     /**
      * Indicates if the app is registered for remote notifications on the device.
-     * On iOS 8+, returns true if the app is registered for remote notifications and received its device token,
+     * Returns true if the app is registered for remote notifications and received its device token,
      * or false if registration has not occurred, has failed, or has been denied by the user.
      * Note that user preferences for notifications in the Settings app will not affect this.
-     * On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as isRemoteNotificationsEnabled().
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
      * This callback function is passed a single boolean parameter which is TRUE if the device is registered for remote (push) notifications.
@@ -631,7 +628,6 @@ var Diagnostic = (function(){
 
     /**
      * Returns the remote notifications authorization status for the application.
-     * Works on iOS 10+ (iOS 9 and below will invoke the error callback).
      *
      * @param {Object} params - (optional) parameters:
      *  - {Function} successCallback - The callback which will be called when operation is successful.
@@ -653,7 +649,6 @@ var Diagnostic = (function(){
 
     /**
      * Requests remote notifications authorization for the application.
-     * Works on iOS 8+ (iOS 8 and below will invoke the error callback).
      *
      * @param {Object} params - (optional) parameters:
      *  - {Function} successCallback - The callback which will be called when operation is successful.
@@ -663,7 +658,6 @@ var Diagnostic = (function(){
      * If not specified, defaults to all notification types.
      * @param {Boolean} omitRegistration - If true, registration for remote notifications will not be carried out once remote notifications authorization is granted.
      * Defaults to false (registration will automatically take place once authorization is granted).
-     * iOS 10+ only: on iOS 8 & 9 authorization and registration are implicitly inseparable so both will be carried out.
      */
     Diagnostic.requestRemoteNotificationsAuthorization = function() {
         if(cordova.plugins.diagnostic.notifications){
@@ -717,7 +711,6 @@ var Diagnostic = (function(){
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback - The callback which will be called when an error occurs.
      * This callback function is passed a single string parameter containing the error message.
-     * This works only on iOS 7+.
      */
     Diagnostic.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
         if(cordova.plugins.diagnostic.microphone){

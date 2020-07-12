@@ -81,7 +81,6 @@ var Diagnostic_Microphone = (function(){
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback - The callback which will be called when an error occurs.
      * This callback function is passed a single string parameter containing the error message.
-     * This works only on iOS 7+.
      */
     Diagnostic_Microphone.requestMicrophoneAuthorization = function(successCallback, errorCallback) {
         return cordova.exec(function(isGranted){

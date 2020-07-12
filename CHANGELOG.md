@@ -2,9 +2,10 @@
 
 * Support new location accuracy authorization API on iOS 14+.
     * Resolves [#402](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/402).
-* *BREAKING CHANGE:* (Android) Migrate to AndroidX from Android Support Library
+* (Android) *BREAKING CHANGE:*  Migrate to AndroidX from Android Support Library
     * Minimum Cordova Android platform version is now `cordova-android@9.0.0`
     * Minimum supported Android version is now Android 5.1 / API 22    
+* (iOS) *BREAKING CHANGE:* Remove conditional code to support iOS <= 9
 
 **v5.0.2**
 * (Android) Add support for background location permission on Android 10 / API 29. Resolves [#398](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/398).

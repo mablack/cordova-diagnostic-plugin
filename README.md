@@ -498,7 +498,7 @@ Opens settings page for this app.
 
 On Android, this opens the "App Info" page in the Settings app.
 
-On iOS, this opens the app settings page in the Settings app. This works only on iOS 8+ - iOS 7 and below will invoke the errorCallback.
+On iOS, this opens the app settings page in the Settings app.
 
     cordova.plugins.diagnostic.switchToSettings(successCallback, errorCallback);
 
@@ -1458,10 +1458,9 @@ The function is passed a single string parameter containing the error message.
 
  Notes for iOS:
 
-- Calling this on iOS 7 or below will have no effect, as location permissions are are implicitly granted.
-- On iOS 8+, authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
+- Authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
 - This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
-- When calling this function, the messages contained in the `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) / `NSLocationAlwaysUsageDescription` (iOS 10 and below)  .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
+- When calling this function, the messages contained in the `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) / `NSLocationAlwaysUsageDescription` (iOS 10)  .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
 this plugin provides default messages, but you should override them with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise them.
 
  Notes for Android:
@@ -2467,8 +2466,7 @@ Checks if remote (push) notifications are enabled.
 
 On Android, returns whether notifications for the app are not blocked.
 
-On iOS 8+, returns true if app is registered for remote notifications **AND** "Allow Notifications" switch is ON **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts").
-On iOS <=7, returns true if app is registered for remote notifications **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications).
+Returns true if app is registered for remote notifications **AND** "Allow Notifications" switch is ON **AND** alert style is not set to "None" (i.e. "Banners" or "Alerts").
 
     cordova.plugins.diagnostic.isRemoteNotificationsEnabled(successCallback, errorCallback);
 
@@ -2491,10 +2489,8 @@ Platforms: iOS
 
 Indicates if the app is registered for remote (push) notifications on the device.
 
-On iOS 8+, returns true if the app is registered for remote notifications and received its device token, or false if registration has not occurred, has failed, or has been denied by the user.
+Returns true if the app is registered for remote notifications and received its device token, or false if registration has not occurred, has failed, or has been denied by the user.
 Note that user preferences for notifications in the Settings app will not affect this.
-
-On iOS <=7, returns true if app is registered for remote notifications AND alert style is not set to "None" (i.e. "Banners" or "Alerts") - same as [isRemoteNotificationsEnabled()](#isremotenotificationsenabled).
 
     cordova.plugins.diagnostic.isRegisteredForRemoteNotifications(successCallback, errorCallback);
 
@@ -2517,7 +2513,7 @@ Platforms: iOS
 
 Indicates the current setting of notification types for the app in the Settings app.
 
-Note: on iOS 8+, if "Allow Notifications" switch is OFF, all types will be returned as disabled.
+Note: if "Allow Notifications" switch is OFF, all types will be returned as disabled.
 
     cordova.plugins.diagnostic.getRemoteNotificationTypes(successCallback, errorCallback);
 
@@ -2545,8 +2541,6 @@ The function is passed a single object parameter where the key is the notificati
 Platforms: iOS
 
 Returns the authorization status for the application to use Remote Notifications.
-
-**Note: Works on iOS 10+ only ** (iOS 9 and below will invoke the error callback).
 
     cordova.plugins.diagnostic.getRemoteNotificationsAuthorizationStatus(successCallback, errorCallback);
 
@@ -2581,7 +2575,6 @@ The function is passed a single string parameter containing the error message.
 Platforms: iOS
 
 Requests remote notifications authorization for the application.
-Works on iOS 8+ (iOS 8 and below will invoke the error callback).
 
     cordova.plugins.diagnostic.requestRemoteNotificationsAuthorization(params);
 
@@ -2596,7 +2589,6 @@ Works on iOS 8+ (iOS 8 and below will invoke the error callback).
         * On iOS 12 and below if no type is specified, all notification types will be authorized. 
     - {Boolean} omitRegistration - If true, registration for remote notifications will not be carried out once remote notifications authorization is granted.
         * Defaults to false (registration will automatically take place once authorization is granted).
-        * iOS 10+ only: on iOS 8 & 9 authorization and registration are implicitly inseparable so both will be carried out.
 
 #### Example usage
 
@@ -2632,9 +2624,6 @@ Checks if the application is authorized to use the microphone.
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 
-Notes for iOS:
-- Requires iOS 8+
-
     `cordova.plugins.diagnostic.isMicrophoneAuthorized(successCallback, errorCallback);`
 
 #### Parameters
@@ -2662,8 +2651,6 @@ Returns the microphone authorization status for the application.
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
-Notes for iOS:
-- Requires iOS 8+
 
     `cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(successCallback, errorCallback);`
 
@@ -2694,7 +2681,6 @@ Notes for iOS:
 - Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
 - When calling this function, the message contained in the `NSMicrophoneUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
-- Requires iOS 7+
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
@@ -3628,7 +3614,7 @@ You can add these permissions by manually editing the package.windows10.appxmani
 
 ### iOS usage description messages
 
-When requesting permission to use device functionality on iOS 8+, a message is displayed to the user indicating the reason for the request.
+When requesting permission to use device functionality, a message is displayed to the user indicating the reason for the request.
 These messages are stored in the `{project}-Info.plist` file under `NS*UsageDescription` keys.
 
 Upon installing this plugin into your project, it will add the following default messages to your plist.
