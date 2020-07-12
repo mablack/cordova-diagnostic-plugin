@@ -553,7 +553,7 @@ App can request permission again and user will be prompted again to allow/deny a
 - `DENIED_ALWAYS` - User denied access to this permission and checked "Never Ask Again" box.
 App can never ask for permission again.
 The only way around this is to instruct the user to manually change the permission on the app permissions page in Settings.
-- `GRANTED` - User granted access to this permission, the device is running Android 5.x or below, or the app is built with API 22 or below.
+- `GRANTED` - User granted access to this permission or the device is running Android 5.x or below.
 
 ⚠ Since it's impossible to distinguish between NOT_REQUESTED and DENIED_ALWAYS using the native Android runtime permissions API (they both return the same constant value), this plugin attempts to distinguish the difference by using HTML5 local storage to keep track of which permissions have been requested since the app was first installed. On requesting a permission for the first time, an entry is put into local storage against the permission name. If the user then selects DENY_ALWAYS, the plugin uses the flag in local storage to distinguish this from NOT_REQUESTED.
 
@@ -601,7 +601,7 @@ Platforms: Android
 
 Returns the current authorisation status for a given permission.
 
-Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Note: this is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
 #### Parameters
 
@@ -638,7 +638,7 @@ Platforms: Android
 
 Returns the current authorisation status for multiple permissions.
 
-Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Note: this is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
 #### Parameters
 
@@ -680,7 +680,7 @@ Platforms: Android
 
 Requests app to be granted authorisation for a runtime permission.
 
-Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+Note: this is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 
 #### Parameters
 
@@ -717,7 +717,7 @@ Platforms: Android
 
 Requests app to be granted authorisation for multiple runtime permissions.
 
-Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Note: this is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
 #### Parameters
 
@@ -1365,7 +1365,7 @@ Checks if the application is authorized to use location.
 Notes for Android:
 
 - This is intended for Android 6 / API 23 and above.
-Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
     `cordova.plugins.diagnostic.isLocationAuthorized(successCallback, errorCallback);`
 
@@ -1393,7 +1393,7 @@ Platforms: Android and iOS
 
  Returns the location authorization status for the application.
 
- Note for Android: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+ Note for Android: this is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
     cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);
 
@@ -1465,7 +1465,7 @@ this plugin provides default messages, but you should override them with your sp
 
  Notes for Android:
 
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
 - When the plugin is running in an app built with the Android 10 / API 29 or above (and running on similar device) you can request background location permission by specifying the `mode` argument as `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`. 
     - If the build SDK/device version is <= Android 9 / API 28, granting location permission implicitly grants background location permission.  
@@ -2162,7 +2162,7 @@ Platforms: Android and iOS
 Checks if the application is authorized to use the camera.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 - By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 - The call signature `cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
@@ -2217,7 +2217,7 @@ Platforms: Android and iOS
 Returns the camera authorization status for the application.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 - By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 - The call signature `cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
@@ -2285,7 +2285,7 @@ Notes for iOS:
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - By default this requests run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 - Requested run-time permissions which must be added to `AndroidManifest.xml` - see [Android camera permissions](#android-camera-permissions).
 - The call signature `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
@@ -2622,7 +2622,7 @@ Platforms: Android and iOS
 Checks if the application is authorized to use the microphone.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 
     `cordova.plugins.diagnostic.isMicrophoneAuthorized(successCallback, errorCallback);`
 
@@ -2649,7 +2649,7 @@ Platforms: Android and iOS
 Returns the microphone authorization status for the application.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
 
     `cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(successCallback, errorCallback);`
@@ -2683,7 +2683,7 @@ Notes for iOS:
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - This requests permission for `RECORD_AUDIO` which must be added to `AndroidManifest.xml` - see [Android permissions](#android-permissions).
 
     cordova.plugins.diagnostic.requestMicrophoneAuthorization(successCallback, errorCallback);
@@ -2719,7 +2719,7 @@ Platforms: Android and iOS
 Checks if the application is authorized to use contacts (address book).
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 
     `cordova.plugins.diagnostic.isContactsAuthorized(successCallback, errorCallback);`
 
@@ -2746,7 +2746,7 @@ Platforms: Android and iOS
 Returns the contacts authorization status for the application.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
     `cordova.plugins.diagnostic.getContactsAuthorizationStatus(successCallback, errorCallback);`
 
@@ -2779,7 +2779,7 @@ Notes for iOS:
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - This requests permission for `READ_CONTACTS` run-time permission
 - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS`
 
@@ -2817,7 +2817,7 @@ Platforms: Android and iOS
 Checks if the application is authorized to use the calendar.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 
 Notes for iOS:
 - This relates to Calendar Events (not Calendar Reminders)
@@ -2847,7 +2847,7 @@ Platforms: Android and iOS
 Returns the calendar authorization status for the application.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
 Notes for iOS:
 - This relates to Calendar Events (not Calendar Reminders)
@@ -2884,7 +2884,7 @@ this plugin provides a default message, but you should override this with your s
 - This relates to Calendar Events (not Calendar Reminders)
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - This requests permission for `READ_CALENDAR` run-time permission
 - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CALENDAR, WRITE_CALENDAR`
 
@@ -3335,7 +3335,7 @@ Platforms: Android
 Checks if the application is authorized to use external storage.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return TRUE as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 - This checks for `READ_EXTERNAL_STORAGE` `CAMERA` run-time permission.
 
     `cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);`
@@ -3363,7 +3363,7 @@ Platforms: Android
 Returns the external storage authorization status for the application.
 
 Notes for Android:
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 - This checks for `READ_EXTERNAL_STORAGE` run-time permission.
 
     `cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(successCallback, errorCallback);`
@@ -3391,7 +3391,7 @@ Platforms: Android
 
 Requests external storage authorization for the application.
 
-- This is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - This requests permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
 
     `cordova.plugins.diagnostic.requestExternalStorageAuthorization(successCallback, errorCallback);`
