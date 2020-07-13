@@ -1,10 +1,11 @@
 # CHANGELOG
 
-* Support new location accuracy authorization API on iOS 14+.
+**v6.0.0**
+* (iOS) Support new location accuracy authorization API on iOS 14+.
     * Resolves [#402](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/402).
 * (Android) *BREAKING CHANGE:*  Migrate to AndroidX from Android Support Library
-    * Minimum Cordova Android platform version is now `cordova-android@9.0.0`
-    * Minimum supported Android version is now Android 5.1 / API 22    
+    * The recommended Cordova Android platform version is now `cordova-android@9.0.0` (which includes AndroidX support).
+        * To use this plugin with `cordova-android@8`, install [cordova-plugin-androidx](https://github.com/dpa99c/cordova-plugin-androidx) and [cordova-plugin-androidx-adapter](https://github.com/dpa99c/cordova-plugin-androidx-adapter).
 * (iOS) *BREAKING CHANGE:* Remove conditional code to support iOS <= 9
 
 **v5.0.2**

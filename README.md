@@ -344,18 +344,16 @@ To help ensure this plugin is kept updated, new features are added and bugfixes 
 
 ### Minimum supported versions
 - Cordova CLI: `cordova@9.0.0`
-- Android platform: `cordova-android@9.0.0`
-    - Android version: Android 5.1 (API 22)
+- Android platform: `cordova-android@8.0.0` (recommended version `cordova-android@9.0.0`)
+    - Android version: Android 5.0 (API 21)
 - iOS platform: `cordova-ios@5.0.0`
     - iOS 10.0
 
 Note: If you need to support older OS versions, please use an older version of this plugin.
 
 ### Native environment required
-
 Note that this plugin is intended for use in a **native** mobile environment.
 It will **NOT** work in a browser-emulated Cordova environment, for example by running `cordova serve` or using the [Ripple emulator](https://github.com/ripple-emulator/ripple).
-
 ### Building for Android
 
 In order to avoid build problems with Android, please make sure you have the latest versions of the following Android SDK components installed:
@@ -366,9 +364,11 @@ In order to avoid build problems with Android, please make sure you have the lat
 - Target SDK Platform - e.g. Android 10.0 (API 29)
 - Google Repository
 
-Also make sure you have the latest release of the `cordova-android` platform installed. You can check if the Android platform in your Cordova project is up-to-date using `cordova platform check android` and if it's not, update it using `cordova platform rm android && cordova platform add android@latest`.
-
-Phonegap Build uses should use the latest available CLI version ([listed here](https://build.phonegap.com/current-support)) by specifying using the `phonegap-version` tag in your `config.xml`.
+* Make sure you have a [supported version](#minimum-supported-versions) of the `cordova-android` platform installed.
+    * You can check if the Android platform in your Cordova project is up-to-date using `cordova platform check android` and if it's not, update it using `cordova platform rm android && cordova platform add android@latest`. 
+    * Since `cordova.plugins.diagnostic@6` the recommended Cordova Android platform version is `cordova-android@9.0.0` (which includes AndroidX support).
+    * To use this plugin with `cordova-android@8`, install [cordova-plugin-androidx](https://github.com/dpa99c/cordova-plugin-androidx) and [cordova-plugin-androidx-adapter](https://github.com/dpa99c/cordova-plugin-androidx-adapter).    
+* Phonegap Build uses should use the latest available CLI version ([listed here](https://build.phonegap.com/current-support)) by specifying using the `phonegap-version` tag in your `config.xml`.
 
 # Installation
 
