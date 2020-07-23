@@ -103,15 +103,18 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
 - (void) getLocationAccuracyAuthorization: (CDVInvokedUrlCommand*)command{
     [self.commandDelegate runInBackground:^{
         @try {
-            if ([CLLocationManager instancesRespondToSelector:@selector(requestTemporaryFullAccuracyAuthorizationWithPurposeKey:completion:)]){
+            
 #if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_14_0
-            NSString* locationAccuracyAuthorization = [self getLocationAccuracyAuthorizationAsString:[self.locationManager accuracyAuthorization]];
-            [diagnostic logDebug:[NSString stringWithFormat:@"Location accuracy authorization is: %@", locationAccuracyAuthorization]];
-            [diagnostic sendPluginResultString:locationAccuracyAuthorization:command];
-#endif
+            if ([CLLocationManager instancesRespondToSelector:@selector(requestTemporaryFullAccuracyAuthorizationWithPurposeKey:completion:)]){
+                NSString* locationAccuracyAuthorization = [self getLocationAccuracyAuthorizationAsString:[self.locationManager accuracyAuthorization]];
+                [diagnostic logDebug:[NSString stringWithFormat:@"Location accuracy authorization is: %@", locationAccuracyAuthorization]];
+                [diagnostic sendPluginResultString:locationAccuracyAuthorization:command];
             }else{
-                [diagnostic sendPluginError:@"getLocationAccuracyAuthorization is not supported below iOS 14":command];
+                [diagnostic sendPluginError:@"getLocationAccuracyAuthorization is not available on device running iOS <14":command];
             }
+#else
+            [diagnostic sendPluginError:@"getLocationAccuracyAuthorization is not available in builds with iOS SDK <14":command];
+#endif
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception :command];
@@ -122,8 +125,9 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
 - (void) requestTemporaryFullAccuracyAuthorization: (CDVInvokedUrlCommand*)command{
     [self.commandDelegate runInBackground:^{
         @try {
-            if ([CLLocationManager instancesRespondToSelector:@selector(requestTemporaryFullAccuracyAuthorizationWithPurposeKey:completion:)]){
+            
 #if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_14_0
+            if ([CLLocationManager instancesRespondToSelector:@selector(requestTemporaryFullAccuracyAuthorizationWithPurposeKey:completion:)]){
                 NSAssert([[[NSBundle mainBundle] infoDictionary] valueForKey:@"NSLocationTemporaryUsageDescriptionDictionary"], @"For iOS 14 and above, your app must have a value for NSLocationTemporaryUsageDescriptionDictionary in its Info.plist");
                 NSString* purpose = [command argumentAtIndex:0];
                 [self.locationManager  requestTemporaryFullAccuracyAuthorizationWithPurposeKey:purpose completion:^(NSError* error){
@@ -136,10 +140,13 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
                         [diagnostic sendPluginResult:pluginResult :command];
                     }
                 }];
-#endif
             }else{
-                [diagnostic sendPluginError:@"requestTemporaryFullAccuracyAuthorization is not supported below iOS 14":command];
+                [diagnostic sendPluginError:@"requestTemporaryFullAccuracyAuthorization is not available on device running iOS <14":command];
             }
+#else
+            [diagnostic sendPluginError:@"requestTemporaryFullAccuracyAuthorization is not available in builds with iOS SDK <14":command];
+#endif
+            
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception :command];
@@ -206,7 +213,11 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
 -(CLAuthorizationStatus) getAuthorizationStatus{
     CLAuthorizationStatus authStatus;
 #if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_14_0
-    authStatus = [self.locationManager authorizationStatus];
+    if ([CLLocationManager instancesRespondToSelector:@selector(authorizationStatus)]){
+        authStatus = [self.locationManager authorizationStatus];
+    }else{
+        authStatus = [CLLocationManager authorizationStatus];
+    }
 #else
     authStatus = [CLLocationManager authorizationStatus];
 #endif
@@ -214,6 +225,7 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
 }
 
 #if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_14_0
+// Note: if built with Xcode >=12 (iOS >=14 SDK) but device is running on iOS <=13, this will not be invoked
 -(void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager{
     // Location authorization status
     [self reportChangeAuthorizationStatus:[self.locationManager authorizationStatus]];
@@ -238,11 +250,21 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
         [diagnostic executeGlobalJavascript:[NSString stringWithFormat:@"cordova.plugins.diagnostic.location._onLocationAccuracyAuthorizationChange(\"%@\");", locationAccuracyAuthorization]];
     }
 }
-#else
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
-    [self reportChangeAuthorizationStatus:authStatus];
-}
 #endif
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus {
+#if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_14_0
+    if ([CLLocationManager instancesRespondToSelector:@selector(authorizationStatus)]){
+        // Build SDK & device using iOS >=14 so locationManagerDidChangeAuthorization will be invoked
+    }else{
+        // Build SDK using iOS >=14 but device running iOS <=13
+        [self reportChangeAuthorizationStatus:authStatus];
+    }
+#else
+    // Device may be running iOS >=14 but build SDK is iOS <=13
+    [self reportChangeAuthorizationStatus:authStatus];
+#endif
+}
 
 
 - (void)reportChangeAuthorizationStatus:(CLAuthorizationStatus)authStatus{
