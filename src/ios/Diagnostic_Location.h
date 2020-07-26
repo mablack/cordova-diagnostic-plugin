@@ -17,7 +17,6 @@
 
 @property (strong, nonatomic) CLLocationManager* locationManager;
 @property (nonatomic, retain) NSString* locationRequestCallbackId;
-@property (nonatomic, retain) NSString* locationAccuracyRequestCallbackId;
 @property (nonatomic, retain) NSString* currentLocationAuthorizationStatus;
 @property (nonatomic, retain) NSString* currentLocationAccuracyAuthorization;
 

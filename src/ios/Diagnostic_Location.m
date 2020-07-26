@@ -134,10 +134,8 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
                     if(error != nil){
                         [diagnostic sendPluginError:[NSString stringWithFormat:@"Error when requesting temporary full location accuracy authorization: %@", error] :command];
                     }else{
-                        self.locationAccuracyRequestCallbackId = command.callbackId;
-                        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
-                        [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
-                        [diagnostic sendPluginResult:pluginResult :command];
+                        NSString* locationAccuracyAuthorization = [self getLocationAccuracyAuthorizationAsString:[self.locationManager accuracyAuthorization]];
+                        [diagnostic sendPluginResultString:locationAccuracyAuthorization :command];
                     }
                 }];
             }else{
@@ -165,7 +163,6 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
     diagnostic = [Diagnostic getInstance];
 
     self.locationRequestCallbackId = nil;
-    self.locationAccuracyRequestCallbackId = nil;
     self.currentLocationAuthorizationStatus = nil;
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -241,12 +238,6 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
     if(locationAccuracyAuthorizationChanged){
         [diagnostic logDebug:[NSString stringWithFormat:@"Location accuracy authorization changed to: %@", locationAccuracyAuthorization]];
 
-        if(self.locationAccuracyRequestCallbackId != nil){
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:locationAccuracyAuthorization];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:self.locationAccuracyRequestCallbackId];
-            self.locationAccuracyRequestCallbackId = nil;
-        }
-
         [diagnostic executeGlobalJavascript:[NSString stringWithFormat:@"cordova.plugins.diagnostic.location._onLocationAccuracyAuthorizationChange(\"%@\");", locationAccuracyAuthorization]];
     }
 }
@@ -290,3 +281,4 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
 }
 
 @end
+
