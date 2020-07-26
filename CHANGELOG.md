@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**v6.0.2**
+* (iOS) Update location accuracy authorization logic based on iOS 14 Beta 3. 
+    * Relates to [#402](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/402). 
+
 **v6.0.1**
 * (iOS, bug fix): Fix handling of conditional logic for iOS version in location module. 
     * Resolves [#406](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/406).
