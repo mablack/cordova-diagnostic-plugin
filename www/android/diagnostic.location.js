@@ -53,7 +53,7 @@ var Diagnostic_Location = (function(){
             status = Diagnostic.permissionStatus.DENIED_ONCE;
         }else if(coarseStatus === Diagnostic.permissionStatus.NOT_REQUESTED || fineStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
             status = Diagnostic.permissionStatus.NOT_REQUESTED;
-        }else if(backgroundStatus === Diagnostic.permissionStatus.GRANTED){
+        }else if(typeof backgroundStatus === 'undefined' || backgroundStatus === Diagnostic.permissionStatus.GRANTED){
             status = Diagnostic.permissionStatus.GRANTED;
         }else{
             status = Diagnostic.permissionStatus.GRANTED_WHEN_IN_USE;
