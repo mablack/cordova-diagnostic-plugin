@@ -1459,7 +1459,7 @@ The function is passed a single string parameter containing the error message.
  Notes for iOS:
 
 - Authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
-- This should only be called if authorization status is NOT_DETERMINED - calling it when in any other state will have no effect.
+- This should only be called if authorization status is `NOT_REQUESTED` - calling it when in any other state will have no effect.
 - When calling this function, the messages contained in the `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) / `NSLocationAlwaysUsageDescription` (iOS 10)  .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
 this plugin provides default messages, but you should override them with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise them.
 
@@ -2280,7 +2280,7 @@ Requests camera authorization for the application.
 
 
 Notes for iOS:
-- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect.
+- Should only be called if authorization status is `NOT_REQUESTED`. Calling it when in any other state will have no effect.
 - When calling this function, the message contained in the `NSCameraUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
@@ -2678,7 +2678,7 @@ Platforms: Android and iOS
 Requests microphone authorization for the application.
 
 Notes for iOS:
-- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- Should only be called if authorization status is `NOT_REQUESTED`. Calling it when in any other state will have no effect and just return the current authorization status.
 - When calling this function, the message contained in the `NSMicrophoneUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
@@ -2774,7 +2774,7 @@ Platforms: Android and iOS
 Requests contacts authorization for the application.
 
 Notes for iOS:
-- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- Should only be called if authorization status is `NOT_REQUESTED`. Calling it when in any other state will have no effect and just return the current authorization status.
 - When calling this function, the message contained in the `NSContactsUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
@@ -2878,7 +2878,7 @@ Platforms: Android and iOS
 Requests calendar authorization for the application.
 
 Notes for iOS:
-- Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+- Should only be called if authorization status is `NOT_REQUESTED`. Calling it when in any other state will have no effect and just return the current authorization status.
 - When calling this function, the message contained in the `NSCalendarsUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 - This relates to Calendar Events (not Calendar Reminders)
@@ -2969,7 +2969,7 @@ The function is passed a single string parameter containing the error message.
 Platforms: iOS
 
 Requests reminders authorization for the application.
-Should only be called if authorization status is NOT_DETERMINED. Calling it when in any other state will have no effect and just return the current authorization status.
+Should only be called if authorization status is `NOT_REQUESTED`. Calling it when in any other state will have no effect and just return the current authorization status.
 When calling this function, the message contained in the `NSRemindersUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
