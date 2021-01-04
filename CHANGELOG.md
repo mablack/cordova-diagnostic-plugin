@@ -4,7 +4,7 @@
 * (iOS) Update assertion to require `NSLocationAlwaysAndWhenInUseUsageDescription` instead of `NSLocationAlwaysUsageDescription` since the latter is deprecated since iOS 11.
 * Fix docs referring to `NOT_REQUESTED` constant
     * Merged from PR [#414](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/414)
-* (Android) Fix issues with background location permission when running on less than Android API 29 / 11.0.
+* (Android) Fix issues with background location permission when running on less than Android API 29 / 10.0.
     * Resolves [#423](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/423). 
 
 **v6.0.2**
