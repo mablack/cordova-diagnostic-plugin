@@ -216,6 +216,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
       - [Parameters](#parameters-52)
       - [Example usage](#example-usage-53)
+    - [switchToNotificationSettings()](#switchToNotificationSettings)
   - [Microphone module](#microphone-module)
     - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
       - [Parameters](#parameters-53)
