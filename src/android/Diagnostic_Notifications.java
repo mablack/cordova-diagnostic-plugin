@@ -144,7 +144,7 @@ public class Diagnostic_Notifications extends CordovaPlugin{
         } else {
             settingsIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             settingsIntent.setData(Uri.parse("package:" + packageName));
-            diagnostic.logDebug("Switch to notification Settings: Only possible on android O or above");
+            diagnostic.logDebug("Switch to notification Settings: Only possible on android O or above. Falling back to application details");
         }
         cordova.getActivity().startActivity(settingsIntent);
     }

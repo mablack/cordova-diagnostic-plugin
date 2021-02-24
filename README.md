@@ -2607,6 +2607,17 @@ Requests remote notifications authorization for the application.
         omitRegistration: false
     });
 
+
+### switchToNotificationSettings()
+
+Platforms: Android
+
+Open notification settings for your app
+
+On Android versions lower than O, this will open the same page as `switchToSettings()`.
+
+    cordova.plugins.diagnostic.switchToNFCSettings();
+
 ## Microphone module
 
 Purpose: Microphone permission to record audio.
