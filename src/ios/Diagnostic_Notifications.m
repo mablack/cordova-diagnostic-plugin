@@ -157,7 +157,21 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
 
             [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
                 UNAuthorizationStatus authStatus = settings.authorizationStatus;
-                if(authStatus == UNAuthorizationStatusNotDetermined){
+                BOOL shouldAskForAuthorization = FALSE;
+                
+                if (authStatus == UNAuthorizationStatusNotDetermined) {
+                    shouldAskForAuthorization = TRUE;
+                } else if(@available(iOS 12,*)) {
+                    if(authStatus == UNAuthorizationStatusProvisional) {
+                        shouldAskForAuthorization = TRUE;
+                    }
+                } else if(@available(iOS 14,*)) {
+                    if(authStatus == UNAuthorizationStatusEphemeral) {
+                        shouldAskForAuthorization = TRUE;
+                    }
+                }
+                
+                if(shouldAskForAuthorization){
                     UNAuthorizationOptions options = UNAuthorizationOptionNone;
                     for(id key in d_options){
                         NSString* s_key = (NSString*) key;
