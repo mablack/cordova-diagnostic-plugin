@@ -122,6 +122,14 @@ static NSString*const REMOTE_NOTIFICATIONS_BADGE = @"badge";
                     status = AUTHORIZATION_NOT_DETERMINED;
                 }else if(authStatus == UNAuthorizationStatusAuthorized){
                     status = AUTHORIZATION_GRANTED;
+                }else if(@available(iOS 12.0, *)) {
+                    if(authStatus == UNAuthorizationStatusProvisional) {
+                        status = AUTHORIZATION_PROVISIONAL;
+                    }
+                }else if (@available(iOS 14.0, *)) {
+                    if(authStatus == UNAuthorizationStatusEphemeral) {
+                        status = AUTHORIZATION_EPHEMERAL;
+                    }
                 }
                 [diagnostic logDebug:[NSString stringWithFormat:@"Remote notifications authorization status is: %@", status]];
                 [diagnostic sendPluginResultString:status:command];
