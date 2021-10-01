@@ -1,5 +1,16 @@
 # CHANGELOG
 
+**v6.0.4**
+* (iOS) Add support for Provisional and Ephemeral notification permission statuses,
+    * Merged from PR [#437](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/437)
+* (Android) Add support for `ACTIVITY_RECOGNITION` runtime permission
+    * Merged from PR [#430](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/430)
+* (Android) Add `switchToNotifications()`  
+    * Merged from PR [#434](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/434)
+* (Android): Add separate plugin variable for AndroidX appcompat vs legacy version and pin to exact version numbers. 
+    * Resolves [#440](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/440).
+    * Based on PR [#441](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/441).
+
 **v6.0.3**
 * (iOS) Update assertion to require `NSLocationAlwaysAndWhenInUseUsageDescription` instead of `NSLocationAlwaysUsageDescription` since the latter is deprecated since iOS 11.
 * Fix docs referring to `NOT_REQUESTED` constant
