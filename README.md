@@ -2619,7 +2619,7 @@ Open notification settings for your app
 
 On Android versions lower than O, this will open the same page as `switchToSettings()`.
 
-    cordova.plugins.diagnostic.switchToNFCSettings();
+    cordova.plugins.diagnostic.switchToNotificationSettings();
 
 ## Microphone module
 
