@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v6.1.0**
+* (Android, iOS) Add `getCurrentBatteryLevel()` to core module to retrieve current device battery level.
+
 **v6.0.4**
 * (iOS) Add support for Provisional and Ephemeral notification permission statuses,
     * Merged from PR [#437](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/437)
