@@ -155,6 +155,21 @@ static Diagnostic* diagnostic = nil;
     }];
 }
 
+- (void) getCurrentBatteryLevel: (CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        @try {
+            UIDevice* currentDevice = [UIDevice currentDevice];
+            [currentDevice setBatteryMonitoringEnabled:true];
+            int batteryLevel = (int)([currentDevice batteryLevel]*100);
+            [self logDebug:[NSString stringWithFormat:@"Battery level: %d", batteryLevel]];
+            [self sendPluginResultInt:batteryLevel:command];
+            [currentDevice setBatteryMonitoringEnabled:false];
+        }@catch (NSException *exception) {
+            [self handlePluginException:exception :command];
+        }
+    }];
+}
+
 
 /********************************/
 #pragma mark - Send results
@@ -179,6 +194,12 @@ static Diagnostic* diagnostic = nil;
 - (void) sendPluginResultString: (NSString*)result :(CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) sendPluginResultInt: (int)result :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:result];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 

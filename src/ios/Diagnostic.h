@@ -33,6 +33,7 @@ extern NSString*const AUTHORIZATION_EPHEMERAL;
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 - (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command;
 - (void) getArchitecture: (CDVInvokedUrlCommand*)command;
+- (void) getCurrentBatteryLevel: (CDVInvokedUrlCommand*)command;
 
 // Utilities
 + (id) getInstance;
