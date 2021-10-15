@@ -21,6 +21,8 @@ package cordova.plugins;
 /*
  * Imports
  */
+import static android.content.Context.BATTERY_SERVICE;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -45,6 +47,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -250,6 +253,8 @@ public class Diagnostic extends CordovaPlugin{
                 this.restart(args);
             } else if(action.equals("getArchitecture")) {
                 callbackContext.success(getCPUArchitecture());
+            } else if(action.equals("getCurrentBatteryLevel")) {
+                callbackContext.success(getCurrentBatteryLevel());
             } else {
                 handleError("Invalid action");
                 return false;
@@ -780,6 +785,13 @@ public class Diagnostic extends CordovaPlugin{
     protected boolean isPermissionRequested(String permission){
         return sharedPref.getBoolean(permission, false);
     }
+
+    protected int getCurrentBatteryLevel(){
+        BatteryManager bm = (BatteryManager) cordova.getContext().getApplicationContext().getSystemService(BATTERY_SERVICE);
+        return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+    }
+
+
 
     /************
      * Overrides

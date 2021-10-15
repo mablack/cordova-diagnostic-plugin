@@ -446,6 +446,23 @@ var Diagnostic = (function(){
             []);
     };
 
+
+    /**
+     * Returns the current battery level of the device as a percentage.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single integer parameter which the current battery level percentage.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getCurrentBatteryLevel = function(successCallback, errorCallback){
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getCurrentBatteryLevel',
+            []);
+    };
+
     /************
      * Location *
      ************/
