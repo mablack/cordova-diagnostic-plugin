@@ -1,5 +1,11 @@
 # CHANGELOG
-
+**v6.1.1**
+* Assorted type corrections
+    * Merged from PR [#446](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/446)
+    * Pin `colors` to `1.4.0`
+        * Resolves [#451](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/451).
+        * Merged from PR [#452](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/452)
+        
 **v6.1.0**
 * (Android, iOS) Add `getCurrentBatteryLevel()` to core module to retrieve current device battery level.
 
