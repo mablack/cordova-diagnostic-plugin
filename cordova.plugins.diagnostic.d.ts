@@ -563,7 +563,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerBluetoothStateChangeHandler?: (
-        successCallback: (state: string) => void
+        successCallback?: (state: string|null) => void
     ) => void;
 
     /**
@@ -574,7 +574,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerLocationStateChangeHandler?: (
-        successCallback: (state: string) => void
+        successCallback?: (state: string) => void
     ) => void;
 
     /**
@@ -717,7 +717,7 @@ interface Diagnostic {
      * @param permissions
      */
     getPermissionsAuthorizationStatus?: (
-        successCallback: (status: string[]) => void,
+        successCallback: (status: Record<string,string>) => void,
         errorCallback: (error: string) => void,
         permissions: string[]
     ) => void;
@@ -743,7 +743,7 @@ interface Diagnostic {
      * @param permissions
      */
     requestRuntimePermissions?: (
-        successCallback: (status: string[]) => void,
+        successCallback: (status: Record<string,string>) => void,
         errorCallback: (error: string) => void,
         permissions: string[]
     ) => void;
@@ -760,7 +760,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerPermissionRequestCompleteHandler?: (
-        successCallback: (statuses: any) => void
+        successCallback?: (statuses: any) => void
     ) => void;
 
     /**
@@ -891,7 +891,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerNFCStateChangeHandler?: (
-        successCallback: (state: string) => void
+        successCallback?: (state: string) => void
     ) => void;
 
     /**
