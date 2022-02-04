@@ -44,18 +44,18 @@ var Diagnostic_Location = (function(){
     function combineLocationStatuses(statuses){
         var coarseStatus = statuses[Diagnostic.permission.ACCESS_COARSE_LOCATION],
             fineStatus = statuses[Diagnostic.permission.ACCESS_FINE_LOCATION],
-            backgroundStatus = statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION],
+            backgroundStatus = statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] || false,
             status;
 
-        if(coarseStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || fineStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
-            status = Diagnostic.permissionStatus.DENIED_ALWAYS;
+        if(coarseStatus === Diagnostic.permissionStatus.GRANTED || fineStatus === Diagnostic.permissionStatus.GRANTED){
+            status = Diagnostic.permissionStatus.GRANTED;
         }else if(coarseStatus === Diagnostic.permissionStatus.DENIED_ONCE || fineStatus === Diagnostic.permissionStatus.DENIED_ONCE){
             status = Diagnostic.permissionStatus.DENIED_ONCE;
+        }else if(coarseStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || fineStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
+            status = Diagnostic.permissionStatus.DENIED_ALWAYS;
         }else if(coarseStatus === Diagnostic.permissionStatus.NOT_REQUESTED || fineStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
             status = Diagnostic.permissionStatus.NOT_REQUESTED;
-        }else if(typeof backgroundStatus === 'undefined' || backgroundStatus === Diagnostic.permissionStatus.GRANTED){
-            status = Diagnostic.permissionStatus.GRANTED;
-        }else{
+        }else if(backgroundStatus !== Diagnostic.permissionStatus.GRANTED){
             status = Diagnostic.permissionStatus.GRANTED_WHEN_IN_USE;
         }
         return status;
