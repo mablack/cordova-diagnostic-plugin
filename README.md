@@ -128,7 +128,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [requestTemporaryFullAccuracyAuthorization()](#requesttemporaryfullaccuracyauthorization)
       - [Parameters](#parameters-27)
       - [Example usage](#example-usage-28)
-    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler-1)
+    - [registerLocationAccuracyAuthorizationChangeHandler()](#registerlocationaccuracyauthorizationchangehandler)
       - [Parameters](#parameters-28)
       - [Example usage](#example-usage-29)
     - [switchToLocationSettings()](#switchtolocationsettings)
@@ -1653,7 +1653,7 @@ This callback function is passed a single string parameter containing the error 
     });
 
 
-### registerLocationStateChangeHandler()
+### registerLocationAccuracyAuthorizationChangeHandler()
 
 Platforms: iOS
 
