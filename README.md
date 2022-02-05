@@ -1147,8 +1147,9 @@ Defines constants for the various location authorization modes on iOS and Androi
         console.log(status);
     }, function(error){
         console.error(error);
-    }, cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS);
+    }, cordova.plugins.diagnostic.locationAuthorizationMode.WHEN_IN_USE);
     
+_Requesting the `ALWAYS` permission initially with `requestLocationAuthorization()`, on Android 11/API 30 and iOS 13+ versions onwards is not advised and may lead to unexpected behaviour. See [requestLocationAuthorization()](#requestlocationauthorization)_ 
 ### locationAccuracyAuthorization constants
 
 Platforms: iOS
@@ -1488,10 +1489,12 @@ The function is passed a single string parameter containing the error message.
 - This should only be called if authorization status is `NOT_REQUESTED` - calling it when in any other state will have no effect.
 - When calling this function, the messages contained in the `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) / `NSLocationAlwaysUsageDescription` (iOS 10)  .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
 this plugin provides default messages, but you should override them with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise them.
+- From iOS 13+ onwards setting `mode` to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`, will innitially present the user with a `WHEN_IN_USE` dialog.
 
  Notes for Android:
 
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- For Android 11+ / API #) onwards having `mode` initially set to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS` will NOT present the user with a dialog at all and immediately returns a `DENIED` result. 
 - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
 - When the plugin is running in an app built with the Android 10 / API 29 or above (and running on similar device) you can request background location permission by specifying the `mode` argument as `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`. 
     - If the build SDK/device version is <= Android 9 / API 28, granting location permission implicitly grants background location permission.  
