@@ -20,6 +20,8 @@ extern NSString*const UNKNOWN;
 extern NSString*const AUTHORIZATION_NOT_DETERMINED;
 extern NSString*const AUTHORIZATION_DENIED;
 extern NSString*const AUTHORIZATION_GRANTED;
+extern NSString*const AUTHORIZATION_PROVISIONAL;
+extern NSString*const AUTHORIZATION_EPHEMERAL;
 
 @interface Diagnostic : CDVPlugin
 
@@ -31,6 +33,7 @@ extern NSString*const AUTHORIZATION_GRANTED;
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
 - (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command;
 - (void) getArchitecture: (CDVInvokedUrlCommand*)command;
+- (void) getCurrentBatteryLevel: (CDVInvokedUrlCommand*)command;
 
 // Utilities
 + (id) getInstance;

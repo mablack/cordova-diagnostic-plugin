@@ -75,6 +75,9 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [enableDebug()](#enabledebug)
       - [Parameters](#parameters-13)
       - [Example usage](#example-usage-15)
+    - [getCurrentBatteryLevel()](#getcurrentbatterylevel)
+      - [Parameters](#parameters-14)
+      - [Example usage](#example-usage-16)
   - [Location module](#location-module)
     - [locationMode constants](#locationmode-constants)
       - [Values](#values)
@@ -86,48 +89,48 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
       - [Values](#values-2)
       - [Example](#example-3)
     - [isLocationAvailable()](#islocationavailable)
-      - [Parameters](#parameters-14)
-      - [Example usage](#example-usage-16)
-    - [isLocationEnabled()](#islocationenabled)
       - [Parameters](#parameters-15)
       - [Example usage](#example-usage-17)
-    - [isGpsLocationAvailable()](#isgpslocationavailable)
+    - [isLocationEnabled()](#islocationenabled)
       - [Parameters](#parameters-16)
       - [Example usage](#example-usage-18)
-    - [isGpsLocationEnabled()](#isgpslocationenabled)
+    - [isGpsLocationAvailable()](#isgpslocationavailable)
       - [Parameters](#parameters-17)
       - [Example usage](#example-usage-19)
-    - [isNetworkLocationAvailable()](#isnetworklocationavailable)
+    - [isGpsLocationEnabled()](#isgpslocationenabled)
       - [Parameters](#parameters-18)
       - [Example usage](#example-usage-20)
-    - [isNetworkLocationEnabled()](#isnetworklocationenabled)
+    - [isNetworkLocationAvailable()](#isnetworklocationavailable)
       - [Parameters](#parameters-19)
       - [Example usage](#example-usage-21)
-    - [getLocationMode()](#getlocationmode)
+    - [isNetworkLocationEnabled()](#isnetworklocationenabled)
       - [Parameters](#parameters-20)
       - [Example usage](#example-usage-22)
-    - [isLocationAuthorized()](#islocationauthorized)
+    - [getLocationMode()](#getlocationmode)
       - [Parameters](#parameters-21)
       - [Example usage](#example-usage-23)
-    - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
+    - [isLocationAuthorized()](#islocationauthorized)
       - [Parameters](#parameters-22)
+      - [Example usage](#example-usage-24)
+    - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
+      - [Parameters](#parameters-23)
       - [Example iOS usage](#example-ios-usage)
       - [Example Android usage](#example-android-usage)
     - [requestLocationAuthorization()](#requestlocationauthorization)
-      - [Parameters](#parameters-23)
-      - [Example usage](#example-usage-24)
-    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
       - [Parameters](#parameters-24)
       - [Example usage](#example-usage-25)
-    - [getLocationAccuracyAuthorization()](#getlocationaccuracyauthorization)
+    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
       - [Parameters](#parameters-25)
       - [Example usage](#example-usage-26)
-    - [requestTemporaryFullAccuracyAuthorization()](#requesttemporaryfullaccuracyauthorization)
+    - [getLocationAccuracyAuthorization()](#getlocationaccuracyauthorization)
       - [Parameters](#parameters-26)
       - [Example usage](#example-usage-27)
-    - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler-1)
+    - [requestTemporaryFullAccuracyAuthorization()](#requesttemporaryfullaccuracyauthorization)
       - [Parameters](#parameters-27)
       - [Example usage](#example-usage-28)
+    - [registerLocationAccuracyAuthorizationChangeHandler()](#registerlocationaccuracyauthorizationchangehandler)
+      - [Parameters](#parameters-28)
+      - [Example usage](#example-usage-29)
     - [switchToLocationSettings()](#switchtolocationsettings)
   - [Bluetooth module](#bluetooth-module)
     - [bluetoothState constants](#bluetoothstate-constants)
@@ -135,181 +138,181 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
       - [iOS](#ios-2)
       - [Example](#example-4)
     - [isBluetoothAvailable()](#isbluetoothavailable)
-      - [Parameters](#parameters-28)
-      - [Example usage](#example-usage-29)
-    - [isBluetoothEnabled()](#isbluetoothenabled)
       - [Parameters](#parameters-29)
       - [Example usage](#example-usage-30)
-    - [hasBluetoothSupport()](#hasbluetoothsupport)
+    - [isBluetoothEnabled()](#isbluetoothenabled)
       - [Parameters](#parameters-30)
       - [Example usage](#example-usage-31)
-    - [hasBluetoothLESupport()](#hasbluetoothlesupport)
+    - [hasBluetoothSupport()](#hasbluetoothsupport)
       - [Parameters](#parameters-31)
       - [Example usage](#example-usage-32)
-    - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
+    - [hasBluetoothLESupport()](#hasbluetoothlesupport)
       - [Parameters](#parameters-32)
       - [Example usage](#example-usage-33)
-    - [getBluetoothState()](#getbluetoothstate)
+    - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
       - [Parameters](#parameters-33)
       - [Example usage](#example-usage-34)
-    - [setBluetoothState()](#setbluetoothstate)
+    - [getBluetoothState()](#getbluetoothstate)
       - [Parameters](#parameters-34)
       - [Example usage](#example-usage-35)
-    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
+    - [setBluetoothState()](#setbluetoothstate)
       - [Parameters](#parameters-35)
       - [Example usage](#example-usage-36)
-    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
       - [Parameters](#parameters-36)
       - [Example usage](#example-usage-37)
+    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+      - [Parameters](#parameters-37)
+      - [Example usage](#example-usage-38)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
   - [WiFi module](#wifi-module)
     - [isWifiAvailable()](#iswifiavailable)
-      - [Parameters](#parameters-37)
-      - [Example usage](#example-usage-38)
-    - [isWifiEnabled()](#iswifienabled)
       - [Parameters](#parameters-38)
       - [Example usage](#example-usage-39)
-    - [setWifiState()](#setwifistate)
+    - [isWifiEnabled()](#iswifienabled)
       - [Parameters](#parameters-39)
       - [Example usage](#example-usage-40)
+    - [setWifiState()](#setwifistate)
+      - [Parameters](#parameters-40)
+      - [Example usage](#example-usage-41)
     - [switchToWifiSettings()](#switchtowifisettings)
   - [Camera module](#camera-module)
     - [isCameraPresent()](#iscamerapresent)
-      - [Parameters](#parameters-40)
-      - [Example usage](#example-usage-41)
-    - [isCameraAvailable()](#iscameraavailable)
       - [Parameters](#parameters-41)
       - [Example usage](#example-usage-42)
-    - [isCameraAuthorized()](#iscameraauthorized)
+    - [isCameraAvailable()](#iscameraavailable)
       - [Parameters](#parameters-42)
       - [Example usage](#example-usage-43)
-    - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
+    - [isCameraAuthorized()](#iscameraauthorized)
       - [Parameters](#parameters-43)
       - [Example usage](#example-usage-44)
-    - [requestCameraAuthorization()](#requestcameraauthorization)
+    - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
       - [Parameters](#parameters-44)
       - [Example usage](#example-usage-45)
-    - [isCameraRollAuthorized()](#iscamerarollauthorized)
+    - [requestCameraAuthorization()](#requestcameraauthorization)
       - [Parameters](#parameters-45)
       - [Example usage](#example-usage-46)
-    - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
+    - [isCameraRollAuthorized()](#iscamerarollauthorized)
       - [Parameters](#parameters-46)
       - [Example usage](#example-usage-47)
-    - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+    - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
       - [Parameters](#parameters-47)
       - [Example usage](#example-usage-48)
+    - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+      - [Parameters](#parameters-48)
+      - [Example usage](#example-usage-49)
   - [Notifications module](#notifications-module)
     - [remoteNotificationType constants](#remotenotificationtype-constants)
       - [Example](#example-5)
     - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
-      - [Parameters](#parameters-48)
-      - [Example usage](#example-usage-49)
-    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
       - [Parameters](#parameters-49)
       - [Example usage](#example-usage-50)
-    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
+    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
       - [Parameters](#parameters-50)
       - [Example usage](#example-usage-51)
-    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
+    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
       - [Parameters](#parameters-51)
       - [Example usage](#example-usage-52)
-    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
+    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
       - [Parameters](#parameters-52)
       - [Example usage](#example-usage-53)
-  - [Microphone module](#microphone-module)
-    - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
+    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
       - [Parameters](#parameters-53)
       - [Example usage](#example-usage-54)
-    - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
+    - [switchToNotificationSettings()](#switchtonotificationsettings)
+  - [Microphone module](#microphone-module)
+    - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
       - [Parameters](#parameters-54)
       - [Example usage](#example-usage-55)
-    - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
+    - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
       - [Parameters](#parameters-55)
       - [Example usage](#example-usage-56)
-  - [Contacts module](#contacts-module)
-    - [isContactsAuthorized()](#iscontactsauthorized)
+    - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
       - [Parameters](#parameters-56)
       - [Example usage](#example-usage-57)
-    - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
+  - [Contacts module](#contacts-module)
+    - [isContactsAuthorized()](#iscontactsauthorized)
       - [Parameters](#parameters-57)
       - [Example usage](#example-usage-58)
-    - [requestContactsAuthorization()](#requestcontactsauthorization)
+    - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
       - [Parameters](#parameters-58)
       - [Example usage](#example-usage-59)
-  - [Calendar module](#calendar-module)
-    - [isCalendarAuthorized()](#iscalendarauthorized)
+    - [requestContactsAuthorization()](#requestcontactsauthorization)
       - [Parameters](#parameters-59)
       - [Example usage](#example-usage-60)
-    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
+  - [Calendar module](#calendar-module)
+    - [isCalendarAuthorized()](#iscalendarauthorized)
       - [Parameters](#parameters-60)
       - [Example usage](#example-usage-61)
-    - [requestCalendarAuthorization()](#requestcalendarauthorization)
+    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
       - [Parameters](#parameters-61)
       - [Example usage](#example-usage-62)
-  - [Reminders module](#reminders-module)
-    - [isRemindersAuthorized()](#isremindersauthorized)
+    - [requestCalendarAuthorization()](#requestcalendarauthorization)
       - [Parameters](#parameters-62)
       - [Example usage](#example-usage-63)
-    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
+  - [Reminders module](#reminders-module)
+    - [isRemindersAuthorized()](#isremindersauthorized)
       - [Parameters](#parameters-63)
       - [Example usage](#example-usage-64)
-    - [requestRemindersAuthorization()](#requestremindersauthorization)
+    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
       - [Parameters](#parameters-64)
       - [Example usage](#example-usage-65)
+    - [requestRemindersAuthorization()](#requestremindersauthorization)
+      - [Parameters](#parameters-65)
+      - [Example usage](#example-usage-66)
   - [Motion module](#motion-module)
     - [motionStatus constants](#motionstatus-constants)
       - [Example](#example-6)
     - [isMotionAvailable()](#ismotionavailable)
-      - [Parameters](#parameters-65)
-      - [Example usage](#example-usage-66)
-    - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
       - [Parameters](#parameters-66)
       - [Example usage](#example-usage-67)
-    - [requestMotionAuthorization()](#requestmotionauthorization)
+    - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
       - [Parameters](#parameters-67)
       - [Example usage](#example-usage-68)
-    - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
+    - [requestMotionAuthorization()](#requestmotionauthorization)
       - [Parameters](#parameters-68)
       - [Example usage](#example-usage-69)
+    - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
+      - [Parameters](#parameters-69)
+      - [Example usage](#example-usage-70)
   - [NFC module](#nfc-module)
     - [NFCState constants](#nfcstate-constants)
       - [Values](#values-3)
       - [Example](#example-7)
     - [isNFCPresent()](#isnfcpresent)
-      - [Parameters](#parameters-69)
-      - [Example usage](#example-usage-70)
-    - [isNFCEnabled()](#isnfcenabled)
       - [Parameters](#parameters-70)
       - [Example usage](#example-usage-71)
-    - [isNFCAvailable()](#isnfcavailable)
+    - [isNFCEnabled()](#isnfcenabled)
       - [Parameters](#parameters-71)
       - [Example usage](#example-usage-72)
-    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+    - [isNFCAvailable()](#isnfcavailable)
       - [Parameters](#parameters-72)
       - [Example usage](#example-usage-73)
+    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+      - [Parameters](#parameters-73)
+      - [Example usage](#example-usage-74)
     - [switchToNFCSettings()](#switchtonfcsettings)
   - [External storage module](#external-storage-module)
     - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
-      - [Parameters](#parameters-73)
-      - [Example usage](#example-usage-74)
-    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
       - [Parameters](#parameters-74)
       - [Example usage](#example-usage-75)
-    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
+    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
       - [Parameters](#parameters-75)
       - [Example usage](#example-usage-76)
-    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
+    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
       - [Parameters](#parameters-76)
       - [Example usage](#example-usage-77)
+    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
+      - [Parameters](#parameters-77)
+      - [Example usage](#example-usage-78)      
   - [Airplane mode module](#airplane-mode-module)
     - [isAirplaneModeOn()](#isairplanemodeon)
-      - [Parameters](#parameters-77)
-      - [Example usage](#example-usage-78)
 - [Platform Notes](#platform-notes)
   - [Android](#android-3)
     - [Android permissions](#android-permissions)
       - [Android runtime permissions](#android-runtime-permissions)
         - ["Dangerous" runtime permissions](#dangerous-runtime-permissions)
+        - [API 29 runtime permissions](#api-29-runtime-permissions)
         - [Runtime permission groups](#runtime-permission-groups)
         - [Runtime permissions example project](#runtime-permissions-example-project)
         - [Android Camera permissions](#android-camera-permissions)
@@ -386,9 +389,9 @@ In order to avoid build problems with Android, please make sure you have the lat
 ## AndroidX Library
 This plugin uses/depends on the [AndroidX (Jetpack) libraries](https://developer.android.com/jetpack/androidx) (these supersede the [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html) which is no longer used by this plugin since `cordova.plugins.diagnostic@6`).
 
-This plugin pins a default version of the library in [its `plugin.xml`](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/plugin.xml) however you can override this to specify a different version using the `ANDROIDX_VERSION` variable at plugin installation time, for example:
+This plugin pins default versions of the legacy and appcompat versions of the library  in [its `plugin.xml`](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/plugin.xml) however you can override these to specify different versions using the `ANDROIDX_VERSION` (legacy) and `ANDROIDX_APPCOMPAT_VERSION` variables at plugin installation time, for example:
 
-    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROIDX_VERSION=1.0.0
+    $ cordova plugin add cordova.plugins.diagnostic --variable ANDROIDX_VERSION=1.0.0 --variable ANDROIDX_APPCOMPAT_VERSION=1.3.1
 
 
 ## Specifying modules
@@ -1059,7 +1062,28 @@ Enables debug mode, which logs native debug messages to the native and JS consol
     cordova.plugins.diagnostic.enableDebug(function(){
         console.log("Debug is enabled"));
     });
+
+### getCurrentBatteryLevel()
+
+Platforms: Android and iOS
+
+Returns the current battery level of the device as a percentage.
+
+
+    cordova.plugins.diagnostic.getCurrentBatteryLevel(successCallback, successCallback);
     
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single `int` parameter which indicates the current battery level percentage.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single `string` parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getCurrentBatteryLevel(function(level){
+        console.log(`Current battery level is ${level}%`);
+    });    
 
 
 ## Location module
@@ -1125,8 +1149,9 @@ Defines constants for the various location authorization modes on iOS and Androi
         console.log(status);
     }, function(error){
         console.error(error);
-    }, cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS);
+    }, cordova.plugins.diagnostic.locationAuthorizationMode.WHEN_IN_USE);
     
+_Requesting the `ALWAYS` permission initially with `requestLocationAuthorization()`, on Android 11/API 30 and iOS 13+ versions onwards is not advised and may lead to unexpected behaviour. See [requestLocationAuthorization()](#requestlocationauthorization)_ 
 ### locationAccuracyAuthorization constants
 
 Platforms: iOS
@@ -1466,10 +1491,12 @@ The function is passed a single string parameter containing the error message.
 - This should only be called if authorization status is `NOT_REQUESTED` - calling it when in any other state will have no effect.
 - When calling this function, the messages contained in the `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) / `NSLocationAlwaysUsageDescription` (iOS 10)  .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
 this plugin provides default messages, but you should override them with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise them.
+- From iOS 13+ onwards setting `mode` to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`, will innitially present the user with a `WHEN_IN_USE` dialog.
 
  Notes for Android:
 
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
+- For Android 11+ / API #) onwards having `mode` initially set to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS` will NOT present the user with a dialog at all and immediately returns a `DENIED` result. 
 - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
 - When the plugin is running in an app built with the Android 10 / API 29 or above (and running on similar device) you can request background location permission by specifying the `mode` argument as `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`. 
     - If the build SDK/device version is <= Android 9 / API 28, granting location permission implicitly grants background location permission.  
@@ -1628,7 +1655,7 @@ This callback function is passed a single string parameter containing the error 
     });
 
 
-### registerLocationStateChangeHandler()
+### registerLocationAccuracyAuthorizationChangeHandler()
 
 Platforms: iOS
 
@@ -2611,6 +2638,17 @@ Requests remote notifications authorization for the application.
         omitRegistration: false
     });
 
+
+### switchToNotificationSettings()
+
+Platforms: Android
+
+Open notification settings for your app
+
+On Android versions lower than O, this will open the same page as `switchToSettings()`.
+
+    cordova.plugins.diagnostic.switchToNotificationSettings();
+
 ## Microphone module
 
 Purpose: Microphone permission to record audio.
@@ -3569,6 +3607,10 @@ The plugin defines the [full list of dangersous permissions available in API 23]
 - `cordova.plugins.diagnostic.permission.READ_EXTERNAL_STORAGE`
 - `cordova.plugins.diagnostic.permission.BODY_SENSORS`
 
+##### API 29 runtime permissions
+With the introduction of Android 10, came Physical Activity permissions: https://developer.android.com/about/versions/10/privacy/changes#physical-activity-recognition.
+- `cordova.plugins.diagnostic.permission.ACTIVITY_RECOGNITION`
+
 
 ##### Runtime permission groups
 
@@ -3594,6 +3636,7 @@ Permissions are grouped as follows:
     SENSORS: [BODY_SENSORS],
     SMS: [SEND_SMS, RECEIVE_SMS, READ_SMS, RECEIVE_WAP_PUSH, RECEIVE_MMS],
     STORAGE: [READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE]
+    PHYSICAL_ACTIVITY: [ACTIVITY_RECOGNITION]
 
 ##### Runtime permissions example project
 

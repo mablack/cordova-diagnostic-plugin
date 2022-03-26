@@ -2,7 +2,7 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="cordova.plugins.diagnostic"
-    version="6.0.3">
+    version="6.1.1">
 
     <name>Diagnostic</name>
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
@@ -275,9 +275,10 @@
 
         <source-file src="src/android/Diagnostic.java" target-dir="src/cordova/plugins" />
 
-        <preference name="ANDROIDX_VERSION" default="1.+" />
+        <preference name="ANDROIDX_VERSION" default="1.0.0" />
+        <preference name="ANDROIDX_APPCOMPAT_VERSION" default="1.3.1" />
         <framework src="androidx.legacy:legacy-support-v4:$ANDROIDX_VERSION" />
-        <framework src="androidx.appcompat:appcompat:$ANDROIDX_VERSION" />
+        <framework src="androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT_VERSION" />
 
         <!--BEGIN_MODULE LOCATION-->
         <config-file target="config.xml" parent="/*">
@@ -500,5 +501,11 @@
             <merges target="" />
         </js-module>
         <!--END_MODULE CAMERA-->
+
+        <!--BEGIN_MODULE ACTIVITY_RECOGNITION-->
+        <config-file parent="/*" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+        </config-file>
+        <!--END_MODULE BLUETOOTH-->
     </platform>
 </plugin>

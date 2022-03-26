@@ -42,6 +42,7 @@ interface Diagnostic {
         "WRITE_EXTERNAL_STORAGE": "WRITE_EXTERNAL_STORAGE";
         "READ_EXTERNAL_STORAGE": "READ_EXTERNAL_STORAGE";
         "BODY_SENSORS": "BODY_SENSORS";
+        "ACTIVITY_RECOGNITION": "ACTIVITY_RECOGNITION";
     };
 
     /**
@@ -60,6 +61,7 @@ interface Diagnostic {
         "SENSORS": ["BODY_SENSORS"];
         "SMS": ["SEND_SMS", "RECEIVE_SMS", "READ_SMS", "RECEIVE_WAP_PUSH", "RECEIVE_MMS"];
         "STORAGE": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"];
+        "PHYSICAL_ACTIVITY": ["ACTIVITY_RECOGNITION"];
     };
 
     /**
@@ -561,7 +563,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerBluetoothStateChangeHandler?: (
-        successCallback: (state: string) => void
+        successCallback?: (state: string|null) => void
     ) => void;
 
     /**
@@ -572,7 +574,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerLocationStateChangeHandler?: (
-        successCallback: (state: string) => void
+        successCallback?: (state: string) => void
     ) => void;
 
     /**
@@ -609,6 +611,17 @@ interface Diagnostic {
      */
     getArchitecture?: (
         successCallback: (state: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID and iOS ONLY
+     * Returns the current battery level of the device as a percentage.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getCurrentBatteryLevel?: (
+        successCallback: (level: number) => void,
         errorCallback: (error: string) => void
     ) => void;
 
@@ -704,7 +717,7 @@ interface Diagnostic {
      * @param permissions
      */
     getPermissionsAuthorizationStatus?: (
-        successCallback: (status: string[]) => void,
+        successCallback: (status: Record<string,string>) => void,
         errorCallback: (error: string) => void,
         permissions: string[]
     ) => void;
@@ -730,7 +743,7 @@ interface Diagnostic {
      * @param permissions
      */
     requestRuntimePermissions?: (
-        successCallback: (status: string[]) => void,
+        successCallback: (status: Record<string,string>) => void,
         errorCallback: (error: string) => void,
         permissions: string[]
     ) => void;
@@ -747,7 +760,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerPermissionRequestCompleteHandler?: (
-        successCallback: (statuses: any) => void
+        successCallback?: (statuses: any) => void
     ) => void;
 
     /**
@@ -889,7 +902,7 @@ interface Diagnostic {
      * @param successCallback
      */
     registerNFCStateChangeHandler?: (
-        successCallback: (state: string) => void
+        successCallback?: (state: string) => void
     ) => void;
 
     /**
