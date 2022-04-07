@@ -43,6 +43,9 @@ interface Diagnostic {
         "READ_EXTERNAL_STORAGE": "READ_EXTERNAL_STORAGE";
         "BODY_SENSORS": "BODY_SENSORS";
         "ACTIVITY_RECOGNITION": "ACTIVITY_RECOGNITION";
+        "BLUETOOTH_ADVERTISE": "BLUETOOTH_ADVERTISE";
+        "BLUETOOTH_SCAN": "BLUETOOTH_SCAN";
+        "BLUETOOTH_CONNECT": "BLUETOOTH_CONNECT";
     };
 
     /**
@@ -62,6 +65,7 @@ interface Diagnostic {
         "SMS": ["SEND_SMS", "RECEIVE_SMS", "READ_SMS", "RECEIVE_WAP_PUSH", "RECEIVE_MMS"];
         "STORAGE": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"];
         "PHYSICAL_ACTIVITY": ["ACTIVITY_RECOGNITION"];
+        "NEARBY_DEVICES": ["BLUETOOTH_ADVERTISE", "BLUETOOTH_SCAN", "BLUETOOTH_CONNECT"];
     };
 
     /**
@@ -315,8 +319,8 @@ interface Diagnostic {
 
     /**
      * ANDROID and iOS ONLY
-     * Returns true if the device setting for location is on. 
-     * On Android this returns true if Location Mode is switched on. 
+     * Returns true if the device setting for location is on.
+     * On Android this returns true if Location Mode is switched on.
      * On iOS this returns true if Location Services is switched on.
      * @param successCallback
      * @param errorCallback

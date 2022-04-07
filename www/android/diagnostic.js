@@ -54,7 +54,10 @@ var Diagnostic = (function(){
             "WRITE_EXTERNAL_STORAGE": "WRITE_EXTERNAL_STORAGE",
             "READ_EXTERNAL_STORAGE": "READ_EXTERNAL_STORAGE",
             "BODY_SENSORS": "BODY_SENSORS",
-            "ACTIVITY_RECOGNITION": "ACTIVITY_RECOGNITION"
+            "ACTIVITY_RECOGNITION": "ACTIVITY_RECOGNITION",
+            "BLUETOOTH_ADVERTISE": "BLUETOOTH_ADVERTISE",
+            "BLUETOOTH_SCAN": "BLUETOOTH_SCAN",
+            "BLUETOOTH_CONNECT": "BLUETOOTH_CONNECT",
         };
 
     /**
@@ -73,20 +76,21 @@ var Diagnostic = (function(){
             "SENSORS": ["BODY_SENSORS"],
             "SMS": ["SEND_SMS", "RECEIVE_SMS", "READ_SMS", "RECEIVE_WAP_PUSH", "RECEIVE_MMS"],
             "STORAGE": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
-            "PHYSICAL_ACTIVITY": ["ACTIVITY_RECOGNITION"]
+            "PHYSICAL_ACTIVITY": ["ACTIVITY_RECOGNITION"],
+            "NEARBY_DEVICES": ["BLUETOOTH_ADVERTISE", "BLUETOOTH_SCAN", "BLUETOOTH_CONNECT"]
         };
 
     Diagnostic.runtimePermissionStatus = // deprecated
         Diagnostic.permissionStatus = {
-            //  Location permission requested and 
+            //  Location permission requested and
             //      app build SDK/user device is Android >10 and user granted background location ("all the time") permission,
             //      or app build SDK/user device is Android 6-9 and user granted location permission,
             //  or non-location permission requested
             //      and app build SDK/user device is Android >=6 and user granted permission
             //  or app build SDK/user device is Android <6
             "GRANTED": "GRANTED",
-            //  Location permission requested 
-            //  and app build SDK/user device is Android >10 
+            //  Location permission requested
+            //  and app build SDK/user device is Android >10
             //  and user granted background foreground location ("while-in-use") permission
             "GRANTED_WHEN_IN_USE": "authorized_when_in_use",
             // User denied access to this permission
