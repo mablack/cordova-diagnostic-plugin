@@ -110,6 +110,10 @@ public class Diagnostic extends CordovaPlugin{
         Diagnostic.addBiDirMapEntry(_permissionsMap, "BODY_SENSORS", Manifest.permission.BODY_SENSORS);
         // Add as string as Manifest.permission.ACTIVITY_RECOGNITION not defined in < API 29:
         Diagnostic.addBiDirMapEntry(_permissionsMap, "ACTIVITY_RECOGNITION", "android.permission.ACTIVITY_RECOGNITION");
+        // Add as string as Manifest.permission.{BLUETOOTH_ADVERTISE, BLUETOOTH_CONNECT, BLUETOOTH_SCAN}    not defined in < API 31:
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_ADVERTISE", "android.permission.BLUETOOTH_ADVERTISE");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_SCAN", "android.permission.BLUETOOTH_SCAN");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_CONNECT");
         permissionsMap = Collections.unmodifiableMap(_permissionsMap);
     }
 
