@@ -271,9 +271,9 @@ public class Diagnostic_Location extends CordovaPlugin{
      */
     private int getLocationMode() throws Exception {
         int mode;
-        if (Build.VERSION.SDK_INT >= 19){ // Kitkat and above
+        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 28){ // Kitkat to Oreo, Settings.Secute.LOCATION_MODE was deprecated in Pie (https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE)
             mode = Settings.Secure.getInt(this.cordova.getActivity().getContentResolver(), Settings.Secure.LOCATION_MODE);
-        }else{ // Pre-Kitkat
+        }else{ // Pre-Kitkat and post-Oreo
             if(isLocationProviderEnabled(LocationManager.GPS_PROVIDER) && isLocationProviderEnabled(LocationManager.NETWORK_PROVIDER)){
                 mode = 3;
             } else if(isLocationProviderEnabled(LocationManager.GPS_PROVIDER)){
