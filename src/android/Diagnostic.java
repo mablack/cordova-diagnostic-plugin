@@ -702,45 +702,25 @@ public class Diagnostic extends CordovaPlugin{
 
     /**
      * Performs a full cold app restart - restarts application
-     * https://stackoverflow.com/a/22345538/777265
+     * https://stackoverflow.com/a/58530756/777265
      */
     protected void doColdRestart() {
         String baseError = "Unable to cold restart application: ";
         try {
             logInfo("Cold restarting application");
-            Context c = applicationContext;
-            //check if the context is given
-            if (c != null) {
-                //fetch the packagemanager so we can get the default launch activity
-                // (you can replace this intent with any other activity if you want
-                PackageManager pm = c.getPackageManager();
-                //check if we got the PackageManager
-                if (pm != null) {
-                    //create the intent with the default start activity for your application
-                    Intent mStartActivity = pm.getLaunchIntentForPackage(
-                            c.getPackageName()
-                    );
-                    if (mStartActivity != null) {
-                        //mStartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        //create a pending intent so the application is restarted after System.exit(0) was called.
-                        // We use an AlarmManager to call this intent in 100ms
-                        int mPendingIntentId = 223344;
-                        PendingIntent mPendingIntent = PendingIntent
-                                .getActivity(c, mPendingIntentId, mStartActivity,
-                                        PendingIntent.FLAG_CANCEL_CURRENT);
-                        AlarmManager mgr = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
-                        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                        Log.i(TAG,"Killing application for cold restart");
-                        //kill the application
-                        System.exit(0);
-                    } else {
-                        handleError(baseError+"StartActivity is null");
-                    }
-                } else {
-                    handleError(baseError+"PackageManager is null");
-                }
+            Activity activity = instance.cordova.getActivity();
+            if (activity != null) {
+                // Systems at 29/Q and later don't allow relaunch, but System.exit(0) on
+                // all supported systems will relaunch ... but by killing the process, then
+                // restarting the process with the back stack intact. We must make sure that
+                // the launch activity is the only thing in the back stack before exiting.
+                final PackageManager pm = activity.getPackageManager();
+                final Intent intent = pm.getLaunchIntentForPackage(activity.getPackageName());
+                activity.finishAffinity(); // Finishes all activities.
+                activity.startActivity(intent);    // Start the launch activity
+                System.exit(0);    // System finishes and automatically relaunches us.
             } else {
-                handleError(baseError+"Context is null");
+                handleError(baseError+"Activity is null");
             }
         } catch (Exception ex) {
             handleError(baseError+ ex.getMessage());
