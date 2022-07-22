@@ -25,7 +25,9 @@ var Diagnostic = (function(){
         "DENIED_ALWAYS": "denied_always", // User denied access to this permission
         "RESTRICTED": "restricted", // Permission is unavailable and user cannot enable it.  For example, when parental controls are in effect for the current user.
         "GRANTED": "authorized", //  User granted access to this permission
-        "GRANTED_WHEN_IN_USE": "authorized_when_in_use" //  User granted access use location permission only when app is in use
+        "GRANTED_WHEN_IN_USE": "authorized_when_in_use", //  User granted access use location permission only when app is in use
+        "EPHEMERAL": "ephemeral", // The app is authorized to schedule or receive notifications for a limited amount of time.
+        "PROVISIONAL": "provisional" // The application is provisionally authorized to post non-interruptive user notifications.
     };
 
     Diagnostic.cpuArchitecture = {

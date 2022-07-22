@@ -596,6 +596,10 @@ For location permission, this indicates the user has granted access to the permi
 - `GRANTED_WHEN_IN_USE` - Used only for location permission.
 Indicates the user has granted access to the permission "when in use" (only when the app is in the foreground).
 
+Addtionally, for notifications permissions:
+- `PROVISIONAL` - The app is provisionally authorized to post non-interruptive user notifications.
+- `EPHEMERAL` - The app is authorized to schedule or receive notifications for a limited amount of time.
+
 #### Example
 
     if(somePermissionStatus === cordova.plugins.diagnostic.permissionStatus.GRANTED){
@@ -2579,6 +2583,7 @@ Returns the authorization status for the application to use Remote Notifications
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
 The function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+This can be [provisional](https://developer.apple.com/documentation/usernotifications/unauthorizationstatus/unauthorizationstatusprovisional?language=objc) or [ephemeral](https://developer.apple.com/documentation/usernotifications/unauthorizationstatus/unauthorizationstatusephemeral?language=objc) authorization status.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
 
@@ -2594,6 +2599,12 @@ The function is passed a single string parameter containing the error message.
                 break;
             case cordova.plugins.diagnostic.permissionStatus.GRANTED:
                 console.log("Permission granted");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.PROVISIONAL:
+                console.log("Provisional permission granted");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.EPHEMERAL:
+                console.log("Provisional permission granted");
                 break;
         }
     }, function(error){
