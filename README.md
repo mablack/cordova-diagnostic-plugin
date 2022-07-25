@@ -306,14 +306,13 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
       - [Parameters](#parameters-77)
       - [Example usage](#example-usage-78)
   - [Airplane mode module](#airplane-mode-module)
-    - [isAirplaneModeOn()](#isairplanemodeon)
+    - [isAirplaneMoodeOn()](#isairplanemoodeon)
+      - [Parameters](#parameters-78)
 - [Platform Notes](#platform-notes)
   - [Android](#android-3)
     - [Android permissions](#android-permissions)
       - [Android runtime permissions](#android-runtime-permissions)
         - ["Dangerous" runtime permissions](#dangerous-runtime-permissions)
-        - [API 29 runtime permissions](#api-29-runtime-permissions)
-        - [Runtime permission groups](#runtime-permission-groups)
         - [Runtime permissions example project](#runtime-permissions-example-project)
         - [Android Camera permissions](#android-camera-permissions)
     - [Android Auto Backup](#android-auto-backup)
@@ -3591,75 +3590,52 @@ This plugin supports [checking](#getpermissionauthorizationstatus) and [requesti
 
 ##### "Dangerous" runtime permissions
 
-The plugin defines the [full list of dangersous permissions available in API 23](http://developer.android.com/guide/topics/security/permissions.html#perm-groups) as a list of constants available via the `cordova.plugins.diagnostic.runtimePermission` object. The following permissions are available:
+The plugin defines all [dangerous permissions](http://developer.android.com/guide/topics/security/permissions.html#perm-groups) available up to API 33 as a list of constants available via the `cordova.plugins.diagnostic.permission` object. The following permissions are available:
 
-- `cordova.plugins.diagnostic.permission.READ_CALENDAR`
-- `cordova.plugins.diagnostic.permission.WRITE_CALENDAR`
-- `cordova.plugins.diagnostic.permission.CAMERA`
-- `cordova.plugins.diagnostic.permission.READ_CONTACTS`
-- `cordova.plugins.diagnostic.permission.WRITE_CONTACTS`
-- `cordova.plugins.diagnostic.permission.GET_ACCOUNTS`
-- `cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION`
+- `cordova.plugins.diagnostic.permission.ACCEPT_HANDOVER`
+- `cordova.plugins.diagnostic.permission.ACCESS_BACKGROUND_LOCATION`
 - `cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION`
-- `cordova.plugins.diagnostic.permission.RECORD_AUDIO`
-- `cordova.plugins.diagnostic.permission.READ_PHONE_STATE`
-- `cordova.plugins.diagnostic.permission.CALL_PHONE`
-- `cordova.plugins.diagnostic.permission.ADD_VOICEMAIL`
-- `cordova.plugins.diagnostic.permission.USE_SIP`
-- `cordova.plugins.diagnostic.permission.PROCESS_OUTGOING_CALLS`
-- `cordova.plugins.diagnostic.permission.READ_CALL_LOG`
-- `cordova.plugins.diagnostic.permission.WRITE_CALL_LOG`
-- `cordova.plugins.diagnostic.permission.SEND_SMS`
-- `cordova.plugins.diagnostic.permission.RECEIVE_SMS`
-- `cordova.plugins.diagnostic.permission.READ_SMS`
-- `cordova.plugins.diagnostic.permission.RECEIVE_WAP_PUSH`
-- `cordova.plugins.diagnostic.permission.RECEIVE_MMS`
-- `cordova.plugins.diagnostic.permission.WRITE_EXTERNAL_STORAGE`
-- `cordova.plugins.diagnostic.permission.READ_EXTERNAL_STORAGE`
-- `cordova.plugins.diagnostic.permission.BODY_SENSORS`
-
-##### API 29 runtime permissions
-With the introduction of Android 10, came Physical Activity permissions: https://developer.android.com/about/versions/10/privacy/changes#physical-activity-recognition.
+- `cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION`
+- `cordova.plugins.diagnostic.permission.ACCESS_MEDIA_LOCATION`
 - `cordova.plugins.diagnostic.permission.ACTIVITY_RECOGNITION`
-
-##### API 31 runtime permissions
-With the introduction of Android 12, came nearby device permissions: https://developer.android.com/reference/android/Manifest.permission_group#NEARBY_DEVICES.
+- `cordova.plugins.diagnostic.permission.ADD_VOICEMAIL`
+- `cordova.plugins.diagnostic.permission.ANSWER_PHONE_CALLS`
 - `cordova.plugins.diagnostic.permission.BLUETOOTH_ADVERTISE`
-- `cordova.plugins.diagnostic.permission.BLUETOOTH_SCAN`
 - `cordova.plugins.diagnostic.permission.BLUETOOTH_CONNECT`
-
-##### Runtime permission groups
-
-- Each runtime permission belongs to a permission group.
-- In Android 6 & 7:
-    - Requesting a permission also requests authorisation for all other permissions in that group.
-    - If other permissions in the group are not defined in the manifest, they will default to DENIED_ALWAYS status.
-    - Otherwise, if user grants permission, all other permissions in the group will be granted
-    - if user denies permission, all other permissions in the group will be denied.
-- In Android 8+:
-   - Requesting a permission only grants that permission, not (as previously) all other permissions in that group.
-   - However, once the user grants a permission to the app, all subsequent requests for permissions in that permission group are automatically granted.
-   - See [Android 8.0 developer notes](https://developer.android.com/about/versions/oreo/android-8.0-changes.html#rmp) for more.
-
-Permissions are grouped as follows:
-
-    CALENDAR: [READ_CALENDAR, WRITE_CALENDAR],
-    CAMERA: [CAMERA],
-    CONTACTS: [READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS],
-    LOCATION: [ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION],
-    MICROPHONE: [RECORD_AUDIO],
-    PHONE: [READ_PHONE_STATE, CALL_PHONE, ADD_VOICEMAIL, USE_SIP, PROCESS_OUTGOING_CALLS, READ_CALL_LOG, WRITE_CALL_LOG],
-    SENSORS: [BODY_SENSORS],
-    SMS: [SEND_SMS, RECEIVE_SMS, READ_SMS, RECEIVE_WAP_PUSH, RECEIVE_MMS],
-    STORAGE: [READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE],
-    PHYSICAL_ACTIVITY: [ACTIVITY_RECOGNITION],
-    NEARBY_DEVICES: [BLUETOOTH_ADVERTISE, BLUETOOTH_SCAN, BLUETOOTH_CONNECT]
+- `cordova.plugins.diagnostic.permission.BLUETOOTH_SCAN`
+- `cordova.plugins.diagnostic.permission.BODY_SENSORS`
+- `cordova.plugins.diagnostic.permission.BODY_SENSORS_BACKGROUND`
+- `cordova.plugins.diagnostic.permission.CALL_PHONE`
+- `cordova.plugins.diagnostic.permission.CAMERA`
+- `cordova.plugins.diagnostic.permission.GET_ACCOUNTS`
+- `cordova.plugins.diagnostic.permission.NEARBY_WIFI_DEVICES`
+- `cordova.plugins.diagnostic.permission.POST_NOTIFICATIONS`
+- `cordova.plugins.diagnostic.permission.PROCESS_OUTGOING_CALLS`
+- `cordova.plugins.diagnostic.permission.READ_CALENDAR`
+- `cordova.plugins.diagnostic.permission.READ_CALL_LOG`
+- `cordova.plugins.diagnostic.permission.READ_CONTACTS`
+- `cordova.plugins.diagnostic.permission.READ_EXTERNAL_STORAGE`
+- `cordova.plugins.diagnostic.permission.READ_MEDIA_AUDIO`
+- `cordova.plugins.diagnostic.permission.READ_MEDIA_IMAGES`
+- `cordova.plugins.diagnostic.permission.READ_MEDIA_VIDEO`
+- `cordova.plugins.diagnostic.permission.READ_PHONE_NUMBERS`
+- `cordova.plugins.diagnostic.permission.READ_PHONE_STATE`
+- `cordova.plugins.diagnostic.permission.READ_SMS`
+- `cordova.plugins.diagnostic.permission.RECEIVE_MMS`
+- `cordova.plugins.diagnostic.permission.RECEIVE_SMS`
+- `cordova.plugins.diagnostic.permission.RECEIVE_WAP_PUSH`
+- `cordova.plugins.diagnostic.permission.RECORD_AUDIO`
+- `cordova.plugins.diagnostic.permission.SEND_SMS`
+- `cordova.plugins.diagnostic.permission.USE_SIP`
+- `cordova.plugins.diagnostic.permission.UWB_RANGING`
+- `cordova.plugins.diagnostic.permission.WRITE_CALENDAR`
+- `cordova.plugins.diagnostic.permission.WRITE_CALL_LOG`
+- `cordova.plugins.diagnostic.permission.WRITE_CONTACTS`
+- `cordova.plugins.diagnostic.permission.WRITE_EXTERNAL_STORAGE`
 
 ##### Runtime permissions example project
 
-While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin:
-
-[https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example)
+While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin.
 
 ##### Android Camera permissions
 

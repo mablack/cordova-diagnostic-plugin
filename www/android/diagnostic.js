@@ -27,79 +27,69 @@ var Diagnostic = (function(){
      * See http://developer.android.com/guide/topics/security/permissions.html#perm-groups
      * @type {Object}
      */
-    Diagnostic.runtimePermission = // deprecated
-        Diagnostic.permission = {
-            "READ_CALENDAR": "READ_CALENDAR",
-            "WRITE_CALENDAR": "WRITE_CALENDAR",
-            "CAMERA": "CAMERA",
-            "READ_CONTACTS": "READ_CONTACTS",
-            "WRITE_CONTACTS": "WRITE_CONTACTS",
-            "GET_ACCOUNTS": "GET_ACCOUNTS",
-            "ACCESS_FINE_LOCATION": "ACCESS_FINE_LOCATION",
-            "ACCESS_COARSE_LOCATION": "ACCESS_COARSE_LOCATION",
-            "ACCESS_BACKGROUND_LOCATION": "ACCESS_BACKGROUND_LOCATION",
-            "RECORD_AUDIO": "RECORD_AUDIO",
-            "READ_PHONE_STATE": "READ_PHONE_STATE",
-            "CALL_PHONE": "CALL_PHONE",
-            "ADD_VOICEMAIL": "ADD_VOICEMAIL",
-            "USE_SIP": "USE_SIP",
-            "PROCESS_OUTGOING_CALLS": "PROCESS_OUTGOING_CALLS",
-            "READ_CALL_LOG": "READ_CALL_LOG",
-            "WRITE_CALL_LOG": "WRITE_CALL_LOG",
-            "SEND_SMS": "SEND_SMS",
-            "RECEIVE_SMS": "RECEIVE_SMS",
-            "READ_SMS": "READ_SMS",
-            "RECEIVE_WAP_PUSH": "RECEIVE_WAP_PUSH",
-            "RECEIVE_MMS": "RECEIVE_MMS",
-            "WRITE_EXTERNAL_STORAGE": "WRITE_EXTERNAL_STORAGE",
-            "READ_EXTERNAL_STORAGE": "READ_EXTERNAL_STORAGE",
-            "BODY_SENSORS": "BODY_SENSORS",
-            "ACTIVITY_RECOGNITION": "ACTIVITY_RECOGNITION",
-            "BLUETOOTH_ADVERTISE": "BLUETOOTH_ADVERTISE",
-            "BLUETOOTH_SCAN": "BLUETOOTH_SCAN",
-            "BLUETOOTH_CONNECT": "BLUETOOTH_CONNECT",
-        };
+    Diagnostic.permission = {
+        "ACCEPT_HANDOVER": "ACCEPT_HANDOVER",
+        "ACCESS_BACKGROUND_LOCATION": "ACCESS_BACKGROUND_LOCATION",
+        "ACCESS_COARSE_LOCATION": "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION": "ACCESS_FINE_LOCATION",
+        "ACCESS_MEDIA_LOCATION": "ACCESS_MEDIA_LOCATION",
+        "ACTIVITY_RECOGNITION": "ACTIVITY_RECOGNITION",
+        "ADD_VOICEMAIL": "ADD_VOICEMAIL",
+        "ANSWER_PHONE_CALLS": "ANSWER_PHONE_CALLS",
+        "BLUETOOTH_ADVERTISE": "BLUETOOTH_ADVERTISE",
+        "BLUETOOTH_CONNECT": "BLUETOOTH_CONNECT",
+        "BLUETOOTH_SCAN": "BLUETOOTH_SCAN",
+        "BODY_SENSORS": "BODY_SENSORS",
+        "BODY_SENSORS_BACKGROUND": "BODY_SENSORS_BACKGROUND",
+        "CALL_PHONE": "CALL_PHONE",
+        "CAMERA": "CAMERA",
+        "GET_ACCOUNTS": "GET_ACCOUNTS",
+        "NEARBY_WIFI_DEVICES": "NEARBY_WIFI_DEVICES",
+        "POST_NOTIFICATIONS": "POST_NOTIFICATIONS",
+        "PROCESS_OUTGOING_CALLS": "PROCESS_OUTGOING_CALLS",
+        "READ_CALENDAR": "READ_CALENDAR",
+        "READ_CALL_LOG": "READ_CALL_LOG",
+        "READ_CONTACTS": "READ_CONTACTS",
+        "READ_EXTERNAL_STORAGE": "READ_EXTERNAL_STORAGE",
+        "READ_MEDIA_AUDIO": "READ_MEDIA_AUDIO",
+        "READ_MEDIA_IMAGES": "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO": "READ_MEDIA_VIDEO",
+        "READ_PHONE_NUMBERS": "READ_PHONE_NUMBERS",
+        "READ_PHONE_STATE": "READ_PHONE_STATE",
+        "READ_SMS": "READ_SMS",
+        "RECEIVE_MMS": "RECEIVE_MMS",
+        "RECEIVE_SMS": "RECEIVE_SMS",
+        "RECEIVE_WAP_PUSH": "RECEIVE_WAP_PUSH",
+        "RECORD_AUDIO": "RECORD_AUDIO",
+        "SEND_SMS": "SEND_SMS",
+        "USE_SIP": "USE_SIP",
+        "UWB_RANGING": "UWB_RANGING",
+        "WRITE_CALENDAR": "WRITE_CALENDAR",
+        "WRITE_CALL_LOG": "WRITE_CALL_LOG",
+        "WRITE_CONTACTS": "WRITE_CONTACTS",
+        "WRITE_EXTERNAL_STORAGE": "WRITE_EXTERNAL_STORAGE"
+    };
 
-    /**
-     * Permission groups indicate which associated permissions will also be requested if a given permission is requested.
-     * See http://developer.android.com/guide/topics/security/permissions.html#perm-groups
-     * @type {Object}
-     */
-    Diagnostic.runtimePermissionGroups = // deprecated
-        Diagnostic.permissionGroups = {
-            "CALENDAR": ["READ_CALENDAR", "WRITE_CALENDAR"],
-            "CAMERA": ["CAMERA"],
-            "CONTACTS": ["READ_CONTACTS", "WRITE_CONTACTS", "GET_ACCOUNTS"],
-            "LOCATION": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "ACCESS_BACKGROUND_LOCATION"],
-            "MICROPHONE": ["RECORD_AUDIO"],
-            "PHONE": ["READ_PHONE_STATE", "CALL_PHONE", "ADD_VOICEMAIL", "USE_SIP", "PROCESS_OUTGOING_CALLS", "READ_CALL_LOG", "WRITE_CALL_LOG"],
-            "SENSORS": ["BODY_SENSORS"],
-            "SMS": ["SEND_SMS", "RECEIVE_SMS", "READ_SMS", "RECEIVE_WAP_PUSH", "RECEIVE_MMS"],
-            "STORAGE": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
-            "PHYSICAL_ACTIVITY": ["ACTIVITY_RECOGNITION"],
-            "NEARBY_DEVICES": ["BLUETOOTH_ADVERTISE", "BLUETOOTH_SCAN", "BLUETOOTH_CONNECT"]
-        };
 
-    Diagnostic.runtimePermissionStatus = // deprecated
-        Diagnostic.permissionStatus = {
-            //  Location permission requested and
-            //      app build SDK/user device is Android >10 and user granted background location ("all the time") permission,
-            //      or app build SDK/user device is Android 6-9 and user granted location permission,
-            //  or non-location permission requested
-            //      and app build SDK/user device is Android >=6 and user granted permission
-            //  or app build SDK/user device is Android <6
-            "GRANTED": "GRANTED",
-            //  Location permission requested
-            //  and app build SDK/user device is Android >10
-            //  and user granted background foreground location ("while-in-use") permission
-            "GRANTED_WHEN_IN_USE": "authorized_when_in_use",
-            // User denied access to this permission
-            "DENIED_ONCE": "DENIED_ONCE",
-            // User denied access to this permission and checked "Never Ask Again" box.
-            "DENIED_ALWAYS": "DENIED_ALWAYS",
-            // App has not yet requested access to this permission.
-            "NOT_REQUESTED": "NOT_REQUESTED"
-        };
+    Diagnostic.permissionStatus = {
+        //  Location permission requested and
+        //      app build SDK/user device is Android >10 and user granted background location ("all the time") permission,
+        //      or app build SDK/user device is Android 6-9 and user granted location permission,
+        //  or non-location permission requested
+        //      and app build SDK/user device is Android >=6 and user granted permission
+        //  or app build SDK/user device is Android <6
+        "GRANTED": "GRANTED",
+        //  Location permission requested
+        //  and app build SDK/user device is Android >10
+        //  and user granted background foreground location ("while-in-use") permission
+        "GRANTED_WHEN_IN_USE": "authorized_when_in_use",
+        // User denied access to this permission
+        "DENIED_ONCE": "DENIED_ONCE",
+        // User denied access to this permission and checked "Never Ask Again" box.
+        "DENIED_ALWAYS": "DENIED_ALWAYS",
+        // App has not yet requested access to this permission.
+        "NOT_REQUESTED": "NOT_REQUESTED"
+    };
 
     Diagnostic.cpuArchitecture = {
         UNKNOWN: "unknown",

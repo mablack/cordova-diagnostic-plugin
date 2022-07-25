@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -82,38 +83,59 @@ public class Diagnostic extends CordovaPlugin{
     protected static final Map<String, String> permissionsMap;
     static {
         Map<String, String> _permissionsMap = new HashMap <String, String>();
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_CALENDAR", Manifest.permission.READ_CALENDAR);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_CALENDAR", Manifest.permission.WRITE_CALENDAR);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "CAMERA", Manifest.permission.CAMERA);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_CONTACTS", Manifest.permission.READ_CONTACTS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_CONTACTS", Manifest.permission.WRITE_CONTACTS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "GET_ACCOUNTS", Manifest.permission.GET_ACCOUNTS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_FINE_LOCATION", Manifest.permission.ACCESS_FINE_LOCATION);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_COARSE_LOCATION", Manifest.permission.ACCESS_COARSE_LOCATION);
-        // Add as string as Manifest.permission.ACCESS_BACKGROUND_LOCATION not defined in < API 29:
+
+        // API 1-22+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_COARSE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_FINE_LOCATION", "android.permission.ACCESS_FINE_LOCATION");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ADD_VOICEMAIL", "android.permission.ADD_VOICEMAIL");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BODY_SENSORS", "android.permission.BODY_SENSORS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "CALL_PHONE", "android.permission.CALL_PHONE");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "CAMERA", "android.permission.CAMERA");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "GET_ACCOUNTS", "android.permission.GET_ACCOUNTS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "PROCESS_OUTGOING_CALLS", "android.permission.PROCESS_OUTGOING_CALLS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_CALENDAR", "android.permission.READ_CALENDAR");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_CALL_LOG", "android.permission.READ_CALL_LOG");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_CONTACTS", "android.permission.READ_CONTACTS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_PHONE_STATE", "android.permission.READ_PHONE_STATE");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_SMS", "android.permission.READ_SMS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECEIVE_MMS", "android.permission.RECEIVE_MMS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECEIVE_SMS", "android.permission.RECEIVE_SMS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECEIVE_WAP_PUSH", "android.permission.RECEIVE_WAP_PUSH");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECORD_AUDIO", "android.permission.RECORD_AUDIO");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "SEND_SMS", "android.permission.SEND_SMS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "USE_SIP", "android.permission.USE_SIP");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_CALENDAR", "android.permission.WRITE_CALENDAR");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_CALL_LOG", "android.permission.WRITE_CALL_LOG");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_CONTACTS", "android.permission.WRITE_CONTACTS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE");
+
+        // API 26+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ANSWER_PHONE_CALLS", "android.permission.ANSWER_PHONE_CALLS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_PHONE_NUMBERS", "android.permission.READ_PHONE_NUMBERS");
+
+        // API 28+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCEPT_HANDOVER", "android.permission.ACCEPT_HANDOVER");
+
+        // API 29+
         Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_BACKGROUND_LOCATION", "android.permission.ACCESS_BACKGROUND_LOCATION");
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECORD_AUDIO", Manifest.permission.RECORD_AUDIO);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_PHONE_STATE", Manifest.permission.READ_PHONE_STATE);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "CALL_PHONE", Manifest.permission.CALL_PHONE);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "ADD_VOICEMAIL", Manifest.permission.ADD_VOICEMAIL);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "USE_SIP", Manifest.permission.USE_SIP);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "PROCESS_OUTGOING_CALLS", Manifest.permission.PROCESS_OUTGOING_CALLS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "SEND_SMS", Manifest.permission.SEND_SMS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECEIVE_SMS", Manifest.permission.RECEIVE_SMS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_SMS", Manifest.permission.READ_SMS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECEIVE_WAP_PUSH", Manifest.permission.RECEIVE_WAP_PUSH);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "RECEIVE_MMS", Manifest.permission.RECEIVE_MMS);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_EXTERNAL_STORAGE", Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_CALL_LOG", Manifest.permission.READ_CALL_LOG);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_CALL_LOG", Manifest.permission.WRITE_CALL_LOG);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_EXTERNAL_STORAGE", Manifest.permission.READ_EXTERNAL_STORAGE);
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "BODY_SENSORS", Manifest.permission.BODY_SENSORS);
-        // Add as string as Manifest.permission.ACTIVITY_RECOGNITION not defined in < API 29:
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_MEDIA_LOCATION", "android.permission.ACCESS_MEDIA_LOCATION");
         Diagnostic.addBiDirMapEntry(_permissionsMap, "ACTIVITY_RECOGNITION", "android.permission.ACTIVITY_RECOGNITION");
-        // Add as string as Manifest.permission.{BLUETOOTH_ADVERTISE, BLUETOOTH_CONNECT, BLUETOOTH_SCAN}    not defined in < API 31:
+
+        // API 31+
         Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_ADVERTISE", "android.permission.BLUETOOTH_ADVERTISE");
-        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_SCAN", "android.permission.BLUETOOTH_SCAN");
         Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_CONNECT", "android.permission.BLUETOOTH_CONNECT");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_SCAN", "android.permission.BLUETOOTH_SCAN");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "UWB_RANGING", "android.permission.UWB_RANGING");
+
+        // API 33+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BODY_SENSORS_BACKGROUND", "android.permission.BODY_SENSORS_BACKGROUND");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "NEARBY_WIFI_DEVICES", "android.permission.NEARBY_WIFI_DEVICES");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "POST_NOTIFICATIONS", "android.permission.POST_NOTIFICATIONS");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_AUDIO", "android.permission.READ_MEDIA_AUDIO");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_IMAGES", "android.permission.READ_MEDIA_IMAGES");
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_VIDEO", "android.permission.READ_MEDIA_VIDEO");
+
         permissionsMap = Collections.unmodifiableMap(_permissionsMap);
     }
 
