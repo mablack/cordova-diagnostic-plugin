@@ -110,10 +110,12 @@ static NSString*const LOG_TAG = @"Diagnostic_Location[native]";
                 [diagnostic logDebug:[NSString stringWithFormat:@"Location accuracy authorization is: %@", locationAccuracyAuthorization]];
                 [diagnostic sendPluginResultString:locationAccuracyAuthorization:command];
             }else{
-                [diagnostic sendPluginError:@"getLocationAccuracyAuthorization is not available on device running iOS <14":command];
+                [diagnostic logDebug:@"Location accuracy authorization is not available  on device running iOS <14"];
+                [diagnostic sendPluginResultString:@"full":command];
             }
 #else
-            [diagnostic sendPluginError:@"getLocationAccuracyAuthorization is not available in builds with iOS SDK <14":command];
+            [diagnostic logDebug:@"Location accuracy authorization is not available  in builds with iOS SDK <14"];
+            [diagnostic sendPluginResultString:@"full":command];
 #endif
         }
         @catch (NSException *exception) {

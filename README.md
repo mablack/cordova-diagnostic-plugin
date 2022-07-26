@@ -1573,10 +1573,10 @@ On iOS, the function is passed a single string parameter indicating the new loca
 
 ### getLocationAccuracyAuthorization()
 
-Platforms: iOS
+Platforms: Android & iOS 
 
-Returns the location accuracy authorization for the application on iOS 14+.
-Note: calling on iOS <14 will result in the `errorCallback` being invoked.
+Returns the location accuracy authorization for the application on iOS 14+ and Android 12+.
+Note: calling on iOS <14 or Android <12 will always return `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`.
 
     cordova.plugins.diagnostic.getLocationAccuracyAuthorization(successCallback, errorCallback);
 
@@ -1594,7 +1594,7 @@ The function is passed a single string parameter containing the error message.
            case cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL:
                console.log("Full location accuracy is authorized");
                break;
-           case cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL:
+           case cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED:
                console.log("Reduced location accuracy is authorized");
                break;
        }
