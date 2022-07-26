@@ -35,6 +35,11 @@ var Diagnostic_Location = (function(){
         "WHEN_IN_USE": "when_in_use"
     };
 
+    Diagnostic.locationAccuracyAuthorization = Diagnostic_Location.locationAccuracyAuthorization = {
+        "FULL": "full",
+        "REDUCED": "reduced"
+    };
+
     /********************
      *
      * Internal functions
@@ -44,19 +49,19 @@ var Diagnostic_Location = (function(){
     function combineLocationStatuses(statuses){
         var coarseStatus = statuses[Diagnostic.permission.ACCESS_COARSE_LOCATION],
             fineStatus = statuses[Diagnostic.permission.ACCESS_FINE_LOCATION],
-            backgroundStatus = statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] || false,
+            backgroundStatus = typeof statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] !== "undefined" ? statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] : true
             status;
 
+        var GRANTED = backgroundStatus === Diagnostic.permissionStatus.GRANTED ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.GRANTED_WHEN_IN_USE;
+
         if(coarseStatus === Diagnostic.permissionStatus.GRANTED || fineStatus === Diagnostic.permissionStatus.GRANTED){
-            status = Diagnostic.permissionStatus.GRANTED;
+            status = GRANTED;
         }else if(coarseStatus === Diagnostic.permissionStatus.DENIED_ONCE || fineStatus === Diagnostic.permissionStatus.DENIED_ONCE){
             status = Diagnostic.permissionStatus.DENIED_ONCE;
         }else if(coarseStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || fineStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
             status = Diagnostic.permissionStatus.DENIED_ALWAYS;
         }else if(coarseStatus === Diagnostic.permissionStatus.NOT_REQUESTED || fineStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
             status = Diagnostic.permissionStatus.NOT_REQUESTED;
-        }else if(backgroundStatus !== Diagnostic.permissionStatus.GRANTED){
-            status = Diagnostic.permissionStatus.GRANTED_WHEN_IN_USE;
         }
         return status;
     }
@@ -219,8 +224,10 @@ var Diagnostic_Location = (function(){
      * @param {Function} errorCallback - function to call on failure to request authorisation.
      * @param {String} mode - (optional) location authorization mode as a constant in `cordova.plugins.diagnostic.locationAuthorizationMode`.
      * If not specified, defaults to `cordova.plugins.diagnostic.locationAuthorizationMode.WHEN_IN_USE`.
+     * @param {String} accuracy - (optional) requested location accuracy as a constant in in `cordova.plugins.diagnostic.locationAccuracyAuthorization`.
+     * If not specified, defaults to `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`.
      */
-    Diagnostic_Location.requestLocationAuthorization = function(successCallback, errorCallback, mode){
+    Diagnostic_Location.requestLocationAuthorization = function(successCallback, errorCallback, mode, accuracy){
         function onSuccess(statuses){
             successCallback(combineLocationStatuses(statuses));
         }
@@ -229,12 +236,13 @@ var Diagnostic_Location = (function(){
             errorCallback,
             'Diagnostic_Location',
             'requestLocationAuthorization',
-            [mode === Diagnostic_Location.locationAuthorizationMode.ALWAYS]
+            [mode === Diagnostic_Location.locationAuthorizationMode.ALWAYS, accuracy !== Diagnostic_Location.locationAccuracyAuthorization.REDUCED]
         );
     };
 
     /**
      * Returns the combined location authorization status for the application.
+     * Combines FINE, COARSE and BACKGROUND statuses into a single status.
      * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
      * @param {Function} successCallback - function to call on successful request for runtime permissions status.
      * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
@@ -244,7 +252,18 @@ var Diagnostic_Location = (function(){
         function onSuccess(statuses){
             successCallback(combineLocationStatuses(statuses));
         }
-        Diagnostic.getPermissionsAuthorizationStatus(onSuccess, errorCallback, [
+        Diagnostic_Location.getLocationAuthorizationStatuses(onSuccess, errorCallback);
+    };
+
+    /**
+     * Returns the individual location authorization status for each type of location access (FINE, COARSE and BACKGROUND)
+     * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+     * @param {Function} successCallback - function to call on successful request for runtime permissions statuses.
+     * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
+     * @param {Function} errorCallback - function to call on failure to request authorisation status.
+     */
+    Diagnostic_Location.getLocationAuthorizationStatuses = function(successCallback, errorCallback){
+        Diagnostic.getPermissionsAuthorizationStatus(successCallback, errorCallback, [
             Diagnostic.permission.ACCESS_COARSE_LOCATION,
             Diagnostic.permission.ACCESS_FINE_LOCATION,
             Diagnostic.permission.ACCESS_BACKGROUND_LOCATION
@@ -275,6 +294,36 @@ var Diagnostic_Location = (function(){
      */
     Diagnostic_Location.registerLocationStateChangeHandler = function(successCallback) {
         Diagnostic_Location._onLocationStateChange = successCallback || function(){};
+    };
+
+    /**
+     * Returns the location accuracy authorization for the application.
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single string parameter which indicates the location accuracy authorization as a constant in `cordova.plugins.diagnostic.locationAccuracyAuthorization`.
+     * Possible values are:
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED`
+     *  `false` if no location permission is granted.
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic_Location.getLocationAccuracyAuthorization = function(successCallback, errorCallback) {
+        Diagnostic.getPermissionsAuthorizationStatus(function(statuses){
+            var coarseStatus = statuses[Diagnostic.permission.ACCESS_COARSE_LOCATION],
+                fineStatus = statuses[Diagnostic.permission.ACCESS_FINE_LOCATION];
+
+            if(fineStatus === Diagnostic.permissionStatus.GRANTED){
+                successCallback(Diagnostic_Location.locationAccuracyAuthorization.FULL);
+            }else if(coarseStatus === Diagnostic.permissionStatus.GRANTED){
+                successCallback(Diagnostic_Location.locationAccuracyAuthorization.REDUCED);
+            }else{
+                successCallback(false);
+            }
+        }, errorCallback, [
+            Diagnostic.permission.ACCESS_COARSE_LOCATION,
+            Diagnostic.permission.ACCESS_FINE_LOCATION
+        ]);
     };
 
     return Diagnostic_Location;

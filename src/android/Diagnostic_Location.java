@@ -245,9 +245,12 @@ public class Diagnostic_Location extends CordovaPlugin{
     public void requestLocationAuthorization(JSONArray args, CallbackContext callbackContext) throws Exception{
         JSONArray permissionsToRequest = new JSONArray();
         boolean shouldRequestBackground = args.getBoolean(0);
+        boolean shouldRequestPrecise = args.getBoolean(1);
 
-        permissionsToRequest.put(gpsLocationPermission);
         permissionsToRequest.put(networkLocationPermission);
+        if(shouldRequestPrecise || Build.VERSION.SDK_INT < 31){
+            permissionsToRequest.put(gpsLocationPermission);
+        }
 
         if(shouldRequestBackground && Build.VERSION.SDK_INT >= 29 ){
             permissionsToRequest.put(backgroundLocationPermission);

@@ -61,7 +61,6 @@ interface Diagnostic {
     
 
     /**
-     * ANDROID and iOS ONLY
      * Constants for requesting and reporting the various permission states.
      * @type {Object}
      */
@@ -97,7 +96,6 @@ interface Diagnostic {
     };
 
     /**
-     * ANDROID and iOS ONLY
      * Location authorization mode
      * @type {Object}
      */
@@ -107,7 +105,6 @@ interface Diagnostic {
     };
 
     /**
-     * iOS ONLY
      * Location accuracy authorization
      * @type {Object}
      */
@@ -130,7 +127,6 @@ interface Diagnostic {
     };
 
     /**
-     * ANDROID and iOS ONLY
      * Constants for the various Bluetooth hardware states.
      * @type {Object}
      */
@@ -303,7 +299,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Enables debug mode, which logs native plugin debug messages to the native and JS consoles.
      * Debug mode is initially disabled on plugin initialisation.
      */
@@ -312,7 +307,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns true if the device setting for location is on.
      * On Android this returns true if Location Mode is switched on.
      * On iOS this returns true if Location Services is switched on.
@@ -325,7 +319,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Checks if the application is authorized to use location.
      * @param successCallback
      * @param errorCallback
@@ -336,7 +329,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns the location authorization status for the application.
      * @param successCallback
      * @param errorCallback
@@ -346,21 +338,33 @@ interface Diagnostic {
         errorCallback: (error: string) => void
     ) => void;
 
+
     /**
-     * ANDROID and iOS ONLY
+     * Android ONLY
+     * Returns the individual location authorization status for each type of location access (FINE, COARSE and BACKGROUND).
+     * @param successCallback
+     * @param errorCallback
+     */
+    getLocationAuthorizationStatuses?: (
+        successCallback: (status: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * Requests location authorization for the application.
      * @param successCallback
      * @param errorCallback
      * @param mode - (optional / iOS & Android >= 10) location authorization mode specified as a locationAuthorizationMode constant. If not specified, defaults to WHEN_IN_USE.
+     * @param accuracy
      */
     requestLocationAuthorization?: (
         successCallback: (status: string) => void,
         errorCallback: (error: string) => void,
-        mode?: string
+        mode?: string,
+        accuracy?: string
     ) => void;
 
     /**
-     * iOS ONLY
      * Returns the location accuracy authorization for the application.
      * @param successCallback
      * @param errorCallback
@@ -385,7 +389,6 @@ interface Diagnostic {
 
 
     /**
-     * ANDROID and iOS ONLY
      * Checks if camera hardware is present on device.
      * @param successCallback
      * @param errorCallback
@@ -396,7 +399,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Checks if the application is authorized to use the camera.
      * @param successCallback
      * @param errorCallback
@@ -409,7 +411,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns the camera authorization status for the application.
      * @param successCallback
      * @param errorCallback
@@ -422,7 +423,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Requests camera authorization for the application.
      * @param successCallback
      * @param errorCallback
@@ -435,7 +435,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Checks if the application is authorized to use the microphone.
      * @param successCallback
      * @param errorCallback
@@ -446,7 +445,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns the microphone authorization status for the application.
      * @param successCallback
      * @param errorCallback
@@ -457,7 +455,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Requests microphone authorization for the application.
      * @param successCallback
      * @param errorCallback
@@ -468,7 +465,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Checks if the application is authorized to use contacts (address book).
      * @param successCallback
      * @param errorCallback
@@ -479,7 +475,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns the contacts authorization status for the application.
      * @param successCallback
      * @param errorCallback
@@ -490,7 +485,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Requests contacts authorization for the application.
      * @param successCallback
      * @param errorCallback
@@ -501,7 +495,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Checks if the application is authorized to use the calendar.
      * @param successCallback
      * @param errorCallback
@@ -512,7 +505,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns the calendar authorization status for the application.
      * @param successCallback
      * @param errorCallback
@@ -523,7 +515,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Requests calendar authorization for the application.
      * @param successCallback
      * @param errorCallback
@@ -534,7 +525,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Opens settings page for this app.
      * On Android, this opens the "App Info" page in the Settings app.
      * On iOS, this opens the app settings page in the Settings app.
@@ -545,7 +535,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns the state of Bluetooth on the device.
      * @param successCallback
      * @param errorCallback
@@ -556,7 +545,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Registers a function to be called when a change in Bluetooth state occurs. Pass in a falsey value to de-register the currently registered function.
      * @param successCallback
      */
@@ -565,7 +553,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Registers a function to be called when a change in Location state occurs. Pass in a falsey value to de-register the currently registered function.
      * On Android, this occurs when the Location Mode is changed.
      * On iOS, this occurs when location authorization status is changed. This can be triggered either by the user's response to a location permission authorization dialog, by the user turning on/off Location Services, or by the user changing the Location authorization state specifically for your app.
@@ -602,7 +589,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns CPU architecture of the current device.
      * @param successCallback
      * @param errorCallback
@@ -613,7 +599,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Returns the current battery level of the device as a percentage.
      * @param successCallback
      * @param errorCallback
@@ -937,7 +922,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and iOS ONLY
      * Checks if remote (push) notifications are enabled.
      * @param successCallback
      * @param errorCallback

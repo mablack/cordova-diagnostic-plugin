@@ -1155,12 +1155,13 @@ Defines constants for the various location authorization modes on iOS and Androi
     }, cordova.plugins.diagnostic.locationAuthorizationMode.WHEN_IN_USE);
 
 _Requesting the `ALWAYS` permission initially with `requestLocationAuthorization()`, on Android 11/API 30 and iOS 13+ versions onwards is not advised and may lead to unexpected behaviour. See [requestLocationAuthorization()](#requestlocationauthorization)_
+
 ### locationAccuracyAuthorization constants
 
-Platforms: iOS
+Platforms: Android & iOS
 
-- Defines constants for the various location accuracy authorization states on iOS 14+.
-- See [CLAccuracyAuthorization](https://developer.apple.com/documentation/corelocation/claccuracyauthorization).
+- Defines constants for the various location accuracy authorization states on iOS 14+ and Android 12+.
+- See [CLAccuracyAuthorization](https://developer.apple.com/documentation/corelocation/claccuracyauthorization) for iOS 14+ and [approximate location](https://developer.android.com/training/location/permissions#approximate-request) for Android 12+
 
 
     cordova.plugins.diagnostic.locationAccuracyAuthorization
@@ -1168,15 +1169,7 @@ Platforms: iOS
 #### Values
 
 - `FULL` - The user authorized the app to access location data with full accuracy.
-- `REDUCED` - The user authorized the app to access location data with [reduced accuracy](https://developer.apple.com/documentation/corelocation/kcllocationaccuracyreduced) (~1-20 km).
-
-#### Example
-
-    cordova.plugins.diagnostic.locationAccuracyAuthorization(function(accuracy){
-        console.log(accuracy);
-    }, function(error){
-        console.error(error);
-    });
+- `REDUCED` - The user authorized the app to access location data with reduced accuracy.
 
 
 ### isLocationAvailable()
@@ -1423,11 +1416,15 @@ The function is passed a single string parameter containing the error message.
 
 Platforms: Android and iOS
 
- Returns the location authorization status for the application.
+Returns the location authorization status for the application.
 
- Note for Android: this is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+Notes for Android: 
+ - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+ - This is the combined location status for both `COARSE` and `FINE` permissions.
+ - On Android 10+/API 29+, if `COARSE` or `FINE` permission is `GRANTED` but `BACKGROUND_LOCATION` permission is not `GRANTED`, will return `GRANTED_WHEN_IN_USE`.
 
-    cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);
+    cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);    
+    
 
 #### Parameters
 
@@ -1481,6 +1478,35 @@ The function is passed a single string parameter containing the error message.
     }, function(error){
         console.error(error);
     });
+    
+### getLocationAuthorizationStatuses()
+
+Platforms: Android
+
+Returns the individual location authorization status for each type of location access (`FINE`, `COARSE` and `BACKGROUND`).
+
+ - Calling on Android 5.1 / API 22 and below will always return `GRANTED` status as permissions are already granted at installation time.
+ - Calling on Android 9 / API 28 and below, `BACKGROUND_LOCATION` permission is always implicitly `GRANTED`.
+
+
+    cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);    
+    
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single array parameter which contains a list indicating the authorization status of each location permission as a [permissionStatus constant](#permissionstatus-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+    cordova.plugins.diagnostic.getLocationAuthorizationStatuses(function(statuses){
+        console.log("FINE permission status: " + statuses[cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION])
+        console.log("COARSE permission status: " + statuses[cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION])
+        console.log("BACKGROUND permission status: " + statuses[cordova.plugins.diagnostic.permission.ACCESS_BACKGROUND_LOCATION])
+    }, function(error){
+        console.error(error);
+    });    
 
 ### requestLocationAuthorization()
 
@@ -1494,26 +1520,40 @@ The function is passed a single string parameter containing the error message.
 - This should only be called if authorization status is `NOT_REQUESTED` - calling it when in any other state will have no effect.
 - When calling this function, the messages contained in the `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` (iOS 11+) / `NSLocationAlwaysUsageDescription` (iOS 10)  .plist keys are displayed to the user when requesting to use location **always** or **when in use**, respectively;
 this plugin provides default messages, but you should override them with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise them.
-- From iOS 13+ onwards setting `mode` to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`, will innitially present the user with a `WHEN_IN_USE` dialog.
+- From iOS 13+, setting `mode` to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`, will initially present the user with a `WHEN_IN_USE` dialog.
+- From iOS 14+, the resulting permission status depends on whether on which mode was requested (see [issue #454](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/454)):
+
+| Permission requested | User choice | Native constant | Plugin constant |
+| -------------------- | ----------- | --------------- | --------------- |
+| ALWAYS | Allow While Using App | `kCLAuthorizationStatusAuthorizedAlways` | `GRANTED` |
+| ALWAYS | Allow Once | `kCLAuthorizationStatusAuthorizedWhenInUse` | `GRANTED_WHEN_IN_USE` |
+| WHEN_IN_USE | Allow While Using App | `kCLAuthorizationStatusAuthorizedWhenInUse` | `GRANTED_WHEN_IN_USE` |
+| WHEN_IN_USE | Allow Once | `kCLAuthorizationStatusAuthorizedWhenInUse` | `GRANTED_WHEN_IN_USE` |
 
  Notes for Android:
 
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
-- For Android 11+ / API #) onwards having `mode` initially set to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS` will NOT present the user with a dialog at all and immediately returns a `DENIED` result.
+- For Android 11+ / API 30+), make an initial request with `mode` set to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS` will NOT present the user with a dialog at all and immediately returns a `DENIED` result.
+    - You must request `mode=WHEN_IN_USE` _before_ requesting `mode=ALWAYS`
 - The successCallback is invoked in response to the user's choice in the permission dialog and is passed the resulting authorization status.
-- When the plugin is running in an app built with the Android 10 / API 29 or above (and running on similar device) you can request background location permission by specifying the `mode` argument as `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`.
+- When the plugin is running on/built with Android 10+ / API 29+, you can request background location permission by specifying the `mode` argument as `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS`.
     - If the build SDK/device version is <= Android 9 / API 28, granting location permission implicitly grants background location permission.
+- When the plugin is running on/built with Android 12+ / API 31+, you can specify requested location accuracy using the `accuracy` parameter.
+    - If the build SDK/device version is <= Android 11 / API 30, `FULL` accuracy is implicitly granted.
 
-    `cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode);`
+    `cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode, accuracy);`
 
 #### Parameters
 
 - {Function} successCallback - Invoked in response to the user's choice in the permission dialog.
-It is passed a single string parameter which defines the [resulting authorisation status](#runtime-permission-statuses).
+     - It is passed a single string parameter which defines the [resulting authorisation status](#runtime-permission-statuses).
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
+    - The function is passed a single string parameter containing the error message.
 - {String} mode - (optional / iOS & Android >= 10) location authorization mode specified as a [locationAuthorizationMode constant](#locationauthorizationmode-constants).
-If not specified, defaults to `WHEN_IN_USE`.
+    - If not specified, defaults to `WHEN_IN_USE`.
+- {String} accuracy - (optional / Android 12+) requested location accuracy as a constant in `cordova.plugins.diagnostic.locationAccuracyAuthorization`
+    - If not specified, defaults to `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`
+    - On Android <12 & iOS, has no effect.
 
 #### Example usage
 
@@ -1534,7 +1574,8 @@ If not specified, defaults to `WHEN_IN_USE`.
         }
     }, function(error){
         console.error(error);
-    }, cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS);
+    }, cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS
+    , cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED);
 
 ### registerLocationStateChangeHandler()
 

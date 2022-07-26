@@ -603,8 +603,12 @@ var Diagnostic = (function(){
      * @param {Function} successCallback - function to call on successful request for runtime permissions.
      * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
      * @param {Function} errorCallback - function to call on failure to request authorisation.
+     * @param {String} mode - (optional) location authorization mode as a constant in `cordova.plugins.diagnostic.locationAuthorizationMode`.
+     * If not specified, defaults to `cordova.plugins.diagnostic.locationAuthorizationMode.WHEN_IN_USE`.
+     * @param {String} accuracy - (optional) requested location accuracy as a constant in in `cordova.plugins.diagnostic.locationAccuracyAuthorization`.
+     * If not specified, defaults to `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`.
      */
-    Diagnostic.requestLocationAuthorization = function(successCallback, errorCallback){
+    Diagnostic.requestLocationAuthorization = function(successCallback, errorCallback, mode, accuracy){
         if(cordova.plugins.diagnostic.location){
             cordova.plugins.diagnostic.location.requestLocationAuthorization.apply(this, arguments);
         }else{
@@ -622,6 +626,21 @@ var Diagnostic = (function(){
     Diagnostic.getLocationAuthorizationStatus = function(successCallback, errorCallback){
         if(cordova.plugins.diagnostic.location){
             cordova.plugins.diagnostic.location.getLocationAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
+    };
+
+    /**
+     * Returns the individual location authorization status for each type of location access (FINE, COARSE and BACKGROUND)
+     * Note: this is intended for Android 6 / API 23 and above. Calling on Android 5 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+     * @param {Function} successCallback - function to call on successful request for runtime permissions statuses.
+     * This callback function is passed a single string parameter which defines the current authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
+     * @param {Function} errorCallback - function to call on failure to request authorisation status.
+     */
+    Diagnostic.getLocationAuthorizationStatuses = function(successCallback, errorCallback){
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.getLocationAuthorizationStatuses.apply(this, arguments);
         }else{
             throw "Diagnostic Location module is not installed";
         }
@@ -653,6 +672,26 @@ var Diagnostic = (function(){
     Diagnostic.registerLocationStateChangeHandler = function(successCallback) {
         if(cordova.plugins.diagnostic.location){
             cordova.plugins.diagnostic.location.registerLocationStateChangeHandler.apply(this, arguments);
+        }else{
+            throw "Diagnostic Location module is not installed";
+        }
+    };
+
+    /**
+     * Returns the location accuracy authorization for the application.
+     * Will invoke the error callback if location permission is not yet granted.
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single string parameter which indicates the location accuracy authorization as a constant in `cordova.plugins.diagnostic.locationAccuracyAuthorization`.
+     * Possible values are:
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.FULL`
+     * `cordova.plugins.diagnostic.locationAccuracyAuthorization.REDUCED`
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getLocationAccuracyAuthorization = function(successCallback, errorCallback){
+        if(cordova.plugins.diagnostic.location){
+            cordova.plugins.diagnostic.location.getLocationAccuracyAuthorization.apply(this, arguments);
         }else{
             throw "Diagnostic Location module is not installed";
         }
