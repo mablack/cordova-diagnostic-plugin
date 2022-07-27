@@ -62,8 +62,6 @@ WARNING: Failure to follow the issue template guidelines below will result in th
 - Dev machine OS and version, e.g.
     - OSX
         - `sw_vers`
-    - Windows 10
-        - `winver`
         
 _Runtime issue_
 - Device details

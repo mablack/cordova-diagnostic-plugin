@@ -14,8 +14,7 @@
         "id": "cordova.plugins.diagnostic",
         "platforms": [
             "android",
-            "ios",
-            "windows"
+            "ios"
         ]
     },
     "keywords": [
@@ -23,7 +22,6 @@
         "cordova",
         "android",
         "ios",
-        "windows",
         "phonegap",
         "diagnostic",
         "wifi",
@@ -41,14 +39,5 @@
     },
     "scripts": {
         "postinstall": "node ./scripts/apply-modules.js"
-    },
-    "engines": {
-        "cordovaDependencies": {
-            "0.0.1": {
-                "cordova-ios": ">=5.0.0",
-                "cordova-android": ">=8.0.0",
-                "cordova": ">=9.0.0"
-            }
-        }
     }
 }

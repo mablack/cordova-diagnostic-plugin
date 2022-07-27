@@ -87,7 +87,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
       - [Example](#example-2)
     - [locationAccuracyAuthorization constants](#locationaccuracyauthorization-constants)
       - [Values](#values-2)
-      - [Example](#example-3)
     - [isLocationAvailable()](#islocationavailable)
       - [Parameters](#parameters-15)
       - [Example usage](#example-usage-17)
@@ -116,198 +115,200 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
       - [Parameters](#parameters-23)
       - [Example iOS usage](#example-ios-usage)
       - [Example Android usage](#example-android-usage)
-    - [requestLocationAuthorization()](#requestlocationauthorization)
+    - [getLocationAuthorizationStatuses()](#getlocationauthorizationstatuses)
       - [Parameters](#parameters-24)
+    - [requestLocationAuthorization()](#requestlocationauthorization)
+      - [Parameters](#parameters-25)
       - [Example usage](#example-usage-25)
     - [registerLocationStateChangeHandler()](#registerlocationstatechangehandler)
-      - [Parameters](#parameters-25)
+      - [Parameters](#parameters-26)
       - [Example usage](#example-usage-26)
     - [getLocationAccuracyAuthorization()](#getlocationaccuracyauthorization)
-      - [Parameters](#parameters-26)
+      - [Parameters](#parameters-27)
       - [Example usage](#example-usage-27)
     - [requestTemporaryFullAccuracyAuthorization()](#requesttemporaryfullaccuracyauthorization)
-      - [Parameters](#parameters-27)
+      - [Parameters](#parameters-28)
       - [Example usage](#example-usage-28)
     - [registerLocationAccuracyAuthorizationChangeHandler()](#registerlocationaccuracyauthorizationchangehandler)
-      - [Parameters](#parameters-28)
+      - [Parameters](#parameters-29)
       - [Example usage](#example-usage-29)
     - [switchToLocationSettings()](#switchtolocationsettings)
   - [Bluetooth module](#bluetooth-module)
     - [bluetoothState constants](#bluetoothstate-constants)
       - [Android](#android-2)
       - [iOS](#ios-2)
-      - [Example](#example-4)
+      - [Example](#example-3)
     - [isBluetoothAvailable()](#isbluetoothavailable)
-      - [Parameters](#parameters-29)
+      - [Parameters](#parameters-30)
       - [Example usage](#example-usage-30)
     - [isBluetoothEnabled()](#isbluetoothenabled)
-      - [Parameters](#parameters-30)
+      - [Parameters](#parameters-31)
       - [Example usage](#example-usage-31)
     - [hasBluetoothSupport()](#hasbluetoothsupport)
-      - [Parameters](#parameters-31)
+      - [Parameters](#parameters-32)
       - [Example usage](#example-usage-32)
     - [hasBluetoothLESupport()](#hasbluetoothlesupport)
-      - [Parameters](#parameters-32)
+      - [Parameters](#parameters-33)
       - [Example usage](#example-usage-33)
     - [hasBluetoothLEPeripheralSupport()](#hasbluetoothleperipheralsupport)
-      - [Parameters](#parameters-33)
+      - [Parameters](#parameters-34)
       - [Example usage](#example-usage-34)
     - [getBluetoothState()](#getbluetoothstate)
-      - [Parameters](#parameters-34)
+      - [Parameters](#parameters-35)
       - [Example usage](#example-usage-35)
     - [setBluetoothState()](#setbluetoothstate)
-      - [Parameters](#parameters-35)
+      - [Parameters](#parameters-36)
       - [Example usage](#example-usage-36)
     - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
-      - [Parameters](#parameters-36)
+      - [Parameters](#parameters-37)
       - [Example usage](#example-usage-37)
     - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
-      - [Parameters](#parameters-37)
+      - [Parameters](#parameters-38)
       - [Example usage](#example-usage-38)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
   - [WiFi module](#wifi-module)
     - [isWifiAvailable()](#iswifiavailable)
-      - [Parameters](#parameters-38)
+      - [Parameters](#parameters-39)
       - [Example usage](#example-usage-39)
     - [isWifiEnabled()](#iswifienabled)
-      - [Parameters](#parameters-39)
+      - [Parameters](#parameters-40)
       - [Example usage](#example-usage-40)
     - [setWifiState()](#setwifistate)
-      - [Parameters](#parameters-40)
+      - [Parameters](#parameters-41)
       - [Example usage](#example-usage-41)
     - [switchToWifiSettings()](#switchtowifisettings)
   - [Camera module](#camera-module)
     - [isCameraPresent()](#iscamerapresent)
-      - [Parameters](#parameters-41)
+      - [Parameters](#parameters-42)
       - [Example usage](#example-usage-42)
     - [isCameraAvailable()](#iscameraavailable)
-      - [Parameters](#parameters-42)
+      - [Parameters](#parameters-43)
       - [Example usage](#example-usage-43)
     - [isCameraAuthorized()](#iscameraauthorized)
-      - [Parameters](#parameters-43)
+      - [Parameters](#parameters-44)
       - [Example usage](#example-usage-44)
     - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
-      - [Parameters](#parameters-44)
+      - [Parameters](#parameters-45)
       - [Example usage](#example-usage-45)
     - [requestCameraAuthorization()](#requestcameraauthorization)
-      - [Parameters](#parameters-45)
+      - [Parameters](#parameters-46)
       - [Example usage](#example-usage-46)
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
-      - [Parameters](#parameters-46)
+      - [Parameters](#parameters-47)
       - [Example usage](#example-usage-47)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
-      - [Parameters](#parameters-47)
+      - [Parameters](#parameters-48)
       - [Example usage](#example-usage-48)
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
-      - [Parameters](#parameters-48)
+      - [Parameters](#parameters-49)
       - [Example usage](#example-usage-49)
   - [Notifications module](#notifications-module)
     - [remoteNotificationType constants](#remotenotificationtype-constants)
-      - [Example](#example-5)
+      - [Example](#example-4)
     - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
-      - [Parameters](#parameters-49)
+      - [Parameters](#parameters-50)
       - [Example usage](#example-usage-50)
     - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
-      - [Parameters](#parameters-50)
+      - [Parameters](#parameters-51)
       - [Example usage](#example-usage-51)
     - [getRemoteNotificationTypes()](#getremotenotificationtypes)
-      - [Parameters](#parameters-51)
+      - [Parameters](#parameters-52)
       - [Example usage](#example-usage-52)
     - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
-      - [Parameters](#parameters-52)
+      - [Parameters](#parameters-53)
       - [Example usage](#example-usage-53)
     - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
-      - [Parameters](#parameters-53)
+      - [Parameters](#parameters-54)
       - [Example usage](#example-usage-54)
     - [switchToNotificationSettings()](#switchtonotificationsettings)
   - [Microphone module](#microphone-module)
     - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
-      - [Parameters](#parameters-54)
+      - [Parameters](#parameters-55)
       - [Example usage](#example-usage-55)
     - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
-      - [Parameters](#parameters-55)
+      - [Parameters](#parameters-56)
       - [Example usage](#example-usage-56)
     - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
-      - [Parameters](#parameters-56)
+      - [Parameters](#parameters-57)
       - [Example usage](#example-usage-57)
   - [Contacts module](#contacts-module)
     - [isContactsAuthorized()](#iscontactsauthorized)
-      - [Parameters](#parameters-57)
+      - [Parameters](#parameters-58)
       - [Example usage](#example-usage-58)
     - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
-      - [Parameters](#parameters-58)
+      - [Parameters](#parameters-59)
       - [Example usage](#example-usage-59)
     - [requestContactsAuthorization()](#requestcontactsauthorization)
-      - [Parameters](#parameters-59)
+      - [Parameters](#parameters-60)
       - [Example usage](#example-usage-60)
   - [Calendar module](#calendar-module)
     - [isCalendarAuthorized()](#iscalendarauthorized)
-      - [Parameters](#parameters-60)
+      - [Parameters](#parameters-61)
       - [Example usage](#example-usage-61)
     - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
-      - [Parameters](#parameters-61)
+      - [Parameters](#parameters-62)
       - [Example usage](#example-usage-62)
     - [requestCalendarAuthorization()](#requestcalendarauthorization)
-      - [Parameters](#parameters-62)
+      - [Parameters](#parameters-63)
       - [Example usage](#example-usage-63)
   - [Reminders module](#reminders-module)
     - [isRemindersAuthorized()](#isremindersauthorized)
-      - [Parameters](#parameters-63)
+      - [Parameters](#parameters-64)
       - [Example usage](#example-usage-64)
     - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
-      - [Parameters](#parameters-64)
+      - [Parameters](#parameters-65)
       - [Example usage](#example-usage-65)
     - [requestRemindersAuthorization()](#requestremindersauthorization)
-      - [Parameters](#parameters-65)
+      - [Parameters](#parameters-66)
       - [Example usage](#example-usage-66)
   - [Motion module](#motion-module)
     - [motionStatus constants](#motionstatus-constants)
-      - [Example](#example-6)
+      - [Example](#example-5)
     - [isMotionAvailable()](#ismotionavailable)
-      - [Parameters](#parameters-66)
+      - [Parameters](#parameters-67)
       - [Example usage](#example-usage-67)
     - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
-      - [Parameters](#parameters-67)
+      - [Parameters](#parameters-68)
       - [Example usage](#example-usage-68)
     - [requestMotionAuthorization()](#requestmotionauthorization)
-      - [Parameters](#parameters-68)
+      - [Parameters](#parameters-69)
       - [Example usage](#example-usage-69)
     - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
-      - [Parameters](#parameters-69)
+      - [Parameters](#parameters-70)
       - [Example usage](#example-usage-70)
   - [NFC module](#nfc-module)
     - [NFCState constants](#nfcstate-constants)
       - [Values](#values-3)
-      - [Example](#example-7)
+      - [Example](#example-6)
     - [isNFCPresent()](#isnfcpresent)
-      - [Parameters](#parameters-70)
+      - [Parameters](#parameters-71)
       - [Example usage](#example-usage-71)
     - [isNFCEnabled()](#isnfcenabled)
-      - [Parameters](#parameters-71)
+      - [Parameters](#parameters-72)
       - [Example usage](#example-usage-72)
     - [isNFCAvailable()](#isnfcavailable)
-      - [Parameters](#parameters-72)
+      - [Parameters](#parameters-73)
       - [Example usage](#example-usage-73)
     - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
-      - [Parameters](#parameters-73)
+      - [Parameters](#parameters-74)
       - [Example usage](#example-usage-74)
     - [switchToNFCSettings()](#switchtonfcsettings)
   - [External storage module](#external-storage-module)
     - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
-      - [Parameters](#parameters-74)
+      - [Parameters](#parameters-75)
       - [Example usage](#example-usage-75)
     - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
-      - [Parameters](#parameters-75)
+      - [Parameters](#parameters-76)
       - [Example usage](#example-usage-76)
     - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
-      - [Parameters](#parameters-76)
+      - [Parameters](#parameters-77)
       - [Example usage](#example-usage-77)
     - [getExternalSdCardDetails()](#getexternalsdcarddetails)
-      - [Parameters](#parameters-77)
+      - [Parameters](#parameters-78)
       - [Example usage](#example-usage-78)
   - [Airplane mode module](#airplane-mode-module)
     - [isAirplaneMoodeOn()](#isairplanemoodeon)
-      - [Parameters](#parameters-78)
+      - [Parameters](#parameters-79)
 - [Platform Notes](#platform-notes)
   - [Android](#android-3)
     - [Android permissions](#android-permissions)
@@ -316,9 +317,6 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
         - [Runtime permissions example project](#runtime-permissions-example-project)
         - [Android Camera permissions](#android-camera-permissions)
     - [Android Auto Backup](#android-auto-backup)
-  - [Windows](#windows)
-    - [Supported Windows versions](#supported-windows-versions)
-    - [Windows 10 UWP permissions](#windows-10-uwp-permissions)
   - [iOS](#ios-3)
     - [iOS usage description messages](#ios-usage-description-messages)
 - [Example project](#example-project)
@@ -334,7 +332,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
 
 # Overview
 
-This Cordova/Phonegap plugin for iOS, Android and Windows 10 UWP is used to manage device settings such as Location,  Bluetooth and WiFi. It enables management of run-time permissions, device hardware and core OS features.
+This Cordova/Phonegap plugin for iOS & Android is used to manage device settings such as Location,  Bluetooth and WiFi. It enables management of run-time permissions, device hardware and core OS features.
 
 The plugin is registered in on [npm](https://www.npmjs.com/package/cordova.plugins.diagnostic) as `cordova.plugins.diagnostic`
 
@@ -418,14 +416,14 @@ To install only the core module and no optional modules, leave the preference va
 
 The following optional modules are currently supported by the plugin:
 
-- [LOCATION](#location-module) - Android, iOS, Windows 10 UWP
-- [BLUETOOTH](#bluetooth-module) - Android, iOS, Windows 10 UWP
-- [WIFI](#wifi-module) - Android, iOS, Windows 10 UWP
-- [CAMERA](#camera-module) - Android, iOS, Windows 10 UWP
-- [NOTIFICATIONS](#notifications-module) - Android, iOS
-- [MICROPHONE](#microphone-module) - Android, iOS
-- [CONTACTS](#contacts-module) - Android, iOS
-- [CALENDAR](#calendar-module) - Android, iOS
+- [LOCATION](#location-module) - Android & iOS
+- [BLUETOOTH](#bluetooth-module) - Android & iOS
+- [WIFI](#wifi-module) - Android & iOS
+- [CAMERA](#camera-module) - Android & iOS
+- [NOTIFICATIONS](#notifications-module) - Android & iOS
+- [MICROPHONE](#microphone-module) - Android & iOS
+- [CONTACTS](#contacts-module) - Android & iOS
+- [CALENDAR](#calendar-module) - Android & iOS
 - [REMINDERS](#reminders-module) - iOS
 - [MOTION](#motion-module) - iOS
 - [NFC](#nfc-module) - Android
@@ -492,7 +490,7 @@ If a function is called on the core module for an optional module which is not i
 
 Purpose: Generic and miscellaneous functionality.
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Configuration name: N/A - always installed, regardless of whether the module preference key is present in `config.xml`.
 
@@ -533,7 +531,7 @@ Allows configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile ne
 
 ### switchToMobileDataSettings()
 
-Platforms: Android and Windows 10 UWP
+Platforms: Android
 
 Displays mobile settings to allow user to enable mobile data.
 
@@ -1093,7 +1091,7 @@ The function is passed a single `string` parameter containing the error message.
 
 Purpose: Location/GPS functionality
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Configuration name: `LOCATION`
 
@@ -1174,13 +1172,13 @@ Platforms: Android & iOS
 
 ### isLocationAvailable()
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Checks if app is able to access device location.
 
     cordova.plugins.diagnostic.isLocationAvailable(successCallback, errorCallback);
 
-On iOS and Windows 10 UWP this returns true if both the device setting is enabled AND the application is authorized to use location.
+On iOS this returns true if both the device setting is enabled AND the application is authorized to use location.
 When location is enabled, the locations returned are by a mixture GPS hardware, network triangulation and Wifi network IDs.
 
 On Android, this returns true if Location mode is enabled and any mode is selected (e.g. Battery saving, Device only, High accuracy)
@@ -1733,7 +1731,7 @@ The function is passed a single string parameter indicating the new location acc
 
 ### switchToLocationSettings()
 
-Platforms: Android and Windows 10 UWP
+Platforms: Android
 
 Displays the device location settings to allow user to enable location services/change location mode.
 
@@ -1745,7 +1743,7 @@ Note: On Android, you may want to consider using the [Request Location Accuracy 
 
 Purpose: Bluetooth functionality to get/set Bluetooth Radio state.
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Configuration name: `BLUETOOTH`
 
@@ -1787,10 +1785,10 @@ Defines constants for the various Bluetooth hardware states
 
 ### isBluetoothAvailable()
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Checks if Bluetooth is available to the app.
-Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS and Windows 10 UWP)
+Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android & iOS)
 
 On Android this requires permission `<uses-permission android:name="android.permission.BLUETOOTH" />`
 Calling on iOS 13+ will request runtime permission to access Bluetooth (if not already requested).
@@ -1814,7 +1812,7 @@ The function is passed a single string parameter containing the error message.
     });
 
 Purpose: Bluetooth functionality
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 Configuration name: `BLUETOOTH`
 
 ### isBluetoothEnabled()
@@ -1943,7 +1941,7 @@ The function is passed a single string parameter containing the error message.
 
 ### setBluetoothState()
 
-Platforms: Android and Windows 10 UWP
+Platforms: Android
 
 Enables/disables Bluetooth on the device.
 
@@ -1953,10 +1951,6 @@ Requires the following permissions on Android:
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-
-Requires the following capabilities for Windows 10 UWP:
-
-    <DeviceCapability Name="radios" />
 
 #### Parameters
 
@@ -2030,7 +2024,7 @@ The function is passed a single string parameter which indicates the Bluetooth s
 
 ### switchToBluetoothSettings()
 
-Platforms: Android and Windows 10 UWP
+Platforms: Android
 
 Displays Bluetooth settings to allow user to enable Bluetooth.
 
@@ -2040,17 +2034,17 @@ Displays Bluetooth settings to allow user to enable Bluetooth.
 
 Purpose: WiFi functionality to get/set Wifi state
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Configuration name: `WIFI`
 
 ### isWifiAvailable()
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Checks if Wifi is available.
 On iOS this returns true if the device is connected to a network by WiFi.
-On Android and Windows 10 UWP this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiEnabled()`](#iswifienabled)
+On Android this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiEnabled()`](#iswifienabled)
 
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
@@ -2074,10 +2068,10 @@ The function is passed a single string parameter containing the error message.
 
 ### isWifiEnabled()
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 On iOS this returns true if the WiFi setting is set to enabled (regardless of whether it's connected to a network).
-On Android and Windows 10 UWP this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
+On Android this returns true if the WiFi setting is set to enabled, and is the same as [`isWifiAvailable()`](#iswifiavailable)
 On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />`
 
     cordova.plugins.diagnostic.isWifiEnabled(successCallback, errorCallback);
@@ -2100,7 +2094,7 @@ The function is passed a single string parameter containing the error message.
 
 ### setWifiState()
 
-Platforms: Android and Windows 10 UWP
+Platforms: Android
 
 Enables/disables WiFi on the device.
 
@@ -2110,10 +2104,6 @@ Requires the following permissions for Android:
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-
-Requires the following capabilities for Windows 10 UWP:
-
-    <DeviceCapability Name="radios" />
 
 #### Parameters
 
@@ -2133,7 +2123,7 @@ Requires the following capabilities for Windows 10 UWP:
 
 ### switchToWifiSettings()
 
-Platforms: Android and Windows 10 UWP
+Platforms: Android
 
 Displays WiFi settings to allow user to enable WiFi.
 
@@ -2143,7 +2133,7 @@ Displays WiFi settings to allow user to enable WiFi.
 
 Purpose: Camera functionality to capture images / record video
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Configuration name: `CAMERA`
 
@@ -2173,13 +2163,12 @@ The function is passed a single string parameter containing the error message.
 
 ### isCameraAvailable()
 
-Platforms: Android, iOS and Windows 10 UWP
+Platforms: Android & iOS
 
 Checks if camera is available.
 
 Notes:
 - On Android & iOS this returns true if the device has a camera AND the application is authorized to use it.
-- On Windows 10 UWP this returns true if the device has a **rear-facing** camera.
 
 Notes for Android:
 - On Android by default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
@@ -2499,7 +2488,7 @@ The function is passed a single string parameter containing the error message.
 
 Purpose: Remote notifications functionality
 
-Platforms: Android, iOS
+Platforms: Android & iOS
 
 Configuration name: `NOTIFICATIONS`
 
@@ -2704,7 +2693,7 @@ On Android versions lower than O, this will open the same page as `switchToSetti
 
 Purpose: Microphone permission to record audio.
 
-Platforms: Android, iOS
+Platforms: Android & iOS
 
 Configuration name: `MICROPHONE`
 
@@ -2801,7 +2790,7 @@ The function is passed a single string parameter indicating whether access to th
 
 Purpose: Contacts permission to read/write address book.
 
-Platforms: Android, iOS
+Platforms: Android & iOS
 
 Configuration name: `CONTACTS`
 
@@ -2899,7 +2888,7 @@ The function is passed a single string parameter indicating whether access to co
 
 Purpose: Calendar events permission.
 
-Platforms: Android, iOS
+Platforms: Android & iOS
 
 Configuration name: `CALENDAR`
 
@@ -3694,27 +3683,6 @@ So to use this method in conjunction with the Cordova camera plugin, make sure y
 * So if Auto Backup is enabled for your app, you'll need to exclude the shared preferences used by this plugin, otherwise preferences that were requested during a previous installation will be wrongly determined as `DENIED_ALWAYS` if the shared preferences data is restored from Cloud storage
 * To exclude this plugin's data, add the following rule to your XML backup rules: `<exclude domain="sharedpref" path="Diagnostic.xml"/>`
 
-## Windows
-
-### Supported Windows versions
-
-Currently the plugin only supports Windows 10 and Windows 10 UWP, not Windows Phone 8.0 or 8.1.
-
-The reason being that the native functionality required by the plugin's current Windows implementation is only available since Windows 10.
-
-For example, `isLocationAvailable()` [invokes](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/master/src/windows/diagnosticProxy.js#L19) `Windows.Devices.Geolocation.Geolocator.requestAccessAsync()`. And this was only [introduced in Windows 10](https://msdn.microsoft.com/library/windows/apps/windows.devices.geolocation.geolocator.requestaccessasync.aspx).
-
-Windows Phone 8.x would require a different implementation (even if possible), and I don't plan to add that since the Windows 8.x global marketshare is below 5% and falling, and is also rendered obsolete by Windows 10 UWP.
-
-### Windows 10 UWP permissions
-
-Some of functions offered by this plugin require specific permissions to be set in the package.windows10.appxmanifest. Where additional permissions are needed, they are listed alongside the function that requires them.
-
-These permissions will not be set by this plugin, to avoid asking for unnecessary permissions in your app, in the case that you do not use a particular part of the plugin.
-Instead, you can add these permissions as necessary, depending what functions in the plugin you decide to use.
-
-You can add these permissions by manually editing the package.windows10.appxmanifest in `/platforms/windows/`.
-
 ## iOS
 
 ### iOS usage description messages
@@ -3766,8 +3734,6 @@ See the [CHANGELOG.md](https://github.com/dpa99c/cordova-diagnostic-plugin/blob/
 Forked from: [https://github.com/mablack/cordova-diagnostic-plugin](https://github.com/mablack/cordova-diagnostic-plugin)
 
 Original Cordova 2 implementation by: AVANTIC ESTUDIO DE INGENIEROS ([www.avantic.net](http://www.avantic.net/))
-
-Windows 10 implementation by [Mike Dailor](https://github.com/mdailor) / [Next Wave Software, Inc.](http://nextwavesoftware.com/)
 
 # License
 ================

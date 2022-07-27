@@ -203,7 +203,7 @@ interface Diagnostic {
     /**
      * Checks if Wifi is available.
      * On iOS this returns true if the device is connected to a network by WiFi.
-     * On Android and Windows 10 Mobile this returns true if the WiFi setting is set to enabled, and is the same as isWifiEnabled()
+     * On Android this returns true if the WiFi setting is set to enabled, and is the same as isWifiEnabled()
      * @param successCallback
      * @param errorCallback
      */
@@ -215,7 +215,6 @@ interface Diagnostic {
     /**
      * Checks if camera is available.
      * On Android & iOS this returns true if the device has a camera AND the application is authorized to use it.
-     * On Windows 10 Mobile this returns true if the device has a rear-facing camera.
      * @param successCallbackOrParams
      * @param errorCallback
      * @param externalStorageOrParams
@@ -228,7 +227,7 @@ interface Diagnostic {
 
     /**
      * Checks if Bluetooth is available to the app.
-     * Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS and Windows 10 Mobile)
+     * Returns true if the device has Bluetooth capabilities AND if Bluetooth setting is switched on (same on Android, iOS)
      * @param successCallback
      * @param errorCallback
      */
@@ -238,31 +237,31 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and WINDOWS ONLY
+     * ANDROID ONLY
      * Displays the device location settings to allow user to enable location services/change location mode.
      */
     switchToLocationSettings?: () => void;
 
     /**
-     * ANDROID and WINDOWS ONLY
+     * ANDROID ONLY
      * Displays mobile settings to allow user to enable mobile data.
      */
     switchToMobileDataSettings?: () => void;
 
     /**
-     * ANDROID and WINDOWS ONLY
+     * ANDROID ONLY
      * Displays Bluetooth settings to allow user to enable Bluetooth.
      */
     switchToBluetoothSettings?: () => void;
 
     /**
-     * ANDROID and WINDOWS ONLY
+     * ANDROID ONLY
      * Displays WiFi settings to allow user to enable WiFi.
      */
     switchToWifiSettings?: () => void;
 
     /**
-     * ANDROID and WINDOWS ONLY
+     * ANDROID ONLY
      * Returns true if the WiFi setting is set to enabled, and is the same as isWifiAvailable()
      * @param successCallback
      * @param errorCallback
@@ -273,7 +272,7 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and WINDOWS ONLY
+     * ANDROID ONLY
      * Enables/disables WiFi on the device.
      * @param successCallback
      * @param errorCallback
@@ -286,7 +285,7 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID and WINDOWS ONLY
+     * ANDROID ONLY
      * Enables/disables Bluetooth on the device.
      * @param successCallback
      * @param errorCallback

@@ -8,7 +8,7 @@
     <description>Cordova/Phonegap plugin to check the state of Location/WiFi/Camera/Bluetooth device settings.</description>
     <author>Dave Alden</author>
     <license>MIT</license>
-    <keywords>ecosystem:cordova,cordova,phonegap,android,ios,windows,diagnostic,wifi,location,gps,camera,bluetooth,settings</keywords>
+    <keywords>ecosystem:cordova,cordova,phonegap,android,ios,diagnostic,wifi,location,gps,camera,bluetooth,settings</keywords>
     <engines>
         <engine name="cordova" version=">=9.0.0"/>
         <engine name="cordova-android" version=">=8.0.0"/>
@@ -421,91 +421,5 @@
 
         <source-file src="src/android/Diagnostic_External_Storage.java" target-dir="src/cordova/plugins" />
         <!--END_MODULE EXTERNAL_STORAGE-->
-    </platform>
-
-    <platform name="windows">
-        <config-file target="config.xml" parent="/*">
-            <feature name="Diagnostic" >
-                <param name="windows-package" value="cordova.plugins.Diagnostic"/>
-            </feature>
-        </config-file>
-
-        <js-module src="www/windows/diagnostic.js" name="Diagnostic">
-            <merges target="cordova.plugins.diagnostic" />
-        </js-module>
-
-        <js-module src="src/windows/diagnosticProxy.js" name="diagnosticProxy">
-            <merges target="" />
-        </js-module>
-
-        <!--BEGIN_MODULE LOCATION-->
-        <config-file target="config.xml" parent="/*">
-            <feature name="Diagnostic_Location" >
-                <param name="windows-package" value="cordova.plugins.Diagnostic_Location"/>
-            </feature>
-        </config-file>
-
-        <js-module src="www/windows/diagnostic.location.js" name="Diagnostic_Location">
-            <merges target="cordova.plugins.diagnostic.location" />
-        </js-module>
-
-        <js-module src="src/windows/diagnosticProxy.location.js" name="diagnosticProxy.location">
-            <merges target="" />
-        </js-module>
-        <!--END_MODULE LOCATION-->
-
-        <!--BEGIN_MODULE BLUETOOTH-->
-        <config-file target="config.xml" parent="/*">
-            <feature name="Diagnostic_Bluetooth" >
-                <param name="windows-package" value="cordova.plugins.Diagnostic_Bluetooth"/>
-            </feature>
-        </config-file>
-
-        <js-module src="www/windows/diagnostic.bluetooth.js" name="Diagnostic_Bluetooth">
-            <merges target="cordova.plugins.diagnostic.bluetooth" />
-        </js-module>
-
-        <js-module src="src/windows/diagnosticProxy.bluetooth.js" name="diagnosticProxy.bluetooth">
-            <merges target="" />
-        </js-module>
-        <!--END_MODULE BLUETOOTH-->
-
-        <!--BEGIN_MODULE WIFI-->
-        <config-file target="config.xml" parent="/*">
-            <feature name="Diagnostic_Wifi" >
-                <param name="windows-package" value="cordova.plugins.Diagnostic_Wifi"/>
-            </feature>
-        </config-file>
-
-        <js-module src="www/windows/diagnostic.wifi.js" name="Diagnostic_Wifi">
-            <merges target="cordova.plugins.diagnostic.wifi" />
-        </js-module>
-
-        <js-module src="src/windows/diagnosticProxy.wifi.js" name="diagnosticProxy.wifi">
-            <merges target="" />
-        </js-module>
-        <!--END_MODULE WIFI-->
-
-        <!--BEGIN_MODULE CAMERA-->
-        <config-file target="config.xml" parent="/*">
-            <feature name="Diagnostic_Camera" >
-                <param name="windows-package" value="cordova.plugins.Diagnostic_Camera"/>
-            </feature>
-        </config-file>
-
-        <js-module src="www/windows/diagnostic.camera.js" name="Diagnostic_Camera">
-            <merges target="cordova.plugins.diagnostic.camera" />
-        </js-module>
-
-        <js-module src="src/windows/diagnosticProxy.camera.js" name="diagnosticProxy.camera">
-            <merges target="" />
-        </js-module>
-        <!--END_MODULE CAMERA-->
-
-        <!--BEGIN_MODULE ACTIVITY_RECOGNITION-->
-        <config-file parent="/*" target="AndroidManifest.xml">
-            <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-        </config-file>
-        <!--END_MODULE BLUETOOTH-->
     </platform>
 </plugin>
