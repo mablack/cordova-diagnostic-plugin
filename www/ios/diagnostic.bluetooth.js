@@ -120,6 +120,22 @@ var Diagnostic_Bluetooth = (function(){
             []);
     };
 
+    /**
+     * Returns the Bluetooth authorization status for the application.
+     * On iOS 12 and below, authorization is not required so will always be GRANTED
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic_Bluetooth.getAuthorizationStatus = function(successCallback, errorCallback) {
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic_Bluetooth',
+            'getAuthorizationStatus',
+            []);
+    };
 
 
     return Diagnostic_Bluetooth;

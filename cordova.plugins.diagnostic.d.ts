@@ -790,6 +790,16 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * Returns the Bluetooth authorization status of the application on the device.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getBluetoothAuthorizationStatus: (
+        successCallback: (statuses: [{string: boolean}]) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * ANDROID ONLY
      * Returns the authorization statuses for various Bluetooth run-time permissions on Android 12+ / API 31+
      * On Android 11 / API 30 and below, all will be returned as GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.

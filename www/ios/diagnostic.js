@@ -584,6 +584,14 @@ var Diagnostic = (function(){
         }
     };
 
+    Diagnostic.getBluetoothAuthorizationStatus = function(successCallback, errorCallback) {
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.getAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
+    };
+
     /***********************
      * Remote Notifications
      ***********************/
