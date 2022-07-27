@@ -22,6 +22,8 @@ package cordova.plugins;
  * Imports
  */
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,17 +34,21 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Diagnostic plugin implementation for Android
  */
-public class Diagnostic_Bluetooth extends CordovaPlugin{
+public class Diagnostic_Bluetooth extends CordovaPlugin {
 
 
     /*************
@@ -73,6 +79,12 @@ public class Diagnostic_Bluetooth extends CordovaPlugin{
      * Current state of Bluetooth hardware is transitioning to OFF
      */
     protected static final String BLUETOOTH_STATE_POWERING_OFF = "powering_off";
+
+    protected static final String[] permissions = {
+        "BLUETOOTH_ADVERTISE",
+        "BLUETOOTH_CONNECT",
+            "BLUETOOTH_SCAN"
+    };
 
     /**
      * Tag for debug log messages
@@ -106,7 +118,8 @@ public class Diagnostic_Bluetooth extends CordovaPlugin{
     /**
      * Constructor.
      */
-    public Diagnostic_Bluetooth() {}
+    public Diagnostic_Bluetooth() {
+    }
 
     /**
      * Sets the context of the Command. This can then be used to do things like
@@ -123,7 +136,7 @@ public class Diagnostic_Bluetooth extends CordovaPlugin{
         try {
             diagnostic.applicationContext.registerReceiver(bluetoothStateChangeReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
             currentBluetoothState = getBluetoothState();
-        }catch(Exception e){
+        } catch (Exception e) {
             diagnostic.logWarning("Unable to register Bluetooth state change receiver: " + e.getMessage());
         }
 
@@ -136,7 +149,7 @@ public class Diagnostic_Bluetooth extends CordovaPlugin{
     public void onDestroy() {
         try {
             diagnostic.applicationContext.unregisterReceiver(bluetoothStateChangeReceiver);
-        }catch(Exception e){
+        } catch (Exception e) {
             diagnostic.logWarning("Unable to unregister Bluetooth state change receiver: " + e.getMessage());
         }
     }
@@ -147,42 +160,43 @@ public class Diagnostic_Bluetooth extends CordovaPlugin{
      * @param action            The action to execute.
      * @param args              JSONArry of arguments for the plugin.
      * @param callbackContext   The callback id used when calling back into JavaScript.
-     * @return                  True if the action was valid, false if not.
+     * @return True if the action was valid, false if not.
      */
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        currentContext = callbackContext;
+        Diagnostic.instance.currentContext = currentContext = callbackContext;
 
         try {
-            if (action.equals("switchToBluetoothSettings")){
+            if (action.equals("switchToBluetoothSettings")) {
                 switchToBluetoothSettings();
                 callbackContext.success();
-            } else if(action.equals("isBluetoothAvailable")) {
+            } else if (action.equals("isBluetoothAvailable")) {
                 callbackContext.success(isBluetoothAvailable() ? 1 : 0);
-            } else if(action.equals("isBluetoothEnabled")) {
+            } else if (action.equals("isBluetoothEnabled")) {
                 callbackContext.success(isBluetoothEnabled() ? 1 : 0);
-            } else if(action.equals("hasBluetoothSupport")) {
+            } else if (action.equals("hasBluetoothSupport")) {
                 callbackContext.success(hasBluetoothSupport() ? 1 : 0);
-            } else if(action.equals("hasBluetoothLESupport")) {
+            } else if (action.equals("hasBluetoothLESupport")) {
                 callbackContext.success(hasBluetoothLESupport() ? 1 : 0);
-            } else if(action.equals("hasBluetoothLEPeripheralSupport")) {
+            } else if (action.equals("hasBluetoothLEPeripheralSupport")) {
                 callbackContext.success(hasBluetoothLEPeripheralSupport() ? 1 : 0);
-            } else if(action.equals("setBluetoothState")) {
-                setBluetoothState(args.getBoolean(0));
-                callbackContext.success();
-            } else if(action.equals("getBluetoothState")) {
+            } else if (action.equals("setBluetoothState")) {
+                setBluetoothState(args.getBoolean(0), callbackContext);
+            } else if (action.equals("getBluetoothState")) {
                 callbackContext.success(getBluetoothState());
+            } else if (action.equals("getAuthorizationStatuses")) {
+                callbackContext.success(getAuthorizationStatuses());
+            } else if (action.equals("requestBluetoothAuthorization")) {
+                requestBluetoothAuthorization(args, callbackContext);
             } else {
                 diagnostic.handleError("Invalid action");
                 return false;
             }
-        }catch(Exception e ) {
+        } catch (Exception e) {
             diagnostic.handleError("Exception occurred: ".concat(e.getMessage()));
             return false;
         }
         return true;
     }
-
-
 
 
     /************
@@ -219,24 +233,34 @@ public class Diagnostic_Bluetooth extends CordovaPlugin{
     }
 
     public boolean hasBluetoothLEPeripheralSupport() {
-        if (Build.VERSION.SDK_INT >=21){
-            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            boolean result = mBluetoothAdapter != null && mBluetoothAdapter.isMultipleAdvertisementSupported();
-            return result;
-        }
-        return false;
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        boolean result = mBluetoothAdapter != null && mBluetoothAdapter.isMultipleAdvertisementSupported();
+        return result;
     }
 
-    public static boolean setBluetoothState(boolean enable) {
+    @SuppressLint("MissingPermission")
+    public void setBluetoothState(boolean enable, CallbackContext callbackContext) throws Exception {
+        if(!hasBluetoothSupport()) {
+            callbackContext.error("Cannot change Bluetooth state as device does not support Bluetooth");
+            return;
+        }
+
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         boolean isEnabled = bluetoothAdapter.isEnabled();
-        if (enable && !isEnabled) {
-            return bluetoothAdapter.enable();
+
+        JSONObject statuses = getAuthorizationStatuses();
+
+        if (statuses.getString("BLUETOOTH_CONNECT").equals(Diagnostic.STATUS_GRANTED)) {
+            if (enable && !isEnabled) {
+                bluetoothAdapter.enable();
+            }
+            else if(!enable && isEnabled) {
+                bluetoothAdapter.disable();
+            }
+            callbackContext.success();
+        }else{
+            callbackContext.error("Cannot change Bluetooth state as permission is denied");
         }
-        else if(!enable && isEnabled) {
-            return bluetoothAdapter.disable();
-        }
-        return true;
     }
 
     public String getBluetoothState(){
@@ -278,6 +302,63 @@ public class Diagnostic_Bluetooth extends CordovaPlugin{
         }catch(Exception e){
             diagnostic.logError("Error retrieving current Bluetooth state on Bluetooth state change: "+e.toString());
         }
+    }
+
+    public JSONObject getAuthorizationStatuses() throws Exception {
+        JSONObject statuses;
+
+        if(Build.VERSION.SDK_INT >= 31){
+            statuses = Diagnostic.instance._getPermissionsAuthorizationStatus(permissions);
+        }else{
+            boolean hasPermission = Diagnostic.instance.hasBuildPermission("BLUETOOTH");
+            statuses = new JSONObject();
+            for(String permission: permissions){
+                statuses.put(permission, hasPermission ? Diagnostic.STATUS_GRANTED : Diagnostic.STATUS_DENIED_ALWAYS);
+            }
+        }
+        return statuses;
+    }
+
+    public void requestBluetoothAuthorization(JSONArray args, CallbackContext callbackContext) throws Exception {
+        JSONArray permissionsToRequest = new JSONArray();
+        if(args.length() > 0){
+            JSONArray specifiedPermissions = args.getJSONArray(0);
+            if(specifiedPermissions.length() > 0){
+                for (int i = 0, size = specifiedPermissions.length(); i < size; i++){
+                    String specifiedPermission = specifiedPermissions.getString(i);
+                    if(contains(permissions, specifiedPermission)){
+                        permissionsToRequest.put(specifiedPermission);
+                    }
+                }
+            }
+        }
+        if(permissionsToRequest.length() == 0){
+            for(String permission: permissions){
+                permissionsToRequest.put(permission);
+            }
+        }
+
+        Diagnostic.instance._requestRuntimePermissions(permissionsToRequest, Diagnostic.instance.storeContextByRequestId(callbackContext));
+
+        PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+        result.setKeepCallback(true);
+        callbackContext.sendPluginResult(result);
+    }
+
+    // https://stackoverflow.com/a/12635769/777265
+    private static <T> boolean contains(final T[] array, final T v) {
+        if (v == null) {
+            for (final T e : array)
+                if (e == null)
+                    return true;
+        }
+        else {
+            for (final T e : array)
+                if (e == v || v.equals(e))
+                    return true;
+        }
+
+        return false;
     }
 
     /************

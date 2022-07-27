@@ -47,6 +47,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -349,7 +350,7 @@ public class Diagnostic extends CordovaPlugin{
 
     public void requestRuntimePermissions(JSONArray args) throws Exception{
         JSONArray permissions = args.getJSONArray(0);
-        int requestId = storeContextByRequestId();
+        int requestId = storeCurrentContextByRequestId();
         _requestRuntimePermissions(permissions, requestId);
     }
 
@@ -358,7 +359,7 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public void requestRuntimePermission(String permission) throws Exception{
-        requestRuntimePermission(permission, storeContextByRequestId());
+        requestRuntimePermission(permission, storeCurrentContextByRequestId());
     }
 
     public void requestRuntimePermission(String permission, int requestId) throws Exception{
@@ -534,7 +535,7 @@ public class Diagnostic extends CordovaPlugin{
             }
             String androidPermission = permissionsMap.get(permission);
             Log.v(TAG, "Get authorisation status for "+androidPermission);
-            boolean granted = hasPermission(androidPermission);
+            boolean granted = hasRuntimePermission(androidPermission);
             if(granted){
                 statuses.put(permission, Diagnostic.STATUS_GRANTED);
             }else{
@@ -588,7 +589,7 @@ public class Diagnostic extends CordovaPlugin{
         context.success(statuses);
     }
 
-    protected int storeContextByRequestId(){
+    protected int storeCurrentContextByRequestId(){
         return storeContextByRequestId(currentContext);
     }
 
@@ -655,17 +656,17 @@ public class Diagnostic extends CordovaPlugin{
         map.put(value, key);
     }
 
-    protected boolean hasPermission(String permission) throws Exception{
-        boolean hasPermission = true;
+    protected boolean hasRuntimePermission(String permission) throws Exception{
+        boolean hasRuntimePermission = true;
         Method method = null;
         try {
             method = cordova.getClass().getMethod("hasPermission", permission.getClass());
             Boolean bool = (Boolean) method.invoke(cordova, permission);
-            hasPermission = bool.booleanValue();
+            hasRuntimePermission = bool.booleanValue();
         } catch (NoSuchMethodException e) {
             logWarning("Cordova v" + CordovaWebView.CORDOVA_VERSION + " does not support runtime permissions so defaulting to GRANTED for " + permission);
         }
-        return hasPermission;
+        return hasRuntimePermission;
     }
 
     protected void requestPermissions(CordovaPlugin plugin, int requestCode, String [] permissions) throws Exception{
@@ -795,6 +796,24 @@ public class Diagnostic extends CordovaPlugin{
     protected int getCurrentBatteryLevel(){
         BatteryManager bm = (BatteryManager) cordova.getContext().getApplicationContext().getSystemService(BATTERY_SERVICE);
         return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+    }
+
+    // https://stackoverflow.com/a/18237962/777265
+    protected boolean hasBuildPermission(String permission)
+    {
+        try {
+            PackageInfo info = this.cordova.getActivity().getPackageManager().getPackageInfo(this.cordova.getContext().getPackageName(), PackageManager.GET_PERMISSIONS);
+            if (info.requestedPermissions != null) {
+                for (String p : info.requestedPermissions) {
+                    if (p.equals("android.permission."+permission)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

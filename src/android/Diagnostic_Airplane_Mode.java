@@ -102,7 +102,7 @@ public class Diagnostic_Airplane_Mode extends CordovaPlugin{
      * @return                  True if the action was valid, false if not.
      */
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        currentContext = callbackContext;
+        Diagnostic.instance.currentContext = currentContext = callbackContext;
 
         try {
             if(action.equals("isAirplaneModeOn")) {

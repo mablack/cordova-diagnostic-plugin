@@ -1071,6 +1071,46 @@ var Diagnostic = (function(){
         }
     };
 
+
+    /**
+     * Returns the authorization statuses for various Bluetooth run-time permissions on Android 12+ / API 31+
+     * On Android 11 / API 30 and below, all will be returned as GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single array parameter which is a list of authorization statuses for the various Bluetooth run-time permissions.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getBluetoothAuthorizationStatuses = function(successCallback, errorCallback){
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.getAuthorizationStatuses.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
+    };
+
+    /**
+     * Requests Bluetooth authorization for the application on Android 12+ / API 31+
+     * On Android 11 / API 30 and below, this will have no effect since all Bluetooth permissions will be GRANTED at built-time if the manifest has BLUETOOTH permission.
+     *
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * This callback function is not passed any parameters.
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     * @param {Array} permissions - (optional) list of Bluetooth permissions to request.
+     * Valid values: "BLUETOOTH_ADVERTISE", "BLUETOOTH_CONNECT", "BLUETOOTH_SCAN".
+     * If not specified, all 3 permissions will be requested.
+     */
+    Diagnostic.requestBluetoothAuthorization = function(successCallback, errorCallback, permissions){
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.requestBluetoothAuthorization.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
+    };
+
+
     /**********************
      * Remote Notifications
      **********************/

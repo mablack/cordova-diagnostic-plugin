@@ -159,156 +159,159 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [setBluetoothState()](#setbluetoothstate)
       - [Parameters](#parameters-36)
       - [Example usage](#example-usage-36)
-    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
+    - [getBluetoothAuthorizationStatuses()](#getbluetoothauthorizationstatuses)
       - [Parameters](#parameters-37)
       - [Example usage](#example-usage-37)
-    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+    - [requestBluetoothAuthorization()](#requestbluetoothauthorization)
       - [Parameters](#parameters-38)
       - [Example usage](#example-usage-38)
+    - [registerBluetoothStateChangeHandler()](#registerbluetoothstatechangehandler)
+      - [Parameters](#parameters-39)
+      - [Example usage](#example-usage-39)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
   - [WiFi module](#wifi-module)
     - [isWifiAvailable()](#iswifiavailable)
-      - [Parameters](#parameters-39)
-      - [Example usage](#example-usage-39)
-    - [isWifiEnabled()](#iswifienabled)
       - [Parameters](#parameters-40)
       - [Example usage](#example-usage-40)
-    - [setWifiState()](#setwifistate)
+    - [isWifiEnabled()](#iswifienabled)
       - [Parameters](#parameters-41)
       - [Example usage](#example-usage-41)
+    - [setWifiState()](#setwifistate)
+      - [Parameters](#parameters-42)
+      - [Example usage](#example-usage-42)
     - [switchToWifiSettings()](#switchtowifisettings)
   - [Camera module](#camera-module)
     - [isCameraPresent()](#iscamerapresent)
-      - [Parameters](#parameters-42)
-      - [Example usage](#example-usage-42)
-    - [isCameraAvailable()](#iscameraavailable)
       - [Parameters](#parameters-43)
       - [Example usage](#example-usage-43)
-    - [isCameraAuthorized()](#iscameraauthorized)
+    - [isCameraAvailable()](#iscameraavailable)
       - [Parameters](#parameters-44)
       - [Example usage](#example-usage-44)
-    - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
+    - [isCameraAuthorized()](#iscameraauthorized)
       - [Parameters](#parameters-45)
       - [Example usage](#example-usage-45)
-    - [requestCameraAuthorization()](#requestcameraauthorization)
+    - [getCameraAuthorizationStatus()](#getcameraauthorizationstatus)
       - [Parameters](#parameters-46)
       - [Example usage](#example-usage-46)
-    - [isCameraRollAuthorized()](#iscamerarollauthorized)
+    - [requestCameraAuthorization()](#requestcameraauthorization)
       - [Parameters](#parameters-47)
       - [Example usage](#example-usage-47)
-    - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
+    - [isCameraRollAuthorized()](#iscamerarollauthorized)
       - [Parameters](#parameters-48)
       - [Example usage](#example-usage-48)
-    - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+    - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
       - [Parameters](#parameters-49)
       - [Example usage](#example-usage-49)
+    - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+      - [Parameters](#parameters-50)
+      - [Example usage](#example-usage-50)
   - [Notifications module](#notifications-module)
     - [remoteNotificationType constants](#remotenotificationtype-constants)
       - [Example](#example-4)
     - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
-      - [Parameters](#parameters-50)
-      - [Example usage](#example-usage-50)
-    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
       - [Parameters](#parameters-51)
       - [Example usage](#example-usage-51)
-    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
+    - [isRegisteredForRemoteNotifications()](#isregisteredforremotenotifications)
       - [Parameters](#parameters-52)
       - [Example usage](#example-usage-52)
-    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
+    - [getRemoteNotificationTypes()](#getremotenotificationtypes)
       - [Parameters](#parameters-53)
       - [Example usage](#example-usage-53)
-    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
+    - [getRemoteNotificationsAuthorizationStatus()](#getremotenotificationsauthorizationstatus)
       - [Parameters](#parameters-54)
       - [Example usage](#example-usage-54)
+    - [requestRemoteNotificationsAuthorization()](#requestremotenotificationsauthorization)
+      - [Parameters](#parameters-55)
+      - [Example usage](#example-usage-55)
     - [switchToNotificationSettings()](#switchtonotificationsettings)
   - [Microphone module](#microphone-module)
     - [isMicrophoneAuthorized()](#ismicrophoneauthorized)
-      - [Parameters](#parameters-55)
-      - [Example usage](#example-usage-55)
-    - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
       - [Parameters](#parameters-56)
       - [Example usage](#example-usage-56)
-    - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
+    - [getMicrophoneAuthorizationStatus()](#getmicrophoneauthorizationstatus)
       - [Parameters](#parameters-57)
       - [Example usage](#example-usage-57)
-  - [Contacts module](#contacts-module)
-    - [isContactsAuthorized()](#iscontactsauthorized)
+    - [requestMicrophoneAuthorization()](#requestmicrophoneauthorization)
       - [Parameters](#parameters-58)
       - [Example usage](#example-usage-58)
-    - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
+  - [Contacts module](#contacts-module)
+    - [isContactsAuthorized()](#iscontactsauthorized)
       - [Parameters](#parameters-59)
       - [Example usage](#example-usage-59)
-    - [requestContactsAuthorization()](#requestcontactsauthorization)
+    - [getContactsAuthorizationStatus()](#getcontactsauthorizationstatus)
       - [Parameters](#parameters-60)
       - [Example usage](#example-usage-60)
-  - [Calendar module](#calendar-module)
-    - [isCalendarAuthorized()](#iscalendarauthorized)
+    - [requestContactsAuthorization()](#requestcontactsauthorization)
       - [Parameters](#parameters-61)
       - [Example usage](#example-usage-61)
-    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
+  - [Calendar module](#calendar-module)
+    - [isCalendarAuthorized()](#iscalendarauthorized)
       - [Parameters](#parameters-62)
       - [Example usage](#example-usage-62)
-    - [requestCalendarAuthorization()](#requestcalendarauthorization)
+    - [getCalendarAuthorizationStatus()](#getcalendarauthorizationstatus)
       - [Parameters](#parameters-63)
       - [Example usage](#example-usage-63)
-  - [Reminders module](#reminders-module)
-    - [isRemindersAuthorized()](#isremindersauthorized)
+    - [requestCalendarAuthorization()](#requestcalendarauthorization)
       - [Parameters](#parameters-64)
       - [Example usage](#example-usage-64)
-    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
+  - [Reminders module](#reminders-module)
+    - [isRemindersAuthorized()](#isremindersauthorized)
       - [Parameters](#parameters-65)
       - [Example usage](#example-usage-65)
-    - [requestRemindersAuthorization()](#requestremindersauthorization)
+    - [getRemindersAuthorizationStatus()](#getremindersauthorizationstatus)
       - [Parameters](#parameters-66)
       - [Example usage](#example-usage-66)
+    - [requestRemindersAuthorization()](#requestremindersauthorization)
+      - [Parameters](#parameters-67)
+      - [Example usage](#example-usage-67)
   - [Motion module](#motion-module)
     - [motionStatus constants](#motionstatus-constants)
       - [Example](#example-5)
     - [isMotionAvailable()](#ismotionavailable)
-      - [Parameters](#parameters-67)
-      - [Example usage](#example-usage-67)
-    - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
       - [Parameters](#parameters-68)
       - [Example usage](#example-usage-68)
-    - [requestMotionAuthorization()](#requestmotionauthorization)
+    - [isMotionRequestOutcomeAvailable()](#ismotionrequestoutcomeavailable)
       - [Parameters](#parameters-69)
       - [Example usage](#example-usage-69)
-    - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
+    - [requestMotionAuthorization()](#requestmotionauthorization)
       - [Parameters](#parameters-70)
       - [Example usage](#example-usage-70)
+    - [getMotionAuthorizationStatus()](#getmotionauthorizationstatus)
+      - [Parameters](#parameters-71)
+      - [Example usage](#example-usage-71)
   - [NFC module](#nfc-module)
     - [NFCState constants](#nfcstate-constants)
       - [Values](#values-3)
       - [Example](#example-6)
     - [isNFCPresent()](#isnfcpresent)
-      - [Parameters](#parameters-71)
-      - [Example usage](#example-usage-71)
-    - [isNFCEnabled()](#isnfcenabled)
       - [Parameters](#parameters-72)
       - [Example usage](#example-usage-72)
-    - [isNFCAvailable()](#isnfcavailable)
+    - [isNFCEnabled()](#isnfcenabled)
       - [Parameters](#parameters-73)
       - [Example usage](#example-usage-73)
-    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+    - [isNFCAvailable()](#isnfcavailable)
       - [Parameters](#parameters-74)
       - [Example usage](#example-usage-74)
+    - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
+      - [Parameters](#parameters-75)
+      - [Example usage](#example-usage-75)
     - [switchToNFCSettings()](#switchtonfcsettings)
   - [External storage module](#external-storage-module)
     - [isExternalStorageAuthorized()](#isexternalstorageauthorized)
-      - [Parameters](#parameters-75)
-      - [Example usage](#example-usage-75)
-    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
       - [Parameters](#parameters-76)
       - [Example usage](#example-usage-76)
-    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
+    - [getExternalStorageAuthorizationStatus()](#getexternalstorageauthorizationstatus)
       - [Parameters](#parameters-77)
       - [Example usage](#example-usage-77)
-    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
+    - [requestExternalStorageAuthorization()](#requestexternalstorageauthorization)
       - [Parameters](#parameters-78)
       - [Example usage](#example-usage-78)
+    - [getExternalSdCardDetails()](#getexternalsdcarddetails)
+      - [Parameters](#parameters-79)
+      - [Example usage](#example-usage-79)
   - [Airplane mode module](#airplane-mode-module)
     - [isAirplaneMoodeOn()](#isairplanemoodeon)
-      - [Parameters](#parameters-79)
+      - [Parameters](#parameters-80)
 - [Platform Notes](#platform-notes)
   - [Android](#android-3)
     - [Android permissions](#android-permissions)
@@ -1967,13 +1970,46 @@ Requires the following permissions on Android:
         console.error("The following error occurred: "+error);
     },
     true);
+    
+    
+### getBluetoothAuthorizationStatuses()
+
+Platforms: Android
+
+- Returns the authorization statuses for various Bluetooth run-time permissions on Android 12+ / API 31+
+- On Android 11 / API 30 and below, all will be returned as GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.
+
+    cordova.plugins.diagnostic.getBluetoothAuthorizationStatuses(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single array parameter which is a list of authorization statuses for the various Bluetooth run-time permissions.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getBluetoothAuthorizationStatuses(function(statuses){
+        for(var permission in statuses){
+            console.log(permission + " permission is: " + statuses[permission]));
+        }
+    }, function(error){
+        console.error(error);
+    });    
 
 
 ### requestBluetoothAuthorization()
 
-Platforms: iOS
+Platforms: Android & iOS
 
 Requests Bluetooth authorization for the application.
+
+Notes for Android:
+- On Android 12+ / API 31+ (build SDK and device OS), run-time permission must be requested before using Bluetooth APIs.
+- On Android 11 / API 30 and below (build SDK and/or device OS), Bluetooth permission is granted at build-time by including the `BLUETOOTH` permission in the manifest so calling this function will have no effect but will always be successful.
+
+Notes for iOS:
 - The outcome of the authorization request can be determined by registering a handler using [`registerBluetoothStateChangeHandler()`](#registerbluetoothstatechangehandler).
 - When calling this function, the message contained in the `NSBluetoothPeripheralUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
@@ -1986,14 +2022,19 @@ this plugin provides a default message, but you should override this with your s
 The function is not passed any parameters.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
+- {Array} permissions - (optional / Android only) - list of Bluetooth permissions to request.
+    - Valid values: "BLUETOOTH_ADVERTISE", "BLUETOOTH_CONNECT", "BLUETOOTH_SCAN".
+    - If not specified, all 3 permissions will be requested.
+    - This parameter will be ignored on iOS.
 
 #### Example usage
 
+    var permissions = ["BLUETOOTH_SCAN", "BLUETOOTH_CONNECT"];
     cordova.plugins.diagnostic.requestBluetoothAuthorization(function(){
         console.log("Bluetooth authorization was requested."));
     }, function(error){
         console.error(error);
-    });
+    }, permissions);
 
 
 ### registerBluetoothStateChangeHandler()

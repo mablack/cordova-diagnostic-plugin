@@ -142,7 +142,7 @@ public class Diagnostic_Location extends CordovaPlugin{
      * @return                  True if the action was valid, false if not.
      */
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        currentContext = callbackContext;
+        Diagnostic.instance.currentContext = currentContext = callbackContext;
 
         try {
             if (action.equals("switchToLocationSettings")){
@@ -291,7 +291,7 @@ public class Diagnostic_Location extends CordovaPlugin{
     }
 
     private boolean isLocationAuthorized() throws Exception {
-        boolean authorized = diagnostic.hasPermission(diagnostic.permissionsMap.get(gpsLocationPermission)) || diagnostic.hasPermission(diagnostic.permissionsMap.get(networkLocationPermission));
+        boolean authorized = diagnostic.hasRuntimePermission(diagnostic.permissionsMap.get(gpsLocationPermission)) || diagnostic.hasRuntimePermission(diagnostic.permissionsMap.get(networkLocationPermission));
         Log.v(TAG, "Location permission is "+(authorized ? "authorized" : "unauthorized"));
         return authorized;
     }

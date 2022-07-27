@@ -791,6 +791,18 @@ interface Diagnostic {
 
     /**
      * ANDROID ONLY
+     * Returns the authorization statuses for various Bluetooth run-time permissions on Android 12+ / API 31+
+     * On Android 11 / API 30 and below, all will be returned as GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getBluetoothAuthorizationStatuses?: (
+        successCallback: (statuses: [{string: boolean}]) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
      * Checks if the device setting for Airplane Mode is switched on.
      * @param successCallback
      * @param errorCallback
@@ -1056,14 +1068,15 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * iOS ONLY
      * Requests Bluetooth authorization for the application.
      * @param successCallback
      * @param errorCallback
+     * @param permissions - ANDROID ONLY
      */
     requestBluetoothAuthorization?: (
         successCallback: () => void,
-        errorCallback: (error: string) => void
+        errorCallback: (error: string) => void,
+        permissions?: ([string])
     ) => void;
 
     /**
