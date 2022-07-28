@@ -1071,6 +1071,24 @@ var Diagnostic = (function(){
         }
     };
 
+    /**
+     * Returns the combined authorization status for the various Bluetooth run-time permissions on Android 12+ / API 31+
+     * If any of 3 Bluetooth permissions is GRANTED, it will return GRANTED.
+     * On Android 11 / API 30 and below, will return GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single string parameter which is the authorization status for the Bluetooth run-time permission.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getBluetoothAuthorizationStatus = function(successCallback, errorCallback){
+        if(cordova.plugins.diagnostic.bluetooth){
+            cordova.plugins.diagnostic.bluetooth.getAuthorizationStatus.apply(this, arguments);
+        }else{
+            throw "Diagnostic Bluetooth module is not installed";
+        }
+    };
+
 
     /**
      * Returns the authorization statuses for various Bluetooth run-time permissions on Android 12+ / API 31+

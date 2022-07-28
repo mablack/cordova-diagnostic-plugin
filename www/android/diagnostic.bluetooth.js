@@ -205,7 +205,37 @@ var Diagnostic_Bluetooth = (function(){
     };
 
     /**
-     * Returns the authorization statuses for various Bluetooth run-time permissions on Android 12+ / API 31+
+     * Returns the combined authorization status for the various Bluetooth run-time permissions on Android 12+ / API 31+
+     * If any of 3 Bluetooth permissions is GRANTED, it will return GRANTED.
+     * On Android 11 / API 30 and below, will return GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single string parameter which is the authorization status for the Bluetooth run-time permission.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic_Bluetooth.getAuthorizationStatus = function(successCallback, errorCallback) {
+        Diagnostic_Bluetooth.getAuthorizationStatuses(function(statuses){
+            var connectStatus = statuses[Diagnostic.permission.BLUETOOTH_CONNECT],
+                scanStatus = statuses[Diagnostic.permission.BLUETOOTH_SCAN],
+                advertiseStatus = statuses[Diagnostic.permission.BLUETOOTH_ADVERTISE],
+                status;
+
+            if(connectStatus === Diagnostic.permissionStatus.GRANTED || scanStatus === Diagnostic.permissionStatus.GRANTED || advertiseStatus === Diagnostic.permissionStatus.GRANTED){
+                status = Diagnostic.permissionStatus.GRANTED;
+            }else if(connectStatus === Diagnostic.permissionStatus.DENIED_ONCE || scanStatus === Diagnostic.permissionStatus.DENIED_ONCE || advertiseStatus === Diagnostic.permissionStatus.DENIED_ONCE){
+                status = Diagnostic.permissionStatus.DENIED_ONCE;
+            }else if(connectStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || scanStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || advertiseStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
+                status = Diagnostic.permissionStatus.DENIED_ALWAYS;
+            }else if(connectStatus === Diagnostic.permissionStatus.NOT_REQUESTED || scanStatus === Diagnostic.permissionStatus.NOT_REQUESTED || advertiseStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
+                status = Diagnostic.permissionStatus.NOT_REQUESTED;
+            }
+            successCallback(status);
+        }, errorCallback);
+    };
+
+    /**
+     * Returns the individual authorization statuses for each of the Bluetooth run-time permissions on Android 12+ / API 31+
      * On Android 11 / API 30 and below, all will be returned as GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.
      *
      * @param {Function} successCallback -  The callback which will be called when the operation is successful.
