@@ -457,6 +457,22 @@ var Diagnostic = (function(){
             []);
     };
 
+    /**
+     * Checks if airplane mode is enabled on device.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single boolean parameter which is TRUE if airplane mode is enabled.
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.isAirplaneModeEnabled = function(successCallback, errorCallback) {
+        return cordova.exec(Diagnostic._ensureBoolean(successCallback),
+            errorCallback,
+            'Diagnostic',
+            'isAirplaneModeEnabled',
+            []);
+    };
+
     /************
      * Location *
      ************/
@@ -1409,21 +1425,6 @@ var Diagnostic = (function(){
             cordova.plugins.diagnostic.nfc.switchToNFCSettings.apply(this, arguments);
         }else{
             throw "Diagnostic NFC module is not installed";
-        }
-    };
-
-    /*************
-     * Airplane mode
-     *************/
-
-    /**
-     * Switches to the nfc settings page in the Settings app
-     */
-    Diagnostic.isAirplaneModeOn = function(successCallback, errorCallback) {
-        if(cordova.plugins.diagnostic.airplane_mode){
-            cordova.plugins.diagnostic.airplane_mode.isAirplaneModeOn.apply(this, arguments);
-        }else{
-            throw "Diagnostic Airplane mode module is not installed";
         }
     };
 

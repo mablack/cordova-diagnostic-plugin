@@ -282,6 +282,8 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(getCPUArchitecture());
             } else if(action.equals("getCurrentBatteryLevel")) {
                 callbackContext.success(getCurrentBatteryLevel());
+            } else if(action.equals("isAirplaneModeEnabled")) {
+                callbackContext.success(isAirplaneModeEnabled() ? 1 : 0);
             } else {
                 handleError("Invalid action");
                 return false;
@@ -814,6 +816,11 @@ public class Diagnostic extends CordovaPlugin{
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean isAirplaneModeEnabled() {
+        return Settings.Global.getInt(this.cordova.getActivity().getContentResolver(),
+                Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
     }
 
 
