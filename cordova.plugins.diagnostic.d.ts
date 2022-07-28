@@ -917,7 +917,8 @@ interface Diagnostic {
      */
     isCameraRollAuthorized?: (
         successCallback: (authorized: boolean) => void,
-        errorCallback: (error: string) => void
+        errorCallback: (error: string) => void,
+        accessLevel?: string
     ) => void;
 
     /**
@@ -928,7 +929,8 @@ interface Diagnostic {
      */
     getCameraRollAuthorizationStatus?: (
         successCallback: (status: string) => void,
-        errorCallback: (error: string) => void
+        errorCallback: (error: string) => void,
+        accessLevel?: string
     ) => void;
 
     /**
@@ -939,7 +941,8 @@ interface Diagnostic {
      */
     requestCameraRollAuthorization?: (
         successCallback: (status: string) => void,
-        errorCallback: (error: string) => void
+        errorCallback: (error: string) => void,
+        accessLevel?: string
     ) => void;
 
     /**

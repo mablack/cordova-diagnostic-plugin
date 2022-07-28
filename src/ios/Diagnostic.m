@@ -16,8 +16,9 @@ NSString*const UNKNOWN = @"unknown";
 NSString*const AUTHORIZATION_NOT_DETERMINED = @"not_determined";
 NSString*const AUTHORIZATION_DENIED = @"denied_always";
 NSString*const AUTHORIZATION_GRANTED = @"authorized";
-NSString*const AUTHORIZATION_PROVISIONAL = @"provisional";
-NSString*const AUTHORIZATION_EPHEMERAL = @"ephemeral";
+NSString*const AUTHORIZATION_PROVISIONAL = @"provisional"; // Remote Notifications
+NSString*const AUTHORIZATION_EPHEMERAL = @"ephemeral"; // Remote Notifications
+NSString*const AUTHORIZATION_LIMITED = @"limited"; // Photo Library
 
 // Internal constants
 static NSString*const LOG_TAG = @"Diagnostic[native]";

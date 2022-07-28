@@ -17,6 +17,9 @@ static Diagnostic* diagnostic;
 // Internal constants
 static NSString*const LOG_TAG = @"Diagnostic_Camera[native]";
 
+static NSString*const PHOTOLIBRARY_ACCESS_LEVEL_ADD_ONLY = @"add_only";
+static NSString*const PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE = @"read_write";
+
 - (void)pluginInitialize {
     
     [super pluginInitialize];
@@ -105,7 +108,8 @@ static NSString*const LOG_TAG = @"Diagnostic_Camera[native]";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            [diagnostic sendPluginResultBool:[[self getCameraRollAuthorizationStatus]  isEqual: AUTHORIZATION_GRANTED] :command];
+            bool isAuthorized = [[self resolveCameraRollAuthorizationStatus:command]  isEqual: AUTHORIZATION_GRANTED] || [[self resolveCameraRollAuthorizationStatus:command]  isEqual: AUTHORIZATION_LIMITED];
+            [diagnostic sendPluginResultBool:isAuthorized:command];
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception :command];
@@ -117,7 +121,7 @@ static NSString*const LOG_TAG = @"Diagnostic_Camera[native]";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            NSString* status = [self getCameraRollAuthorizationStatus];
+            NSString* status = [self resolveCameraRollAuthorizationStatus:command];
             [diagnostic logDebug:[NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]];
             [diagnostic sendPluginResultString:status:command];
         }
@@ -131,10 +135,20 @@ static NSString*const LOG_TAG = @"Diagnostic_Camera[native]";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus authStatus) {
-                NSString* status = [self getCameraRollAuthorizationStatusAsString:authStatus];
-                [diagnostic sendPluginResultString:status:command];
-            }];
+            if (@available(iOS 14.0, *)){
+                PHAccessLevel ph_accessLevel = [self resolveAccessLevelFromArgument:[command.arguments objectAtIndex:0]];
+                
+                [PHPhotoLibrary requestAuthorizationForAccessLevel:ph_accessLevel handler:^(PHAuthorizationStatus authStatus) {
+                    NSString* status = [self getCameraRollAuthorizationStatusAsString:authStatus];
+                    [diagnostic sendPluginResultString:status:command];
+                }];
+                
+            }else{
+                [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus authStatus) {
+                    NSString* status = [self getCameraRollAuthorizationStatusAsString:authStatus];
+                    [diagnostic sendPluginResultString:status:command];
+                }];
+            }
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception :command];
@@ -172,23 +186,49 @@ static NSString*const LOG_TAG = @"Diagnostic_Camera[native]";
     }
 }
 
-- (NSString*) getCameraRollAuthorizationStatus
+- (NSString*) resolveCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command
 {
     PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
+    if (@available(iOS 14.0, *)){
+        PHAccessLevel ph_accessLevel = [self resolveAccessLevelFromArgument:[command.arguments objectAtIndex:0]];
+        authStatus = [PHPhotoLibrary authorizationStatusForAccessLevel:ph_accessLevel];
+    }else{
+        authStatus = [PHPhotoLibrary authorizationStatus];
+    }
     return [self getCameraRollAuthorizationStatusAsString:authStatus];
 
 }
 
 - (NSString*) getCameraRollAuthorizationStatusAsString: (PHAuthorizationStatus)authStatus
 {
-    NSString* status;
-    if(authStatus == PHAuthorizationStatusDenied || authStatus == PHAuthorizationStatusRestricted){
-        status = AUTHORIZATION_DENIED;
-    }else if(authStatus == PHAuthorizationStatusNotDetermined ){
-        status = AUTHORIZATION_NOT_DETERMINED;
-    }else if(authStatus == PHAuthorizationStatusAuthorized){
-        status = AUTHORIZATION_GRANTED;
+    NSString* status = UNKNOWN;
+    if (@available(iOS 14.0, *)){
+        if(authStatus == PHAuthorizationStatusLimited ){
+            status = AUTHORIZATION_LIMITED;
+        }
     }
+    
+    if([status isEqualToString:UNKNOWN]){
+        if(authStatus == PHAuthorizationStatusDenied || authStatus == PHAuthorizationStatusRestricted){
+            status = AUTHORIZATION_DENIED;
+        }else if(authStatus == PHAuthorizationStatusNotDetermined ){
+            status = AUTHORIZATION_NOT_DETERMINED;
+        }else if(authStatus == PHAuthorizationStatusAuthorized){
+            status = AUTHORIZATION_GRANTED;
+        }
+    }
+    
     return status;
 }
+
+- (PHAccessLevel) resolveAccessLevelFromArgument:(NSString*) s_accessLevel API_AVAILABLE(ios(14)){
+    PHAccessLevel ph_accessLevel;
+    if([s_accessLevel isEqualToString:PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE]){
+        ph_accessLevel = PHAccessLevelReadWrite;
+    }else{
+        ph_accessLevel = PHAccessLevelAddOnly;
+    }
+    return ph_accessLevel;
+}
+
 @end

@@ -2324,9 +2324,15 @@ Checks if the application is authorized to use the Camera Roll in Photos app.
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single boolean parameter which is TRUE if access to Camera Roll is authorized.
+  - The function is passed a single boolean parameter which is TRUE if access to Camera Roll is authorized.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
+  - The function is passed a single string parameter containing the error message.
+- {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to query as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+  - Possible values are:
+    - ADD_ONLY - can add to but not read from Photo Library
+    - READ_WRITE - can both add to and read from Photo Library
+  - Defaults to ADD_ONLY if not specified
+  - Has no effect on iOS 13 or below
 
 
 #### Example usage
@@ -2335,7 +2341,7 @@ The function is passed a single string parameter containing the error message.
         console.log("App is " + (authorized ? "authorized" : "denied") + " access to the camera roll");
     }, function(error){
         console.error("The following error occurred: "+error);
-    });
+    }, cordova.plugins.diagnostic.photoLibraryAccessLevel.ADD_ONLY);
 
 ### getCameraRollAuthorizationStatus()
 
@@ -2351,6 +2357,12 @@ Returns the authorization status for the application to use the Camera Roll in P
 The function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
+- {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to query as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+  - Possible values are:
+    - ADD_ONLY - can add to but not read from Photo Library
+    - READ_WRITE - can both add to and read from Photo Library
+  - Defaults to ADD_ONLY if not specified
+  - Has no effect on iOS 13 or below
 
 #### Example usage
 
@@ -2363,12 +2375,15 @@ The function is passed a single string parameter containing the error message.
                 console.log("Permission denied");
                 break;
             case cordova.plugins.diagnostic.permissionStatus.GRANTED:
-                console.log("Permission granted");
+                console.log("Permission granted to access all photos");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.LIMITED: // iOS 14+
+                console.log("Permission granted to access limited set of photos");
                 break;
         }
     }, function(error){
         console.error("The following error occurred: "+error);
-    });
+    }, cordova.plugins.diagnostic.photoLibraryAccessLevel.ADD_ONLY);
 
 ### requestCameraRollAuthorization()
 
@@ -2384,18 +2399,34 @@ this plugin provides a default message, but you should override this with your s
 #### Parameters
 
 - {Function} successCallback -  The callback which will be called when operation is successful.
-The function is passed a single string parameter indicating the new authorization status:
-`cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
+  - The function is passed a single string parameter indicating the new authorization status:
+  `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
-The function is passed a single string parameter containing the error message.
+  - The function is passed a single string parameter containing the error message.
+- {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to query as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+  - Possible values are:
+    - ADD_ONLY - can add to but not read from Photo Library
+    - READ_WRITE - can both add to and read from Photo Library
+  - Defaults to ADD_ONLY if not specified
+  - Has no effect on iOS 13 or below
 
 #### Example usage
 
     cordova.plugins.diagnostic.requestCameraRollAuthorization(function(status){
-        console.log("Authorization request for camera roll was " + (status == cordova.plugins.diagnostic.permissionStatus.GRANTED ? "granted" : "denied"));
+        switch(status){
+            case cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS:
+                console.log("Permission denied");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.GRANTED:
+                console.log("Permission granted to access all photos");
+                break;
+            case cordova.plugins.diagnostic.permissionStatus.LIMITED: // iOS 14+
+                console.log("Permission granted to access limited set of photos");
+                break;
+        }
     }, function(error){
         console.error(error);
-    });
+    }, cordova.plugins.diagnostic.photoLibraryAccessLevel.ADD_ONLY);
 
 ## Notifications module
 

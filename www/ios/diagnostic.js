@@ -27,7 +27,8 @@ var Diagnostic = (function(){
         "GRANTED": "authorized", //  User granted access to this permission
         "GRANTED_WHEN_IN_USE": "authorized_when_in_use", //  User granted access use location permission only when app is in use
         "EPHEMERAL": "ephemeral", // The app is authorized to schedule or receive notifications for a limited amount of time.
-        "PROVISIONAL": "provisional" // The application is provisionally authorized to post non-interruptive user notifications.
+        "PROVISIONAL": "provisional", // The application is provisionally authorized to post non-interruptive user notifications.
+        "LIMITED": "limited" // The app has limited access to the Photo Library
     };
 
     Diagnostic.cpuArchitecture = {
@@ -434,8 +435,14 @@ var Diagnostic = (function(){
      * This callback function is passed a single boolean parameter which is TRUE if access to Camera Roll is authorized.
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
+     * @param {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to query as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+     * - Possible values are:
+     *      - ADD_ONLY - can add to but not read from Photo Library
+     *      - READ_WRITE - can both add to and read from Photo Library
+     * - Defaults to ADD_ONLY if not specified
+     * - Has no effect on iOS 13 or below
      */
-    Diagnostic.isCameraRollAuthorized = function(successCallback, errorCallback) {
+    Diagnostic.isCameraRollAuthorized = function(successCallback, errorCallback, accessLevel) {
         if(cordova.plugins.diagnostic.camera){
             cordova.plugins.diagnostic.camera.isCameraRollAuthorized.apply(this, arguments);
         }else{
@@ -450,8 +457,14 @@ var Diagnostic = (function(){
      * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
+     * @param {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to query as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+     * - Possible values are:
+     *      - ADD_ONLY - can add to but not read from Photo Library
+     *      - READ_WRITE - can both add to and read from Photo Library
+     * - Defaults to ADD_ONLY if not specified
+     * - Has no effect on iOS 13 or below
      */
-    Diagnostic.getCameraRollAuthorizationStatus = function(successCallback, errorCallback) {
+    Diagnostic.getCameraRollAuthorizationStatus = function(successCallback, errorCallback, accessLevel) {
         if(cordova.plugins.diagnostic.camera){
             cordova.plugins.diagnostic.camera.getCameraRollAuthorizationStatus.apply(this, arguments);
         }else{
@@ -468,8 +481,14 @@ var Diagnostic = (function(){
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
+     * @param {Function} accessLevel - On iOS 14+, specifies the level of access to the photo library as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+     * - Possible values are:
+     *      - ADD_ONLY - can add to but not read from Photo Library
+     *      - READ_WRITE - can both add to and read from Photo Library
+     * - Defaults to ADD_ONLY if not specified
+     * - Has no effect on iOS 13 or below
      */
-    Diagnostic.requestCameraRollAuthorization = function(successCallback, errorCallback) {
+    Diagnostic.requestCameraRollAuthorization = function(successCallback, errorCallback, accessLevel) {
         if(cordova.plugins.diagnostic.camera){
             cordova.plugins.diagnostic.camera.requestCameraRollAuthorization.apply(this, arguments);
         }else{

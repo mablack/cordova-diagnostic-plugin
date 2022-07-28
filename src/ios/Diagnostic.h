@@ -22,6 +22,7 @@ extern NSString*const AUTHORIZATION_DENIED;
 extern NSString*const AUTHORIZATION_GRANTED;
 extern NSString*const AUTHORIZATION_PROVISIONAL;
 extern NSString*const AUTHORIZATION_EPHEMERAL;
+extern NSString*const AUTHORIZATION_LIMITED;
 
 @interface Diagnostic : CDVPlugin
 

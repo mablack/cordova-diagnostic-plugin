@@ -21,6 +21,11 @@ var Diagnostic_Camera = (function(){
      * Public properties
      *
      ********************/
+
+    Diagnostic.photoLibraryAccessLevel = Diagnostic_Camera.photoLibraryAccessLevel = {
+        "ADD_ONLY": "add_only",
+        "READ_WRITE": "read_write"
+    };
     
     /********************
      *
@@ -162,13 +167,19 @@ var Diagnostic_Camera = (function(){
      * This callback function is passed a single boolean parameter which is TRUE if access to Camera Roll is authorized.
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
+     * @param {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to query as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+     * - Possible values are:
+     *      - ADD_ONLY - can add to but not read from Photo Library
+     *      - READ_WRITE - can both add to and read from Photo Library
+     * - Defaults to ADD_ONLY if not specified
+     * - Has no effect on iOS 13 or below
      */
-    Diagnostic_Camera.isCameraRollAuthorized = function(successCallback, errorCallback) {
+    Diagnostic_Camera.isCameraRollAuthorized = function(successCallback, errorCallback, accessLevel) {
         return cordova.exec(Diagnostic._ensureBoolean(successCallback),
             errorCallback,
             'Diagnostic_Camera',
             'isCameraRollAuthorized',
-            []);
+            [accessLevel]);
     };
 
     /**
@@ -178,13 +189,20 @@ var Diagnostic_Camera = (function(){
      * This callback function is passed a single string parameter which indicates the authorization status as a constant in `cordova.plugins.diagnostic.permissionStatus`.
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
+     * @param {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to query as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+     * - Possible values are:
+     *      - ADD_ONLY - can add to but not read from Photo Library
+     *      - READ_WRITE - can both add to and read from Photo Library
+     * - Defaults to ADD_ONLY if not specified
+     * - Has no effect on iOS 13 or below
      */
-    Diagnostic_Camera.getCameraRollAuthorizationStatus = function(successCallback, errorCallback) {
+    Diagnostic_Camera.getCameraRollAuthorizationStatus = function(successCallback, errorCallback, accessLevel) {
         return cordova.exec(successCallback,
             errorCallback,
             'Diagnostic_Camera',
             'getCameraRollAuthorizationStatus',
-            []);
+            [accessLevel]
+        );
     };
 
     /**
@@ -196,15 +214,21 @@ var Diagnostic_Camera = (function(){
      * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
+     * @param {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to request as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
+     * - Possible values are:
+     *      - ADD_ONLY - can add to but not read from Photo Library
+     *      - READ_WRITE - can both add to and read from Photo Library
+     * - Defaults to ADD_ONLY if not specified
+     * - Has no effect on iOS 13 or below
      */
-    Diagnostic_Camera.requestCameraRollAuthorization = function(successCallback, errorCallback) {
+    Diagnostic_Camera.requestCameraRollAuthorization = function(successCallback, errorCallback, accessLevel) {
         return cordova.exec(function(status){
                 successCallback(status === "authorized" ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED_ALWAYS);
             },
             errorCallback,
             'Diagnostic_Camera',
             'requestCameraRollAuthorization',
-            []);
+            [accessLevel]);
     };
 
     return Diagnostic_Camera;
