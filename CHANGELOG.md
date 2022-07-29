@@ -2,6 +2,8 @@
 
 **v7.0.0**
 
+* (Android) BREAKING chore: Remove deprecated aliases `cordova.plugins.diagnostic.runtimePermission` and  `cordova.plugins.diagnostic.runtimePermissionStatus`
+    - Use `cordova.plugins.diagnostic.permission` and `cordova.plugins.diagnostic.permissionStatus` instead.
 * (iOS) feat: Add support for Photo Library access levels on iOS 14+
     * Resolves [#473](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/473).
     * Add support to show Limited-Library Selection UI for Photo Roll in iOS 14+
