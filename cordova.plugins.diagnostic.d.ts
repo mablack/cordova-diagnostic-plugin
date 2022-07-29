@@ -946,6 +946,17 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * iOS ONLY
+     * Presents limited library picker UI on iOS 14+
+     * @param successCallback
+     * @param errorCallback
+     */
+    presentLimitedLibraryPicker?: (
+        successCallback: (identifiers?: [string]) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * Checks if remote (push) notifications are enabled.
      * @param successCallback
      * @param errorCallback

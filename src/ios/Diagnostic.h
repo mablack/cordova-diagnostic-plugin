@@ -39,6 +39,8 @@ extern NSString*const AUTHORIZATION_LIMITED;
 // Utilities
 + (id) getInstance;
 - (void) sendPluginResult: (CDVPluginResult*)result :(CDVInvokedUrlCommand*)command;
+- (void) sendPluginResultSuccess:(CDVInvokedUrlCommand*)command;
+- (void) sendPluginNoResultAndKeepCallback:(CDVInvokedUrlCommand*)command;
 - (void) sendPluginResultBool: (BOOL)result :(CDVInvokedUrlCommand*)command;
 - (void) sendPluginResultString: (NSString*)result :(CDVInvokedUrlCommand*)command;
 - (void) sendPluginError: (NSString*) errorMessage :(CDVInvokedUrlCommand*)command;

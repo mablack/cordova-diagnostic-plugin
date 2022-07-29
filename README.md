@@ -41,7 +41,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [restart()](#restart)
     - [enableDebug()](#enabledebug)
     - [getCurrentBatteryLevel()](#getcurrentbatterylevel)
-    - [isAirplaneModeOn()](#isairplanemodeon)
+    - [isAirplaneModeEnabled()](#isairplanemodeenabled)
   - [Location module](#location-module)
     - [locationMode constants](#locationmode-constants)
     - [locationAuthorizationMode constants](#locationauthorizationmode-constants)
@@ -90,6 +90,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isCameraRollAuthorized()](#iscamerarollauthorized)
     - [getCameraRollAuthorizationStatus()](#getcamerarollauthorizationstatus)
     - [requestCameraRollAuthorization()](#requestcamerarollauthorization)
+    - [presentLimitedLibraryPicker()](#presentlimitedlibrarypicker)
   - [Notifications module](#notifications-module)
     - [remoteNotificationType constants](#remotenotificationtype-constants)
     - [isRemoteNotificationsEnabled()](#isremotenotificationsenabled)
@@ -2427,6 +2428,48 @@ this plugin provides a default message, but you should override this with your s
     }, function(error){
         console.error(error);
     }, cordova.plugins.diagnostic.photoLibraryAccessLevel.ADD_ONLY);
+
+
+### presentLimitedLibraryPicker()
+
+Platforms: iOS
+
+- Presents limited library picker UI on iOS 14+
+  - Calling on iOS < 14 will have no effect
+- Should only be called if Photo Roll authorization status is LIMITED.
+  - Calling it when in any other status will invoke the error callback.
+- Can only be used if the automatic prompt to select limited library is disabled in the app's `Info.plist` by adding the following section to `<platform name="ios">` in the app's `config.xml`:
+
+```xml
+<config-file parent="PHPhotoLibraryPreventAutomaticLimitedAccessAlert" platform="ios" target="*-Info.plist">
+  <true/>
+</config-file>
+```
+- See the [example project](https://github.com/dpa99c/cordova-diagnostic-plugin-example) for reference
+- See the [Apple documentation](https://github.com/dpa99c/cordova-diagnostic-plugin-example) for more detail
+
+Signature:
+
+    cordova.plugins.diagnostic.presentLimitedLibraryPicker(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+  - On iOS 15+, will be passed a list of image identifiers that were added by the user to the limited Photo Library selection.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+  - The function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.presentLimitedLibraryPicker(function(identifiers){
+        var msg = "Successfully presented limited library picker UI";
+        if(identifiers && identifiers.length){
+            msg += " - added identifiers: " + identifiers.join(',');
+        }
+        console.log(msg);
+    }, function(error){
+        console.error(error);
+    });
 
 ## Notifications module
 

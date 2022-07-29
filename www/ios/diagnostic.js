@@ -496,6 +496,14 @@ var Diagnostic = (function(){
         }
     };
 
+    Diagnostic.presentLimitedLibraryPicker = function(successCallback, errorCallback) {
+        if(cordova.plugins.diagnostic.camera){
+            cordova.plugins.diagnostic.camera.presentLimitedLibraryPicker.apply(this, arguments);
+        }else{
+            throw "Diagnostic Camera module is not installed";
+        }
+    };
+
     /************
      * WiFi     *
      ************/

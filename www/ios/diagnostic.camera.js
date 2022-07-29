@@ -231,6 +231,35 @@ var Diagnostic_Camera = (function(){
             [accessLevel]);
     };
 
+    /**
+     * Presents limited library picker UI on iOS 14+
+     * Should only be called if authorization status is LIMITED.
+     * Calling it when in any other status will invoke the error callback.
+     *
+     * @param {Function} successCallback - The callback which will be called when operation is successful.
+     * On iOS 15+, will be passed a list of image identifiers that were added by the user to the limited Photo Library selection.
+     * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
+     * This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic_Camera.presentLimitedLibraryPicker = function(successCallback, errorCallback) {
+        return cordova.exec(
+            function (identifiers){
+                if(identifiers){
+                    try {
+                        identifiers = JSON.parse(identifiers);
+                    }catch (e){
+                        return errorCallback("Unable to parse identifiers of images added to limited Photo Library: " + e.message);
+                    }
+                }
+                successCallback(identifiers);
+            },
+            errorCallback,
+            'Diagnostic_Camera',
+            'presentLimitedLibraryPicker',
+            []
+        );
+    };
+
     return Diagnostic_Camera;
 });
 module.exports = new Diagnostic_Camera();

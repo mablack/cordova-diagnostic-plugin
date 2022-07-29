@@ -117,6 +117,7 @@
         </js-module>
 
         <framework src="Photos.framework" />
+        <framework src="PhotosUI.framework" />
         <framework src="AVFoundation.framework" />
 
         <config-file target="*-Info.plist" parent="NSCameraUsageDescription">

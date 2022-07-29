@@ -108,7 +108,7 @@ static NSString*const PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE = @"read_write";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            bool isAuthorized = [[self resolveCameraRollAuthorizationStatus:command]  isEqual: AUTHORIZATION_GRANTED] || [[self resolveCameraRollAuthorizationStatus:command]  isEqual: AUTHORIZATION_LIMITED];
+            bool isAuthorized = [[self resolveCameraRollAuthorizationStatusFromCommand:command]  isEqual: AUTHORIZATION_GRANTED] || [[self resolveCameraRollAuthorizationStatusFromCommand:command]  isEqual: AUTHORIZATION_LIMITED];
             [diagnostic sendPluginResultBool:isAuthorized:command];
         }
         @catch (NSException *exception) {
@@ -121,7 +121,7 @@ static NSString*const PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE = @"read_write";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            NSString* status = [self resolveCameraRollAuthorizationStatus:command];
+            NSString* status = [self resolveCameraRollAuthorizationStatusFromCommand:command];
             [diagnostic logDebug:[NSString stringWithFormat:@"Camera Roll authorization status is: %@", status]];
             [diagnostic sendPluginResultString:status:command];
         }
@@ -148,6 +148,34 @@ static NSString*const PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE = @"read_write";
                     NSString* status = [self getCameraRollAuthorizationStatusAsString:authStatus];
                     [diagnostic sendPluginResultString:status:command];
                 }];
+            }
+        }
+        @catch (NSException *exception) {
+            [diagnostic handlePluginException:exception :command];
+        }
+    }];
+}
+
+- (void) presentLimitedLibraryPicker: (CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try {
+            NSString* authStatus = [self resolveCameraRollAuthorizationStatusFromString:PHOTOLIBRARY_ACCESS_LEVEL_ADD_ONLY];
+            if(![authStatus isEqualToString:AUTHORIZATION_LIMITED]){
+                [diagnostic sendPluginError:[NSString stringWithFormat:@"Limited photo library access UI can only be shown when auth status is AUTHORIZATION_LIMITED but auth status is %@", authStatus]:command];
+            }
+            else if (@available(iOS 15.0, *)){
+                [[PHPhotoLibrary sharedPhotoLibrary] presentLimitedLibraryPickerFromViewController:self.viewController completionHandler:^(NSArray<NSString *> * _Nonnull identifiers) {
+                    NSString* jsonArray = [diagnostic arrayToJsonString:identifiers];
+                    [diagnostic sendPluginResultString:jsonArray :command];
+                }];
+                [diagnostic sendPluginNoResultAndKeepCallback:command];
+            }
+            else if (@available(iOS 14.0, *)){
+                [[PHPhotoLibrary sharedPhotoLibrary] presentLimitedLibraryPickerFromViewController:self.viewController];
+                [diagnostic sendPluginResultSuccess:command];
+            }else{
+                [diagnostic sendPluginError:@"Limited photo library access UI is not supported on iOS < 14" :command];
             }
         }
         @catch (NSException *exception) {
@@ -186,17 +214,19 @@ static NSString*const PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE = @"read_write";
     }
 }
 
-- (NSString*) resolveCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command
-{
+- (NSString*) resolveCameraRollAuthorizationStatusFromCommand: (CDVInvokedUrlCommand*)command{
+    return [self resolveCameraRollAuthorizationStatusFromString:[command.arguments objectAtIndex:0]];
+}
+
+- (NSString*) resolveCameraRollAuthorizationStatusFromString: (NSString*)s_accessLevel{
     PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
     if (@available(iOS 14.0, *)){
-        PHAccessLevel ph_accessLevel = [self resolveAccessLevelFromArgument:[command.arguments objectAtIndex:0]];
+        PHAccessLevel ph_accessLevel = [self resolveAccessLevelFromArgument:s_accessLevel];
         authStatus = [PHPhotoLibrary authorizationStatusForAccessLevel:ph_accessLevel];
     }else{
         authStatus = [PHPhotoLibrary authorizationStatus];
     }
     return [self getCameraRollAuthorizationStatusAsString:authStatus];
-
 }
 
 - (NSString*) getCameraRollAuthorizationStatusAsString: (PHAuthorizationStatus)authStatus

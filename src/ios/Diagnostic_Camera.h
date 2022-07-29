@@ -12,6 +12,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <Photos/Photos.h>
+#import <PhotosUI/PhotosUI.h>
 
 
 @interface Diagnostic_Camera : CDVPlugin
@@ -23,5 +24,6 @@
 - (void) requestCameraAuthorization: (CDVInvokedUrlCommand*)command;
 - (void) isCameraRollAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getCameraRollAuthorizationStatus: (CDVInvokedUrlCommand*)command;
+- (void) presentLimitedLibraryPicker: (CDVInvokedUrlCommand*)command;
 
 @end

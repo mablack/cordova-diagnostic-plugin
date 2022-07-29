@@ -181,6 +181,16 @@ static Diagnostic* diagnostic = nil;
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
+- (void) sendPluginResultSuccess:(CDVInvokedUrlCommand*)command{
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
+}
+
+- (void) sendPluginNoResultAndKeepCallback:(CDVInvokedUrlCommand*)command {
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
+    [pluginResult setKeepCallbackAsBool:YES];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void) sendPluginResultBool: (BOOL)result :(CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult;
@@ -228,6 +238,7 @@ static Diagnostic* diagnostic = nil;
     NSError* error;
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:inputArray options:NSJSONWritingPrettyPrinted error:&error];
     NSString* jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    jsonString = [[jsonString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@""];
     return jsonString;
 }
 
