@@ -1,5 +1,8 @@
 # CHANGELOG
 
+**v7.1.0**
+* (Android, iOS) feat: add support to fetch device OS and build SDK details
+
 **v7.0.0**
 
 * (Android) BREAKING chore: Remove deprecated aliases `cordova.plugins.diagnostic.runtimePermission` and  `cordova.plugins.diagnostic.runtimePermissionStatus`
