@@ -171,6 +171,47 @@ static Diagnostic* diagnostic = nil;
     }];
 }
 
+- (void) getDeviceOSVersion: (CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        @try {
+            NSString* s_version = [UIDevice currentDevice].systemVersion;
+            float f_version = [s_version floatValue];
+            
+            NSDictionary* details = @{
+                @"version": s_version,
+                @"apiLevel" : [NSNumber numberWithFloat:f_version*10000],
+                @"apiName": s_version
+            };
+              
+            [self sendPluginResultObject:details:command];
+        }@catch (NSException *exception) {
+            [self handlePluginException:exception :command];
+        }
+    }];
+}
+
+- (void) getBuildOSVersion: (CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        @try {
+            int i_min_version = __IPHONE_OS_VERSION_MIN_REQUIRED;
+            NSString* s_min_version = [NSString stringWithFormat:@"%.01f", (float) i_min_version/10000];
+            int i_target_version = __IPHONE_OS_VERSION_MAX_ALLOWED;
+            NSString* s_target_version = [NSString stringWithFormat:@"%.01f", (float) i_target_version/10000];
+            
+            NSDictionary* details = @{
+                @"targetApiLevel": [NSNumber numberWithInt:i_target_version],
+                @"targetApiName": s_target_version,
+                @"minApiLevel": [NSNumber numberWithInt:i_min_version],
+                @"minApiName": s_min_version
+            };
+              
+            [self sendPluginResultObject:details:command];
+        }@catch (NSException *exception) {
+            [self handlePluginException:exception :command];
+        }
+    }];
+}
+
 
 /********************************/
 #pragma mark - Send results
@@ -211,6 +252,12 @@ static Diagnostic* diagnostic = nil;
 - (void) sendPluginResultInt: (int)result :(CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:result];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void) sendPluginResultObject: (NSDictionary*)result :(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:result];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 

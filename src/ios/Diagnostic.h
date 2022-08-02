@@ -35,6 +35,8 @@ extern NSString*const AUTHORIZATION_LIMITED;
 - (void) getBackgroundRefreshStatus: (CDVInvokedUrlCommand*)command;
 - (void) getArchitecture: (CDVInvokedUrlCommand*)command;
 - (void) getCurrentBatteryLevel: (CDVInvokedUrlCommand*)command;
+- (void) getDeviceOSVersion: (CDVInvokedUrlCommand*)command;
+- (void) getBuildOSVersion: (CDVInvokedUrlCommand*)command;
 
 // Utilities
 + (id) getInstance;

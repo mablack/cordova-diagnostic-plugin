@@ -320,7 +320,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID ONLY
      * Returns details of the OS of the device on which the app is currently running
      *
      * @param successCallback
@@ -332,7 +331,6 @@ interface Diagnostic {
     ) => void;
 
     /**
-     * ANDROID ONLY
      * Returns details of the SDK levels used to build the app.
      *
      * @param successCallback

@@ -153,6 +153,45 @@ var Diagnostic = (function(){
             []);
     };
 
+    /**
+     * Returns details of the OS of the device on which the app is currently running
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single object parameter with the following fields:
+     * - {string} version - version string of the OS e.g. "11.0"
+     * - {integer} apiLevel - API level of the OS e.g. 30
+     * - {string} apiName - code name for API level e.g. "FROYO"
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getDeviceOSVersion = function(successCallback, errorCallback) {
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getDeviceOSVersion',
+            []);
+    };
+
+    /**
+     * Returns details of the SDK levels used to build the app.
+     *
+     * @param {Function} successCallback -  The callback which will be called when the operation is successful.
+     * This callback function is passed a single object parameter with the following fields:
+     * - {integer} targetApiLevel - API level of the target SDK (used to build the app)
+     * - {string} targetApiName - code name for API level of the target SDK e.g. "FROYO"
+     * - {integer} minApiLevel - API level of the minimum SDK (lowest on which the app can be installed)
+     * - {string} minApiName - code name for API level of the minimum SDK e.g. "FROYO"
+     * @param {Function} errorCallback -  The callback which will be called when the operation encounters an error.
+     *  This callback function is passed a single string parameter containing the error message.
+     */
+    Diagnostic.getBuildOSVersion = function(successCallback, errorCallback) {
+        return cordova.exec(successCallback,
+            errorCallback,
+            'Diagnostic',
+            'getBuildOSVersion',
+            []);
+    };
+
     /************
      * Location *
      ************/
