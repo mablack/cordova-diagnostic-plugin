@@ -26,6 +26,7 @@ import static android.content.Context.BATTERY_SERVICE;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -284,6 +286,10 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(getCurrentBatteryLevel());
             } else if(action.equals("isAirplaneModeEnabled")) {
                 callbackContext.success(isAirplaneModeEnabled() ? 1 : 0);
+            } else if(action.equals("getDeviceOSVersion")) {
+                callbackContext.success(getDeviceOSVersion());
+            } else if(action.equals("getBuildOSVersion")) {
+                callbackContext.success(getBuildOSVersion());
             } else {
                 handleError("Invalid action");
                 return false;
@@ -823,7 +829,45 @@ public class Diagnostic extends CordovaPlugin{
                 Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
     }
 
+    public JSONObject getDeviceOSVersion() throws Exception{
+        JSONObject details = new JSONObject();
+        details.put("version", Build.VERSION.RELEASE);
+        details.put("apiLevel", Build.VERSION.SDK_INT);
+        details.put("apiName", getNameForApiLevel(Build.VERSION.SDK_INT));
+        return details;
+    }
 
+    public JSONObject getBuildOSVersion() throws Exception{
+        JSONObject details = new JSONObject();
+        int targetVersion = 0;
+        int minVersion = 0;
+        Activity activity = instance.cordova.getActivity();
+        ApplicationInfo applicationInfo = activity.getPackageManager().getApplicationInfo(activity.getPackageName(), 0);
+        if (applicationInfo != null) {
+            targetVersion = applicationInfo.targetSdkVersion;
+            if(Build.VERSION.SDK_INT >= 24){
+                minVersion = applicationInfo.minSdkVersion;
+            }
+        }
+
+        details.put("targetApiLevel", targetVersion);
+        details.put("targetApiName", getNameForApiLevel(targetVersion));
+        details.put("minApiLevel", minVersion);
+        details.put("minApiName", getNameForApiLevel(minVersion));
+        return details;
+    }
+
+    // https://stackoverflow.com/a/55946200/777265
+    protected String getNameForApiLevel(int apiLevel) throws Exception{
+        Field[] fields = Build.VERSION_CODES.class.getFields();
+        String codeName = "UNKNOWN";
+        for (Field field : fields) {
+            if (field.getInt(Build.VERSION_CODES.class) == apiLevel) {
+                codeName = field.getName();
+            }
+        }
+        return codeName;
+    }
 
     /************
      * Overrides

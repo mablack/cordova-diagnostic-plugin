@@ -305,6 +305,44 @@ interface Diagnostic {
         successCallback: () => void
     ) => void;
 
+
+    /**
+     * ANDROID ONLY
+     *
+     * Checks if airplane mode is enabled on device.
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    isAirplaneModeEnabled?: (
+        successCallback: () => boolean,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Returns details of the OS of the device on which the app is currently running
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    getDeviceOSVersion?: (
+        successCallback: (details: {version: string, apiLevel: number, apiName: string}) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
+     * ANDROID ONLY
+     * Returns details of the SDK levels used to build the app.
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    getBuildOSVersion?: (
+        successCallback: (details: {targetApiLevel: number, targetApiName: string, minApiLevel: number, minApiName: string}) => void,
+        errorCallback: (error: string) => void
+    ) => void;
+
     /**
      * Returns true if the device setting for location is on.
      * On Android this returns true if Location Mode is switched on.

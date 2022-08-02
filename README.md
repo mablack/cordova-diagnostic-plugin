@@ -42,6 +42,8 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [enableDebug()](#enabledebug)
     - [getCurrentBatteryLevel()](#getcurrentbatterylevel)
     - [isAirplaneModeEnabled()](#isairplanemodeenabled)
+    - [getDeviceOSVersion()](#getdeviceosversion)
+    - [getBuildOSVersion()](#getbuildosversion)
   - [Location module](#location-module)
     - [locationMode constants](#locationmode-constants)
     - [locationAuthorizationMode constants](#locationauthorizationmode-constants)
@@ -928,6 +930,66 @@ The function is passed a single string parameter containing the error message.
     cordova.plugins.diagnostic.isAirplaneModeEnabled(function(enabled){
         console.log(`Airplane mode is currently ${enabled ? 'enabled' : 'disabled'}%`);
     });
+    
+### getDeviceOSVersion()
+
+Platforms: Android
+
+Returns details of the OS of the device on which the app is currently running.
+
+
+    cordova.plugins.diagnostic.getDeviceOSVersion(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is  passed a single object parameter with the following fields:
+    - {string} version - version string of the OS e.g. "11.0"
+    - {integer} apiLevel - API level of the OS e.g. 30
+    - {string} apiName - code name for API level e.g. "FROYO"
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getDeviceOSVersion(function(details){
+        console.log(`Version: ${details.version}%`); // "13.0"
+        console.log(`API level: ${details.apiLevel}%`); // 33
+        console.log(`API name: ${details.apiName}%`); // "TIRAMISU"
+    });    
+    
+### getBuildOSVersion()
+ 
+ Platforms: Android
+ 
+ Returns details of the SDK levels used to build the app.
+ 
+ 
+     cordova.plugins.diagnostic.getBuildOSVersion(successCallback, errorCallback);
+ 
+ #### Parameters
+ 
+ - {Function} successCallback -  The callback which will be called when operation is successful.
+ The function is  passed a single object parameter with the following fields:
+     - {integer} targetApiLevel - API level of the target SDK (used to build the app)
+     - {string} targetApiName - code name for API level of the target SDK e.g. "FROYO"
+     - {integer} minApiLevel - API level of the minimum SDK (lowest on which the app can be installed)
+     - {string} minApiName - code name for API level of the minimum SDK e.g. "FROYO"
+ - {Function} errorCallback -  The callback which will be called when operation encounters an error.
+ The function is passed a single string parameter containing the error message.
+ 
+ 
+ #### Example usage
+ 
+     cordova.plugins.diagnostic.getBuildOSVersion(function(details){
+         console.log(`Target API level: ${details.targetApiLevel}%`); // 33
+         console.log(`Target API name: ${details.targetApiLevel}%`); // "TIRAMISU"
+         console.log(`Minimum API level: ${details.targetApiLevel}%`); // 21
+         console.log(`Target API name: ${details.targetApiLevel}%`); // "LOLLIPOP"
+     });    
+     
+        
 
 ## Location module
 
