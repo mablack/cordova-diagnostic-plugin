@@ -776,7 +776,7 @@ Platforms: Android and iOS
 
 Defines constants for the various CPU architectures of the current hardware returned by [getArchitecture()](#getarchitecture).
 
-        cordova.plugins.diagnostic.cpuArchitecture
+    cordova.plugins.diagnostic.cpuArchitecture
 
 #### Android
 
@@ -1065,8 +1065,9 @@ Platforms: Android & iOS
 - Defines constants for the various location accuracy authorization states on iOS 14+ and Android 12+.
 - See [CLAccuracyAuthorization](https://developer.apple.com/documentation/corelocation/claccuracyauthorization) for iOS 14+ and [approximate location](https://developer.android.com/training/location/permissions#approximate-request) for Android 12+
 
-
+```
     cordova.plugins.diagnostic.locationAccuracyAuthorization
+```
 
 #### Values
 
@@ -1170,8 +1171,9 @@ Returns true if Location mode is enabled and is set to either:
 - Device only = GPS hardware only (high accuracy)
 - High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 
-
+```
     cordova.plugins.diagnostic.isGpsLocationEnabled(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -1225,8 +1227,9 @@ Returns true if Location mode is enabled and is set to either:
 - Battery saving = network triangulation and Wifi network IDs (low accuracy)
 - High accuracy = GPS hardware, network triangulation and Wifi network IDs (high and low accuracy)
 
-
+```
     cordova.plugins.diagnostic.isNetworkLocationEnabled(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -1294,7 +1297,9 @@ Notes for Android:
 - This is intended for Android 6 / API 23 and above.
 Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
-    `cordova.plugins.diagnostic.isLocationAuthorized(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.isLocationAuthorized(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -1321,12 +1326,13 @@ Platforms: Android and iOS
 Returns the location authorization status for the application.
 
 Notes for Android: 
- - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
- - This is the combined location status for both `COARSE` and `FINE` permissions.
- - On Android 10+/API 29+, if `COARSE` or `FINE` permission is `GRANTED` but `BACKGROUND_LOCATION` permission is not `GRANTED`, will return `GRANTED_WHEN_IN_USE`.
+- This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
+- This is the combined location status for both `COARSE` and `FINE` permissions.
+- On Android 10+/API 29+, if `COARSE` or `FINE` permission is `GRANTED` but `BACKGROUND_LOCATION` permission is not `GRANTED`, will return `GRANTED_WHEN_IN_USE`.
 
-    cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);    
-    
+```
+    cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);
+```    
 
 #### Parameters
 
@@ -1387,12 +1393,12 @@ Platforms: Android
 
 Returns the individual location authorization status for each type of location access (`FINE`, `COARSE` and `BACKGROUND`).
 
- - Calling on Android 5.1 / API 22 and below will always return `GRANTED` status as permissions are already granted at installation time.
- - Calling on Android 9 / API 28 and below, `BACKGROUND_LOCATION` permission is always implicitly `GRANTED`.
+- Calling on Android 5.1 / API 22 and below will always return `GRANTED` status as permissions are already granted at installation time.
+- Calling on Android 9 / API 28 and below, `BACKGROUND_LOCATION` permission is always implicitly `GRANTED`.
 
-
+```
     cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);    
-    
+```
 
 #### Parameters
 
@@ -1401,22 +1407,23 @@ The function is passed a single array parameter which contains a list indicating
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
 
-
+```
     cordova.plugins.diagnostic.getLocationAuthorizationStatuses(function(statuses){
         console.log("FINE permission status: " + statuses[cordova.plugins.diagnostic.permission.ACCESS_FINE_LOCATION])
         console.log("COARSE permission status: " + statuses[cordova.plugins.diagnostic.permission.ACCESS_COARSE_LOCATION])
         console.log("BACKGROUND permission status: " + statuses[cordova.plugins.diagnostic.permission.ACCESS_BACKGROUND_LOCATION])
     }, function(error){
         console.error(error);
-    });    
+    });
+```
 
 ### requestLocationAuthorization()
 
- Platforms: Android and iOS
+Platforms: Android and iOS
 
- Requests location authorization for the application.
+Requests location authorization for the application.
 
- Notes for iOS:
+Notes for iOS:
 
 - Authorization can be requested to use location either "when in use" (only in foreground) or "always" (foreground and background).
 - This should only be called if authorization status is `NOT_REQUESTED` - calling it when in any other state will have no effect.
@@ -1432,7 +1439,7 @@ this plugin provides default messages, but you should override them with your sp
 | WHEN_IN_USE | Allow While Using App | `kCLAuthorizationStatusAuthorizedWhenInUse` | `GRANTED_WHEN_IN_USE` |
 | WHEN_IN_USE | Allow Once | `kCLAuthorizationStatusAuthorizedWhenInUse` | `GRANTED_WHEN_IN_USE` |
 
- Notes for Android:
+Notes for Android:
 
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - For Android 11+ / API 30+), make an initial request with `mode` set to `cordova.plugins.diagnostic.locationAuthorizationMode.ALWAYS` will NOT present the user with a dialog at all and immediately returns a `DENIED` result.
@@ -1443,7 +1450,9 @@ this plugin provides default messages, but you should override them with your sp
 - When the plugin is running on/built with Android 12+ / API 31+, you can specify requested location accuracy using the `accuracy` parameter.
     - If the build SDK/device version is <= Android 11 / API 30, `FULL` accuracy is implicitly granted.
 
-    `cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode, accuracy);`
+```
+    cordova.plugins.diagnostic.requestLocationAuthorization(successCallback, errorCallback, mode, accuracy);
+```
 
 #### Parameters
 
@@ -1572,8 +1581,9 @@ You'll need to add this entry using a `<config-file>` block in your `config.xml`
 - Should only be called if location authorization has been granted, otherwise `errorCallback` will be invoked.
 - See [requestTemporaryFullAccuracyAuthorizationWithPurposeKey](https://developer.apple.com/documentation/corelocation/cllocationmanager/3600217-requesttemporaryfullaccuracyauth?language=objc).
 
-
-    `cordova.plugins.diagnostic.requestTemporaryFullAccuracyAuthorization(purpose, successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.requestTemporaryFullAccuracyAuthorization(purpose, successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -2755,7 +2765,9 @@ Checks if the application is authorized to use the microphone.
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 
-    `cordova.plugins.diagnostic.isMicrophoneAuthorized(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.isMicrophoneAuthorized(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -2782,8 +2794,9 @@ Returns the microphone authorization status for the application.
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
-
-    `cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.getMicrophoneAuthorizationStatus(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -2852,7 +2865,9 @@ Checks if the application is authorized to use contacts (address book).
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 
-    `cordova.plugins.diagnostic.isContactsAuthorized(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.isContactsAuthorized(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -2879,7 +2894,9 @@ Returns the contacts authorization status for the application.
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 
-    `cordova.plugins.diagnostic.getContactsAuthorizationStatus(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.getContactsAuthorizationStatus(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -2953,7 +2970,9 @@ Notes for Android:
 Notes for iOS:
 - This relates to Calendar Events (not Calendar Reminders)
 
-    `cordova.plugins.diagnostic.isCalendarAuthorized(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.isCalendarAuthorized(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -2983,7 +3002,9 @@ Notes for Android:
 Notes for iOS:
 - This relates to Calendar Events (not Calendar Reminders)
 
-    `cordova.plugins.diagnostic.getCalendarAuthorizationStatus(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.getCalendarAuthorizationStatus(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -3469,7 +3490,9 @@ Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
 - This checks for `READ_EXTERNAL_STORAGE` `CAMERA` run-time permission.
 
-    `cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -3497,7 +3520,9 @@ Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return GRANTED status as permissions are already granted at installation time.
 - This checks for `READ_EXTERNAL_STORAGE` run-time permission.
 
-    `cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.getExternalStorageAuthorizationStatus(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -3525,7 +3550,9 @@ Requests external storage authorization for the application.
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - This requests permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
 
-    `cordova.plugins.diagnostic.requestExternalStorageAuthorization(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.requestExternalStorageAuthorization(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -3554,14 +3581,14 @@ This differs from the "external directories" returned by [cordova-plugin-file](h
 
 For example, on a Samsung Galaxy S4 running Android 7.1.1:
 
- - `cordova.file.externalRootDirectory` returns `file:///storage/emulated/0/`
- - `cordova.file.externalApplicationStorageDirectory` returns `file:///storage/emulated/0/Android/data/cordova.plugins.diagnostic.example/`
+- `cordova.file.externalRootDirectory` returns `file:///storage/emulated/0/`
+- `cordova.file.externalApplicationStorageDirectory` returns `file:///storage/emulated/0/Android/data/cordova.plugins.diagnostic.example/`
 
- which are on non-removable internal storage.
+which are on non-removable internal storage.
 
- Whereas this method returns:
+Whereas this method returns:
 
-    ```
+```
     [{
         "path": "/storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
         "filePath": "file:///storage/4975-1401/Android/data/cordova.plugins.diagnostic.example/files",
@@ -3575,13 +3602,15 @@ For example, on a Samsung Galaxy S4 running Android 7.1.1:
         "freeSpace": 16254009344,
         "type": "root"
     }]
-    ```
+```
 
- which are on external removable storage.
+which are on external removable storage.
 
 - Requires permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
 
-    `cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);`
+```
+    cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);
+```
 
 - Note: this function is intended to find paths of external removable SD cards on which the SD card adapter is directly mounted on the device, such as those in the Samsung Galaxy S range of devices. It explicitly attempts to filter out non-SD card storage paths such as OTG devices since access to these devices on Android 6.+ via the File API requires root access and normal access requires use of the Storage Access Framework.
 
