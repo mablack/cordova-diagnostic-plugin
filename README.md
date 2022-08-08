@@ -873,8 +873,9 @@ Enables debug mode, which logs native debug messages to the native and JS consol
 - For iOS, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
 - Debug mode is initially disabled on plugin initialisation.
 
-
+```
     cordova.plugins.diagnostic.enableDebug(successCallback);
+```
 
 #### Parameters
 
@@ -1898,8 +1899,9 @@ iOS:
 - On iOS 13+ returns the Bluetooth authorization status of application
 - On iOS 12 and below, always return GRANTED as Bluetooth permission is not required. 
 
-
-  cordova.plugins.diagnostic.getBluetoothAuthorizationStatus(successCallback, errorCallback);
+```
+    cordova.plugins.diagnostic.getBluetoothAuthorizationStatus(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -1925,7 +1927,9 @@ Platforms: Android
 - Returns the individual authorization status for each Bluetooth run-time permission on Android 12+ / API 31+
 - On Android 11 / API 30 and below, all will be returned as GRANTED if the manifest has BLUETOOTH since they are implicitly granted at build-time.
 
-  cordova.plugins.diagnostic.getBluetoothAuthorizationStatuses(successCallback, errorCallback);
+```
+    cordova.plugins.diagnostic.getBluetoothAuthorizationStatuses(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -1959,7 +1963,9 @@ Notes for iOS:
 - When calling this function, the message contained in the `NSBluetoothPeripheralUsageDescription` .plist key is displayed to the user;
 this plugin provides a default message, but you should override this with your specific reason for requesting access - see the [iOS usage description messages](#ios-usage-description-messages) section for how to customise it.
 
+```
     cordova.plugins.diagnostic.requestBluetoothAuthorization(successCallback, errorCallback);
+```
 
 #### Parameters
 
@@ -2160,10 +2166,11 @@ Notes for Android:
 - On Android by default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 - The call signature `cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
-
+```
     cordova.plugins.diagnostic.isCameraAvailable(params);
     cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, params)
     cordova.plugins.diagnostic.isCameraAvailable(successCallback, errorCallback, externalStorage)
+```
 
 #### Parameters
 - {Object} params - (optional) parameters:
@@ -2216,10 +2223,11 @@ Notes for Android:
 - By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 - The call signature `cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
-
+```
     cordova.plugins.diagnostic.isCameraAuthorized(params);
     cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, params)
     cordova.plugins.diagnostic.isCameraAuthorized(successCallback, errorCallback, externalStorage)
+```
 
 #### Parameters
 - {Object} params - (optional) parameters:
@@ -2271,10 +2279,11 @@ Notes for Android:
 - By default this checks run-time permission for both `READ_EXTERNAL_STORAGE` and `CAMERA` because [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 - The call signature `cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
-
+```
     cordova.plugins.diagnostic.getCameraAuthorizationStatus(params);
     cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, params)
     cordova.plugins.diagnostic.getCameraAuthorizationStatus(successCallback, errorCallback, externalStorage)
+```
 
 #### Parameters
 - {Object} params - (optional) parameters:
@@ -2340,10 +2349,11 @@ Notes for Android:
 - Requested run-time permissions which must be added to `AndroidManifest.xml` - see [Android camera permissions](#android-camera-permissions).
 - The call signature `cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, externalStorage)` is also supported for benefit of the [ionic-native Promise API wrapper](https://github.com/driftyco/ionic-native/blob/master/src/%40ionic-native/plugins/diagnostic/index.ts).
 
-
+```
     cordova.plugins.diagnostic.requestCameraAuthorization(params);
     cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, params)
     cordova.plugins.diagnostic.requestCameraAuthorization(successCallback, errorCallback, externalStorage)
+```
 
 #### Parameters
 
@@ -2830,7 +2840,9 @@ Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will have no effect as the permissions are already granted at installation time.
 - This requests permission for `RECORD_AUDIO` which must be added to `AndroidManifest.xml` - see [Android permissions](#android-permissions).
 
+```
     cordova.plugins.diagnostic.requestMicrophoneAuthorization(successCallback, errorCallback);
+```
 
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
@@ -2931,7 +2943,9 @@ Notes for Android:
 - This requests permission for `READ_CONTACTS` run-time permission
 - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CONTACTS, WRITE_CONTACTS, GET_ACCOUNTS`
 
+```
     cordova.plugins.diagnostic.requestContactsAuthorization(successCallback, errorCallback);
+```
 
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
@@ -3040,7 +3054,9 @@ Notes for Android:
 - This requests permission for `READ_CALENDAR` run-time permission
 - Required permissions must be added to `AndroidManifest.xml` as appropriate - see [Android permissions](#android-permissions): `READ_CALENDAR, WRITE_CALENDAR`
 
+```
     cordova.plugins.diagnostic.requestCalendarAuthorization(successCallback, errorCallback);
+```
 
 #### Parameters
 - {Function} successCallback - The callback which will be called when operation is successful.
