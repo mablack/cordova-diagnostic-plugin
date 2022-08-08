@@ -1397,7 +1397,7 @@ Returns the individual location authorization status for each type of location a
 - Calling on Android 9 / API 28 and below, `BACKGROUND_LOCATION` permission is always implicitly `GRANTED`.
 
 ```
-    cordova.plugins.diagnostic.getLocationAuthorizationStatus(successCallback, errorCallback);    
+    cordova.plugins.diagnostic.getLocationAuthorizationStatuses(successCallback, errorCallback);    
 ```
 
 #### Parameters
