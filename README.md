@@ -3346,11 +3346,11 @@ Defines constants for the various NFC power states.
 
 #### Values
 
-- `UNKNOWN` - Bluetooth hardware state is unknown or unavailable
-- `POWERED_OFF` - Bluetooth hardware is switched off
-- `POWERED_ON` - Bluetooth hardware is switched on and available for use
-- `POWERING_OFF`- Bluetooth hardware is currently switching off
-- `POWERING_ON`- Bluetooth hardware is currently switching on
+- `UNKNOWN` - NFC hardware state is unknown or unavailable
+- `POWERED_OFF` - NFC hardware is switched off
+- `POWERED_ON` - NFC hardware is switched on and available for use
+- `POWERING_OFF`- NFC hardware is currently switching off
+- `POWERING_ON`- NFC hardware is currently switching on
 
 #### Example
 
@@ -3411,7 +3411,7 @@ Checks if the device setting for NFC is switched on.
 
 Note: this operation **does not** require NFC permission in the manifest.
 
-    cordova.plugins.diagnostic.isNFCAvailable(successCallback, errorCallback);
+    cordova.plugins.diagnostic.isNFCEnabled(successCallback, errorCallback);
 
 #### Parameters
 
