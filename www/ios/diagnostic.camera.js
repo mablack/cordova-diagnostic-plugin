@@ -210,8 +210,7 @@ var Diagnostic_Camera = (function(){
      * Should only be called if authorization status is NOT_REQUESTED. Calling it when in any other state will have no effect.
      *
      * @param {Function} successCallback - The callback which will be called when operation is successful.
-     * This callback function is passed a single string parameter indicating the new authorization status:
-     * `cordova.plugins.diagnostic.permissionStatus.GRANTED` or `cordova.plugins.diagnostic.permissionStatus.DENIED_ALWAYS`
+     * This callback function is passed a single string parameter indicating the new authorization status
      * @param {Function} errorCallback -  The callback which will be called when operation encounters an error.
      * This callback function is passed a single string parameter containing the error message.
      * @param {Function} accessLevel - (optional) On iOS 14+, specifies the level of access to the photo library to request as a constant in cordova.plugins.diagnostic.photoLibraryAccessLevel`
@@ -222,9 +221,8 @@ var Diagnostic_Camera = (function(){
      * - Has no effect on iOS 13 or below
      */
     Diagnostic_Camera.requestCameraRollAuthorization = function(successCallback, errorCallback, accessLevel) {
-        return cordova.exec(function(status){
-                successCallback(status === "authorized" ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.DENIED_ALWAYS);
-            },
+        return cordova.exec(
+            successCallback,
             errorCallback,
             'Diagnostic_Camera',
             'requestCameraRollAuthorization',
