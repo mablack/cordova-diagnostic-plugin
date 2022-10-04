@@ -65,20 +65,17 @@ static NSString*const LOG_TAG = @"Diagnostic_Bluetooth[native]";
 {
     [self.commandDelegate runInBackground:^{
         @try {
-            NSString* state = [self getBluetoothState];
-
-            if([state isEqual: @"unauthorized"]){
-                /*
-                 When the application requests to start scanning for bluetooth devices that is when the user is presented with a consent dialog.
-                 */
-                [diagnostic logDebug:@"Requesting bluetooth authorization"];
-                [self ensureBluetoothManager];
-                [self.bluetoothManager scanForPeripheralsWithServices:nil options:nil];
-                [self.bluetoothManager stopScan];
-            }else{
-                [diagnostic logDebug:@"Bluetooth authorization is already granted"];
+            
+            NSString* authState = [self getAuthorizationStatus];
+            
+            if([authState isEqual:AUTHORIZATION_GRANTED]){
+                [diagnostic sendPluginError:@"Bluetooth authorization is already granted" :command];
+            }else if([authState isEqual:AUTHORIZATION_DENIED]){
+                [diagnostic sendPluginError:@"Bluetooth authorization has been denied" :command];
+            }else{ // AUTHORIZATION_NOT_DETERMINED
+                [self ensureBluetoothManager]; // invoke Bluetooth manager to trigger permission dialog
+                [diagnostic sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] :command];
             }
-            [diagnostic sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] :command];
         }
         @catch (NSException *exception) {
             [diagnostic handlePluginException:exception :command];
