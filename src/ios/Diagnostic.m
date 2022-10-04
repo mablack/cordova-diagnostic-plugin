@@ -7,6 +7,7 @@
  */
 
 #import "Diagnostic.h"
+#import <CoreTelephony/CTCellularData.h>
 
 @implementation Diagnostic
 
@@ -29,7 +30,9 @@ static NSString*const CPU_ARCH_ARMv8 = @"ARMv8";
 static NSString*const CPU_ARCH_X86 = @"X86";
 static NSString*const CPU_ARCH_X86_64 = @"X86_64";
 
+// Internal properties
 static Diagnostic* diagnostic = nil;
+static CTCellularData* cellularData;
 
 /********************************/
 #pragma mark - Public static functions
@@ -111,6 +114,7 @@ static Diagnostic* diagnostic = nil;
 
     self.debugEnabled = false;
     self.osVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+    cellularData = [[CTCellularData alloc] init];
 }
 
 // https://stackoverflow.com/a/38441011/777265
@@ -208,6 +212,19 @@ static Diagnostic* diagnostic = nil;
             [self sendPluginResultObject:details:command];
         }@catch (NSException *exception) {
             [self handlePluginException:exception :command];
+        }
+    }];
+}
+
+- (void) isMobileDataEnabled: (CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate runInBackground:^{
+        @try {
+            bool isEnabled = cellularData.restrictedState == kCTCellularDataNotRestricted;;
+            [diagnostic sendPluginResultBool:isEnabled :command];
+        }
+        @catch (NSException *exception) {
+            [diagnostic handlePluginException:exception :command];
         }
     }];
 }
