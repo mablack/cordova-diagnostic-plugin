@@ -1,10 +1,19 @@
 # CHANGELOG
 
+**v7.1.1**
+* (Android, iOS) feat: Add `isMobileDataEnabled()` to core module.
+    * Based on PR [#478](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/478)
+* (iOS) bugfix: Only allow Bluetooth permission request if not already requested.
+    * Resolves [#477](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/477).
+* (iOS) bugfix: Resolve the correct authorization status after requesting camera roll authorization and granting LIMITED access.
+    * Resolves [#476](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/476).
+
+
 **v7.1.0**
 * (Android, iOS) feat: add support to fetch device OS and build SDK details
 
-**v7.0.0**
 
+**v7.0.0**
 * (Android) BREAKING chore: Remove deprecated aliases `cordova.plugins.diagnostic.runtimePermission` and  `cordova.plugins.diagnostic.runtimePermissionStatus`
     - Use `cordova.plugins.diagnostic.permission` and `cordova.plugins.diagnostic.permissionStatus` instead.
 * (iOS) feat: Add support for Photo Library access levels on iOS 14+
