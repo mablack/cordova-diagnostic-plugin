@@ -42,6 +42,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [enableDebug()](#enabledebug)
     - [getCurrentBatteryLevel()](#getcurrentbatterylevel)
     - [isAirplaneModeEnabled()](#isairplanemodeenabled)
+    - [isMobileDataEnabled()](#ismobiledataenabled)
     - [getDeviceOSVersion()](#getdeviceosversion)
     - [getBuildOSVersion()](#getbuildosversion)
   - [Location module](#location-module)
