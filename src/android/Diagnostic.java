@@ -50,6 +50,7 @@ import android.app.PendingIntent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -278,6 +279,8 @@ public class Diagnostic extends CordovaPlugin{
                 callbackContext.success(isADBModeEnabled() ? 1 : 0);
             } else if(action.equals("isDeviceRooted")) {
                 callbackContext.success(isDeviceRooted() ? 1 : 0);
+            } else if(action.equals("isMobileDataEnabled")) {
+                callbackContext.success(isMobileDataEnabled() ? 1 : 0);
             } else if(action.equals("restart")) {
                 this.restart(args);
             } else if(action.equals("getArchitecture")) {
@@ -445,12 +448,27 @@ public class Diagnostic extends CordovaPlugin{
         return false;
     }
 
+    // https://stackoverflow.com/a/12864897/777265
+    public boolean isMobileDataEnabled(){
+        boolean mobileDataEnabled = false; // Assume disabled
+        ConnectivityManager cm = (ConnectivityManager) cordova.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        try {
+            Class cmClass = Class.forName(cm.getClass().getName());
+            Method method = cmClass.getDeclaredMethod("getMobileDataEnabled");
+            method.setAccessible(true);
+            mobileDataEnabled = (Boolean)method.invoke(cm);
+        } catch (Exception e) {
+            logDebug(e.getMessage());
+        }
+        return mobileDataEnabled;
+    }
 
     /************
      * Internals
      ***********/
 
     public void logDebug(String msg) {
+        if(msg == null) return;
         if(debugEnabled){
             Log.d(TAG, msg);
             executeGlobalJavascript("console.log(\""+TAG+"[native]: "+escapeDoubleQuotes(msg)+"\")");
@@ -458,6 +476,7 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public void logInfo(String msg){
+        if(msg == null) return;
         Log.i(TAG, msg);
         if(debugEnabled){
             executeGlobalJavascript("console.info(\""+TAG+"[native]: "+escapeDoubleQuotes(msg)+"\")");
@@ -465,6 +484,7 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public void logWarning(String msg){
+        if(msg == null) return;
         Log.w(TAG, msg);
         if(debugEnabled){
             executeGlobalJavascript("console.warn(\""+TAG+"[native]: "+escapeDoubleQuotes(msg)+"\")");
@@ -472,6 +492,7 @@ public class Diagnostic extends CordovaPlugin{
     }
 
     public void logError(String msg){
+        if(msg == null) return;
         Log.e(TAG, msg);
         if(debugEnabled){
             executeGlobalJavascript("console.error(\""+TAG+"[native]: "+escapeDoubleQuotes(msg)+"\")");
