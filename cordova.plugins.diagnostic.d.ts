@@ -320,6 +320,19 @@ interface Diagnostic {
     ) => void;
 
     /**
+     * ANDROID ONLY
+     *
+     * Checks if mobile data is enabled on device.
+     *
+     * @param successCallback
+     * @param errorCallback
+     */
+    isMobileDataEnabled?: (
+        successCallback: () => boolean,
+        errorCallback: (error: string) => void
+    ) => void;
+
+    /**
      * Returns details of the OS of the device on which the app is currently running
      *
      * @param successCallback

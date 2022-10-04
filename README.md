@@ -932,6 +932,35 @@ The function is passed a single string parameter containing the error message.
         console.log(`Airplane mode is currently ${enabled ? 'enabled' : 'disabled'}%`);
     });
 
+
+=======
+    
+### isMobileDataEnabled()
+
+Platforms: Android and iOS
+
+Checks if mobile (cellular) data is currently enabled on the device.
+
+On Android this requires permission `<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />`
+
+
+    cordova.plugins.diagnostic.isMobileDataEnabled(successCallback, errorCallback);
+
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+The function is passed a single boolean parameter which is TRUE if mobile data is enabled.
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+The function is passed a single string parameter containing the error message.
+
+
+#### Example usage
+
+    cordova.plugins.diagnostic.isMobileDataEnabled(function(enabled){
+        console.log(`Mobile data is currently ${enabled ? 'enabled' : 'disabled'}%`);
+    });
+    
+
 ### getDeviceOSVersion()
 
 Platforms: Android and iOS
