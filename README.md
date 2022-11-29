@@ -3764,6 +3764,84 @@ The plugin defines all [dangerous permissions](http://developer.android.com/guid
 - `cordova.plugins.diagnostic.permission.WRITE_CONTACTS`
 - `cordova.plugins.diagnostic.permission.WRITE_EXTERNAL_STORAGE`
 
+
+##### Android 11+ runtime permissions
+Android 11 introduced a new option for the user when granting runtime permissions: "Only this time"/"Ask every time".
+This allows the user to temporarily grant a permission only for the current app session: the requested permission will be available to the app during the current session but when the app is restarted, permission will be revoked and the app will have to request it again.
+This causes a problem for this plugin because it is unable to detect that the permission has been silently revoked by Android in the new app session.
+
+When runtime permissions were introduced in Android 6.0, there was already a deficiency in the Android permissions model: the Android SDK provides no way to differentiate between a permission that has not been requested yet (`NOT_REQUESTED`) or has been permanently denied (`DENIED_ALWAYS`) - they have the same programmatic state. Therefore this plugin uses local persistent storage to flag when a given permission has been requested and granted via the plugin. So if Android indicates `NOT_REQUESTED`/`DENIED_ALWAYS`, the plugin uses the state of the persistent flag to determine if that permission has been requested before and therefore can differentiate between `NOT_REQUESTED` and `DENIED_ALWAYS`.
+
+This worked fine up until Android 10, however the "Only this time" option added in Android 11 causes a problem:
+There's no way for the plugin to tell if the user pressed "Only this time" or "Allow always" in the permissions dialog because the programmatic outcome in Android is the same: the permission state is `GRANTED`.
+Therefore in both cases, the plugin flags this permission as having been requested.
+But if the user pressed "Only this time", when the app is restarted the permission is silently revoked by Android and so when the native Android state indicates `NOT_REQUESTED`/`DENIED_ALWAYS`, the plugin determines that since the flag has been set for that permission, the state must be `DENIED_ALWAYS`.
+
+There is no programmatic solution that the plugin can implement to solve this - it is a deficiency in the Android permission states model.
+There is however a workaround which is to assume that even if the reported permission status is `DENIED_ALWAYS`, the permission *may* still be requestable.
+
+Here's a short example of how to do this using the `CAMERA` permission:
+
+```javascript
+
+let diagnostic, deviceOS;
+let cameraDeniedAlwaysAfterRequesting = false;
+
+function onDeviceReady(){
+    diagnostic = cordova.plugins.diagnostic; // alias to shorter namespace
+    diagnostic.getDeviceOSVersion(function(osDetails){
+        deviceOS = osDetails;
+        checkCameraPermission();
+    })
+}
+
+function checkCameraPermission(){
+    diagnostic.getPermissionAuthorizationStatus(function(status){
+
+        // If running on Android 11+ and status is DENIED_ALWAYS, assume it can still be requested (i.e. user selected "Only once" in previous app session)
+        if(deviceOS.apiLevel >= 30 && status === diagnostic.permissionStatus.DENIED_ALWAYS && !cameraDeniedAlwaysAfterRequesting){
+            status = diagnostic.permissionStatus.DENIED_ONCE;
+        }
+
+        switch(status){
+            case diagnostic.permissionStatus.GRANTED:
+                console.log("Camera permission is allowed")
+                break;
+            case diagnostic.permissionStatus.NOT_REQUESTED:
+                console.log("Camera permission not requested yet - requesting...")
+                requestCameraPermission();
+                break;
+            case diagnostic.permissionStatus.DENIED_ONCE:
+                console.log("Camera permission denied but can still request - requesting...")
+                requestCameraPermission();
+                break;
+            case diagnostic.permissionStatus.DENIED_ONCE:
+                console.log("Camera permission permanently denied - can't request");
+                break;
+        }
+    }, console.error, diagnostic.permission.CAMERA)
+};
+
+function requestCameraPermission(){
+    diagnostic.requestRuntimePermission(function(status){
+
+        // If result is DENIED_ALWAYS after requesting then it really is permanently denied
+        if(status === diagnostic.permissionStatus.DENIED_ALWAYS){
+            cameraDeniedAlwaysAfterRequesting = true;
+        }
+
+        // Re-check permission
+        checkCameraPermission();
+
+    }, console.error, diagnostic.permission.CAMERA);
+}
+
+document.addEventListener("deviceready", onDeviceReady, false);
+
+```
+
+
+
 ##### Runtime permissions example project
 
 While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example) illustrates use of runtime permissions in the context of requesting location and camera access, the [cordova-diagnostic-plugin-android-runtime-example](https://github.com/dpa99c/cordova-diagnostic-plugin-android-runtime-example) project explicitly illustrates use of Android runtime permissions with this plugin.
