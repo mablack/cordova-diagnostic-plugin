@@ -253,7 +253,7 @@ static NSString*const PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE = @"read_write";
 
 - (PHAccessLevel) resolveAccessLevelFromArgument:(NSString*) s_accessLevel API_AVAILABLE(ios(14)){
     PHAccessLevel ph_accessLevel;
-    if([s_accessLevel isEqualToString:PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE]){
+    if(![diagnostic isNull:s_accessLevel] && [s_accessLevel isEqualToString:PHOTOLIBRARY_ACCESS_LEVEL_READ_WRITE]){
         ph_accessLevel = PHAccessLevelReadWrite;
     }else{
         ph_accessLevel = PHAccessLevelAddOnly;
