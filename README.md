@@ -3848,7 +3848,13 @@ While the [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-
 
 ##### Android Camera permissions
 
-Note that the Android variant of [`requestCameraAuthorization()`](#requestcameraauthorization) requests the `READ_EXTERNAL_STORAGE` permission, in addition to the `CAMERA` permission.
+Note that the Android variant of [`requestCameraAuthorization()`](#requestcameraauthorization), in addition to the `CAMERA` permission, by default also requests storage permissions.
+This is because the Android camera API requires access to the device's storage to store captured images and videos.
+
+On Android <=12, this requires the `WRITE_EXTERNAL_STORAGE` and `READ_EXTERNAL_STORAGE` permissions.
+On Android >12, this requires the `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO` permissions.
+
+the `READ_EXTERNAL_STORAGE` permission.
 This is because the [cordova-plugin-camera@2.2+](https://github.com/apache/cordova-plugin-camera) requires both of these permissions.
 
 So to use this method in conjunction with the Cordova camera plugin, make sure you are using the most recent `cordova-plugin-camera` release: v2.2.0 or above.

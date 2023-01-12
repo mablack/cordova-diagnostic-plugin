@@ -30,14 +30,14 @@ var Diagnostic_Camera = (function(){
 
     function combineCameraStatuses(statuses){
         var cameraStatus = statuses[Diagnostic.permission.CAMERA],
-            mediaStatus = statuses[Diagnostic.permission.READ_EXTERNAL_STORAGE],
+            storageStatus = statuses[Diagnostic.permission.READ_EXTERNAL_STORAGE] || statuses[Diagnostic.permission.READ_MEDIA_IMAGES],
             status;
 
-        if(cameraStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || mediaStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
+        if(cameraStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || storageStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
             status = Diagnostic.permissionStatus.DENIED_ALWAYS;
-        }else if(cameraStatus === Diagnostic.permissionStatus.DENIED_ONCE || mediaStatus === Diagnostic.permissionStatus.DENIED_ONCE){
+        }else if(cameraStatus === Diagnostic.permissionStatus.DENIED_ONCE || storageStatus === Diagnostic.permissionStatus.DENIED_ONCE){
             status = Diagnostic.permissionStatus.DENIED_ONCE;
-        }else if(cameraStatus === Diagnostic.permissionStatus.NOT_REQUESTED || mediaStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
+        }else if(cameraStatus === Diagnostic.permissionStatus.NOT_REQUESTED || storageStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
             status = Diagnostic.permissionStatus.NOT_REQUESTED;
         }else{
             status = Diagnostic.permissionStatus.GRANTED;
@@ -130,22 +130,22 @@ var Diagnostic_Camera = (function(){
      *  - {Function} successCallback - function to call on successful request for runtime permissions.
      * This callback function is passed a single string parameter which defines the resulting authorisation status as a value in cordova.plugins.diagnostic.permissionStatus.
      *  - {Function} errorCallback - function to call on failure to request authorisation.
-     *  - {Boolean} externalStorage - (Android only) If true, requests permission for READ_EXTERNAL_STORAGE in addition to CAMERA run-time permission.
-     *  cordova-plugin-camera@2.2+ requires both of these permissions. Defaults to true.
+     *  - {Boolean} externalStorage - (Android only) If true, requests storage permissions for in addition to CAMERA run-time permission.
+     *  Defaults to true.
      */
     Diagnostic_Camera.requestCameraAuthorization = function(params){
         params = mapFromLegacyCameraApi.apply(this, arguments);
-
-        var permissions = [Diagnostic.permission.CAMERA];
-        if(params.externalStorage !== false){
-            permissions.push(Diagnostic.permission.READ_EXTERNAL_STORAGE);
-        }
 
         params.successCallback = params.successCallback || function(){};
         var onSuccess = function(statuses){
             params.successCallback(numberOfKeys(statuses) > 1 ? combineCameraStatuses(statuses): statuses[Diagnostic.permission.CAMERA]);
         };
-        Diagnostic.requestRuntimePermissions(onSuccess, params.errorCallback, permissions);
+
+        return cordova.exec(onSuccess,
+            params.errorCallback,
+            'Diagnostic_Camera',
+            'requestCameraAuthorization',
+            [!!params.externalStorage]);
     };
 
     /**
@@ -161,16 +161,16 @@ var Diagnostic_Camera = (function(){
     Diagnostic_Camera.getCameraAuthorizationStatus = function(params){
         params = mapFromLegacyCameraApi.apply(this, arguments);
 
-        var permissions = [Diagnostic.permission.CAMERA];
-        if(params.externalStorage !== false){
-            permissions.push(Diagnostic.permission.READ_EXTERNAL_STORAGE);
-        }
-
         params.successCallback = params.successCallback || function(){};
         var onSuccess = function(statuses){
             params.successCallback(numberOfKeys(statuses) > 1 ? combineCameraStatuses(statuses): statuses[Diagnostic.permission.CAMERA]);
         };
-        Diagnostic.getPermissionsAuthorizationStatus(onSuccess, params.errorCallback, permissions);
+
+        return cordova.exec(onSuccess,
+            params.errorCallback,
+            'Diagnostic_Camera',
+            'getCameraAuthorizationStatus',
+            [!!params.externalStorage]);
     };
 
     /**

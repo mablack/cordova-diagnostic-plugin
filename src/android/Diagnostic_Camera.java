@@ -22,8 +22,10 @@ package cordova.plugins;
  * Imports
  */
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.os.Build;
 import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
@@ -32,6 +34,9 @@ import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Objects;
 
 /**
  * Diagnostic plugin implementation for Android
@@ -48,6 +53,16 @@ public class Diagnostic_Camera extends CordovaPlugin{
      * Tag for debug log messages
      */
     public static final String TAG = "Diagnostic_Camera";
+
+    protected static final String cameraPermission = "CAMERA";
+    protected static String[] storagePermissions;
+    static {
+        if (android.os.Build.VERSION.SDK_INT >= 33) { // Build.VERSION_CODES.TIRAMISU / Android 13
+            storagePermissions = new String[]{ "READ_MEDIA_IMAGES", "READ_MEDIA_VIDEO" };
+        } else {
+            storagePermissions = new String[]{ "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE" };
+        }
+    }
 
 
     /*************
@@ -106,12 +121,16 @@ public class Diagnostic_Camera extends CordovaPlugin{
         try {
             if(action.equals("isCameraPresent")) {
                 callbackContext.success(isCameraPresent() ? 1 : 0);
+            } else if(action.equals("requestCameraAuthorization")) {
+                requestCameraAuthorization(args, callbackContext);
+            } else if(action.equals("getCameraAuthorizationStatus")) {
+                getCameraAuthorizationStatus(args, callbackContext);
             } else {
                 diagnostic.handleError("Invalid action");
                 return false;
             }
         }catch(Exception e ) {
-            diagnostic.handleError("Exception occurred: ".concat(e.getMessage()));
+            diagnostic.handleError("Exception occurred: ".concat(Objects.requireNonNull(e.getMessage())));
             return false;
         }
         return true;
@@ -120,7 +139,7 @@ public class Diagnostic_Camera extends CordovaPlugin{
     public boolean isCameraPresent() {
         int numberOfCameras = Camera.getNumberOfCameras();
         PackageManager pm = this.cordova.getActivity().getPackageManager();
-        final boolean deviceHasCameraFlag = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+        final boolean deviceHasCameraFlag = android.os.Build.VERSION.SDK_INT >= 32 ? pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY) : pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
         boolean result = (deviceHasCameraFlag && numberOfCameras>0 );
         return result;
     }
@@ -130,5 +149,25 @@ public class Diagnostic_Camera extends CordovaPlugin{
      * Internals
      ***********/
 
+    private String[] getPermissions(boolean externalStorage){
+        String[] permissions = {cameraPermission};
+        if(externalStorage){
+            permissions = Diagnostic.instance.concatStrings(permissions, storagePermissions);
+        }
+        return permissions;
+    }
 
+    private void requestCameraAuthorization(JSONArray args, CallbackContext callbackContext) throws Exception{
+        boolean externalStorage = args.getBoolean(0);
+        String[] permissions = getPermissions(externalStorage);
+        int requestId = Diagnostic.instance.storeContextByRequestId(callbackContext);
+        Diagnostic.instance._requestRuntimePermissions(Diagnostic.instance.stringArrayToJsonArray(permissions), requestId);
+    }
+
+    private void getCameraAuthorizationStatus(JSONArray args, CallbackContext callbackContext) throws Exception{
+        boolean externalStorage = args.getBoolean(0);
+        String[] permissions = getPermissions(externalStorage);
+        JSONObject statuses = Diagnostic.instance._getPermissionsAuthorizationStatus(permissions);
+        callbackContext.success(statuses);
+    }
 }

@@ -658,6 +658,17 @@ public class Diagnostic extends CordovaPlugin{
         return arr;
     }
 
+    protected JSONArray stringArrayToJsonArray(String[] array) throws JSONException{
+        if(array==null)
+            return null;
+
+        JSONArray arr = new JSONArray();
+        for(int i=0; i<array.length; i++) {
+            arr.put(i, array[i]);
+        }
+        return arr;
+    }
+
     protected CallbackContext getContextById(String requestId) throws Exception{
         if (!callbackContexts.containsKey(requestId)) {
             throw new Exception("No context found for request id=" + requestId);
@@ -888,6 +899,15 @@ public class Diagnostic extends CordovaPlugin{
             }
         }
         return codeName;
+    }
+
+    protected String[] concatStrings(String[] A, String[] B) {
+        int aLen = A.length;
+        int bLen = B.length;
+        String[] C= new String[aLen+bLen];
+        System.arraycopy(A, 0, C, 0, aLen);
+        System.arraycopy(B, 0, C, aLen, bLen);
+        return C;
     }
 
     /************
