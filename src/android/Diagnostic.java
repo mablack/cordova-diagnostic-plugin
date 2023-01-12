@@ -266,6 +266,11 @@ public class Diagnostic extends CordovaPlugin{
                 switchToWirelessSettings();
                 callbackContext.success();
             } else if(action.equals("isDataRoamingEnabled")) {
+                if(Build.VERSION.SDK_INT <= 32) { // Android 12L
+                    callbackContext.success(isDataRoamingEnabled() ? 1 : 0);
+                } else {
+                    callbackContext.error("Data roaming setting not available on Android 12L / API32+");
+                }
                 callbackContext.success(isDataRoamingEnabled() ? 1 : 0);
             } else if(action.equals("getPermissionAuthorizationStatus")) {
                 this.getPermissionAuthorizationStatus(args);
@@ -315,13 +320,7 @@ public class Diagnostic extends CordovaPlugin{
 
 
     public boolean isDataRoamingEnabled() throws Exception {
-        boolean result;
-        if (Build.VERSION.SDK_INT < 17) {
-            result = Settings.System.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
-        }else{
-            result = Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
-        }
-        return result;
+        return Settings.Global.getInt(this.cordova.getActivity().getContentResolver(), Settings.Global.DATA_ROAMING, 0) == 1;
     }
 
     public void switchToAppSettings() {

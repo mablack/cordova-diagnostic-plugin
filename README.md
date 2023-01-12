@@ -651,6 +651,7 @@ Platforms: Android
 
 Checks if the device data roaming setting is enabled.
 Returns true if data roaming is enabled.
+Not available on Android 12L / API 32+
 
     cordova.plugins.diagnostic.isDataRoamingEnabled(successCallback, errorCallback);
 
