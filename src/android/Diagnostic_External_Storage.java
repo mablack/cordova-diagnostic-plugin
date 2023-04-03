@@ -136,11 +136,15 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
      ***********/
 
     protected void getExternalSdCardDetails() throws Exception{
-        String permission = diagnostic.permissionsMap.get(externalStoragePermission);
-        if (diagnostic.hasRuntimePermission(permission)) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             _getExternalSdCardDetails();
         } else {
-            diagnostic.requestRuntimePermission(permission, Diagnostic.GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
+            String permission = diagnostic.permissionsMap.get(externalStoragePermission);
+            if (diagnostic.hasRuntimePermission(permission)) {
+                _getExternalSdCardDetails();
+            } else {
+                diagnostic.requestRuntimePermission(permission, Diagnostic.GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
+            }
         }
     }
 
