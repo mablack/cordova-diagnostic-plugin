@@ -1001,7 +1001,7 @@ interface Diagnostic {
      * @param errorCallback
      */
     presentLimitedLibraryPicker?: (
-        successCallback: (identifiers?: [string]) => void,
+        successCallback: (identifiers?: string[]) => void,
         errorCallback: (error: string) => void
     ) => void;
 
@@ -1149,7 +1149,7 @@ interface Diagnostic {
     requestBluetoothAuthorization?: (
         successCallback: () => void,
         errorCallback: (error: string) => void,
-        permissions?: ([string])
+        permissions?: (string[])
     ) => void;
 
     /**
