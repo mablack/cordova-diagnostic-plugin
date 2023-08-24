@@ -3535,7 +3535,7 @@ Checks if the application is authorized to use external storage.
 
 Notes for Android:
 - This is intended for Android 6 / API 23 and above. Calling on Android 5.1 / API 22 and below will always return TRUE as permissions are already granted at installation time.
-- This checks for `READ_EXTERNAL_STORAGE` `CAMERA` run-time permission.
+- This checks for `READ_EXTERNAL_STORAGE` run-time permission.
 
 ```
 cordova.plugins.diagnostic.isExternalStorageAuthorized(successCallback, errorCallback);
@@ -3669,7 +3669,7 @@ Each array entry is an object with the following keys:
     - {String} path - absolute path to the storage location
     - {String} filePath - absolute path prefixed with file protocol for use with cordova-plugin-file
     - {Boolean} canWrite - true if the location is writable
-    - {Integer} freeSpace - number of bytes of free space on the device on which the storage locaiton is mounted.
+    - {Integer} freeSpace - number of bytes of free space on the device on which the storage location is mounted.
     - {String} type - indicates the type of storage location: either "application" if the path is an Android application sandbox path or "root" if the path is the device root.
 - {Function} errorCallback -  The callback which will be called when operation encounters an error.
 The function is passed a single string parameter containing the error message.
