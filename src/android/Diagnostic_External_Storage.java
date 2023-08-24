@@ -51,7 +51,6 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
      * Constants *
      *************/
 
-
     /**
      * Tag for debug log messages
      */
@@ -73,8 +72,6 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
      * Current Cordova callback context (on this thread)
      */
     protected CallbackContext currentContext;
-
-    protected static String externalStoragePermission = "READ_EXTERNAL_STORAGE";
 
 
     /*************
@@ -127,29 +124,12 @@ public class Diagnostic_External_Storage extends CordovaPlugin{
         return true;
     }
 
-    public static void onReceivePermissionResult() throws JSONException{
-        instance._getExternalSdCardDetails();
-    }
 
     /************
      * Internals
      ***********/
 
-    protected void getExternalSdCardDetails() throws Exception{
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            _getExternalSdCardDetails();
-        } else {
-            String permission = diagnostic.permissionsMap.get(externalStoragePermission);
-            if (diagnostic.hasRuntimePermission(permission)) {
-                _getExternalSdCardDetails();
-            } else {
-                diagnostic.requestRuntimePermission(permission, Diagnostic.GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST);
-            }
-        }
-    }
-
-
-    protected void _getExternalSdCardDetails() throws JSONException {
+    protected void getExternalSdCardDetails() throws JSONException {
         String[] storageDirectories = getStorageDirectories();
 
         JSONArray details = new JSONArray();

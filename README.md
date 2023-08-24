@@ -3653,8 +3653,6 @@ Whereas this method returns:
 
 which are on external removable storage.
 
-- Requires permission for `READ_EXTERNAL_STORAGE` run-time permission which must be added to `AndroidManifest.xml`.
-
 ```
 cordova.plugins.diagnostic.getExternalSdCardDetails(successCallback, errorCallback);
 ```
