@@ -244,6 +244,10 @@ public class Diagnostic_Bluetooth extends CordovaPlugin {
             callbackContext.error("Cannot change Bluetooth state as device does not support Bluetooth");
             return;
         }
+        if(Build.VERSION.SDK_INT >= 33){ // TIRAMISU / Android 13
+            callbackContext.error("Cannot change Bluetooth state on Android 13+ as this is no longer supported");
+            return;
+        }
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         boolean isEnabled = bluetoothAdapter.isEnabled();
@@ -252,9 +256,11 @@ public class Diagnostic_Bluetooth extends CordovaPlugin {
 
         if (statuses.getString("BLUETOOTH_CONNECT").equals(Diagnostic.STATUS_GRANTED)) {
             if (enable && !isEnabled) {
+                https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#enable()
                 bluetoothAdapter.enable();
             }
             else if(!enable && isEnabled) {
+                https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#disable()
                 bluetoothAdapter.disable();
             }
             callbackContext.success();
