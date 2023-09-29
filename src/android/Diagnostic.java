@@ -564,7 +564,7 @@ public class Diagnostic extends CordovaPlugin{
             String androidPermission = permissionsMap.get(permission);
             Log.v(TAG, "Get authorisation status for "+androidPermission);
             boolean granted = hasRuntimePermission(androidPermission);
-            if(granted){
+            if(granted || isPermissionImplicitlyGranted(permission)){
                 statuses.put(permission, Diagnostic.STATUS_GRANTED);
             }else{
                 boolean showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
@@ -588,7 +588,7 @@ public class Diagnostic extends CordovaPlugin{
         for(int i = 0; i<currentPermissionsStatuses.names().length(); i++){
             String permission = currentPermissionsStatuses.names().getString(i);
             boolean granted = currentPermissionsStatuses.getString(permission) == Diagnostic.STATUS_GRANTED;
-            if(granted){
+            if(granted || isPermissionImplicitlyGranted(permission)){
                 Log.d(TAG, "Permission already granted for "+permission);
                 JSONObject requestStatuses = permissionStatuses.get(String.valueOf(requestId));
                 requestStatuses.put(permission, Diagnostic.STATUS_GRANTED);
@@ -607,6 +607,26 @@ public class Diagnostic extends CordovaPlugin{
             Log.d(TAG, "No permissions to request: returning result");
             sendRuntimeRequestResult(requestId);
         }
+    }
+
+    protected boolean isPermissionImplicitlyGranted(String permission) throws Exception{
+        boolean isImplicitlyGranted = false;
+        int buildTargetSdkVersion = getBuildTargetSdkVersion();
+        int deviceRuntimeSdkVersion = getDeviceRuntimeSdkVersion();
+
+        if(buildTargetSdkVersion >= 33 && deviceRuntimeSdkVersion < 33 && (
+                permission.equals("ACCESS_BACKGROUND_LOCATION") ||
+                        permission.equals("POST_NOTIFICATIONS") ||
+                        permission.equals("READ_MEDIA_AUDIO") ||
+                        permission.equals("READ_MEDIA_IMAGES") ||
+                        permission.equals("READ_MEDIA_VIDEO") ||
+                        permission.equals("BODY_SENSORS_BACKGROUND") ||
+                        permission.equals("NEARBY_WIFI_DEVICES")
+
+        )) {
+            isImplicitlyGranted = true;
+        }
+        return isImplicitlyGranted;
     }
 
     protected void sendRuntimeRequestResult(int requestId){
@@ -863,23 +883,20 @@ public class Diagnostic extends CordovaPlugin{
     public JSONObject getDeviceOSVersion() throws Exception{
         JSONObject details = new JSONObject();
         details.put("version", Build.VERSION.RELEASE);
-        details.put("apiLevel", Build.VERSION.SDK_INT);
-        details.put("apiName", getNameForApiLevel(Build.VERSION.SDK_INT));
+        int buildVersion = getDeviceRuntimeSdkVersion();
+        details.put("apiLevel", buildVersion);
+        details.put("apiName", getNameForApiLevel(buildVersion));
         return details;
+    }
+
+    protected int getDeviceRuntimeSdkVersion() {
+        return Build.VERSION.SDK_INT;
     }
 
     public JSONObject getBuildOSVersion() throws Exception{
         JSONObject details = new JSONObject();
-        int targetVersion = 0;
-        int minVersion = 0;
-        Activity activity = instance.cordova.getActivity();
-        ApplicationInfo applicationInfo = activity.getPackageManager().getApplicationInfo(activity.getPackageName(), 0);
-        if (applicationInfo != null) {
-            targetVersion = applicationInfo.targetSdkVersion;
-            if(Build.VERSION.SDK_INT >= 24){
-                minVersion = applicationInfo.minSdkVersion;
-            }
-        }
+        int targetVersion = getBuildTargetSdkVersion();
+        int minVersion = getBuildMinimumSdkVersion();
 
         details.put("targetApiLevel", targetVersion);
         details.put("targetApiName", getNameForApiLevel(targetVersion));
@@ -887,6 +904,29 @@ public class Diagnostic extends CordovaPlugin{
         details.put("minApiName", getNameForApiLevel(minVersion));
         return details;
     }
+
+    protected int getBuildTargetSdkVersion() throws Exception{
+        int targetVersion = 0;
+        Activity activity = instance.cordova.getActivity();
+        ApplicationInfo applicationInfo = activity.getPackageManager().getApplicationInfo(activity.getPackageName(), 0);
+        if (applicationInfo != null) {
+            targetVersion = applicationInfo.targetSdkVersion;
+        }
+        return targetVersion;
+    }
+
+    protected int getBuildMinimumSdkVersion() throws Exception{
+        int minVersion = 0;
+        Activity activity = instance.cordova.getActivity();
+        ApplicationInfo applicationInfo = activity.getPackageManager().getApplicationInfo(activity.getPackageName(), 0);
+        if (applicationInfo != null) {
+            if(Build.VERSION.SDK_INT >= 24){
+                minVersion = applicationInfo.minSdkVersion;
+            }
+        }
+        return minVersion;
+    }
+
 
     // https://stackoverflow.com/a/55946200/777265
     protected String getNameForApiLevel(int apiLevel) throws Exception{
