@@ -1,4 +1,15 @@
 # CHANGELOG
+**v7.1.3**
+* (android) update camera module to support READ_MEDIA permissions on Android 13+
+* (android): For new runtime permissions added in API 33, consider them implicitly granted if the build SDK >= 33 and device runtime is < 33.
+  * Resolves [#493](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/493)
+* (android) fix: Return error if attempting to change Bluetooth state when build SDK >= API 33 as this is no longer support.
+  * Resolves [#496](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/496)
+* (android) fix: getExternalSdCardDetails on API 33
+  * Merged from PR [#495](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/495)
+* (types) Using unlimited arrays in the TypeScript definition
+  * Merged from PR [#497](https://github.com/dpa99c/cordova-diagnostic-plugin/pull/497)    
+
 
 **v7.1.2**
 * (Android) fix: Data roaming setting not available on API 32+
