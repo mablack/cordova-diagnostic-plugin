@@ -111,11 +111,34 @@ var Diagnostic = (function(){
     Diagnostic._onNFCStateChange =
         Diagnostic._onPermissionRequestComplete = function(){};
 
+    Diagnostic._combinePermissionStatuses = function(statuses){
+        var status = Diagnostic.permissionStatus.NOT_REQUESTED;
+        if(anyStatusIs(statuses, Diagnostic.permissionStatus.DENIED_ALWAYS)){
+            status = Diagnostic.permissionStatus.DENIED_ALWAYS;
+        }else if(anyStatusIs(statuses, Diagnostic.permissionStatus.DENIED_ONCE)){
+            status = Diagnostic.permissionStatus.DENIED_ONCE;
+        }else if(anyStatusIs(statuses, Diagnostic.permissionStatus.GRANTED)){
+            status = Diagnostic.permissionStatus.GRANTED;
+        }
+        return status;
+    };
+
     /********************
      *
      * Internal functions
      *
      ********************/
+
+    function anyStatusIs(statuses, status){
+        var anyStatus = false;
+        for(var permission in statuses){
+            if(statuses[permission] === status){
+                anyStatus = true;
+                break;
+            }
+        }
+        return anyStatus;
+    }
 
     function checkForInvalidPermissions(permissions, errorCallback){
         if(typeof(permissions) !== "object") permissions = [permissions];

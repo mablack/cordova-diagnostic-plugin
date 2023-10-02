@@ -149,24 +149,24 @@ public class Diagnostic_Camera extends CordovaPlugin{
      * Internals
      ***********/
 
-    private String[] getPermissions(boolean externalStorage){
+    private String[] getPermissions(boolean storage){
         String[] permissions = {cameraPermission};
-        if(externalStorage){
+        if(storage){
             permissions = Diagnostic.instance.concatStrings(permissions, storagePermissions);
         }
         return permissions;
     }
 
     private void requestCameraAuthorization(JSONArray args, CallbackContext callbackContext) throws Exception{
-        boolean externalStorage = args.getBoolean(0);
-        String[] permissions = getPermissions(externalStorage);
+        boolean storage = args.getBoolean(0);
+        String[] permissions = getPermissions(storage);
         int requestId = Diagnostic.instance.storeContextByRequestId(callbackContext);
         Diagnostic.instance._requestRuntimePermissions(Diagnostic.instance.stringArrayToJsonArray(permissions), requestId);
     }
 
     private void getCameraAuthorizationStatus(JSONArray args, CallbackContext callbackContext) throws Exception{
-        boolean externalStorage = args.getBoolean(0);
-        String[] permissions = getPermissions(externalStorage);
+        boolean storage = args.getBoolean(0);
+        String[] permissions = getPermissions(storage);
         JSONObject statuses = Diagnostic.instance._getPermissionsAuthorizationStatus(permissions);
         callbackContext.success(statuses);
     }

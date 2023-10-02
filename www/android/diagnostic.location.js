@@ -49,20 +49,13 @@ var Diagnostic_Location = (function(){
     function combineLocationStatuses(statuses){
         var coarseStatus = statuses[Diagnostic.permission.ACCESS_COARSE_LOCATION],
             fineStatus = statuses[Diagnostic.permission.ACCESS_FINE_LOCATION],
-            backgroundStatus = typeof statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] !== "undefined" ? statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] : true
-            status;
+            backgroundStatus = typeof statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] !== "undefined" ? statuses[Diagnostic.permission.ACCESS_BACKGROUND_LOCATION] : true;
 
-        var GRANTED = backgroundStatus === Diagnostic.permissionStatus.GRANTED ? Diagnostic.permissionStatus.GRANTED : Diagnostic.permissionStatus.GRANTED_WHEN_IN_USE;
-
-        if(coarseStatus === Diagnostic.permissionStatus.GRANTED || fineStatus === Diagnostic.permissionStatus.GRANTED){
-            status = GRANTED;
-        }else if(coarseStatus === Diagnostic.permissionStatus.DENIED_ONCE || fineStatus === Diagnostic.permissionStatus.DENIED_ONCE){
-            status = Diagnostic.permissionStatus.DENIED_ONCE;
-        }else if(coarseStatus === Diagnostic.permissionStatus.DENIED_ALWAYS || fineStatus === Diagnostic.permissionStatus.DENIED_ALWAYS){
-            status = Diagnostic.permissionStatus.DENIED_ALWAYS;
-        }else if(coarseStatus === Diagnostic.permissionStatus.NOT_REQUESTED || fineStatus === Diagnostic.permissionStatus.NOT_REQUESTED){
-            status = Diagnostic.permissionStatus.NOT_REQUESTED;
+        var status = cordova.plugins.diagnostic._combinePermissionStatuses([coarseStatus, fineStatus]);
+        if(status === Diagnostic.permissionStatus.GRANTED && backgroundStatus !== Diagnostic.permissionStatus.GRANTED){
+            status = Diagnostic.permissionStatus.GRANTED_WHEN_IN_USE;
         }
+
         return status;
     }
 
