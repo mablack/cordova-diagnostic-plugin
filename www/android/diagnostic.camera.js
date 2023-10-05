@@ -42,6 +42,7 @@ var Diagnostic_Camera = (function(){
         }else { // if (typeof arguments[0]  === "object")
             params = arguments[0];
         }
+        if(typeof params.storage === 'undefined') params.storage = true; // default to true
         return params;
     }
 
