@@ -143,6 +143,55 @@ public class Diagnostic extends CordovaPlugin{
         permissionsMap = Collections.unmodifiableMap(_permissionsMap);
     }
 
+    /**
+     * Map of minimum build SDK version supported by defined permissions
+     */
+    protected static final Map<String, Integer> minSdkPermissionMap;
+    static {
+        Map<String, Integer> _permissionsMap = new HashMap <String, Integer>();
+
+        // API 26+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ANSWER_PHONE_CALLS", 26);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_PHONE_NUMBERS", 26);
+
+        // API 28+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCEPT_HANDOVER", 28);
+
+        // API 29+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_BACKGROUND_LOCATION", 29);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACCESS_MEDIA_LOCATION", 29);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "ACTIVITY_RECOGNITION", 29);
+
+        // API 31+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_ADVERTISE", 31);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_CONNECT",   31);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BLUETOOTH_SCAN",    31);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "UWB_RANGING",      31);
+
+        // API 33+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "BODY_SENSORS_BACKGROUND", 33);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "NEARBY_WIFI_DEVICES", 33);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "POST_NOTIFICATIONS", 33);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_AUDIO", 33);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_IMAGES", 33);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_MEDIA_VIDEO", 33);
+
+        minSdkPermissionMap = Collections.unmodifiableMap(_permissionsMap);
+    }
+
+    /**
+     * Map of maximum build SDK version supported by defined permissions
+     */
+    protected static final Map<String, Integer> maxSdkPermissionMap;
+    static {
+        Map<String, Integer> _permissionsMap = new HashMap <String, Integer>();
+
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "READ_EXTERNAL_STORAGE", 32);
+        Diagnostic.addBiDirMapEntry(_permissionsMap, "WRITE_EXTERNAL_STORAGE", 29);
+
+        maxSdkPermissionMap = Collections.unmodifiableMap(_permissionsMap);
+    }
+
 
     /*
      * Map of permission request code to callback context
@@ -587,6 +636,19 @@ public class Diagnostic extends CordovaPlugin{
         JSONArray permissionsToRequest = new JSONArray();
         for(int i = 0; i<currentPermissionsStatuses.names().length(); i++){
             String permission = currentPermissionsStatuses.names().getString(i);
+
+            if(!permissionsMap.containsKey(permission)){
+                throw new Exception("Permission name '"+permission+"' is not a supported permission");
+            }
+
+            if(minSdkPermissionMap.containsKey(permission) && getDeviceRuntimeSdkVersion() < minSdkPermissionMap.get(permission)){
+                throw new Exception("Permission "+permission+" not supported for build SDK version "+getDeviceRuntimeSdkVersion());
+            }
+
+            if(maxSdkPermissionMap.containsKey(permission) && getDeviceRuntimeSdkVersion() > maxSdkPermissionMap.get(permission)){
+                throw new Exception("Permission "+permission+" not supported for build SDK version "+getDeviceRuntimeSdkVersion());
+            }
+
             boolean granted = currentPermissionsStatuses.getString(permission) == Diagnostic.STATUS_GRANTED;
             if(granted || isPermissionImplicitlyGranted(permission)){
                 Log.d(TAG, "Permission already granted for "+permission);
@@ -616,12 +678,12 @@ public class Diagnostic extends CordovaPlugin{
 
         if(buildTargetSdkVersion >= 33 && deviceRuntimeSdkVersion < 33 && (
                 permission.equals("ACCESS_BACKGROUND_LOCATION") ||
-                        permission.equals("POST_NOTIFICATIONS") ||
-                        permission.equals("READ_MEDIA_AUDIO") ||
-                        permission.equals("READ_MEDIA_IMAGES") ||
-                        permission.equals("READ_MEDIA_VIDEO") ||
-                        permission.equals("BODY_SENSORS_BACKGROUND") ||
-                        permission.equals("NEARBY_WIFI_DEVICES")
+                permission.equals("POST_NOTIFICATIONS") ||
+                permission.equals("READ_MEDIA_AUDIO") ||
+                permission.equals("READ_MEDIA_IMAGES") ||
+                permission.equals("READ_MEDIA_VIDEO") ||
+                permission.equals("BODY_SENSORS_BACKGROUND") ||
+                permission.equals("NEARBY_WIFI_DEVICES")
 
         )) {
             isImplicitlyGranted = true;
