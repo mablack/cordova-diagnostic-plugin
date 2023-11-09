@@ -1,4 +1,12 @@
 # CHANGELOG
+
+**v7.1.4**
+* (android) bugfix: decide if a permission is implicitly granted by checking if the device runtime is less than, but the build SDK used for the app is greater is or equal than, the SDK version in which the permission was added.
+  * Resolves [#508](https://github.com/dpa99c/cordova-diagnostic-plugin/issues/508)
+* (android) tweak: throw error if a requested runtime permission is not supported by the build SDK version
+* (android) bugfix: when requesting camera permission, storage permission should also be requested by default if not specified but is currently not being
+
+
 **v7.1.3**
 * (android) update camera module to support READ_MEDIA permissions on Android 13+
 * (android): For new runtime permissions added in API 33, consider them implicitly granted if the build SDK >= 33 and device runtime is < 33.
