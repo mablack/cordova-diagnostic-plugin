@@ -233,9 +233,6 @@ public class Diagnostic extends CordovaPlugin{
     public static final String CPU_ARCH_MIPS = "MIPS";
     public static final String CPU_ARCH_MIPS_64 = "MIPS_64";
 
-    protected static final String externalStorageClassName = "cordova.plugins.Diagnostic_External_Storage";
-    protected static final Integer GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST = 1000;
-
     /*************
      * Variables *
      *************/
@@ -1056,17 +1053,7 @@ public class Diagnostic extends CordovaPlugin{
                 clearRequest(requestCode);
             }
 
-            Class<?> externalStorageClass = null;
-            try {
-                externalStorageClass = Class.forName(externalStorageClassName);
-            } catch( ClassNotFoundException e ){}
-
-            if(requestCode == GET_EXTERNAL_SD_CARD_DETAILS_PERMISSION_REQUEST && externalStorageClass != null){
-                Method method = externalStorageClass.getMethod("onReceivePermissionResult");
-                method.invoke(null);
-            }else{
-                context.success(statuses);
-            }
+            context.success(statuses);
         }catch(Exception e ) {
             handleError("Exception occurred onRequestPermissionsResult: ".concat(e.getMessage()), requestCode);
         }
