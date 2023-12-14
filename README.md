@@ -235,6 +235,11 @@ To install only the core module and no optional modules, leave the preference va
 
     <preference name="cordova.plugins.diagnostic.modules" value="" />
 
+**IMPORTANT:** After adding the preference to your `config.xml`, you'll need to uninstall then re-install the plugin to your project to apply the changes:
+```
+cordova plugin rm cordova.plugins.diagnostic --nosave && cordova plugin add cordova.plugins.diagnostic --nosave
+```
+
 ### Available modules
 
 The following optional modules are currently supported by the plugin:
